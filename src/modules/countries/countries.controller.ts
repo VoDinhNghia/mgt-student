@@ -11,7 +11,7 @@ import { CreateCoutriesDto } from './dto/countries.create.dto';
 import { UpdateCountriesDto } from './dto/countries.update.dto';
 import { CountriesService } from './countries.service';
 import { ApiTags } from '@nestjs/swagger';
-import { prefixUrlFlag } from '../configs/config';
+import { prefixUrlFlag } from '../../configs/config';
 
 @Controller('countries')
 @ApiTags('countries')
