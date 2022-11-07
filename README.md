@@ -26,6 +26,13 @@
 
 [Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
 
+## Envirolment
+```bash
+node 14.10.0
+mongodb 5.0.13
+format code: Prettier ESLint
+```
+
 ## Installation
 
 ```bash
