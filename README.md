@@ -26,7 +26,7 @@
 
 [Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
 
-## Envirolment
+## Environment
 ```bash
 node 14.10.0
 mongodb 5.0.13
