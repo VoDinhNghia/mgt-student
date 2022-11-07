@@ -1,12 +1,35 @@
-import { Controller, Get } from '@nestjs/common';
-import { AppService } from './app.service';
+import { Controller, Post, UseGuards, Body, Req, Get, HttpException } from '@nestjs/common';
+import { LocalAuthGuard } from './modules/auth/local-auth.guard';
+import { Request } from 'express';
+import { AuthService } from './modules/auth/auth.service';
+import { LoginDto } from './modules/auth/dtos/auth.login.dto';
+import { JwtAuthGuard } from './modules/auth/jwt-auth.guard';
+import { ApiBasicAuth } from '@nestjs/swagger';
 
 @Controller()
 export class AppController {
-  constructor(private readonly appService: AppService) {}
+  constructor(private authService: AuthService) {}
 
-  @Get()
-  getHello(): string {
-    return this.appService.getHello();
+  // @UseGuards(LocalAuthGuard)
+  @Post('auth/login')
+  async login(@Body() LoginDto: LoginDto, @Req() req: Request) {
+    const checkUser = await this.authService.login(req.body);
+    if (!checkUser) {
+      throw new HttpException(
+        {
+          statusCode: 401,
+          error: 'User or password incorrect.',
+        },
+        500,
+      );
+    }
+    return checkUser;
+  }
+
+  @ApiBasicAuth()
+  // @UseGuards(JwtAuthGuard)
+  @Get('auth/me')
+  getProfile(@Req() req: Request) {
+    return req.user;
   }
 }

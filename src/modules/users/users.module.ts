@@ -13,5 +13,6 @@ import { Profile, ProfileSchema } from './schemas/users.profile.schema';
   ],
   providers: [UsersService],
   controllers: [UsersController],
+  exports: [UsersService],
 })
 export class UsersModule {}
