@@ -33,8 +33,8 @@ export class UsersService {
     return createUser
   }
 
-  async findOne(email: string, passWord: string): Promise<Users> {
-    return this.userSchema.findOne({ email, passWord }).exec();
+  async findOne(email: string, passWord: string) {
+    return this.userSchema.findOne({ email, passWord });
   }
 
 }

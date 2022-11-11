@@ -11,7 +11,7 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
-  async validateUser(email: string, passWord: string): Promise<UsersDto> {
+  async validateUser(email: string, passWord: string) {
     const user = await this.usersService.findOne(email, passWord);
     if (!user) {
       return null;
@@ -20,18 +20,20 @@ export class AuthService {
   }
   //write function update statusLogin and add history
   // write function hash password
-  async login(user: UsersDto & { _id: Types.ObjectId } | any) {
+  async login(user: UsersDto) {
     const existUser: any = await this.validateUser(user.email, user.passWord);
     if (!existUser) {
       return null;
     }
-    const payload = { email: user.email, _id: user._id };
-    return {
+    const payload = {
       email: existUser.email,
       _id: existUser._id,
-      statusLogin: existUser.statusLogin,
-      status: existUser.status,
       role: existUser.role,
+      status: existUser.status,
+      statusLogin: existUser.statusLogin,
+    };
+    return {
+      ...payload,
       historyLogin: existUser.historyLogin,
       access_token: this.jwtService.sign(payload),
     };
