@@ -40,7 +40,7 @@ export class UsersService {
 
   async findByEmailAndPass(email: string, passWord: string) {
     const pass = cryptoPassWord(passWord);
-    return (await this.userSchema.findOne({ email, pass }));
+    return await this.userSchema.findOne({ email, pass });
   }
 
   async findByEmail(email: string) {
