@@ -1,11 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { UsersCreateDto } from './dto/users.create.dto';
 import { Users, UsersDocument } from './schemas/users.schema';
 import { Profile, ProfileDocument } from './schemas/users.profile.schema';
 import { cryptoPassWord } from 'src/commons/crypto';
 import { roles, statusUser } from 'src/commons/constants';
+import { UsersDto } from './dto/users.dto';
 
 @Injectable()
 export class UsersService {
@@ -34,16 +35,24 @@ export class UsersService {
       await this.userSchema.findByIdAndDelete(createUser._id).exec();
       return null
     }
-    return createUser
+    return this.getProfileUser({ userId: new Types.ObjectId(createUser._id) });
   }
 
   async findByEmailAndPass(email: string, passWord: string) {
     const pass = cryptoPassWord(passWord);
-    return this.userSchema.findOne({ email, pass });
+    return (await this.userSchema.findOne({ email, pass }));
   }
 
   async findByEmail(email: string) {
     return this.userSchema.findOne({ email });
+  }
+
+  async getProfileUser(query: object): Promise<any> {
+    return this.profileSchema.find(query).populate('userId', '', this.userSchema).exec();
+  }
+
+  async getAll() {
+    return this.profileSchema.find({}).populate('userId', '', this.userSchema).exec();
   }
 
   async update(id: string, payload: {}, updateBy = '') {
@@ -54,7 +63,8 @@ export class UsersService {
         updatedBy: updateBy
       }
     }
-    return this.userSchema.findByIdAndUpdate(id, updateInfo);
+    this.userSchema.findByIdAndUpdate(id, updateInfo);
+    return await this.getProfileUser({ userId: id })
   }
 
   async initAdmin() {
