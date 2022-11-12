@@ -21,6 +21,12 @@ export class Users {
   @Prop({ enum: rolesEnum, default: roles.STUDENT })
   role?: string;
 
+  @Prop({ default: null })
+  createdBy?: string;
+
+  @Prop({ default: null })
+  updatedBy?: string;
+
   @Prop()
   historyLogin?: [{
     divice: string,

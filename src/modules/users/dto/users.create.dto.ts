@@ -15,8 +15,5 @@ export class UsersCreateDto extends UsersDto {
     mobile: number;
 
     @ApiProperty()
-    createBy: string;
-
-    @ApiProperty()
     gender: string;
 }

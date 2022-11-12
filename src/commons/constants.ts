@@ -15,6 +15,14 @@ export const permission = {
     ADMIN: ['ADMIN'],
 }
 
+export const roleTypeAccessApi = {
+    FULL: 'FULL',
+    LECTURER: 'LECTURER',
+    STUDENT: 'STUDENT',
+    LIBRARIAN: 'LIBRARIAN',
+    ADMIN: 'ADMIN',
+}
+
 export const statusUser = {
     ACTIVE: 'ACTIVE',
     INACTIVE: 'INACTIVE',

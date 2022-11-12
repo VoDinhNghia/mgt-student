@@ -19,8 +19,8 @@ export class AppController {
   }
 
   @Post('auth/login')
-  async login(@Body() LoginDto: LoginDto, @Req() req: Request) {
-    const checkUser = await this.authService.login(req.body);
+  async login(@Body() LoginDto: LoginDto): Promise<LoginDto> {
+    const checkUser: any = await this.authService.login(LoginDto);
     if (!checkUser) {
       throw new HttpException({ statusCode: 401, error: 'User or password incorrect.' }, 500);
     }

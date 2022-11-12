@@ -14,10 +14,11 @@ export class UsersService {
     @InjectModel(Profile.name) private readonly profileSchema: Model<ProfileDocument>
   ) {}
 
-  async create(UsersCreateDto: UsersCreateDto): Promise<Users> {
+  async create(UsersCreateDto: UsersCreateDto, createBy: string): Promise<Users> {
     UsersCreateDto.passWord = cryptoPassWord(UsersCreateDto.passWord);
     const createUser = await new this.userSchema({
       ...UsersCreateDto,
+      createdBy: createBy,
       createdAt: new Date(),
     }).save();
     if (!createUser.id) {
@@ -45,8 +46,15 @@ export class UsersService {
     return this.userSchema.findOne({ email });
   }
 
-  async update(id: string, payload: {}) {
-    return this.userSchema.findByIdAndUpdate(id, payload);
+  async update(id: string, payload: {}, updateBy = '') {
+    let updateInfo = payload
+    if (updateBy) {
+      updateInfo = {
+        ...updateInfo,
+        updatedBy: updateBy
+      }
+    }
+    return this.userSchema.findByIdAndUpdate(id, updateInfo);
   }
 
   async initAdmin() {
