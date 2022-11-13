@@ -26,6 +26,7 @@ export const roleTypeAccessApi = {
 export const statusUser = {
     ACTIVE: 'ACTIVE',
     INACTIVE: 'INACTIVE',
+    ENUM: ['ACTIVE', 'INACTIVE']
 }
 
 export const typeAward = {

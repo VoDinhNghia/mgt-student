@@ -10,31 +10,31 @@ export class Profile {
     ref: 'users',
     required: true,
   })
-  userId: mongoose.Types.ObjectId;
+  user: mongoose.Types.ObjectId;
 
   @Prop({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'classes',
   })
-  classId?: mongoose.Types.ObjectId;
+  class?: mongoose.Types.ObjectId;
 
   @Prop({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'faculties',
   })
-  facultyId?: mongoose.Types.ObjectId;
+  faculty?: mongoose.Types.ObjectId;
 
   @Prop({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'courses',
   })
-  courseId?: mongoose.Types.ObjectId;
+  course?: mongoose.Types.ObjectId;
 
   @Prop({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'degreelevels',
   })
-  degreeLevelId?: mongoose.Types.ObjectId; // Formal university, College...
+  degreeLevel?: mongoose.Types.ObjectId; // Formal university, College...
 
   @Prop()
   firstName?: string;
@@ -57,11 +57,11 @@ export class Profile {
   @Prop({
     type: [
       {
-        attachmentId: {
+        attachment: {
           type: mongoose.Types.ObjectId,
           ref: 'attachments',
         },
-        semesterId: {
+        semester: {
           type: mongoose.Types.ObjectId,
           ref: 'semesters',
         },
@@ -79,15 +79,15 @@ export class Profile {
   @Prop({
     type: [
       {
-        semesterId: {
+        semester: {
           type: mongoose.Types.ObjectId,
           ref: 'semesters',
         },
-        subjectId: {
+        subject: {
           type: mongoose.Types.ObjectId,
           ref: 'subjects',
         },
-        attachmentId: {
+        attachment: {
           type: mongoose.Types.ObjectId,
           ref: 'attachments',
         },
@@ -97,7 +97,7 @@ export class Profile {
   studyProcess?: {
     listSemester: [
       {
-        semesterId: mongoose.Types.ObjectId;
+        semester: mongoose.Types.ObjectId;
         listSubject: [
           // list subject
           {
@@ -120,7 +120,7 @@ export class Profile {
         type: boolean;
         default: false;
       };
-      attachmentId: mongoose.Types.ObjectId;
+      attachment: mongoose.Types.ObjectId;
       scores: number;
     };
     status: {
@@ -151,7 +151,7 @@ export class Profile {
   @Prop({
     type: [
       {
-        countryId: {
+        country: {
           type: mongoose.Types.ObjectId,
           ref: 'countries',
         },
@@ -160,7 +160,7 @@ export class Profile {
   })
   location?: {
     province: string;
-    countryId: mongoose.Types.ObjectId;
+    country: mongoose.Types.ObjectId;
     state: string;
     permanentAddress: string;
     temporaryAddress: string;
