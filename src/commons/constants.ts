@@ -1,72 +1,72 @@
 export const roles = {
-    ADMIN: 'ADMIN',
-    STUDENT: 'STUDENT',
-    LECTURER: 'LECTURER',
-    LIBRARIAN: 'LIBRARIAN'
-}
+  ADMIN: 'ADMIN',
+  STUDENT: 'STUDENT',
+  LECTURER: 'LECTURER',
+  LIBRARIAN: 'LIBRARIAN',
+};
 
 export const rolesEnum = ['ADMIN', 'STUDENT', 'LECTURER', 'LIBRARIAN'];
 
 export const permission = {
-    FULL: ['ADMIN', 'STUDENT', 'LECTURER', 'LIBRARIAN'],
-    LECTURER: ['ADMIN', 'LECTURER'],
-    STUDENT: ['ADMIN', 'LECTURER', 'STUDENT'],
-    LIBRARIAN: ['ADMIN', 'LIBRARIAN'],
-    ADMIN: ['ADMIN'],
-}
+  FULL: ['ADMIN', 'STUDENT', 'LECTURER', 'LIBRARIAN'],
+  LECTURER: ['ADMIN', 'LECTURER'],
+  STUDENT: ['ADMIN', 'LECTURER', 'STUDENT'],
+  LIBRARIAN: ['ADMIN', 'LIBRARIAN'],
+  ADMIN: ['ADMIN'],
+};
 
 export const roleTypeAccessApi = {
-    FULL: 'FULL',
-    LECTURER: 'LECTURER',
-    STUDENT: 'STUDENT',
-    LIBRARIAN: 'LIBRARIAN',
-    ADMIN: 'ADMIN',
-}
+  FULL: 'FULL',
+  LECTURER: 'LECTURER',
+  STUDENT: 'STUDENT',
+  LIBRARIAN: 'LIBRARIAN',
+  ADMIN: 'ADMIN',
+};
 
 export const statusUser = {
-    ACTIVE: 'ACTIVE',
-    INACTIVE: 'INACTIVE',
-    ENUM: ['ACTIVE', 'INACTIVE']
-}
+  ACTIVE: 'ACTIVE',
+  INACTIVE: 'INACTIVE',
+  ENUM: ['ACTIVE', 'INACTIVE'],
+};
 
 export const typeAward = {
-    PERSONAL: 'PERSONAL',
-    GROUP: 'GROUP',
-    FACULTY: 'FACULTY',
-    CLASS: 'CLASS',
-    MAJORS: 'MAJORS',
-    UNIVERSITY: 'UNIVERSITY',
-}
+  PERSONAL: 'PERSONAL',
+  GROUP: 'GROUP',
+  FACULTY: 'FACULTY',
+  CLASS: 'CLASS',
+  MAJORS: 'MAJORS',
+  UNIVERSITY: 'UNIVERSITY',
+};
 
 export const typeNews = {
-    FACULTY: 'FACULTY',
-    CLASS: 'CLASS',
-    MAJORS: 'MAJORS',
-    UNIVERSITY: 'UNIVERSITY',
-    ENROLLMENT: 'ENROLLMENT', // enrollment information
-}
+  FACULTY: 'FACULTY',
+  CLASS: 'CLASS',
+  MAJORS: 'MAJORS',
+  UNIVERSITY: 'UNIVERSITY',
+  ENROLLMENT: 'ENROLLMENT', // enrollment information
+};
 
 export const statusStudent = {
-    STILL: 'STILL',
-    GRAD: 'GRADUATE',
-    RESERVE: 'RESERVE',
-    LEAVE: 'LEAVE',
-}
+  STILL: 'STILL',
+  GRAD: 'GRADUATE',
+  RESERVE: 'RESERVE',
+  LEAVE: 'LEAVE',
+};
 
 export const libraryServiceType = {
-    BORROW_BOOK: 'BORROW_BOOK',
-    BORROW_MAGAZINE: 'BORROW_MAGAZINE',
-    BORROW_ROOM: 'BORROW_ROOM',
-    RESERVE_SEAT: 'RESERVE_SEAT'
-}
+  BORROW_BOOK: 'BORROW_BOOK',
+  BORROW_MAGAZINE: 'BORROW_MAGAZINE',
+  BORROW_ROOM: 'BORROW_ROOM',
+  RESERVE_SEAT: 'RESERVE_SEAT',
+};
 
 export const typePayments = {
-    payments: {
-        CASH: 'CASH',
-        ONLINE: 'ONLINE',
-    },
-    status: {
-        PAID: 'PAID',
-        OWED: 'OWED'
-    }
-}
+  payments: {
+    CASH: 'CASH',
+    ONLINE: 'ONLINE',
+  },
+  status: {
+    PAID: 'PAID',
+    OWED: 'OWED',
+  },
+};

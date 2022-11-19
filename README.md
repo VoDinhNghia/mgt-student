@@ -33,6 +33,15 @@ mongodb 5.0.13
 format code: Prettier ESLint
 ```
 
+## Document and reference (nestjs, mongoo)
+```bash
+- https://docs.nestjs.com/security/authenticatio
+- https://dev.to/carlomigueldy/building-a-restful-api-with-nestjs-and-mongodb-mongoose-2165
+- https://docs.nestjs.com/techniques/mongodb
+- https://stackoverflow.com/questions/66786969/nestjs-mongoose-create-an-array-of-object-with-reference-to-another-schema
+- https://stackoverflow.com/questions/53516594/why-do-i-keep-getting-eslint-delete-cr-prettier-prettier
+```
+
 ## Installation
 
 ```bash

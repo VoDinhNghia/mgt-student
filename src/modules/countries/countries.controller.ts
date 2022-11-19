@@ -10,7 +10,9 @@ import {
   Res,
   HttpStatus,
 } from '@nestjs/common';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { CreateCoutriesDto } from './dto/countries.create.dto';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { UpdateCountriesDto } from './dto/countries.update.dto';
 import { CountriesService } from './countries.service';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
@@ -35,7 +37,7 @@ export class CountriesController {
       res.status(HttpStatus.OK).json({
         statusCode: 200,
         data,
-        message: 'Get all countries success.'
+        message: 'Get all countries success.',
       });
     } catch (error) {
       console.log(error);
@@ -50,19 +52,22 @@ export class CountriesController {
     res.status(HttpStatus.OK).json({
       statusCode: 200,
       data: result,
-      message: 'Get country by id success.'
+      message: 'Get country by id success.',
     });
   }
 
   @Post('create')
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
-  async create(@Body() CreateCoutriesDto: CreateCoutriesDto, @Res() res: Response) {
+  async create(
+    @Body() CreateCoutriesDto: CreateCoutriesDto,
+    @Res() res: Response,
+  ) {
     const result = await this.service.create(CreateCoutriesDto);
     res.status(HttpStatus.OK).json({
       statusCode: 200,
       data: result,
-      message: 'Create country success.'
+      message: 'Create country success.',
     });
   }
 
@@ -78,7 +83,7 @@ export class CountriesController {
     res.status(HttpStatus.OK).json({
       statusCode: 200,
       data: result,
-      message: 'Update country success.'
+      message: 'Update country success.',
     });
   }
 
@@ -90,7 +95,7 @@ export class CountriesController {
     res.status(HttpStatus.OK).json({
       statusCode: 200,
       data: result,
-      message: 'Delete country success.'
+      message: 'Delete country success.',
     });
   }
 }

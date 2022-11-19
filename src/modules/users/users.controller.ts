@@ -13,6 +13,7 @@ import {
   Param,
   Query,
 } from '@nestjs/common';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { UsersCreateDto } from './dto/users.create.dto';
 import { UsersService } from './users.service';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
@@ -22,6 +23,7 @@ import { UsersUpdateDto } from './dto/user.update.dto';
 import { RoleGuard } from '../auth/role-auth.guard';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { Request, Response } from 'express';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { UsersFillterDto } from './dto/user.filter.dto';
 
 @Controller('users')
@@ -90,14 +92,17 @@ export class UsersController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @UseGuards(RoleGuard(roleTypeAccessApi.ADMIN))
-  async getAllUsers(@Query() UsersFillterDto: UsersFillterDto ,@Res() res: Response) {
+  async getAllUsers(
+    @Query() UsersFillterDto: UsersFillterDto,
+    @Res() res: Response,
+  ) {
     const result = await this.service.getAll(UsersFillterDto);
     let data = result;
     if (UsersFillterDto.role) {
-      data = data.filter((u: any) => UsersFillterDto.role === u.user.role)
+      data = data.filter((u: any) => UsersFillterDto.role === u.user.role);
     }
     if (UsersFillterDto.status) {
-      data = data.filter((u: any) => UsersFillterDto.status === u.user.status)
+      data = data.filter((u: any) => UsersFillterDto.status === u.user.status);
     }
     res.status(HttpStatus.OK).json({
       statusCode: 200,
@@ -105,14 +110,22 @@ export class UsersController {
       message: 'Get All user success.',
     });
   }
-  
+
   @Delete('delete/:id')
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @UseGuards(RoleGuard(roleTypeAccessApi.ADMIN))
-  async deleteUser(@Param('id') id: string, @Req() req: Request, @Res() res: Response) {
+  async deleteUser(
+    @Param('id') id: string,
+    @Req() req: Request,
+    @Res() res: Response,
+  ) {
     const { user }: any = req;
-    const result = await this.service.update(id, {status: statusUser.INACTIVE }, user.userId);
+    const result = await this.service.update(
+      id,
+      { status: statusUser.INACTIVE },
+      user.userId,
+    );
     res.status(HttpStatus.OK).json({
       statusCode: 200,
       data: result,

@@ -28,12 +28,14 @@ export class Users {
   updatedBy?: string;
 
   @Prop()
-  historyLogin?: [{
-    divice: string,
-    date: Date,
-    host: string,
-    origin: string,
-  }];
+  historyLogin?: [
+    {
+      divice: string;
+      date: Date;
+      host: string;
+      origin: string;
+    },
+  ];
 
   @Prop({ default: Date.now })
   createdAt?: Date;

@@ -44,7 +44,11 @@ export class UsersService {
 
   async findByEmailAndPass(email: string, passWord: string) {
     const pass = cryptoPassWord(passWord);
-    return await this.userSchema.findOne({ email, pass, status: statusUser.ACTIVE });
+    return await this.userSchema.findOne({
+      email,
+      pass,
+      status: statusUser.ACTIVE,
+    });
   }
 
   async findByEmail(email: string) {
@@ -60,26 +64,28 @@ export class UsersService {
 
   async getAll(query: UsersFillterDto) {
     const { userIds, searchKey, limit, page } = query;
-    let match: any = {};
+    const match: any = {};
     if (userIds && userIds.length > 0) {
-      match.user = { $in: userIds }
+      match.user = { $in: userIds };
     }
     if (searchKey) {
-      match.$or = [{ 
-        firstName: new RegExp(searchKey),
-        lastName: new RegExp(searchKey),
-      }]
+      match.$or = [
+        {
+          firstName: new RegExp(searchKey),
+          lastName: new RegExp(searchKey),
+        },
+      ];
     }
     const result = this.profileSchema
       .find(match)
       .populate('user', '', this.userSchema)
       .limit(Number(limit))
-      .skip(Number(limit) * Number(page))
+      .skip(Number(limit) * Number(page) - Number(limit))
       .exec();
     return result;
   }
 
-  async update(id: string, payload: {}, updateBy = '') {
+  async update(id: string, payload: object, updateBy = '') {
     let updateInfo = payload;
     if (updateBy) {
       updateInfo = {

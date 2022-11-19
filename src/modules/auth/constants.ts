@@ -1,3 +1,3 @@
 export const jwtConstants = {
-   secret: 'secretKey-student-management',
+  secret: 'secretKey-student-management',
 };
