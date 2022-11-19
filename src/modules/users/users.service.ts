@@ -97,6 +97,10 @@ export class UsersService {
     return await this.getProfileUser({ userId: id });
   }
 
+  async importUser(createBy: string, file: any) {
+    return true;
+  }
+
   async initAdmin() {
     const info = {
       email: 'admin.students@gmail.com',

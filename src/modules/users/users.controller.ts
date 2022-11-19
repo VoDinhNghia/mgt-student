@@ -12,19 +12,25 @@ import {
   HttpStatus,
   Param,
   Query,
+  UploadedFile,
+  UseInterceptors,
 } from '@nestjs/common';
+import { FileExtender } from 'src/commons/file-extender';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { UsersCreateDto } from './dto/users.create.dto';
 import { UsersService } from './users.service';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { roleTypeAccessApi, statusUser } from 'src/commons/constants';
 import { validateEmail } from 'src/commons/validateEmail';
 import { UsersUpdateDto } from './dto/user.update.dto';
 import { RoleGuard } from '../auth/role-auth.guard';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
-import { Request, Response } from 'express';
+import { Request, Response, Express } from 'express';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { UsersFillterDto } from './dto/user.filter.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+// import { StorageObjectDto } from './dto/user.file-upload.dto';
 
 @Controller('users')
 @ApiTags('users')
@@ -60,6 +66,30 @@ export class UsersController {
       statusCode: 200,
       data: result,
       message: 'Create user success.',
+    });
+  }
+
+  @Post('import')
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @UseGuards(RoleGuard(roleTypeAccessApi.ADMIN))
+  @ApiConsumes('multipart/form-data')
+  @UseInterceptors(FileExtender)
+  @UseInterceptors(FileInterceptor('file'))
+  async importUser(
+    @Req() req: Request,
+    @Res() res: Response,
+    @UploadedFile('file') file: Express.Multer.File,
+  ) {
+    const { user }: any = req;
+    console.log(file);
+    const result = await this.service.importUser(user.userId, []);
+    console.log('importUser', result);
+
+    res.status(HttpStatus.OK).json({
+      statusCode: 200,
+      data: [],
+      message: 'Import multi user success.',
     });
   }
 
