@@ -15,7 +15,7 @@ import {
   UploadedFile,
   UseInterceptors,
 } from '@nestjs/common';
-import { FileExtender } from 'src/commons/file-extender';
+// import { FileExtender } from 'src/commons/file-extender';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { UsersCreateDto } from './dto/users.create.dto';
 import { UsersService } from './users.service';
@@ -30,7 +30,9 @@ import { Request, Response, Express } from 'express';
 import { UsersFillterDto } from './dto/user.filter.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-// import { StorageObjectDto } from './dto/user.file-upload.dto';
+import { StorageObjectDto } from './dto/user.file-upload.dto';
+import { diskStorage } from 'multer';
+import { readFileSync } from 'fs';
 
 @Controller('users')
 @ApiTags('users')
@@ -74,16 +76,23 @@ export class UsersController {
   @UseGuards(JwtAuthGuard)
   @UseGuards(RoleGuard(roleTypeAccessApi.ADMIN))
   @ApiConsumes('multipart/form-data')
-  @UseInterceptors(FileExtender)
-  @UseInterceptors(FileInterceptor('file'))
+  // @UseInterceptors(FileExtender)
+  @UseInterceptors(
+    FileInterceptor('file', {
+      storage: diskStorage({
+        destination: './src/attachments/import',
+      }),
+    }),
+  )
   async importUser(
     @Req() req: Request,
     @Res() res: Response,
+    @Body() body: StorageObjectDto,
     @UploadedFile('file') file: Express.Multer.File,
   ) {
     const { user }: any = req;
-    console.log('file', file);
-    const result = await this.service.importUser(user.userId, []);
+    const data = readFileSync(file.path, 'utf8');
+    const result = await this.service.importUser(user.userId, data);
     console.log('importUser', result);
 
     res.status(HttpStatus.OK).json({
