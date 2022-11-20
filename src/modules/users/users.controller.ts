@@ -82,7 +82,7 @@ export class UsersController {
     @UploadedFile('file') file: Express.Multer.File,
   ) {
     const { user }: any = req;
-    console.log(file);
+    console.log('file', file);
     const result = await this.service.importUser(user.userId, []);
     console.log('importUser', result);
 
