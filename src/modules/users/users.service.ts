@@ -17,12 +17,12 @@ export class UsersService {
   ) {}
 
   async create(
-    UsersCreateDto: UsersCreateDto,
+    usersCreateDto: UsersCreateDto,
     createBy: string,
   ): Promise<Users> {
-    UsersCreateDto.passWord = cryptoPassWord(UsersCreateDto.passWord);
+    usersCreateDto.passWord = cryptoPassWord(usersCreateDto.passWord);
     const createUser = await new this.userSchema({
-      ...UsersCreateDto,
+      ...usersCreateDto,
       createdBy: createBy,
       createdAt: new Date(),
     }).save();
@@ -44,7 +44,7 @@ export class UsersService {
 
   async findByEmailAndPass(email: string, passWord: string) {
     const pass = cryptoPassWord(passWord);
-    return await this.userSchema.findOne({
+    return this.userSchema.findOne({
       email,
       pass,
       status: statusUser.ACTIVE,
@@ -94,7 +94,8 @@ export class UsersService {
       };
     }
     this.userSchema.findByIdAndUpdate(id, updateInfo);
-    return await this.getProfileUser({ userId: id });
+    const result = await this.getProfileUser({ userId: id });
+    return result;
   }
 
   async importUser(createBy: string, file: any) {
