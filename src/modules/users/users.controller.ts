@@ -44,12 +44,12 @@ export class UsersController {
   @UseGuards(JwtAuthGuard) // when need user info inside request then use
   @UseGuards(RoleGuard(roleTypeAccessApi.ADMIN))
   async create(
-    @Body() UsersCreateDto: UsersCreateDto,
+    @Body() usersCreateDto: UsersCreateDto,
     @Req() req: Request,
     @Res() res: Response,
   ) {
     const { user }: any = req;
-    const { email } = UsersCreateDto;
+    const { email } = usersCreateDto;
     if (!validateEmail(email)) {
       throw new HttpException(
         { statusCode: 400, error: 'Email not correct format.' },
@@ -60,7 +60,7 @@ export class UsersController {
     if (existedUser) {
       throw new HttpException({ statusCode: 400, error: 'User existed.' }, 400);
     }
-    const result = await this.service.create(UsersCreateDto, user.userId);
+    const result = await this.service.create(usersCreateDto, user.userId);
     if (!result) {
       throw new HttpException({ statusCode: 500, error: 'Server error.' }, 500);
     }
@@ -91,8 +91,9 @@ export class UsersController {
     @UploadedFile('file') file: Express.Multer.File,
   ) {
     const { user }: any = req;
+    const userId: string = user.userId;
     const data = readFileSync(file.path, 'utf8');
-    const result = await this.service.importUser(user.userId, data);
+    const result = await this.service.importUser(userId, data);
     console.log('importUser', result);
 
     res.status(HttpStatus.OK).json({
@@ -108,18 +109,18 @@ export class UsersController {
   @UseGuards(RoleGuard(roleTypeAccessApi.FULL))
   async update(
     @Param('id') id: string,
-    @Body() UpdateDto: UsersUpdateDto,
+    @Body() updateDto: UsersUpdateDto,
     @Req() req: Request,
     @Res() res: Response,
   ) {
     const { user }: any = req;
-    if (UpdateDto.email && !validateEmail(UpdateDto.email)) {
+    if (updateDto.email && !validateEmail(updateDto.email)) {
       throw new HttpException(
         { statusCode: 400, error: 'Email not correct format.' },
         400,
       );
     }
-    const result = await this.service.update(id, UpdateDto, user.userId);
+    const result = await this.service.update(id, updateDto, user.userId);
     res.status(HttpStatus.OK).json({
       statusCode: 200,
       data: result,
@@ -132,16 +133,16 @@ export class UsersController {
   @UseGuards(JwtAuthGuard)
   @UseGuards(RoleGuard(roleTypeAccessApi.ADMIN))
   async getAllUsers(
-    @Query() UsersFillterDto: UsersFillterDto,
+    @Query() usersFillterDto: UsersFillterDto,
     @Res() res: Response,
   ) {
-    const result = await this.service.getAll(UsersFillterDto);
+    const result = await this.service.getAll(usersFillterDto);
     let data = result;
-    if (UsersFillterDto.role) {
-      data = data.filter((u: any) => UsersFillterDto.role === u.user.role);
+    if (usersFillterDto.role) {
+      data = data.filter((u: any) => usersFillterDto.role === u.user.role);
     }
-    if (UsersFillterDto.status) {
-      data = data.filter((u: any) => UsersFillterDto.status === u.user.status);
+    if (usersFillterDto.status) {
+      data = data.filter((u: any) => usersFillterDto.status === u.user.status);
     }
     res.status(HttpStatus.OK).json({
       statusCode: 200,
