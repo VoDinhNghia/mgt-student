@@ -10,9 +10,7 @@ import {
   Res,
   HttpStatus,
 } from '@nestjs/common';
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { CreateCoutriesDto } from './dto/countries.create.dto';
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { UpdateCountriesDto } from './dto/countries.update.dto';
 import { CountriesService } from './countries.service';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';

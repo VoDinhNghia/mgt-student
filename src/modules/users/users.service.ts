@@ -19,7 +19,7 @@ export class UsersService {
   async create(
     usersCreateDto: UsersCreateDto,
     createBy: string,
-  ): Promise<Users> {
+  ): Promise<Users | unknown> {
     usersCreateDto.passWord = cryptoPassWord(usersCreateDto.passWord);
     const createUser = await new this.userSchema({
       ...usersCreateDto,
@@ -39,7 +39,10 @@ export class UsersService {
       await this.userSchema.findByIdAndDelete(createUser._id).exec();
       return null;
     }
-    return this.getProfileUser({ userId: new Types.ObjectId(createUser._id) });
+    const result = this.getProfileUser({
+      userId: new Types.ObjectId(createUser._id),
+    });
+    return result;
   }
 
   async findByEmailAndPass(email: string, passWord: string) {
@@ -55,7 +58,7 @@ export class UsersService {
     return this.userSchema.findOne({ email });
   }
 
-  async getProfileUser(query: object): Promise<any> {
+  async getProfileUser(query: object): Promise<unknown> {
     return this.profileSchema
       .find(query)
       .populate('user', '', this.userSchema)
@@ -98,8 +101,11 @@ export class UsersService {
     return result;
   }
 
-  async importUser(createBy: string, file: any) {
-    return true;
+  async importUser(createBy: string, file: unknown) {
+    return {
+      createBy,
+      file,
+    };
   }
 
   async initAdmin() {
