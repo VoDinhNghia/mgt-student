@@ -11,7 +11,6 @@ import {
 } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { AuthService } from './modules/auth/auth.service';
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { LoginDto } from './modules/auth/dtos/auth.login.dto';
 import { JwtAuthGuard } from './modules/auth/jwt-auth.guard';
 import { ApiBearerAuth } from '@nestjs/swagger';
@@ -26,12 +25,13 @@ export class AppController {
 
   @Post('auth/init-admin')
   async initAdmin() {
-    return await this.userService.initAdmin();
+    const result = await this.userService.initAdmin();
+    return result;
   }
 
   @Post('auth/login')
-  async login(@Body() LoginDto: LoginDto, @Res() res: Response) {
-    const checkUser: any = await this.authService.login(LoginDto);
+  async login(@Body() loginDto: LoginDto, @Res() res: Response) {
+    const checkUser = await this.authService.login(loginDto);
     if (!checkUser) {
       throw new HttpException(
         { statusCode: 401, error: 'User or password incorrect.' },
