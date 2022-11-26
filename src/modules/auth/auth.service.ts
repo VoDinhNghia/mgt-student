@@ -20,7 +20,7 @@ export class AuthService {
   }
 
   async login(user: UsersDto) {
-    const existUser: any = await this.validateUser(user.email, user.passWord);
+    const existUser = await this.validateUser(user.email, user.passWord);
     if (!existUser) {
       return null;
     }
