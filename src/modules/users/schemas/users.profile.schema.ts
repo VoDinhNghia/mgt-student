@@ -70,8 +70,8 @@ export class Profile {
   }) // research articles, graduate theses
   study?: [
     {
-      attachmentId: mongoose.Types.ObjectId;
-      semesterId: mongoose.Types.ObjectId;
+      attachment: mongoose.Types.ObjectId;
+      semester: mongoose.Types.ObjectId;
       type: string;
     },
   ];
@@ -101,7 +101,7 @@ export class Profile {
         listSubject: [
           // list subject
           {
-            subjectId: mongoose.Types.ObjectId;
+            subject: mongoose.Types.ObjectId;
             result: string; // failed or pass
           },
         ];
@@ -112,7 +112,7 @@ export class Profile {
         type: boolean;
         default: false;
       };
-      attachmentId: mongoose.Types.ObjectId;
+      attachment: mongoose.Types.ObjectId;
       scores: number;
     };
     itCertificate: {
