@@ -8,7 +8,7 @@ export class LeaderSchool {
   @Prop({
     type: [
       {
-        userId: {
+        user: {
           type: mongoose.Types.ObjectId,
           ref: 'users',
         },
@@ -17,7 +17,7 @@ export class LeaderSchool {
   })
   partyCommittee?: [
     {
-      userId: mongoose.Types.ObjectId;
+      user: mongoose.Types.ObjectId;
       acceptDate: Date;
     },
   ];
@@ -25,7 +25,7 @@ export class LeaderSchool {
   @Prop({
     type: [
       {
-        userId: {
+        user: {
           type: mongoose.Types.ObjectId,
           ref: 'users',
         },
@@ -34,7 +34,7 @@ export class LeaderSchool {
   })
   leader?: [
     {
-      userId: mongoose.Types.ObjectId;
+      user: mongoose.Types.ObjectId;
       term: string;
     },
   ];
