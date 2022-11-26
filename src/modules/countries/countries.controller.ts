@@ -10,9 +10,7 @@ import {
   Res,
   HttpStatus,
 } from '@nestjs/common';
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { CreateCoutriesDto } from './dto/countries.create.dto';
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { UpdateCountriesDto } from './dto/countries.update.dto';
 import { CountriesService } from './countries.service';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
@@ -60,10 +58,10 @@ export class CountriesController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   async create(
-    @Body() CreateCoutriesDto: CreateCoutriesDto,
+    @Body() createCoutriesDto: CreateCoutriesDto,
     @Res() res: Response,
   ) {
-    const result = await this.service.create(CreateCoutriesDto);
+    const result = await this.service.create(createCoutriesDto);
     res.status(HttpStatus.OK).json({
       statusCode: 200,
       data: result,
@@ -76,10 +74,10 @@ export class CountriesController {
   @UseGuards(JwtAuthGuard)
   async update(
     @Param('id') id: string,
-    @Body() UpdateCountriesDto: UpdateCountriesDto,
+    @Body() updateCountriesDto: UpdateCountriesDto,
     @Res() res: Response,
   ) {
-    const result = await this.service.update(id, UpdateCountriesDto);
+    const result = await this.service.update(id, updateCountriesDto);
     res.status(HttpStatus.OK).json({
       statusCode: 200,
       data: result,

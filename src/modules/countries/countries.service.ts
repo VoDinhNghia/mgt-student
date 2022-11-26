@@ -13,28 +13,30 @@ export class CountriesService {
   ) {}
 
   async findAll(): Promise<Countries[]> {
-    return await this.model.find().exec();
+    const result = await this.model.find().exec();
+    return result;
   }
 
   async findOne(id: string): Promise<Countries> {
-    return await this.model.findById(id).exec();
+    const result = await this.model.findById(id).exec();
+    return result;
   }
 
-  async create(CreateCoutriesDto: CreateCoutriesDto): Promise<Countries> {
-    return await new this.model({
-      ...CreateCoutriesDto,
+  async create(createCoutriesDto: CreateCoutriesDto): Promise<Countries> {
+    return new this.model({
+      ...createCoutriesDto,
       createdAt: new Date(),
     }).save();
   }
 
   async update(
     id: string,
-    UpdateCountriesDto: UpdateCountriesDto,
+    updateCountriesDto: UpdateCountriesDto,
   ): Promise<Countries> {
-    return await this.model.findByIdAndUpdate(id, UpdateCountriesDto).exec();
+    return this.model.findByIdAndUpdate(id, updateCountriesDto).exec();
   }
 
   async delete(id: string): Promise<Countries> {
-    return await this.model.findByIdAndDelete(id).exec();
+    return this.model.findByIdAndDelete(id).exec();
   }
 }

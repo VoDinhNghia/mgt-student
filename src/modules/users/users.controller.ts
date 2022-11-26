@@ -15,8 +15,6 @@ import {
   UploadedFile,
   UseInterceptors,
 } from '@nestjs/common';
-// import { FileExtender } from 'src/commons/file-extender';
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { UsersCreateDto } from './dto/users.create.dto';
 import { UsersService } from './users.service';
 import { ApiBearerAuth, ApiConsumes, ApiTags } from '@nestjs/swagger';
@@ -26,10 +24,8 @@ import { UsersUpdateDto } from './dto/user.update.dto';
 import { RoleGuard } from '../auth/role-auth.guard';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { Request, Response, Express } from 'express';
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { UsersFillterDto } from './dto/user.filter.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { StorageObjectDto } from './dto/user.file-upload.dto';
 import { diskStorage } from 'multer';
 import { readFileSync } from 'fs';
@@ -44,12 +40,13 @@ export class UsersController {
   @UseGuards(JwtAuthGuard) // when need user info inside request then use
   @UseGuards(RoleGuard(roleTypeAccessApi.ADMIN))
   async create(
-    @Body() UsersCreateDto: UsersCreateDto,
+    @Body() usersCreateDto: UsersCreateDto,
     @Req() req: Request,
     @Res() res: Response,
   ) {
-    const { user }: any = req;
-    const { email } = UsersCreateDto;
+    const { user }: Request | any = req;
+    const userId: string = user._id;
+    const { email } = usersCreateDto;
     if (!validateEmail(email)) {
       throw new HttpException(
         { statusCode: 400, error: 'Email not correct format.' },
@@ -60,7 +57,7 @@ export class UsersController {
     if (existedUser) {
       throw new HttpException({ statusCode: 400, error: 'User existed.' }, 400);
     }
-    const result = await this.service.create(UsersCreateDto, user.userId);
+    const result = await this.service.create(usersCreateDto, userId);
     if (!result) {
       throw new HttpException({ statusCode: 500, error: 'Server error.' }, 500);
     }
@@ -76,11 +73,10 @@ export class UsersController {
   @UseGuards(JwtAuthGuard)
   @UseGuards(RoleGuard(roleTypeAccessApi.ADMIN))
   @ApiConsumes('multipart/form-data')
-  // @UseInterceptors(FileExtender)
   @UseInterceptors(
     FileInterceptor('file', {
       storage: diskStorage({
-        destination: './src/attachments/import',
+        destination: './src/files/import',
       }),
     }),
   )
@@ -90,9 +86,10 @@ export class UsersController {
     @Body() body: StorageObjectDto,
     @UploadedFile('file') file: Express.Multer.File,
   ) {
-    const { user }: any = req;
+    const { user }: Request | any = req;
+    const userId: string = user.userId;
     const data = readFileSync(file.path, 'utf8');
-    const result = await this.service.importUser(user.userId, data);
+    const result = await this.service.importUser(userId, data);
     console.log('importUser', result);
 
     res.status(HttpStatus.OK).json({
@@ -108,18 +105,18 @@ export class UsersController {
   @UseGuards(RoleGuard(roleTypeAccessApi.FULL))
   async update(
     @Param('id') id: string,
-    @Body() UpdateDto: UsersUpdateDto,
+    @Body() updateDto: UsersUpdateDto,
     @Req() req: Request,
     @Res() res: Response,
   ) {
-    const { user }: any = req;
-    if (UpdateDto.email && !validateEmail(UpdateDto.email)) {
+    const { user }: Request | any = req;
+    if (updateDto.email && !validateEmail(updateDto.email)) {
       throw new HttpException(
         { statusCode: 400, error: 'Email not correct format.' },
         400,
       );
     }
-    const result = await this.service.update(id, UpdateDto, user.userId);
+    const result = await this.service.update(id, updateDto, user.userId);
     res.status(HttpStatus.OK).json({
       statusCode: 200,
       data: result,
@@ -132,16 +129,16 @@ export class UsersController {
   @UseGuards(JwtAuthGuard)
   @UseGuards(RoleGuard(roleTypeAccessApi.ADMIN))
   async getAllUsers(
-    @Query() UsersFillterDto: UsersFillterDto,
+    @Query() usersFillterDto: UsersFillterDto,
     @Res() res: Response,
   ) {
-    const result = await this.service.getAll(UsersFillterDto);
+    const result = await this.service.getAll(usersFillterDto);
     let data = result;
-    if (UsersFillterDto.role) {
-      data = data.filter((u: any) => UsersFillterDto.role === u.user.role);
+    if (usersFillterDto.role) {
+      data = data.filter((u: any) => usersFillterDto.role === u.user.role);
     }
-    if (UsersFillterDto.status) {
-      data = data.filter((u: any) => UsersFillterDto.status === u.user.status);
+    if (usersFillterDto.status) {
+      data = data.filter((u: any) => usersFillterDto.status === u.user.status);
     }
     res.status(HttpStatus.OK).json({
       statusCode: 200,
@@ -159,7 +156,7 @@ export class UsersController {
     @Req() req: Request,
     @Res() res: Response,
   ) {
-    const { user }: any = req;
+    const { user }: Request | any = req;
     const result = await this.service.update(
       id,
       { status: statusUser.INACTIVE },
