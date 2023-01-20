@@ -14,7 +14,7 @@ import { UsersModule } from './modules/users/users.module';
     CountriesModule,
     MongooseModule.forRoot(mongoUrl),
     ServeStaticModule.forRoot({
-      rootPath: join(__dirname, '..', 'src/public'),
+      rootPath: join(__dirname, '../..', 'src/public'),
     }),
     AuthModule,
     UsersModule,
