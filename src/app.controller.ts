@@ -13,10 +13,11 @@ import { Request, Response } from 'express';
 import { AuthService } from './modules/auth/auth.service';
 import { LoginDto } from './modules/auth/dtos/auth.login.dto';
 import { JwtAuthGuard } from './modules/auth/jwt-auth.guard';
-import { ApiBearerAuth } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { UsersService } from 'src/modules/users/users.service';
 
-@Controller()
+@Controller('auth')
+@ApiTags('auth')
 export class AppController {
   constructor(
     private authService: AuthService,

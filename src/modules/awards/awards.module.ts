@@ -4,6 +4,6 @@ import { AwardsService } from './awards.service';
 
 @Module({
   controllers: [AwardsController],
-  providers: [AwardsService]
+  providers: [AwardsService],
 })
 export class AwardsModule {}
