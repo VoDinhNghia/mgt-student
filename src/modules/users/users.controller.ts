@@ -44,7 +44,7 @@ export class UsersController {
     @Req() req: Request,
     @Res() res: Response,
   ) {
-    const { user }: Request | any = req;
+    const { user }: Request | Record<string, any> = req;
     const userId: string = user._id;
     const { email } = usersCreateDto;
     if (!validateEmail(email)) {
@@ -86,7 +86,7 @@ export class UsersController {
     @Body() body: StorageObjectDto,
     @UploadedFile('file') file: Express.Multer.File,
   ) {
-    const { user }: Request | any = req;
+    const { user }: Request | Record<string, any> = req;
     const userId: string = user.userId;
     const data = readFileSync(file.path, 'utf8');
     const result = await this.service.importUser(userId, data);
@@ -109,7 +109,7 @@ export class UsersController {
     @Req() req: Request,
     @Res() res: Response,
   ) {
-    const { user }: Request | any = req;
+    const { user }: Request | Record<string, any> = req;
     if (updateDto.email && !validateEmail(updateDto.email)) {
       throw new HttpException(
         { statusCode: 400, error: 'Email not correct format.' },
@@ -133,16 +133,9 @@ export class UsersController {
     @Res() res: Response,
   ) {
     const result = await this.service.getAll(usersFillterDto);
-    let data = result;
-    if (usersFillterDto.role) {
-      data = data.filter((u: any) => usersFillterDto.role === u.user.role);
-    }
-    if (usersFillterDto.status) {
-      data = data.filter((u: any) => usersFillterDto.status === u.user.status);
-    }
     res.status(HttpStatus.OK).json({
       statusCode: 200,
-      data,
+      data: result,
       message: 'Get All user success.',
     });
   }
@@ -156,7 +149,7 @@ export class UsersController {
     @Req() req: Request,
     @Res() res: Response,
   ) {
-    const { user }: Request | any = req;
+    const { user }: Request | Record<string, any> = req;
     const result = await this.service.update(
       id,
       { status: statusUser.INACTIVE },

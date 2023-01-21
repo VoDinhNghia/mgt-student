@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model, Types } from 'mongoose';
+import mongoose, { Model, Types } from 'mongoose';
 import { UsersCreateDto } from './dto/users.create.dto';
 import { Users, UsersDocument } from './schemas/users.schema';
 import { Profile, ProfileDocument } from './schemas/users.profile.schema';
@@ -66,25 +66,50 @@ export class UsersService {
   }
 
   async getAll(query: UsersFillterDto) {
-    const { userIds, searchKey, limit, page } = query;
-    const match: any = {};
-    if (userIds && userIds.length > 0) {
-      match.user = { $in: userIds };
+    const { searchKey, limit, page, role, status } = query;
+    const match: Record<string, any> = { $match: {} };
+    if (role) {
+      match.$match.role = role;
     }
+    if (status) {
+      match.$match.status = status;
+    }
+    let aggregate: any[] = [];
+    const lookup = {
+      $lookup: {
+        from: 'profiles',
+        localField: '_id',
+        foreignField: 'user',
+        as: 'user',
+      },
+    };
+    aggregate = [...aggregate, match, lookup];
     if (searchKey) {
-      match.$or = [
+      aggregate = [
+        ...aggregate,
         {
-          firstName: new RegExp(searchKey),
-          lastName: new RegExp(searchKey),
+          $match: {
+            $or: [
+              {
+                'user.firstName': new RegExp(searchKey),
+                'user.lastName': new RegExp(searchKey),
+              },
+            ],
+          },
         },
       ];
     }
-    const result = this.profileSchema
-      .find(match)
-      .populate('user', '', this.userSchema)
-      .limit(Number(limit))
-      .skip(Number(limit) * Number(page) - Number(limit))
-      .exec();
+    if (limit && page) {
+      aggregate = [
+        ...aggregate,
+        {
+          $skip: Number(limit) * Number(page) - Number(limit),
+        },
+        { $limit: Number(limit) },
+      ];
+    }
+
+    const result = await this.userSchema.aggregate(aggregate);
     return result;
   }
 
