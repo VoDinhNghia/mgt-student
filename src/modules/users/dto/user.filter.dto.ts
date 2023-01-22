@@ -2,9 +2,6 @@ import { ApiProperty } from '@nestjs/swagger';
 import { statusUser, rolesEnum } from 'src/commons/constants';
 
 export class UsersFillterDto {
-  @ApiProperty({ required: false, isArray: true, type: 'string' })
-  userIds?: string[];
-
   @ApiProperty({ required: false, enum: rolesEnum })
   role?: string;
 
