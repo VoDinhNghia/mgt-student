@@ -7,6 +7,7 @@ import { Profile, ProfileDocument } from './schemas/users.profile.schema';
 import { cryptoPassWord } from 'src/commons/crypto';
 import { roles, statusUser } from 'src/commons/constants';
 import { UsersFillterDto } from './dto/user.filter.dto';
+import { UserProfileDto } from './dto/user.create-profile.dto';
 
 @Injectable()
 export class UsersService {
@@ -126,11 +127,48 @@ export class UsersService {
     return result;
   }
 
-  async importUser(createBy: string, file: unknown) {
-    return {
-      createBy,
-      file,
-    };
+  async importUser(createdBy: string, data: Record<string, any>[]) {
+    const result: Record<string, any>[] = [];
+    for (const item of data) {
+      const existedEmail = await this.userSchema.findOne({ email: item.email });
+      let user: UsersDocument;
+      if (existedEmail) {
+        result.push({ ...item, status: 'Email existed already.' });
+        user = null;
+        continue;
+      }
+      try {
+        user = await new this.userSchema({
+          ...item,
+          createdBy,
+        }).save();
+      } catch (error) {
+        console.log(error);
+        result.push({ ...item, status: 'Can not create user.' });
+        user = null;
+        continue;
+      }
+      const existedProfile = await this.profileSchema.findOne({
+        user: user._id,
+      });
+      if (existedProfile || !user) {
+        result.push({ ...item, status: 'Can not create profile.' });
+        continue;
+      }
+      try {
+        await new this.profileSchema({
+          ...item,
+          user: user._id,
+          createdBy,
+        }).save();
+        result.push({ ...item, status: 'Import user success.' });
+      } catch (error) {
+        console.log(error);
+        result.push({ ...item, status: 'Can not create profile.' });
+        continue;
+      }
+    }
+    return result;
   }
 
   async initAdmin() {

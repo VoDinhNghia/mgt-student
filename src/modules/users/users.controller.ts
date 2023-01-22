@@ -87,14 +87,13 @@ export class UsersController {
     @UploadedFile('file') file: Express.Multer.File,
   ) {
     const { user }: Request | Record<string, any> = req;
-    const userId: string = user.userId;
-    const data = readFileSync(file.path, 'utf8');
-    const result = await this.service.importUser(userId, data);
-    console.log('importUser', result);
+    const userBy: string = user.userId;
+    const data: any = readFileSync(file.path, 'utf8');
+    const result = await this.service.importUser(userBy, JSON.parse(data));
 
     res.status(HttpStatus.OK).json({
       statusCode: 200,
-      data: [],
+      data: result,
       message: 'Import multi user success.',
     });
   }
