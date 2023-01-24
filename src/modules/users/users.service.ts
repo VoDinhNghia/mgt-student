@@ -1,13 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import mongoose, { Model, Types } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { UsersCreateDto } from './dto/users.create.dto';
 import { Users, UsersDocument } from './schemas/users.schema';
 import { Profile, ProfileDocument } from './schemas/users.profile.schema';
 import { cryptoPassWord } from 'src/commons/crypto';
 import { roles, statusUser } from 'src/commons/constants';
 import { UsersFillterDto } from './dto/user.filter.dto';
-import { UserProfileDto } from './dto/user.create-profile.dto';
 
 @Injectable()
 export class UsersService {
