@@ -40,7 +40,7 @@ export class Center {
 
   @Prop({
     type: mongoose.Types.ObjectId,
-    ref: 'award',
+    ref: 'awards',
   })
   award?: mongoose.Types.ObjectId;
 
