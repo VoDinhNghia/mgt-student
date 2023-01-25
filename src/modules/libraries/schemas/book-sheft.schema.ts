@@ -1,24 +1,21 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { Document } from 'mongoose';
 
-export type LibraryDocument = Library & Document;
+export type BookSheftDocument = BookSheft & Document;
 
 @Schema()
-export class Library {
+export class BookSheft {
   @Prop({
     type: String,
     required: true,
   })
   name?: string;
 
-  @Prop()
-  foundYear?: Date;
-
   @Prop({
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'users',
+    ref: 'rooms',
   })
-  librarian?: mongoose.Types.ObjectId;
+  room?: mongoose.Types.ObjectId;
 
   @Prop({ default: Date.now })
   createdAt?: Date;
@@ -27,4 +24,4 @@ export class Library {
   updateAt?: Date;
 }
 
-export const LibrarySchema = SchemaFactory.createForClass(Library);
+export const BookSheftSchema = SchemaFactory.createForClass(BookSheft);

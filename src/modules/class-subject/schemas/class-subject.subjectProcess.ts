@@ -23,7 +23,7 @@ export class Subjects {
   midTermTest?: {
     week?: number;
     time?: number; // 60'
-    outPut?: string; // content Test
+    outPut?: string; // content test
     percent?: string; // 30%
   };
 
