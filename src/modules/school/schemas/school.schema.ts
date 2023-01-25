@@ -18,19 +18,19 @@ export class SchoolInfo {
   numberTotal?: number;
 
   @Prop({
-    type: Array,
+    type: [mongoose.Schema.Types.ObjectId],
     ref: 'branchs',
   })
   branchList?: [mongoose.Types.ObjectId];
 
   @Prop({
-    type: Array,
+    type: [mongoose.Schema.Types.ObjectId],
     ref: 'attachments',
   })
   image?: [mongoose.Types.ObjectId];
 
   @Prop({
-    type: Array,
+    type: [mongoose.Schema.Types.ObjectId],
     ref: 'awards',
   })
   award?: [mongoose.Types.ObjectId];
