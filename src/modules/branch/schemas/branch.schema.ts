@@ -6,6 +6,9 @@ export type BranchDocument = Branch & Document;
 @Schema()
 export class Branch {
   @Prop({ required: true })
+  title?: string;
+
+  @Prop({ required: true })
   name?: string; // Quang Ngai, HCM, Thanh Hoa
 
   @Prop()
