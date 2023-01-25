@@ -9,7 +9,7 @@ export class DegreeLevel {
     type: String,
     required: true,
   })
-  name?: string;
+  name?: string; // ĐH, CĐ, Th.S, TS...
 
   @Prop()
   description?: string;
