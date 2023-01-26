@@ -9,7 +9,7 @@ export class News {
   title?: string;
 
   @Prop()
-  content?: Text;
+  content?: string;
 
   @Prop({ required: true })
   type?: string;
@@ -18,7 +18,7 @@ export class News {
   url?: string;
 
   @Prop({
-    type: mongoose.Schema.Types.ObjectId,
+    type: [mongoose.Schema.Types.ObjectId],
     ref: 'attachments',
   })
   attachment?: [mongoose.Types.ObjectId];

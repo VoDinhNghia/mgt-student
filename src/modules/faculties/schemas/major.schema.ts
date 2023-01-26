@@ -15,6 +15,9 @@ export class Majors {
   name?: string;
 
   @Prop()
+  industryCode?: string; // 52480101 KHMT
+
+  @Prop()
   introduction?: string;
 
   @Prop()

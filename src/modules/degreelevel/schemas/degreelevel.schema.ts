@@ -14,6 +14,9 @@ export class DegreeLevel {
   @Prop()
   description?: string;
 
+  @Prop()
+  type?: string; // Chinh quy
+
   @Prop({ default: Date.now })
   createdAt?: Date;
 

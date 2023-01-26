@@ -26,6 +26,12 @@ export class Profile {
 
   @Prop({
     type: mongoose.Schema.Types.ObjectId,
+    ref: 'majors',
+  })
+  major?: mongoose.Types.ObjectId;
+
+  @Prop({
+    type: mongoose.Schema.Types.ObjectId,
     ref: 'courses',
   })
   course?: mongoose.Types.ObjectId;
@@ -165,6 +171,28 @@ export class Profile {
     permanentAddress: string;
     temporaryAddress: string;
   };
+
+  @Prop()
+  identityCardNumber?: {
+    identity?: string;
+    date?: Date; // ngay cap
+    location?: string; // noi cap
+  };
+
+  @Prop()
+  object?: string; // doi tuong chinh sach
+
+  @Prop()
+  unionDate?: Date;
+
+  @Prop()
+  communistPartyDay?: Date; // ngay vao dang
+
+  @Prop()
+  ethnic?: string;
+
+  @Prop()
+  religion?: string;
 
   @Prop({ default: Date.now })
   createdAt?: Date;

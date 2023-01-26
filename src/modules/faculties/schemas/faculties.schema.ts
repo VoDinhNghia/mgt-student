@@ -11,6 +11,12 @@ export class Faculty {
   })
   name?: string;
 
+  @Prop({
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'branchs',
+  })
+  branch?: mongoose.Types.ObjectId;
+
   @Prop()
   introduction?: string;
 
