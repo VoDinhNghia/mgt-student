@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  HttpStatus,
   Post,
   Req,
   Res,
@@ -17,6 +18,7 @@ import { RoleGuard } from '../auth/role-auth.guard';
 import { StorageObjectDto } from '../users/dto/user.file-upload.dto';
 import { AttachmentsService } from './attachments.service';
 import { Request, Response } from 'express';
+import { existsSync, mkdirSync } from 'fs';
 @Controller('attachments')
 @ApiTags('attachments')
 export class AttachmentsController {
@@ -30,7 +32,7 @@ export class AttachmentsController {
   @UseInterceptors(
     FileInterceptor('file', {
       storage: diskStorage({
-        destination: './src/files/import',
+        destination: './src/public/attachments',
       }),
     }),
   )
@@ -45,6 +47,10 @@ export class AttachmentsController {
     console.log('file', file);
     console.log('uploadBy', uploadBy);
     const result = this.attachmentService.createAttachment();
-    return result;
+    res.status(HttpStatus.OK).json({
+      statusCode: 200,
+      data: result,
+      message: 'Create attachment success.',
+    });
   }
 }
