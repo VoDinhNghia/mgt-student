@@ -10,7 +10,11 @@ export class AttachmentsService {
     private readonly attachmentSchema: Model<AttachmentDocument>,
   ) {}
 
-  createAttachment() {
-    return 0;
+  async createAttachment(file: Record<string, any>, uploadBy: string) {
+    const attachment = await new this.attachmentSchema({
+      ...file,
+      uploadBy,
+    }).save();
+    return attachment;
   }
 }

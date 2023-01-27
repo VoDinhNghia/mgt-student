@@ -172,9 +172,9 @@ export class Profile {
     temporaryAddress: string;
   };
 
-  @Prop()
+  @Prop({ type: Object })
   identityCardNumber?: {
-    identity?: string;
+    id?: string;
     date?: Date; // ngay cap
     location?: string; // noi cap
   };
