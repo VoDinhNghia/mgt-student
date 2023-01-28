@@ -1,7 +1,9 @@
 import {
   Body,
   Controller,
+  Get,
   HttpStatus,
+  Param,
   Post,
   Req,
   Res,
@@ -36,7 +38,7 @@ export class AttachmentsController {
       }),
     }),
   )
-  createAttachment(
+  async createAttachment(
     @Req() req: Request,
     @Res() res: Response,
     @Body() body: StorageObjectDto,
@@ -44,13 +46,22 @@ export class AttachmentsController {
   ) {
     const { user }: Request | Record<string, any> = req;
     const uploadBy: string = user.userId;
-    console.log('file', file);
-    console.log('uploadBy', uploadBy);
-    const result = this.attachmentService.createAttachment();
+    const result = await this.attachmentService.createAttachment(
+      file,
+      uploadBy,
+    );
     res.status(HttpStatus.OK).json({
       statusCode: 200,
       data: result,
       message: 'Create attachment success.',
     });
+  }
+
+  @Get('/:imgpath')
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @UseGuards(RoleGuard(roleTypeAccessApi.ADMIN))
+  getAttachment(@Param('imgpath') image: string, @Res() res: Response) {
+    return res.sendFile(image, { root: './src/public/attachments' });
   }
 }

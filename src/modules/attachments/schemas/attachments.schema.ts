@@ -6,16 +6,19 @@ export type AttachmentDocument = Attachment & Document;
 @Schema()
 export class Attachment {
   @Prop()
-  originalName?: string;
+  originalname?: string;
 
   @Prop()
-  fileName?: string;
+  filename?: string;
 
   @Prop()
   path?: string;
 
   @Prop()
-  type?: string;
+  destination?: string;
+
+  @Prop()
+  mimetype?: string;
 
   @Prop()
   url?: string;
