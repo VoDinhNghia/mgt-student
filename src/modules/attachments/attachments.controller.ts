@@ -61,7 +61,7 @@ export class AttachmentsController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @UseGuards(RoleGuard(roleTypeAccessApi.ADMIN))
-  seeUploadedFile(@Param('imgpath') image: string, @Res() res: Response) {
+  getAttachment(@Param('imgpath') image: string, @Res() res: Response) {
     return res.sendFile(image, { root: './src/public/attachments' });
   }
 }
