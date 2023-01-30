@@ -13,7 +13,7 @@ export class NewsService {
     private readonly newsSchema: Model<NewsDocument>,
   ) {}
 
-  async createNew(createNewDto: CreateNewDto) {
+  async createNews(createNewDto: CreateNewDto) {
     let news = {};
     try {
       news = await new this.newsSchema(createNewDto).save();
@@ -65,7 +65,7 @@ export class NewsService {
     }
   }
 
-  async updateNew(id: string, updateDto: UpdateNewDto) {
+  async updateNews(id: string, updateDto: UpdateNewDto) {
     try {
       await this.newsSchema.findByIdAndUpdate(id, updateDto);
     } catch (error) {
@@ -76,5 +76,16 @@ export class NewsService {
     }
     const getNew = await this.findNewById(id);
     return getNew;
+  }
+
+  async deleteNews(id: string) {
+    try {
+      await this.newsSchema.findByIdAndDelete(id);
+    } catch (error) {
+      throw new HttpException(
+        { statusCode: 500, message: 'Server error.' },
+        500,
+      );
+    }
   }
 }

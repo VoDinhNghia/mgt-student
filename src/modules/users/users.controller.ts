@@ -35,7 +35,7 @@ import { readFileSync } from 'fs';
 export class UsersController {
   constructor(private readonly service: UsersService) {}
 
-  @Post('create')
+  @Post()
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard) // when need user info inside request then use
   @UseGuards(RoleGuard(roleTypeAccessApi.ADMIN))

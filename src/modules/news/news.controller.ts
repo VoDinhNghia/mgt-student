@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpStatus,
   Param,
@@ -28,8 +29,8 @@ export class NewsController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @UseGuards(RoleGuard(roleTypeAccessApi.ADMIN))
-  async create(@Body() createNewDto: CreateNewDto, res: Response) {
-    const result = await this.newService.createNew(createNewDto);
+  async createNews(@Body() createNewDto: CreateNewDto, res: Response) {
+    const result = await this.newService.createNews(createNewDto);
     res.status(HttpStatus.OK).json({
       statusCode: 200,
       data: result,
@@ -54,12 +55,12 @@ export class NewsController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @UseGuards(RoleGuard(roleTypeAccessApi.ADMIN))
-  async updateNew(
+  async updateNews(
     @Param('id') id: string,
     @Body() updateNewDto: UpdateNewDto,
     res: Response,
   ) {
-    const result = await this.newService.updateNew(id, updateNewDto);
+    const result = await this.newService.updateNews(id, updateNewDto);
     res.status(HttpStatus.OK).json({
       statusCode: 200,
       data: result,
@@ -77,6 +78,19 @@ export class NewsController {
       statusCode: 200,
       data: result,
       message: 'Get news list success.',
+    });
+  }
+
+  @Delete('/:id')
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @UseGuards(RoleGuard(roleTypeAccessApi.ADMIN))
+  async deleteNews(@Param('id') id: string, res: Response) {
+    await this.newService.deleteNews(id);
+    res.status(HttpStatus.OK).json({
+      statusCode: 200,
+      data: true,
+      message: 'Delete news success.',
     });
   }
 }
