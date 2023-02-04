@@ -1,7 +1,6 @@
 import {
   Body,
   Controller,
-  HttpException,
   Post,
   UseGuards,
   Put,
@@ -19,7 +18,6 @@ import { UsersCreateDto } from './dto/users.create.dto';
 import { UsersService } from './users.service';
 import { ApiBearerAuth, ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { roleTypeAccessApi, statusUser } from 'src/commons/constants';
-import { validateEmail } from 'src/commons/validateEmail';
 import { UsersUpdateDto } from './dto/user.update.dto';
 import { RoleGuard } from '../auth/role-auth.guard';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
@@ -46,21 +44,7 @@ export class UsersController {
   ) {
     const { user }: Request | Record<string, any> = req;
     const userId: string = user._id;
-    const { email } = usersCreateDto;
-    if (!validateEmail(email)) {
-      throw new HttpException(
-        { statusCode: 400, error: 'Email not correct format.' },
-        400,
-      );
-    }
-    const existedUser = await this.service.findByEmail(email);
-    if (existedUser) {
-      throw new HttpException({ statusCode: 400, error: 'User existed.' }, 400);
-    }
-    const result = await this.service.create(usersCreateDto, userId);
-    if (!result) {
-      throw new HttpException({ statusCode: 500, error: 'Server error.' }, 500);
-    }
+    const result = await this.service.createUser(usersCreateDto, userId);
     res.status(HttpStatus.OK).json({
       statusCode: 200,
       data: result,
@@ -109,12 +93,6 @@ export class UsersController {
     @Res() res: Response,
   ) {
     const { user }: Request | Record<string, any> = req;
-    if (updateDto.email && !validateEmail(updateDto.email)) {
-      throw new HttpException(
-        { statusCode: 400, error: 'Email not correct format.' },
-        400,
-      );
-    }
     const result = await this.service.update(id, updateDto, user.userId);
     res.status(HttpStatus.OK).json({
       statusCode: 200,
@@ -123,7 +101,7 @@ export class UsersController {
     });
   }
 
-  @Get('list')
+  @Get()
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @UseGuards(RoleGuard(roleTypeAccessApi.ADMIN))
@@ -139,7 +117,7 @@ export class UsersController {
     });
   }
 
-  @Delete('delete/:id')
+  @Delete('/:id')
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @UseGuards(RoleGuard(roleTypeAccessApi.ADMIN))
@@ -158,6 +136,19 @@ export class UsersController {
       statusCode: 200,
       data: result,
       message: 'Delete user success.',
+    });
+  }
+
+  @Get('/:id')
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @UseGuards(RoleGuard(roleTypeAccessApi.ADMIN))
+  async getUserByid(@Param('id') id: string, @Res() res: Response) {
+    const result = await this.service.findUserById(id);
+    res.status(HttpStatus.OK).json({
+      statusCode: 200,
+      data: result,
+      message: 'Get user success.',
     });
   }
 }

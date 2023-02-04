@@ -1,8 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { statusUser, rolesEnum } from 'src/commons/constants';
+import { statusUser, ErolesEnum } from 'src/commons/constants';
 
 export class UsersFillterDto {
-  @ApiProperty({ required: false, enum: rolesEnum })
+  @ApiProperty({ required: false, enum: ErolesEnum })
   role?: string;
 
   @ApiProperty({ required: false, enum: statusUser.ENUM })
