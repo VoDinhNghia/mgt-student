@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
-import { rolesEnum, roles, statusUser } from '../../../commons/constants';
+import { ErolesEnum, statusUser } from '../../../commons/constants';
 
 export type UsersDocument = Users & Document;
 
@@ -18,7 +18,7 @@ export class Users {
   @Prop({ default: statusUser.ACTIVE })
   status?: string;
 
-  @Prop({ enum: rolesEnum, default: roles.STUDENT })
+  @Prop({ enum: ErolesEnum, default: ErolesEnum.STUDENT })
   role?: string;
 
   @Prop({ default: null })

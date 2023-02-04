@@ -5,7 +5,12 @@ export const roles = {
   LIBRARIAN: 'LIBRARIAN',
 };
 
-export const rolesEnum = ['ADMIN', 'STUDENT', 'LECTURER', 'LIBRARIAN'];
+export enum ErolesEnum {
+  ADMIN = 'ADMIN',
+  STUDENT = 'STUDENT',
+  LECTURER = 'LECTURER',
+  LIBRARIAN = 'LIBRARIAN',
+}
 
 export const permission = {
   FULL: ['ADMIN', 'STUDENT', 'LECTURER', 'LIBRARIAN'],

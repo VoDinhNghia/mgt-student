@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { UsersCreateDto } from './dto/users.create.dto';
@@ -7,6 +7,7 @@ import { Profile, ProfileDocument } from './schemas/users.profile.schema';
 import { cryptoPassWord } from 'src/commons/crypto';
 import { roles, statusUser } from 'src/commons/constants';
 import { UsersFillterDto } from './dto/user.filter.dto';
+import { validateEmail } from 'src/commons/validateEmail';
 
 @Injectable()
 export class UsersService {
@@ -16,32 +17,58 @@ export class UsersService {
     private readonly profileSchema: Model<ProfileDocument>,
   ) {}
 
-  async create(
+  async validateUser(usersValidateDto: Record<string, any>): Promise<void> {
+    if (!validateEmail(usersValidateDto.email)) {
+      throw new HttpException(
+        { statusCode: 400, error: 'Email not correct format.' },
+        400,
+      );
+    }
+    const existedUser = await this.findByEmail(usersValidateDto.email);
+    if (existedUser) {
+      throw new HttpException(
+        { statusCode: 400, error: 'Email existed already.' },
+        400,
+      );
+    }
+  }
+
+  async createUser(
     usersCreateDto: UsersCreateDto,
     createBy: string,
-  ): Promise<Users | unknown> {
-    usersCreateDto.passWord = cryptoPassWord(usersCreateDto.passWord);
-    const createUser = await new this.userSchema({
-      ...usersCreateDto,
-      createdBy: createBy,
-      createdAt: new Date(),
-    }).save();
-    if (!createUser.id) {
-      return null;
+  ): Promise<Users | any> {
+    await this.validateUser(usersCreateDto);
+    let createUser: Record<string, any> = {};
+    try {
+      usersCreateDto.passWord = cryptoPassWord(usersCreateDto.passWord);
+      createUser = await new this.userSchema({
+        ...usersCreateDto,
+        createdBy: createBy,
+        createdAt: new Date(),
+      }).save();
+    } catch {
+      throw new HttpException(
+        { statusCode: 500, message: 'Server error.' },
+        500,
+      );
     }
     try {
       await new this.profileSchema({
         ...UsersCreateDto,
-        userId: createUser._id,
+        user: createUser._id,
         createdAt: new Date(),
       }).save();
     } catch (error) {
       await this.userSchema.findByIdAndDelete(createUser._id).exec();
-      return null;
+      throw new HttpException(
+        { statusCode: 500, message: 'Server error.' },
+        500,
+      );
     }
     const result = this.getProfileUser({
-      userId: new Types.ObjectId(createUser._id),
+      user: new Types.ObjectId(createUser._id),
     });
+
     return result;
   }
 
@@ -52,6 +79,14 @@ export class UsersService {
       pass,
       status: statusUser.ACTIVE,
     });
+  }
+
+  async findUserById(id: string): Promise<Users | any> {
+    const result = await this.profileSchema
+      .findOne({ user: new Types.ObjectId(id) })
+      .populate('user', '', this.userSchema)
+      .exec();
+    return result;
   }
 
   async findByEmail(email: string) {
@@ -113,12 +148,15 @@ export class UsersService {
     return result;
   }
 
-  async update(id: string, payload: object, updateBy = '') {
+  async update(id: string, payload: Record<string, any>, updatedBy = '') {
+    if (payload.email) {
+      await this.validateUser(payload);
+    }
     let updateInfo = payload;
-    if (updateBy) {
+    if (updatedBy) {
       updateInfo = {
         ...updateInfo,
-        updatedBy: updateBy,
+        updatedBy,
       };
     }
     this.userSchema.findByIdAndUpdate(id, updateInfo);
@@ -179,31 +217,41 @@ export class UsersService {
       role: roles.ADMIN,
     };
     const existedAdmin = await this.findByEmail(info.email);
-    let createAdmin;
-    let createProfileAdmin;
-    if (!existedAdmin) {
+    let createAdmin: Record<string, any>;
+    let createProfileAdmin: Record<string, any>;
+    if (existedAdmin) {
+      throw new HttpException(
+        { statusCode: 409, message: 'Admin existed already.' },
+        409,
+      );
+    }
+    try {
+      createAdmin = await new this.userSchema({
+        ...info,
+        createdAt: new Date(),
+      }).save();
+    } catch (error) {
+      throw new HttpException(
+        { statusCode: 500, message: 'Server error' },
+        500,
+      );
+    }
+    if (createAdmin) {
       try {
-        createAdmin = await new this.userSchema({
-          ...info,
+        createProfileAdmin = await new this.profileSchema({
+          firstName: 'Admin',
+          lastName: 'Student',
+          user: createAdmin._id,
           createdAt: new Date(),
         }).save();
       } catch (error) {
-        console.log(error);
+        throw new HttpException(
+          { statusCode: 500, message: 'Server error' },
+          500,
+        );
       }
-      if (createAdmin) {
-        try {
-          createProfileAdmin = await new this.profileSchema({
-            firstName: 'Admin',
-            lastName: 'Student',
-            user: createAdmin._id,
-            createdAt: new Date(),
-          }).save();
-        } catch (error) {
-          console.log(error);
-        }
-        if (!createProfileAdmin) {
-          this.userSchema.findByIdAndDelete(createAdmin._id);
-        }
+      if (!createProfileAdmin) {
+        this.userSchema.findByIdAndDelete(createAdmin._id);
       }
     }
     return createAdmin;
