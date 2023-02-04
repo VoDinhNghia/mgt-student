@@ -12,7 +12,11 @@ async function bootstrap() {
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api-docs', app, document);
-  app.enableCors();
+  app.enableCors({
+    origin: ['http://localhost:8000'],
+    methods: ['GET', 'POST', 'DELETE', 'PUT'],
+    credentials: true,
+  });
   await app.listen(3000);
   console.log('App running on port 3000');
 }
