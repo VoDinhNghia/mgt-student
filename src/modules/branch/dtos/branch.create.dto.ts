@@ -13,7 +13,7 @@ export class BranchCreateDto {
   description?: string;
 
   @ApiProperty()
-  website?: number;
+  website?: string;
 
   @ApiProperty({ type: BranchLocationDto, required: true })
   location?: BranchLocationDto;

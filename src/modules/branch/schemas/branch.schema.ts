@@ -18,14 +18,14 @@ export class Branch {
   website?: string;
 
   @Prop({
-    type: [
-      {
-        country: {
-          type: mongoose.Types.ObjectId,
-          ref: 'countries',
-        },
+    type: {
+      country: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'countries',
       },
-    ],
+      province: String,
+      address: String,
+    },
   })
   location?: {
     province?: string;
