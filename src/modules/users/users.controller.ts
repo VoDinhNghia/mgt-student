@@ -27,6 +27,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { StorageObjectDto } from './dto/user.file-upload.dto';
 import { diskStorage } from 'multer';
 import { readFileSync } from 'fs';
+import { ProfileUpdateDto } from './dto/user.update-profile.dto';
 
 @Controller('users')
 @ApiTags('users')
@@ -82,11 +83,11 @@ export class UsersController {
     });
   }
 
-  @Put('update/:id')
+  @Put('/:id')
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @UseGuards(RoleGuard(roleTypeAccessApi.FULL))
-  async update(
+  async updateUser(
     @Param('id') id: string,
     @Body() updateDto: UsersUpdateDto,
     @Req() req: Request,
@@ -98,6 +99,29 @@ export class UsersController {
       statusCode: 200,
       data: result,
       message: 'Update user success.',
+    });
+  }
+
+  @Put('/profile/:id')
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @UseGuards(RoleGuard(roleTypeAccessApi.FULL))
+  async updateProfile(
+    @Param('id') id: string,
+    @Body() updateProfileDto: ProfileUpdateDto,
+    @Req() req: Request,
+    @Res() res: Response,
+  ) {
+    const { user }: Request | Record<string, any> = req;
+    const result = await this.service.updateProfile(
+      id,
+      updateProfileDto,
+      user.userId,
+    );
+    res.status(HttpStatus.OK).json({
+      statusCode: 200,
+      data: result,
+      message: 'Update profile user success.',
     });
   }
 

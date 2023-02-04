@@ -76,6 +76,7 @@ export class Profile {
   }) // research articles, graduate theses
   study?: [
     {
+      id: string;
       attachment: mongoose.Types.ObjectId;
       semester: mongoose.Types.ObjectId;
       type: string;
@@ -103,6 +104,7 @@ export class Profile {
   studyProcess?: {
     listSemester: [
       {
+        id: string;
         semester: mongoose.Types.ObjectId;
         listSubject: [
           // list subject
@@ -114,6 +116,7 @@ export class Profile {
       },
     ];
     toeicCertificate: {
+      id: string;
       status: {
         type: boolean;
         default: false;
@@ -122,6 +125,7 @@ export class Profile {
       scores: number;
     };
     itCertificate: {
+      id: string;
       status: {
         type: boolean;
         default: false;

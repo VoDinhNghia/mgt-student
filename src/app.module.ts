@@ -10,6 +10,7 @@ import { AuthModule } from './modules/auth/auth.module';
 import { UsersModule } from './modules/users/users.module';
 import { NewsModule } from './modules/news/news.module';
 import { AttachmentsModule } from './modules/attachments/attachments.module';
+import { BranchModule } from './modules/branch/branch.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { AttachmentsModule } from './modules/attachments/attachments.module';
     UsersModule,
     NewsModule,
     AttachmentsModule,
+    BranchModule,
   ],
   controllers: [AppController],
   providers: [AppService],
