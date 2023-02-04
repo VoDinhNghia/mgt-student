@@ -164,6 +164,15 @@ export class UsersService {
     return result;
   }
 
+  async updateProfile(
+    id: string,
+    profileDto: Record<string, any>,
+    updatedBy: string,
+  ): Promise<Profile | any> {
+    console.log(id, profileDto, updatedBy);
+    return {};
+  }
+
   async importUser(createdBy: string, data: Record<string, any>[]) {
     const result: Record<string, any>[] = [];
     for (const item of data) {
