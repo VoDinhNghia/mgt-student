@@ -5,8 +5,14 @@ export class BranchLocationDto {
   province: string;
 
   @ApiProperty()
-  country: string;
+  district: string;
+
+  @ApiProperty({ required: false })
+  ward: string;
 
   @ApiProperty()
+  country: string;
+
+  @ApiProperty({ required: true })
   address: string;
 }
