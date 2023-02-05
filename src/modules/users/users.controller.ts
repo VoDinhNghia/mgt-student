@@ -61,7 +61,7 @@ export class UsersController {
   @UseInterceptors(
     FileInterceptor('file', {
       storage: diskStorage({
-        destination: './src/files/import',
+        destination: './src/files/import-user',
       }),
     }),
   )

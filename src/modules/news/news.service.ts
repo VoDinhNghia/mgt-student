@@ -14,15 +14,8 @@ export class NewsService {
   ) {}
 
   async createNews(createNewDto: CreateNewDto) {
-    let news = {};
-    try {
-      news = await new this.newsSchema(createNewDto).save();
-    } catch (error) {
-      throw new HttpException(
-        { statusCode: 500, message: 'Server interval.' },
-        500,
-      );
-    }
+    const news = await new this.newsSchema(createNewDto).save();
+
     return news;
   }
 
@@ -66,26 +59,14 @@ export class NewsService {
   }
 
   async updateNews(id: string, updateDto: UpdateNewDto) {
-    try {
-      await this.newsSchema.findByIdAndUpdate(id, updateDto);
-    } catch (error) {
-      throw new HttpException(
-        { statusCode: 500, message: 'System error' },
-        500,
-      );
-    }
+    await this.newsSchema.findByIdAndUpdate(id, updateDto);
     const getNew = await this.findNewById(id);
+
     return getNew;
   }
 
   async deleteNews(id: string) {
-    try {
-      await this.newsSchema.findByIdAndDelete(id);
-    } catch (error) {
-      throw new HttpException(
-        { statusCode: 500, message: 'Server error.' },
-        500,
-      );
-    }
+    await this.findNewById(id);
+    await this.newsSchema.findByIdAndDelete(id);
   }
 }

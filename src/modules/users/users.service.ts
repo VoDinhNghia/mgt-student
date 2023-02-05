@@ -176,29 +176,34 @@ export class UsersService {
   async importUser(createdBy: string, data: Record<string, any>[]) {
     const result: Record<string, any>[] = [];
     for (const item of data) {
+      if (!validateEmail(item.email)) {
+        item.status = 'Email incorect format.';
+        continue;
+      }
       const existedEmail = await this.userSchema.findOne({ email: item.email });
-      let user: UsersDocument;
+      let user: UsersDocument = null;
       if (existedEmail) {
-        result.push({ ...item, status: 'Email existed already.' });
-        user = null;
+        item.status = 'Email existed already.';
+        result.push(item);
         continue;
       }
       try {
         user = await new this.userSchema({
           ...item,
+          passWord: cryptoPassWord('123Code#'),
           createdBy,
         }).save();
-      } catch (error) {
-        console.log(error);
-        result.push({ ...item, status: 'Can not create user.' });
-        user = null;
+      } catch {
+        item.status = 'Can not create user.';
+        result.push(item);
         continue;
       }
       const existedProfile = await this.profileSchema.findOne({
         user: user._id,
       });
       if (existedProfile || !user) {
-        result.push({ ...item, status: 'Can not create profile.' });
+        item.status = 'Can not create profile.';
+        result.push(item);
         continue;
       }
       try {
@@ -207,12 +212,14 @@ export class UsersService {
           user: user._id,
           createdBy,
         }).save();
-        result.push({ ...item, status: 'Import user success.' });
-      } catch (error) {
-        console.log(error);
-        result.push({ ...item, status: 'Can not create profile.' });
+        item.status = 'Import user success.';
+      } catch {
+        item.status = 'Can not create profile.';
+        await this.userSchema.findByIdAndDelete(user._id);
+        result.push(item);
         continue;
       }
+      result.push(item);
     }
     return result;
   }

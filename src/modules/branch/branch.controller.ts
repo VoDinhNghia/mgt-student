@@ -1,7 +1,9 @@
 import {
   Body,
   Controller,
+  Get,
   HttpStatus,
+  Param,
   Post,
   Res,
   UseGuards,
@@ -32,6 +34,19 @@ export class BranchController {
       statusCode: 200,
       data: result,
       message: 'Create branch success.',
+    });
+  }
+
+  @Get('/:id')
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @UseGuards(RoleGuard(roleTypeAccessApi.ADMIN))
+  async getBranchById(@Param('id') id: string, @Res() res: Response) {
+    const result: any = await this.branchService.findById(id);
+    res.status(HttpStatus.OK).json({
+      statusCode: 200,
+      data: result,
+      message: 'Get branch by id success.',
     });
   }
 }
