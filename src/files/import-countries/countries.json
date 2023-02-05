@@ -1,0 +1,38 @@
+[
+    {
+        "name": "Việt Nam",
+        "flag": "/flags/vn.png",
+        "countryId": "vn",
+        "capital": "Hà Nội"
+    },
+    {
+        "name": "USA",
+        "flag": "/flags/us.png",
+        "countryId": "us",
+        "capital": "Washington D.C"
+    },
+    {
+        "name": "Japan",
+        "flag": "/flags/jp.png",
+        "countryId": "jp",
+        "capital": "Tokio"
+    },
+    {
+        "name": "Russia",
+        "flag": "/flags/ru.png",
+        "countryId": "ru",
+        "capital": "Moskva"
+    },
+    {
+        "name": "Laos",
+        "flag": "/flags/la.png",
+        "countryId": "la",
+        "capital": "Viêng Chăn"
+    },
+    {
+        "name": "Korea",
+        "flag": "/flags/kr.png",
+        "countryId": "kr",
+        "capital": "Seoul"
+    }
+]

@@ -23,13 +23,26 @@ export class Branch {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'countries',
       },
-      province: String,
+      province: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'provinces',
+      },
+      district: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'districts',
+      },
+      ward: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'wards',
+      },
       address: String,
     },
   })
   location?: {
-    province?: string;
+    province?: mongoose.Types.ObjectId;
     country?: mongoose.Types.ObjectId;
+    district?: mongoose.Types.ObjectId;
+    ward?: mongoose.Types.ObjectId;
     address?: string;
   };
 
