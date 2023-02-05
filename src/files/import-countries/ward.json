@@ -1,27 +1,155 @@
 [
     {
         "countryId": "63d0ebf5bd6ba52c4b6ee1b8",
-        "name": "T",
+        "name": "Phường 01",
         "code": "70000",
         "phoneCode": "0084",
-        "codename": "HCM",
+        "codename": "Phuong_01",
         "provinceId": "63df2fb5df73dec8dc4c38a1",
-        "districtId": ""
+        "districtId": "63df69477d3b76279b716118"
     },
     {
         "countryId": "63d0ebf5bd6ba52c4b6ee1b8",
-        "name": "Quảng Ngãi",
+        "name": "Phường 02",
         "code": "70000",
         "phoneCode": "055",
-        "codename": "Quang_Ngai",
-        "capital": "Thành Phố Quảng Ngãi"
+        "codename": "Phuong_02",
+        "provinceId": "63df2fb5df73dec8dc4c38a1",
+        "districtId": "63df69477d3b76279b716118"
     },
     {
         "countryId": "63d0ebf5bd6ba52c4b6ee1b8",
-        "name": "Thanh Hóa",
+        "name": "Phường 03",
         "code": "70000",
         "phoneCode": "055",
-        "codename": "Thanh_Hoa",
-        "capital": "Thành Phố Thanh Hóa"
+        "codename": "Phuong_03",
+        "provinceId": "63df2fb5df73dec8dc4c38a1",
+        "districtId": "63df69477d3b76279b716118"
+    },
+    {
+        "countryId": "63d0ebf5bd6ba52c4b6ee1b8",
+        "name": "Phường 04",
+        "code": "70000",
+        "phoneCode": "055",
+        "codename": "Phuong_04",
+        "provinceId": "63df2fb5df73dec8dc4c38a1",
+        "districtId": "63df69477d3b76279b716118"
+    },
+    {
+        "countryId": "63d0ebf5bd6ba52c4b6ee1b8",
+        "name": "Phường 05",
+        "code": "70000",
+        "phoneCode": "055",
+        "codename": "Phuong_05",
+        "provinceId": "63df2fb5df73dec8dc4c38a1",
+        "districtId": "63df69477d3b76279b716118"
+    },
+    {
+        "countryId": "63d0ebf5bd6ba52c4b6ee1b8",
+        "name": "Phường 06",
+        "code": "70000",
+        "phoneCode": "055",
+        "codename": "Phuong_06",
+        "provinceId": "63df2fb5df73dec8dc4c38a1",
+        "districtId": "63df69477d3b76279b716118"
+    },
+    {
+        "countryId": "63d0ebf5bd6ba52c4b6ee1b8",
+        "name": "Phường 07",
+        "code": "70000",
+        "phoneCode": "055",
+        "codename": "Phuong_07",
+        "provinceId": "63df2fb5df73dec8dc4c38a1",
+        "districtId": "63df69477d3b76279b716118"
+    },
+    {
+        "countryId": "63d0ebf5bd6ba52c4b6ee1b8",
+        "name": "Phường 08",
+        "code": "70000",
+        "phoneCode": "055",
+        "codename": "Phuong_08",
+        "provinceId": "63df2fb5df73dec8dc4c38a1",
+        "districtId": "63df69477d3b76279b716118"
+    },
+    {
+        "countryId": "63d0ebf5bd6ba52c4b6ee1b8",
+        "name": "Phường 09",
+        "code": "70000",
+        "phoneCode": "055",
+        "codename": "Phuong_09",
+        "provinceId": "63df2fb5df73dec8dc4c38a1",
+        "districtId": "63df69477d3b76279b716118"
+    },
+    {
+        "countryId": "63d0ebf5bd6ba52c4b6ee1b8",
+        "name": "Phường 10",
+        "code": "70000",
+        "phoneCode": "055",
+        "codename": "Phuong_10",
+        "provinceId": "63df2fb5df73dec8dc4c38a1",
+        "districtId": "63df69477d3b76279b716118"
+    },
+    {
+        "countryId": "63d0ebf5bd6ba52c4b6ee1b8",
+        "name": "Phường 11",
+        "code": "70000",
+        "phoneCode": "055",
+        "codename": "Phuong_11",
+        "provinceId": "63df2fb5df73dec8dc4c38a1",
+        "districtId": "63df69477d3b76279b716118"
+    },
+    {
+        "countryId": "63d0ebf5bd6ba52c4b6ee1b8",
+        "name": "Phường 12",
+        "code": "70000",
+        "phoneCode": "055",
+        "codename": "Phuong_12",
+        "provinceId": "63df2fb5df73dec8dc4c38a1",
+        "districtId": "63df69477d3b76279b716118"
+    },
+    {
+        "countryId": "63d0ebf5bd6ba52c4b6ee1b8",
+        "name": "Phường 13",
+        "code": "70000",
+        "phoneCode": "055",
+        "codename": "Phuong_13",
+        "provinceId": "63df2fb5df73dec8dc4c38a1",
+        "districtId": "63df69477d3b76279b716118"
+    },
+    {
+        "countryId": "63d0ebf5bd6ba52c4b6ee1b8",
+        "name": "Phường 14",
+        "code": "70000",
+        "phoneCode": "055",
+        "codename": "Phuong_14",
+        "provinceId": "63df2fb5df73dec8dc4c38a1",
+        "districtId": "63df69477d3b76279b716118"
+    },
+    {
+        "countryId": "63d0ebf5bd6ba52c4b6ee1b8",
+        "name": "Phường 15",
+        "code": "70000",
+        "phoneCode": "055",
+        "codename": "Phuong_15",
+        "provinceId": "63df2fb5df73dec8dc4c38a1",
+        "districtId": "63df69477d3b76279b716118"
+    },
+    {
+        "countryId": "63d0ebf5bd6ba52c4b6ee1b8",
+        "name": "Phường 16",
+        "code": "70000",
+        "phoneCode": "055",
+        "codename": "Phuong_16",
+        "provinceId": "63df2fb5df73dec8dc4c38a1",
+        "districtId": "63df69477d3b76279b716118"
+    },
+    {
+        "countryId": "63d0ebf5bd6ba52c4b6ee1b8",
+        "name": "Phường 17",
+        "code": "70000",
+        "phoneCode": "055",
+        "codename": "Phuong_17",
+        "provinceId": "63df2fb5df73dec8dc4c38a1",
+        "districtId": "63df69477d3b76279b716118"
     }
 ]
