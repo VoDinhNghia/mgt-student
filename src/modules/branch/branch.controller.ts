@@ -5,6 +5,8 @@ import {
   HttpStatus,
   Param,
   Post,
+  Put,
+  Query,
   Res,
   UseGuards,
 } from '@nestjs/common';
@@ -15,9 +17,11 @@ import { RoleGuard } from '../auth/role-auth.guard';
 import { BranchService } from './branch.service';
 import { Response } from 'express';
 import { BranchCreateDto } from './dtos/branch.create.dto';
+import { BranchQueryDto } from './dtos/branch.query.dto';
+import { BranchUpdateDto } from './dtos/branch.update.dto';
 
-@Controller('branch')
-@ApiTags('branch')
+@Controller('branchs')
+@ApiTags('branchs')
 export class BranchController {
   constructor(private readonly branchService: BranchService) {}
 
@@ -37,10 +41,43 @@ export class BranchController {
     });
   }
 
-  @Get('/:id')
+  @Get()
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @UseGuards(RoleGuard(roleTypeAccessApi.FULL))
+  async getAllBranchs(
+    @Query() branchQueryDto: BranchQueryDto,
+    @Res() res: Response,
+  ) {
+    const result = await this.branchService.findAllBranchs(branchQueryDto);
+    res.status(HttpStatus.OK).json({
+      statusCode: 200,
+      data: result,
+      message: 'Get all branchs success.',
+    });
+  }
+
+  @Put('/:id')
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @UseGuards(RoleGuard(roleTypeAccessApi.ADMIN))
+  async updateBranch(
+    @Param('id') id: string,
+    @Body() updateBranchDto: BranchUpdateDto,
+    @Res() res: Response,
+  ) {
+    await this.branchService.updateBranch(id, updateBranchDto);
+    res.status(HttpStatus.OK).json({
+      statusCode: 200,
+      data: true,
+      message: 'Update branch success.',
+    });
+  }
+
+  @Get('/:id')
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @UseGuards(RoleGuard(roleTypeAccessApi.FULL))
   async getBranchById(@Param('id') id: string, @Res() res: Response) {
     const result: any = await this.branchService.findById(id);
     res.status(HttpStatus.OK).json({
