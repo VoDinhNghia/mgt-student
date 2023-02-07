@@ -1,6 +1,7 @@
-import { HttpException, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
+import { CommonException } from 'src/abstracts/execeptionError';
 import {
   DistrictDocument,
   Districts,
@@ -37,33 +38,27 @@ export class BranchService {
     private readonly wardSchema: Model<WardDocument>,
   ) {}
 
+  async validateFieldId(
+    schema: any,
+    id: string,
+    message: string,
+  ): Promise<void> {
+    const existed = await schema.findById(id);
+    if (!existed) {
+      new CommonException(404, `${message} not found.`);
+    }
+  }
+
   async createBranchNew(branchCreateDto: BranchCreateDto): Promise<Branch> {
-    const existedCountry = await this.countrySchema.findById({
-      _id: branchCreateDto.location?.country,
+    const { country, province, district } = branchCreateDto?.location;
+    await this.validateFieldId(this.countrySchema, country, 'Country');
+    await this.validateFieldId(this.provinceSchema, province, 'Province');
+    await this.validateFieldId(this.districtSchema, district, 'District');
+    const existedBranch = await this.branchSchema.findOne({
+      name: branchCreateDto.name,
     });
-    if (!existedCountry) {
-      throw new HttpException(
-        { statusCode: 404, message: 'Country not found.' },
-        404,
-      );
-    }
-    const existedProvince = await this.provinceSchema.findById({
-      _id: branchCreateDto.location?.province,
-    });
-    if (!existedProvince) {
-      throw new HttpException(
-        { statusCode: 404, message: 'Province not found.' },
-        404,
-      );
-    }
-    const existedDistrict = await this.districtSchema.findById({
-      _id: branchCreateDto.location?.district,
-    });
-    if (!existedDistrict) {
-      throw new HttpException(
-        { statusCode: 404, message: 'District not found.' },
-        404,
-      );
+    if (existedBranch) {
+      new CommonException(409, `Name Branch existed already.`);
     }
     const result = await new this.branchSchema(branchCreateDto).save();
     return result;
@@ -78,10 +73,7 @@ export class BranchService {
       .populate('location.ward', '', this.wardSchema)
       .exec();
     if (!result) {
-      throw new HttpException(
-        { statusCode: 404, message: 'Branch not found.' },
-        404,
-      );
+      new CommonException(404, `Branch not found.`);
     }
 
     return result;
