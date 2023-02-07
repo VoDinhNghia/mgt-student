@@ -5,7 +5,6 @@ import {
   Body,
   Req,
   Get,
-  HttpException,
   Res,
   HttpStatus,
 } from '@nestjs/common';
@@ -15,6 +14,7 @@ import { LoginDto } from './modules/auth/dtos/auth.login.dto';
 import { JwtAuthGuard } from './modules/auth/jwt-auth.guard';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { UsersService } from 'src/modules/users/users.service';
+import { CommonException } from './abstracts/execeptionError';
 
 @Controller('auth')
 @ApiTags('auth')
@@ -34,10 +34,7 @@ export class AppController {
   async login(@Body() loginDto: LoginDto, @Res() res: Response) {
     const checkUser = await this.authService.login(loginDto);
     if (!checkUser) {
-      throw new HttpException(
-        { statusCode: 401, error: 'User or password incorrect.' },
-        500,
-      );
+      new CommonException(401, `User or password incorrect.`);
     }
     res.status(HttpStatus.OK).json({
       statusCode: 200,

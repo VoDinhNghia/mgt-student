@@ -1,4 +1,4 @@
-import { HttpException, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { UsersCreateDto } from './dto/users.create.dto';
@@ -8,6 +8,7 @@ import { cryptoPassWord } from 'src/commons/crypto';
 import { roles, statusUser } from 'src/commons/constants';
 import { UsersFillterDto } from './dto/user.filter.dto';
 import { validateEmail } from 'src/commons/validateEmail';
+import { CommonException } from 'src/abstracts/execeptionError';
 
 @Injectable()
 export class UsersService {
@@ -19,17 +20,11 @@ export class UsersService {
 
   async validateUser(usersValidateDto: Record<string, any>): Promise<void> {
     if (!validateEmail(usersValidateDto.email)) {
-      throw new HttpException(
-        { statusCode: 400, error: 'Email not correct format.' },
-        400,
-      );
+      new CommonException(400, `Email not correct format.`);
     }
     const existedUser = await this.findByEmail(usersValidateDto.email);
     if (existedUser) {
-      throw new HttpException(
-        { statusCode: 400, error: 'Email existed already.' },
-        400,
-      );
+      new CommonException(400, `Email existed already.`);
     }
   }
 
@@ -38,33 +33,17 @@ export class UsersService {
     createBy: string,
   ): Promise<Users | any> {
     await this.validateUser(usersCreateDto);
-    let createUser: Record<string, any> = {};
-    try {
-      usersCreateDto.passWord = cryptoPassWord(usersCreateDto.passWord);
-      createUser = await new this.userSchema({
-        ...usersCreateDto,
-        createdBy: createBy,
-        createdAt: new Date(),
-      }).save();
-    } catch {
-      throw new HttpException(
-        { statusCode: 500, message: 'Server error.' },
-        500,
-      );
-    }
-    try {
-      await new this.profileSchema({
-        ...UsersCreateDto,
-        user: createUser._id,
-        createdAt: new Date(),
-      }).save();
-    } catch (error) {
-      await this.userSchema.findByIdAndDelete(createUser._id).exec();
-      throw new HttpException(
-        { statusCode: 500, message: 'Server error.' },
-        500,
-      );
-    }
+    usersCreateDto.passWord = cryptoPassWord(usersCreateDto.passWord);
+    const createUser = await new this.userSchema({
+      ...usersCreateDto,
+      createdBy: createBy,
+      createdAt: new Date(),
+    }).save();
+    await this.createUserProfile({
+      ...UsersCreateDto,
+      user: createUser._id,
+      createdAt: new Date(),
+    });
     const result = this.getProfileUser({
       user: new Types.ObjectId(createUser._id),
     });
@@ -76,7 +55,7 @@ export class UsersService {
     const pass = cryptoPassWord(passWord);
     return this.userSchema.findOne({
       email,
-      pass,
+      passWord: pass,
       status: statusUser.ACTIVE,
     });
   }
@@ -233,43 +212,35 @@ export class UsersService {
       role: roles.ADMIN,
     };
     const existedAdmin = await this.findByEmail(info.email);
-    let createAdmin: Record<string, any>;
-    let createProfileAdmin: Record<string, any>;
     if (existedAdmin) {
-      throw new HttpException(
-        { statusCode: 409, message: 'Admin existed already.' },
-        409,
-      );
+      new CommonException(409, `Admin existed already.`);
     }
-    try {
-      createAdmin = await new this.userSchema({
-        ...info,
-        createdAt: new Date(),
-      }).save();
-    } catch (error) {
-      throw new HttpException(
-        { statusCode: 500, message: 'Server error' },
-        500,
-      );
-    }
-    if (createAdmin) {
-      try {
-        createProfileAdmin = await new this.profileSchema({
-          firstName: 'Admin',
-          lastName: 'Student',
-          user: createAdmin._id,
-          createdAt: new Date(),
-        }).save();
-      } catch (error) {
-        throw new HttpException(
-          { statusCode: 500, message: 'Server error' },
-          500,
-        );
-      }
-      if (!createProfileAdmin) {
-        this.userSchema.findByIdAndDelete(createAdmin._id);
-      }
-    }
+    const createAdmin = await new this.userSchema({
+      ...info,
+      createdAt: new Date(),
+    }).save();
+    await this.createUserProfile({
+      firstName: 'Admin',
+      lastName: 'Student',
+      user: createAdmin._id,
+      createdAt: new Date(),
+    });
+
     return createAdmin;
+  }
+
+  async createUserProfile(profileDto: Record<string, any>): Promise<void> {
+    try {
+      const existed = await this.profileSchema.findOne({
+        user: profileDto.user,
+      });
+      if (existed) {
+        new CommonException(409, `Profile existed already.`);
+      }
+      await new this.profileSchema(profileDto).save();
+    } catch {
+      await this.userSchema.findByIdAndDelete(profileDto.user);
+      new CommonException(500, `Server interval.`);
+    }
   }
 }

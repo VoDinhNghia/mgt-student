@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
+import { CommonException } from 'src/abstracts/execeptionError';
 import { QueryDistrictDto } from './dto/countries.query-district.dto';
 import { QueryPovinceDto } from './dto/countries.query-province.dto';
 import { UpdateCountriesDto } from './dto/countries.update.dto';
@@ -219,7 +220,10 @@ export class CountriesService {
   }
 
   async findOneCountry(id: string): Promise<Countries> {
-    const result = await this.countrySchema.findById(id).exec();
+    const result = await this.countrySchema.findById(id);
+    if (!result) {
+      new CommonException(404, `Country not found.`);
+    }
     return result;
   }
 
@@ -227,6 +231,7 @@ export class CountriesService {
     id: string,
     updateCountriesDto: UpdateCountriesDto,
   ): Promise<Countries> {
+    await this.findOneCountry(id);
     return this.countrySchema.findByIdAndUpdate(id, updateCountriesDto).exec();
   }
 }

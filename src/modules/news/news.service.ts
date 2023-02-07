@@ -1,6 +1,7 @@
-import { HttpException, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
+import { CommonException } from 'src/abstracts/execeptionError';
 import { CreateNewDto } from './dtos/news.create.dto';
 import { QueryNewDto } from './dtos/news.query.dto';
 import { UpdateNewDto } from './dtos/news.update.dto';
@@ -22,10 +23,7 @@ export class NewsService {
   async findNewById(id: string) {
     const result = await this.newsSchema.findById(id);
     if (!result) {
-      throw new HttpException(
-        { statusCode: 404, message: 'News not found!' },
-        404,
-      );
+      new CommonException(404, `News not found.`);
     }
     return result;
   }
@@ -51,10 +49,7 @@ export class NewsService {
       const results = await this.newsSchema.aggregate(aggregate);
       return results;
     } catch (error) {
-      throw new HttpException(
-        { statusCode: 500, message: 'Server interval.' },
-        500,
-      );
+      new CommonException(500, `Server interval.`);
     }
   }
 
