@@ -1,10 +1,10 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { Document } from 'mongoose';
 
-export type SubjectDocument = Subjects & Document;
+export type SubjectProcessDocument = SubjectProcess & Document;
 
 @Schema()
-export class Subjects {
+export class SubjectProcess {
   @Prop({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'user',
@@ -67,4 +67,5 @@ export class Subjects {
   updateAt?: Date;
 }
 
-export const SubjectSchema = SchemaFactory.createForClass(Subjects);
+export const SubjectProcessSchema =
+  SchemaFactory.createForClass(SubjectProcess);

@@ -1,10 +1,10 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { Document } from 'mongoose';
 
-export type MajorsDocument = Majors & Document;
+export type DepartmentsDocument = Departments & Document;
 
 @Schema()
-export class Majors {
+export class Departments {
   @Prop({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'faculties',
@@ -47,4 +47,4 @@ export class Majors {
   updateAt?: Date;
 }
 
-export const MajorSchema = SchemaFactory.createForClass(Majors);
+export const DepartmentsMajorSchema = SchemaFactory.createForClass(Departments);

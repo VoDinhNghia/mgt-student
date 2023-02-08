@@ -42,9 +42,9 @@ export class BranchController {
   }
 
   @Get()
-  @ApiBearerAuth()
-  @UseGuards(JwtAuthGuard)
-  @UseGuards(RoleGuard(roleTypeAccessApi.FULL))
+  // @ApiBearerAuth()
+  // @UseGuards(JwtAuthGuard)
+  // @UseGuards(RoleGuard(roleTypeAccessApi.FULL))
   async getAllBranchs(
     @Query() branchQueryDto: BranchQueryDto,
     @Res() res: Response,
@@ -75,9 +75,9 @@ export class BranchController {
   }
 
   @Get('/:id')
-  @ApiBearerAuth()
-  @UseGuards(JwtAuthGuard)
-  @UseGuards(RoleGuard(roleTypeAccessApi.FULL))
+  // @ApiBearerAuth()
+  // @UseGuards(JwtAuthGuard)
+  // @UseGuards(RoleGuard(roleTypeAccessApi.FULL))
   async getBranchById(@Param('id') id: string, @Res() res: Response) {
     const result: any = await this.branchService.findById(id);
     res.status(HttpStatus.OK).json({

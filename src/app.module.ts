@@ -11,6 +11,7 @@ import { UsersModule } from './modules/users/users.module';
 import { NewsModule } from './modules/news/news.module';
 import { AttachmentsModule } from './modules/attachments/attachments.module';
 import { BranchModule } from './modules/branch/branch.module';
+import { ClassSubjectModule } from './modules/class-subject/class-subject.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { BranchModule } from './modules/branch/branch.module';
     NewsModule,
     AttachmentsModule,
     BranchModule,
+    ClassSubjectModule,
   ],
   controllers: [AppController],
   providers: [AppService],
