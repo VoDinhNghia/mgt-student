@@ -6,8 +6,8 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const config = new DocumentBuilder()
     .addBearerAuth()
-    .setTitle('student management')
-    .setDescription('The student management API description')
+    .setTitle('Students Management')
+    .setDescription('The students management API description')
     .setVersion('1.0')
     .build();
   const document = SwaggerModule.createDocument(app, config);
@@ -18,6 +18,6 @@ async function bootstrap() {
     credentials: true,
   });
   await app.listen(3000);
-  console.log('App running on port 3000');
+  console.log('Server running on port 3000');
 }
 bootstrap();

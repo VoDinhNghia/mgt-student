@@ -4,6 +4,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { Users, UsersSchema } from './schemas/users.schema';
 import { UsersController } from './users.controller';
 import { Profile, ProfileSchema } from './schemas/users.profile.schema';
+import { ValidateField } from 'src/abstracts/validateFieldById';
 @Module({
   imports: [
     MongooseModule.forFeature([
@@ -11,7 +12,7 @@ import { Profile, ProfileSchema } from './schemas/users.profile.schema';
       { name: Profile.name, schema: ProfileSchema },
     ]),
   ],
-  providers: [UsersService],
+  providers: [UsersService, ValidateField],
   controllers: [UsersController],
   exports: [UsersService],
 })

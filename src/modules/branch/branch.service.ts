@@ -45,12 +45,8 @@ export class BranchService {
     await this.validateField.byId(this.countrySchema, country, 'Country');
     await this.validateField.byId(this.provinceSchema, province, 'Province');
     await this.validateField.byId(this.districtSchema, district, 'District');
-    const existedBranch = await this.branchSchema.findOne({
-      name: branchCreateDto.name,
-    });
-    if (existedBranch) {
-      new CommonException(409, `Name Branch existed already.`);
-    }
+    const options = { name: branchCreateDto?.name?.trim() };
+    await this.validateField.existed(this.branchSchema, options, 'Branch name');
     const result = await new this.branchSchema(branchCreateDto).save();
     return result;
   }
