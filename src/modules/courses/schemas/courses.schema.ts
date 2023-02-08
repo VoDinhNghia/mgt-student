@@ -24,7 +24,12 @@ export class Course {
   })
   faculty?: mongoose.Types.ObjectId;
 
-  @Prop()
+  @Prop({
+    type: {
+      maximum: Number,
+      minmun: Number,
+    },
+  })
   trainingTime?: {
     maximum?: number; // 7 year
     minimum?: number; // 3 year
@@ -43,7 +48,13 @@ export class Course {
     },
   ];
 
-  @Prop()
+  @Prop({
+    type: {
+      toeic: String,
+      it: String,
+      conditionDiff: String,
+    },
+  })
   output?: {
     toeic?: string; // 400, 450, 500 ...
     it?: string;

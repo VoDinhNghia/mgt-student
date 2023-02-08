@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
+import { ValidateField } from 'src/abstracts/validateFieldById';
 import {
   Districts,
   DistrictSchema,
@@ -27,7 +28,7 @@ import { Branch, BranchSchema } from './schemas/branch.schema';
       { name: Wards.name, schema: WardSchema },
     ]),
   ],
-  providers: [BranchService],
+  providers: [BranchService, ValidateField],
   controllers: [BranchController],
 })
 export class BranchModule {}
