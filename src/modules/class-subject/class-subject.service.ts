@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { CommonException } from 'src/abstracts/execeptionError';
 import { ValidateField } from 'src/abstracts/validateFieldById';
 import { Course, CourseDocument } from '../courses/schemas/courses.schema';
 import {
@@ -46,12 +45,8 @@ export class ClassSubjectService {
 
   async createClass(createClassDto: CreateClassDto): Promise<ClassInfos> {
     const { course, degreeLevel, major, homeroomteacher } = createClassDto;
-    const existedClass = await this.findOneClass({
-      name: createClassDto?.name?.trim(),
-    });
-    if (existedClass) {
-      new CommonException(409, `Class name existed already.`);
-    }
+    const options = { name: createClassDto?.name?.trim() };
+    await this.validateField.existed(this.classSchema, options, 'Class name');
     await this.validateField.byId(this.courseSchema, course, 'Course');
     await this.validateField.byId(this.userSchema, homeroomteacher, 'User');
     await this.validateField.byId(this.majorSchema, major, 'Major');
