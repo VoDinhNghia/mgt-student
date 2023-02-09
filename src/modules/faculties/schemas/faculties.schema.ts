@@ -21,7 +21,7 @@ export class Faculty {
   introduction?: string;
 
   @Prop()
-  foundYear?: Date;
+  foundYear?: string;
 
   @Prop({
     type: mongoose.Schema.Types.ObjectId,
@@ -30,9 +30,13 @@ export class Faculty {
   award?: [mongoose.Types.ObjectId];
 
   @Prop({
-    lecturer: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'users',
+    type: {
+      lecturer: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'users',
+      },
+      headOfSection: Boolean,
+      eputyHead: Boolean,
     },
   })
   lecturerList?: [

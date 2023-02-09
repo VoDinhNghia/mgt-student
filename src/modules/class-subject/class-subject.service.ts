@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
+import { CommonException } from 'src/abstracts/execeptionError';
 import { ValidateField } from 'src/abstracts/validateFieldById';
 import { Course, CourseDocument } from '../courses/schemas/courses.schema';
 import {
@@ -62,6 +63,17 @@ export class ClassSubjectService {
 
   async findOneClass(option: Record<string, any>): Promise<ClassInfos> {
     const result = await this.classSchema.findOne(option);
+    if (!result) {
+      new CommonException(404, `Class not found.`);
+    }
+    return result;
+  }
+
+  async findClassById(id: string): Promise<ClassInfos> {
+    const result = await this.classSchema.findById(id);
+    if (!result) {
+      new CommonException(404, `Class not found`);
+    }
     return result;
   }
 }
