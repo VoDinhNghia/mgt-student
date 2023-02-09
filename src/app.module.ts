@@ -13,6 +13,8 @@ import { AttachmentsModule } from './modules/attachments/attachments.module';
 import { BranchModule } from './modules/branch/branch.module';
 import { ClassSubjectModule } from './modules/class-subject/class-subject.module';
 import { FacultiesModule } from './modules/faculties/faculties.module';
+import { BlogsModule } from './modules/blogs/blogs.module';
+import { AwardsModule } from './modules/awards/awards.module';
 
 @Module({
   imports: [
@@ -28,6 +30,8 @@ import { FacultiesModule } from './modules/faculties/faculties.module';
     BranchModule,
     ClassSubjectModule,
     FacultiesModule,
+    BlogsModule,
+    AwardsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
