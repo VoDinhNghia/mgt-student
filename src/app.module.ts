@@ -12,6 +12,7 @@ import { NewsModule } from './modules/news/news.module';
 import { AttachmentsModule } from './modules/attachments/attachments.module';
 import { BranchModule } from './modules/branch/branch.module';
 import { ClassSubjectModule } from './modules/class-subject/class-subject.module';
+import { FacultiesModule } from './modules/faculties/faculties.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { ClassSubjectModule } from './modules/class-subject/class-subject.module
     AttachmentsModule,
     BranchModule,
     ClassSubjectModule,
+    FacultiesModule,
   ],
   controllers: [AppController],
   providers: [AppService],
