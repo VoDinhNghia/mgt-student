@@ -2,7 +2,6 @@ import {
   Body,
   Controller,
   Get,
-  HttpStatus,
   Param,
   Post,
   Req,
@@ -20,7 +19,7 @@ import { RoleGuard } from '../auth/role-auth.guard';
 import { StorageObjectDto } from '../users/dto/user.file-upload.dto';
 import { AttachmentsService } from './attachments.service';
 import { Request, Response } from 'express';
-import { existsSync, mkdirSync } from 'fs';
+import { ResponseRequest } from 'src/abstracts/responseApi';
 @Controller('attachments')
 @ApiTags('attachments')
 export class AttachmentsController {
@@ -43,18 +42,14 @@ export class AttachmentsController {
     @Res() res: Response,
     @Body() body: StorageObjectDto,
     @UploadedFile('file') file: Express.Multer.File,
-  ) {
+  ): Promise<ResponseRequest> {
     const { user }: Request | Record<string, any> = req;
     const uploadBy: string = user.userId;
     const result = await this.attachmentService.createAttachment(
       file,
       uploadBy,
     );
-    res.status(HttpStatus.OK).json({
-      statusCode: 200,
-      data: result,
-      message: 'Create attachment success.',
-    });
+    return new ResponseRequest(res, result, `Create attachment success.`);
   }
 
   @Get('/:imgpath')

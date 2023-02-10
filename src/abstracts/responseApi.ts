@@ -1,9 +1,9 @@
 import { HttpStatus } from '@nestjs/common';
 
-export class Response {
-  constructor(res: any, data: any, statusCode: number, message: string) {
+export class ResponseRequest {
+  constructor(res: any, data: any, message: string) {
     res.status(HttpStatus.OK).json({
-      statusCode,
+      statusCode: 200,
       data,
       message,
     });

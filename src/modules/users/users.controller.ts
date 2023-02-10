@@ -8,7 +8,6 @@ import {
   Delete,
   Req,
   Res,
-  HttpStatus,
   Param,
   Query,
   UploadedFile,
@@ -28,6 +27,7 @@ import { StorageObjectDto } from './dto/user.file-upload.dto';
 import { diskStorage } from 'multer';
 import { readFileSync } from 'fs';
 import { ProfileUpdateDto } from './dto/user.update-profile.dto';
+import { ResponseRequest } from 'src/abstracts/responseApi';
 
 @Controller('users')
 @ApiTags('users')
@@ -42,15 +42,11 @@ export class UsersController {
     @Body() usersCreateDto: UsersCreateDto,
     @Req() req: Request,
     @Res() res: Response,
-  ) {
+  ): Promise<ResponseRequest> {
     const { user }: Request | Record<string, any> = req;
     const userId: string = user._id;
     const result = await this.service.createUser(usersCreateDto, userId);
-    res.status(HttpStatus.OK).json({
-      statusCode: 200,
-      data: result,
-      message: 'Create user success.',
-    });
+    return new ResponseRequest(res, result, 'Create user success');
   }
 
   @Post('import')
@@ -70,17 +66,12 @@ export class UsersController {
     @Res() res: Response,
     @Body() body: StorageObjectDto,
     @UploadedFile('file') file: Express.Multer.File,
-  ) {
+  ): Promise<ResponseRequest> {
     const { user }: Request | Record<string, any> = req;
     const userBy: string = user.userId;
     const data: any = readFileSync(file.path, 'utf8');
     const result = await this.service.importUser(userBy, JSON.parse(data));
-
-    res.status(HttpStatus.OK).json({
-      statusCode: 200,
-      data: result,
-      message: 'Import multi user success.',
-    });
+    return new ResponseRequest(res, result, 'Import multi user success');
   }
 
   @Put('/:id')
@@ -92,14 +83,10 @@ export class UsersController {
     @Body() updateDto: UsersUpdateDto,
     @Req() req: Request,
     @Res() res: Response,
-  ) {
+  ): Promise<ResponseRequest> {
     const { user }: Request | Record<string, any> = req;
     const result = await this.service.update(id, updateDto, user.userId);
-    res.status(HttpStatus.OK).json({
-      statusCode: 200,
-      data: result,
-      message: 'Update user success.',
-    });
+    return new ResponseRequest(res, result, 'Update user success');
   }
 
   @Put('/profile/:id')
@@ -111,18 +98,14 @@ export class UsersController {
     @Body() updateProfileDto: ProfileUpdateDto,
     @Req() req: Request,
     @Res() res: Response,
-  ) {
+  ): Promise<ResponseRequest> {
     const { user }: Request | Record<string, any> = req;
     const result = await this.service.updateProfile(
       id,
       updateProfileDto,
       user.userId,
     );
-    res.status(HttpStatus.OK).json({
-      statusCode: 200,
-      data: result,
-      message: 'Update profile user success.',
-    });
+    return new ResponseRequest(res, result, 'Update profile user success');
   }
 
   @Get()
@@ -132,13 +115,9 @@ export class UsersController {
   async getAllUsers(
     @Query() usersFillterDto: UsersFillterDto,
     @Res() res: Response,
-  ) {
+  ): Promise<ResponseRequest> {
     const result = await this.service.getAll(usersFillterDto);
-    res.status(HttpStatus.OK).json({
-      statusCode: 200,
-      data: result,
-      message: 'Get All user success.',
-    });
+    return new ResponseRequest(res, result, 'Get all users success');
   }
 
   @Delete('/:id')
@@ -149,30 +128,25 @@ export class UsersController {
     @Param('id') id: string,
     @Req() req: Request,
     @Res() res: Response,
-  ) {
+  ): Promise<ResponseRequest> {
     const { user }: Request | Record<string, any> = req;
     const result = await this.service.update(
       id,
       { status: statusUser.INACTIVE },
       user.userId,
     );
-    res.status(HttpStatus.OK).json({
-      statusCode: 200,
-      data: result,
-      message: 'Delete user success.',
-    });
+    return new ResponseRequest(res, result, 'Delete user success');
   }
 
   @Get('/:id')
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @UseGuards(RoleGuard(roleTypeAccessApi.ADMIN))
-  async getUserByid(@Param('id') id: string, @Res() res: Response) {
+  async getUserByid(
+    @Param('id') id: string,
+    @Res() res: Response,
+  ): Promise<ResponseRequest> {
     const result = await this.service.findUserById(id);
-    res.status(HttpStatus.OK).json({
-      statusCode: 200,
-      data: result,
-      message: 'Get user success.',
-    });
+    return new ResponseRequest(res, result, 'Get user by id success');
   }
 }
