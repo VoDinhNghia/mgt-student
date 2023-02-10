@@ -20,6 +20,8 @@ import { readFileSync } from 'fs';
 import { QueryPovinceDto } from './dto/countries.query-province.dto';
 import { QueryDistrictDto } from './dto/countries.query-district.dto';
 import { ResponseRequest } from 'src/abstracts/responseApi';
+import { RoleGuard } from '../auth/role-auth.guard';
+import { roleTypeAccessApi } from 'src/commons/constants';
 
 @Controller('countries')
 @ApiTags('countries')
@@ -27,8 +29,6 @@ export class CountriesController {
   constructor(private readonly countryService: CountriesService) {}
 
   @Get()
-  @ApiBearerAuth()
-  @UseGuards(JwtAuthGuard)
   async getAlls(@Res() res: Response): Promise<ResponseRequest> {
     const data = await this.countryService.findAllCountry();
     for (const obj of data) {
@@ -38,8 +38,6 @@ export class CountriesController {
   }
 
   @Get('/provinces')
-  @ApiBearerAuth()
-  @UseGuards(JwtAuthGuard)
   async getPovinceAlls(
     @Query() queryPovinceDto: QueryPovinceDto,
     @Res() res: Response,
@@ -49,8 +47,6 @@ export class CountriesController {
   }
 
   @Get('/districts')
-  @ApiBearerAuth()
-  @UseGuards(JwtAuthGuard)
   async getDistrictAlls(
     @Query() queryDistrictDto: QueryDistrictDto,
     @Res() res: Response,
@@ -60,16 +56,12 @@ export class CountriesController {
   }
 
   @Get('/wards')
-  @ApiBearerAuth()
-  @UseGuards(JwtAuthGuard)
   async getWardAlls(@Res() res: Response): Promise<ResponseRequest> {
     const result = await this.countryService.findAllWards();
     return new ResponseRequest(res, result, `Get all wards success.`);
   }
 
   @Get('/:id')
-  @ApiBearerAuth()
-  @UseGuards(JwtAuthGuard)
   async find(
     @Param('id') id: string,
     @Res() res: Response,
@@ -81,6 +73,7 @@ export class CountriesController {
   @Post('/init-data')
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
+  @UseGuards(RoleGuard(roleTypeAccessApi.ADMIN))
   async initCountries(@Res() res: Response): Promise<ResponseRequest> {
     const data = this.readFileJson('countries.json');
     const result = await this.countryService.initCountries(data);
@@ -90,6 +83,7 @@ export class CountriesController {
   @Put('/:id')
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
+  @UseGuards(RoleGuard(roleTypeAccessApi.ADMIN))
   async update(
     @Param('id') id: string,
     @Body() updateCountriesDto: UpdateCountriesDto,
@@ -105,6 +99,7 @@ export class CountriesController {
   @Post('/province/init-data')
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
+  @UseGuards(RoleGuard(roleTypeAccessApi.ADMIN))
   async initProvince(@Res() res: Response): Promise<ResponseRequest> {
     const data = this.readFileJson('province.json');
     const result = await this.countryService.initProvinces(data);
@@ -114,6 +109,7 @@ export class CountriesController {
   @Post('/district/init-data')
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
+  @UseGuards(RoleGuard(roleTypeAccessApi.ADMIN))
   async initDistrict(@Res() res: Response): Promise<ResponseRequest> {
     const data = this.readFileJson('district.json');
     const result = await this.countryService.initDisTricts(data);
@@ -123,6 +119,7 @@ export class CountriesController {
   @Post('/ward/init-data')
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
+  @UseGuards(RoleGuard(roleTypeAccessApi.ADMIN))
   async initWard(@Res() res: Response): Promise<ResponseRequest> {
     const data = this.readFileJson('ward.json');
     const result = await this.countryService.initWards(data);

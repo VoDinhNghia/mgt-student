@@ -15,6 +15,7 @@ import { ClassSubjectModule } from './modules/class-subject/class-subject.module
 import { FacultiesModule } from './modules/faculties/faculties.module';
 import { BlogsModule } from './modules/blogs/blogs.module';
 import { AwardsModule } from './modules/awards/awards.module';
+import { CoursesModule } from './modules/courses/courses.module';
 
 @Module({
   imports: [
@@ -32,6 +33,7 @@ import { AwardsModule } from './modules/awards/awards.module';
     FacultiesModule,
     BlogsModule,
     AwardsModule,
+    CoursesModule,
   ],
   controllers: [AppController],
   providers: [AppService],
