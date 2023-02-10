@@ -3,7 +3,6 @@ import {
   Controller,
   Delete,
   Get,
-  HttpStatus,
   Param,
   Post,
   Put,
@@ -19,6 +18,7 @@ import { NewsService } from './news.service';
 import { Response } from 'express';
 import { UpdateNewDto } from './dtos/news.update.dto';
 import { QueryNewDto } from './dtos/news.query.dto';
+import { ResponseRequest } from 'src/abstracts/responseApi';
 
 @Controller('news')
 @ApiTags('news')
@@ -29,26 +29,24 @@ export class NewsController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @UseGuards(RoleGuard(roleTypeAccessApi.ADMIN))
-  async createNews(@Body() createNewDto: CreateNewDto, res: Response) {
+  async createNews(
+    @Body() createNewDto: CreateNewDto,
+    res: Response,
+  ): Promise<ResponseRequest> {
     const result = await this.newService.createNews(createNewDto);
-    res.status(HttpStatus.OK).json({
-      statusCode: 200,
-      data: result,
-      message: 'Create news success.',
-    });
+    return new ResponseRequest(res, result, 'Create news success');
   }
 
   @Get('/:id')
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @UseGuards(RoleGuard(roleTypeAccessApi.ADMIN))
-  async getById(@Param('id') id: string, res: Response) {
+  async getById(
+    @Param('id') id: string,
+    res: Response,
+  ): Promise<ResponseRequest> {
     const result = await this.newService.findNewById(id);
-    res.status(HttpStatus.OK).json({
-      statusCode: 200,
-      data: result,
-      message: 'Get news by id success.',
-    });
+    return new ResponseRequest(res, result, 'Get news by id success');
   }
 
   @Put('/:id')
@@ -59,38 +57,32 @@ export class NewsController {
     @Param('id') id: string,
     @Body() updateNewDto: UpdateNewDto,
     res: Response,
-  ) {
+  ): Promise<ResponseRequest> {
     const result = await this.newService.updateNews(id, updateNewDto);
-    res.status(HttpStatus.OK).json({
-      statusCode: 200,
-      data: result,
-      message: 'Update news success.',
-    });
+    return new ResponseRequest(res, result, 'Update news success');
   }
 
   @Get()
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @UseGuards(RoleGuard(roleTypeAccessApi.ADMIN))
-  async getListNews(@Query() queryNewDto: QueryNewDto, res: Response) {
+  async getListNews(
+    @Query() queryNewDto: QueryNewDto,
+    res: Response,
+  ): Promise<ResponseRequest> {
     const result = await this.newService.getLists(queryNewDto);
-    res.status(HttpStatus.OK).json({
-      statusCode: 200,
-      data: result,
-      message: 'Get news list success.',
-    });
+    return new ResponseRequest(res, result, 'Get news list success');
   }
 
   @Delete('/:id')
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @UseGuards(RoleGuard(roleTypeAccessApi.ADMIN))
-  async deleteNews(@Param('id') id: string, res: Response) {
+  async deleteNews(
+    @Param('id') id: string,
+    res: Response,
+  ): Promise<ResponseRequest> {
     await this.newService.deleteNews(id);
-    res.status(HttpStatus.OK).json({
-      statusCode: 200,
-      data: true,
-      message: 'Delete news success.',
-    });
+    return new ResponseRequest(res, true, 'Delete news success');
   }
 }

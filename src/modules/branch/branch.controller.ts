@@ -2,7 +2,6 @@ import {
   Body,
   Controller,
   Get,
-  HttpStatus,
   Param,
   Post,
   Put,
@@ -19,6 +18,7 @@ import { Response } from 'express';
 import { BranchCreateDto } from './dtos/branch.create.dto';
 import { BranchQueryDto } from './dtos/branch.query.dto';
 import { BranchUpdateDto } from './dtos/branch.update.dto';
+import { ResponseRequest } from 'src/abstracts/responseApi';
 
 @Controller('branchs')
 @ApiTags('branchs')
@@ -32,29 +32,18 @@ export class BranchController {
   async createBranch(
     @Res() res: Response,
     @Body() branchCreateDto: BranchCreateDto,
-  ) {
+  ): Promise<ResponseRequest> {
     const result = await this.branchService.createBranchNew(branchCreateDto);
-    res.status(HttpStatus.OK).json({
-      statusCode: 200,
-      data: result,
-      message: 'Create branch success.',
-    });
+    return new ResponseRequest(res, result, `Create branch success.`);
   }
 
   @Get()
-  // @ApiBearerAuth()
-  // @UseGuards(JwtAuthGuard)
-  // @UseGuards(RoleGuard(roleTypeAccessApi.FULL))
   async getAllBranchs(
     @Query() branchQueryDto: BranchQueryDto,
     @Res() res: Response,
-  ) {
+  ): Promise<ResponseRequest> {
     const result = await this.branchService.findAllBranchs(branchQueryDto);
-    res.status(HttpStatus.OK).json({
-      statusCode: 200,
-      data: result,
-      message: 'Get all branchs success.',
-    });
+    return new ResponseRequest(res, result, `Get all branchs success.`);
   }
 
   @Put('/:id')
@@ -65,25 +54,17 @@ export class BranchController {
     @Param('id') id: string,
     @Body() updateBranchDto: BranchUpdateDto,
     @Res() res: Response,
-  ) {
+  ): Promise<ResponseRequest> {
     await this.branchService.updateBranch(id, updateBranchDto);
-    res.status(HttpStatus.OK).json({
-      statusCode: 200,
-      data: true,
-      message: 'Update branch success.',
-    });
+    return new ResponseRequest(res, true, `Update branch success.`);
   }
 
   @Get('/:id')
-  // @ApiBearerAuth()
-  // @UseGuards(JwtAuthGuard)
-  // @UseGuards(RoleGuard(roleTypeAccessApi.FULL))
-  async getBranchById(@Param('id') id: string, @Res() res: Response) {
-    const result: any = await this.branchService.findById(id);
-    res.status(HttpStatus.OK).json({
-      statusCode: 200,
-      data: result,
-      message: 'Get branch by id success.',
-    });
+  async getBranchById(
+    @Param('id') id: string,
+    @Res() res: Response,
+  ): Promise<ResponseRequest> {
+    const result = await this.branchService.findById(id);
+    return new ResponseRequest(res, result, `Get branch by id success.`);
   }
 }

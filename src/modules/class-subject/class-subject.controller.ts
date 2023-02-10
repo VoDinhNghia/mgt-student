@@ -1,11 +1,4 @@
-import {
-  Body,
-  Controller,
-  HttpStatus,
-  Post,
-  Res,
-  UseGuards,
-} from '@nestjs/common';
+import { Body, Controller, Post, Res, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { roleTypeAccessApi } from 'src/commons/constants';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
@@ -13,6 +6,7 @@ import { RoleGuard } from '../auth/role-auth.guard';
 import { ClassSubjectService } from './class-subject.service';
 import { Response } from 'express';
 import { CreateClassDto } from './dtos/class-subject.create-class.dto';
+import { ResponseRequest } from 'src/abstracts/responseApi';
 
 @Controller('class-subject')
 @ApiTags('class-subject')
@@ -26,12 +20,8 @@ export class ClassSubjectController {
   async createBranch(
     @Res() res: Response,
     @Body() createClassDto: CreateClassDto,
-  ) {
+  ): Promise<ResponseRequest> {
     const result = await this.classSubjectService.createClass(createClassDto);
-    res.status(HttpStatus.OK).json({
-      statusCode: 200,
-      data: result,
-      message: 'Create class success.',
-    });
+    return new ResponseRequest(res, result, `Create class success.`);
   }
 }

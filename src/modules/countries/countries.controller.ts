@@ -7,7 +7,6 @@ import {
   Put,
   UseGuards,
   Res,
-  HttpStatus,
   Query,
 } from '@nestjs/common';
 import { UpdateCountriesDto } from './dto/countries.update.dto';
@@ -20,6 +19,7 @@ import { join } from 'path';
 import { readFileSync } from 'fs';
 import { QueryPovinceDto } from './dto/countries.query-province.dto';
 import { QueryDistrictDto } from './dto/countries.query-district.dto';
+import { ResponseRequest } from 'src/abstracts/responseApi';
 
 @Controller('countries')
 @ApiTags('countries')
@@ -29,16 +29,12 @@ export class CountriesController {
   @Get()
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
-  async getAlls(@Res() res: Response) {
+  async getAlls(@Res() res: Response): Promise<ResponseRequest> {
     const data = await this.countryService.findAllCountry();
     for (const obj of data) {
       obj.flag = `${prefixUrlFlag}${obj.flag}`;
     }
-    res.status(HttpStatus.OK).json({
-      statusCode: 200,
-      data,
-      message: 'Get all countries success.',
-    });
+    return new ResponseRequest(res, data, `Get all countries success.`);
   }
 
   @Get('/provinces')
@@ -47,13 +43,9 @@ export class CountriesController {
   async getPovinceAlls(
     @Query() queryPovinceDto: QueryPovinceDto,
     @Res() res: Response,
-  ) {
+  ): Promise<ResponseRequest> {
     const result = await this.countryService.findAllProvinces(queryPovinceDto);
-    res.status(HttpStatus.OK).json({
-      statusCode: 200,
-      data: result,
-      message: 'Get all provinces success.',
-    });
+    return new ResponseRequest(res, result, `Get all provinces success.`);
   }
 
   @Get('/districts')
@@ -62,59 +54,37 @@ export class CountriesController {
   async getDistrictAlls(
     @Query() queryDistrictDto: QueryDistrictDto,
     @Res() res: Response,
-  ) {
+  ): Promise<ResponseRequest> {
     const result = await this.countryService.findAllDistricts(queryDistrictDto);
-    res.status(HttpStatus.OK).json({
-      statusCode: 200,
-      data: result,
-      message: 'Get all district success.',
-    });
+    return new ResponseRequest(res, result, `Get all district success.`);
   }
 
   @Get('/wards')
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
-  async getWardAlls(@Res() res: Response) {
+  async getWardAlls(@Res() res: Response): Promise<ResponseRequest> {
     const result = await this.countryService.findAllWards();
-    res.status(HttpStatus.OK).json({
-      statusCode: 200,
-      data: result,
-      message: 'Get all wards success.',
-    });
+    return new ResponseRequest(res, result, `Get all wards success.`);
   }
 
   @Get('/:id')
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
-  async find(@Param('id') id: string, @Res() res: Response) {
+  async find(
+    @Param('id') id: string,
+    @Res() res: Response,
+  ): Promise<ResponseRequest> {
     const result = await this.countryService.findOneCountry(id);
-    res.status(HttpStatus.OK).json({
-      statusCode: 200,
-      data: result,
-      message: 'Get country by id success.',
-    });
+    return new ResponseRequest(res, result, `Get country by id success.`);
   }
 
   @Post('/init-data')
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
-  async initCountries(@Res() res: Response) {
-    const data = JSON.parse(
-      readFileSync(
-        join(
-          __dirname,
-          '../../../..',
-          'src/files/import-countries/countries.json',
-        ),
-        'utf-8',
-      ),
-    );
+  async initCountries(@Res() res: Response): Promise<ResponseRequest> {
+    const data = this.readFileJson('countries.json');
     const result = await this.countryService.initCountries(data);
-    res.status(HttpStatus.OK).json({
-      statusCode: 200,
-      data: result,
-      message: 'Init countries success.',
-    });
+    return new ResponseRequest(res, result, `Init countries success.`);
   }
 
   @Put('/:id')
@@ -124,77 +94,51 @@ export class CountriesController {
     @Param('id') id: string,
     @Body() updateCountriesDto: UpdateCountriesDto,
     @Res() res: Response,
-  ) {
+  ): Promise<ResponseRequest> {
     const result = await this.countryService.updateCountry(
       id,
       updateCountriesDto,
     );
-    res.status(HttpStatus.OK).json({
-      statusCode: 200,
-      data: result,
-      message: 'Update country success.',
-    });
+    return new ResponseRequest(res, result, `Update country success.`);
   }
 
   @Post('/province/init-data')
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
-  async initProvince(@Res() res: Response) {
-    const data = JSON.parse(
-      readFileSync(
-        join(
-          __dirname,
-          '../../../..',
-          'src/files/import-countries/province.json',
-        ),
-        'utf-8',
-      ),
-    );
+  async initProvince(@Res() res: Response): Promise<ResponseRequest> {
+    const data = this.readFileJson('province.json');
     const result = await this.countryService.initProvinces(data);
-    res.status(HttpStatus.OK).json({
-      statusCode: 200,
-      data: result,
-      message: 'Init province success.',
-    });
+    return new ResponseRequest(res, result, `Init province success.`);
   }
 
   @Post('/district/init-data')
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
-  async initDistrict(@Res() res: Response) {
-    const data = JSON.parse(
-      readFileSync(
-        join(
-          __dirname,
-          '../../../..',
-          'src/files/import-countries/district.json',
-        ),
-        'utf-8',
-      ),
-    );
+  async initDistrict(@Res() res: Response): Promise<ResponseRequest> {
+    const data = this.readFileJson('district.json');
     const result = await this.countryService.initDisTricts(data);
-    res.status(HttpStatus.OK).json({
-      statusCode: 200,
-      data: result,
-      message: 'Init district success.',
-    });
+    return new ResponseRequest(res, result, 'Init district success');
   }
 
   @Post('/ward/init-data')
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
-  async initWard(@Res() res: Response) {
-    const data = JSON.parse(
+  async initWard(@Res() res: Response): Promise<ResponseRequest> {
+    const data = this.readFileJson('ward.json');
+    const result = await this.countryService.initWards(data);
+    return new ResponseRequest(res, result, 'Init ward success');
+  }
+
+  readFileJson(fileName: string) {
+    return JSON.parse(
       readFileSync(
-        join(__dirname, '../../../..', 'src/files/import-countries/ward.json'),
+        join(
+          __dirname,
+          '../../../..',
+          `src/files/import-countries/${fileName}`,
+        ),
         'utf-8',
       ),
     );
-    const result = await this.countryService.initWards(data);
-    res.status(HttpStatus.OK).json({
-      statusCode: 200,
-      data: result,
-      message: 'Init ward success.',
-    });
   }
 }
