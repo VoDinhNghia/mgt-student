@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { CommonException } from 'src/abstracts/execeptionError';
 import { ValidateField } from 'src/abstracts/validateFieldById';
 import { Award, AwardDocument } from '../awards/schemas/awards.schema';
@@ -63,9 +63,20 @@ export class FacultiesService {
   }
 
   async findAllFaculties(facultyQueryDto: FacultyQueryDto): Promise<Faculty[]> {
-    const { limit, page, searchKey, branch } = facultyQueryDto;
-
-    const results = await this.facultySchema.find({});
+    const { searchKey, branch } = facultyQueryDto;
+    const query: Record<string, any> = {};
+    if (searchKey) {
+      query.name = new RegExp(searchKey);
+    }
+    if (branch) {
+      query.branch = new Types.ObjectId(branch);
+    }
+    const results = await this.facultySchema
+      .find(query)
+      .populate('branch', '', this.branchSchema)
+      .populate('award', '', this.awardSchema)
+      .populate('lecturerList.lecturer', '', this.profileSchema)
+      .exec();
     return results;
   }
 }
