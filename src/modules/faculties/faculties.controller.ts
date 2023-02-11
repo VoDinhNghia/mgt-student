@@ -1,4 +1,12 @@
-import { Body, Controller, Post, Res, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  Res,
+  UseGuards,
+} from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { roleTypeAccessApi } from 'src/commons/constants';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
@@ -23,5 +31,17 @@ export class FacultiesController {
   ): Promise<ResponseRequest> {
     const result = await this.facultyService.createFaculty(createFacultyDto);
     return new ResponseRequest(res, result, 'Create faculty success');
+  }
+
+  @Get('/:id')
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @UseGuards(RoleGuard(roleTypeAccessApi.ADMIN))
+  async getById(
+    @Param('id') id: string,
+    @Res() res: Response,
+  ): Promise<ResponseRequest> {
+    const result = await this.facultyService.findFacultyById(id);
+    return new ResponseRequest(res, result, 'Get faculty by id success');
   }
 }

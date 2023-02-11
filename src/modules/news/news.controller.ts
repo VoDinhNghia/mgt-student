@@ -7,6 +7,7 @@ import {
   Post,
   Put,
   Query,
+  Res,
   UseGuards,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
@@ -31,7 +32,7 @@ export class NewsController {
   @UseGuards(RoleGuard(roleTypeAccessApi.ADMIN))
   async createNews(
     @Body() createNewDto: CreateNewDto,
-    res: Response,
+    @Res() res: Response,
   ): Promise<ResponseRequest> {
     const result = await this.newService.createNews(createNewDto);
     return new ResponseRequest(res, result, 'Create news success');
@@ -43,7 +44,7 @@ export class NewsController {
   @UseGuards(RoleGuard(roleTypeAccessApi.ADMIN))
   async getById(
     @Param('id') id: string,
-    res: Response,
+    @Res() res: Response,
   ): Promise<ResponseRequest> {
     const result = await this.newService.findNewById(id);
     return new ResponseRequest(res, result, 'Get news by id success');
@@ -56,7 +57,7 @@ export class NewsController {
   async updateNews(
     @Param('id') id: string,
     @Body() updateNewDto: UpdateNewDto,
-    res: Response,
+    @Res() res: Response,
   ): Promise<ResponseRequest> {
     const result = await this.newService.updateNews(id, updateNewDto);
     return new ResponseRequest(res, result, 'Update news success');
