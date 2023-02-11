@@ -69,7 +69,7 @@ export class NewsController {
   @UseGuards(RoleGuard(roleTypeAccessApi.ADMIN))
   async getListNews(
     @Query() queryNewDto: QueryNewDto,
-    res: Response,
+    @Res() res: Response,
   ): Promise<ResponseRequest> {
     const result = await this.newService.getLists(queryNewDto);
     return new ResponseRequest(res, result, 'Get news list success');
@@ -81,7 +81,7 @@ export class NewsController {
   @UseGuards(RoleGuard(roleTypeAccessApi.ADMIN))
   async deleteNews(
     @Param('id') id: string,
-    res: Response,
+    @Res() res: Response,
   ): Promise<ResponseRequest> {
     await this.newService.deleteNews(id);
     return new ResponseRequest(res, true, 'Delete news success');
