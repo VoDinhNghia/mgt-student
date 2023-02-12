@@ -153,10 +153,10 @@ export class Profile {
   positionHeld?: string[];
 
   @Prop({
-    type: mongoose.Types.ObjectId,
+    type: [mongoose.Types.ObjectId],
     ref: 'awards',
   })
-  award?: string[];
+  award?: [mongoose.Types.ObjectId];
 
   @Prop({
     type: [

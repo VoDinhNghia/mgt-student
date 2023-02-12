@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
+import mongoose, { Document } from 'mongoose';
+import { EtypeAward } from 'src/commons/constants';
 
 export type AwardDocument = Award & Document;
 
@@ -9,13 +10,19 @@ export class Award {
   name?: string;
 
   @Prop()
-  time?: Date;
+  time?: string;
+
+  @Prop({
+    type: [mongoose.Types.ObjectId],
+    ref: 'attachments',
+  })
+  attachment?: [mongoose.Types.ObjectId];
 
   @Prop()
   location?: string;
 
   @Prop()
-  type?: string;
+  type?: EtypeAward;
 
   @Prop()
   description?: string;
