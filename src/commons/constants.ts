@@ -34,14 +34,14 @@ export const statusUser = {
   ENUM: ['ACTIVE', 'INACTIVE'],
 };
 
-export const typeAward = {
-  PERSONAL: 'PERSONAL',
-  GROUP: 'GROUP',
-  FACULTY: 'FACULTY',
-  CLASS: 'CLASS',
-  MAJORS: 'MAJORS',
-  UNIVERSITY: 'UNIVERSITY',
-};
+export enum EtypeAward {
+  PERSONAL = 'PERSONAL',
+  GROUP = 'GROUP',
+  FACULTY = 'FACULTY',
+  CLASS = 'CLASS',
+  MAJORS = 'MAJORS',
+  UNIVERSITY = 'UNIVERSITY',
+}
 
 export const typeNews = {
   FACULTY: 'FACULTY',
