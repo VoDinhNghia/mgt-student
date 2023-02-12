@@ -9,8 +9,8 @@ export class Award {
   @Prop({ required: true })
   name?: string;
 
-  @Prop()
-  time?: string;
+  @Prop({ default: Date.now })
+  time?: Date;
 
   @Prop({
     type: [mongoose.Types.ObjectId],
