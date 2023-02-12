@@ -5,7 +5,7 @@ export class CreateAwardDto {
   @ApiProperty({ required: true })
   name?: string;
 
-  @ApiProperty({ required: true, default: '12-02-2023' })
+  @ApiProperty({ required: true, default: '2023-12-01T17:00:00' })
   time?: string;
 
   @ApiProperty({ required: false, type: [String] })
