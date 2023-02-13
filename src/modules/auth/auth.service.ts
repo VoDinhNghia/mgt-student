@@ -34,7 +34,7 @@ export class AuthService {
     return {
       ...payload,
       historyLogin: existUser.historyLogin,
-      access_token: this.jwtService.sign(payload),
+      accessToken: this.jwtService.sign(payload),
     };
   }
 }
