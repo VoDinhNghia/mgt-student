@@ -19,12 +19,6 @@ export class SchoolInfo {
 
   @Prop({
     type: [mongoose.Schema.Types.ObjectId],
-    ref: 'branchs',
-  })
-  branchList?: [mongoose.Types.ObjectId];
-
-  @Prop({
-    type: [mongoose.Schema.Types.ObjectId],
     ref: 'attachments',
   })
   image?: [mongoose.Types.ObjectId];
