@@ -58,12 +58,11 @@ export const statusStudent = {
   LEAVE: 'LEAVE',
 };
 
-export const libraryServiceType = {
-  BORROW_BOOK: 'BORROW_BOOK',
-  BORROW_MAGAZINE: 'BORROW_MAGAZINE',
-  BORROW_ROOM: 'BORROW_ROOM',
-  RESERVE_SEAT: 'RESERVE_SEAT',
-};
+export enum EroomType {
+  CLASS_ROOM = 'CLASS_ROOM',
+  MEETING = 'MEETING',
+  LIBRARIAN = 'LIBRARIAN',
+}
 
 export const typePayments = {
   payments: {
