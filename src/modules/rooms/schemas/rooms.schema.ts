@@ -1,26 +1,34 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
+import { EroomType } from 'src/commons/constants';
 
-export type RoomInfoDocument = RoomInfo & Document;
+export type RoomsDocument = Rooms & Document;
 
 @Schema()
-export class RoomInfo {
+export class Rooms {
   @Prop({
     type: String,
     required: true,
   })
   name?: string;
 
-  @Prop()
-  type?: string;
+  @Prop({ default: EroomType.CLASS_ROOM })
+  type?: EroomType;
 
   @Prop()
   capacity?: number;
 
-  @Prop()
+  @Prop({
+    type: {
+      projector: String,
+      airConditioner: String,
+      status: String,
+    },
+  })
   divice?: {
     projector?: string;
     airConditioner?: string;
+    status?: string;
   };
 
   @Prop()
@@ -33,4 +41,4 @@ export class RoomInfo {
   updateAt?: Date;
 }
 
-export const RoomsSchema = SchemaFactory.createForClass(RoomInfo);
+export const RoomSchema = SchemaFactory.createForClass(Rooms);
