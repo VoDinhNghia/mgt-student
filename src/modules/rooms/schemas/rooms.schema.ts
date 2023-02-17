@@ -34,6 +34,9 @@ export class Rooms {
   @Prop()
   description?: string;
 
+  @Prop({ default: false })
+  status?: boolean; // false is empty, use for group study room
+
   @Prop({ default: Date.now })
   createdAt?: Date;
 

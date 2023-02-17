@@ -61,6 +61,7 @@ export const statusStudent = {
 export enum EroomType {
   CLASS_ROOM = 'CLASS_ROOM',
   MEETING = 'MEETING',
+  GROUP_STUDY = 'GROUP_STUDY',
   LIBRARIAN = 'LIBRARIAN',
 }
 
