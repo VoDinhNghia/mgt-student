@@ -24,7 +24,9 @@
 
 ## Description
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+Server side for student management project an university
+### 
+Database only use for an university. If you manage the branch's data, you can use a multi-tenan database.
 
 ## Environment
 ```bash
