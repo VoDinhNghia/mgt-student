@@ -75,3 +75,7 @@ export const typePayments = {
     OWED: 'OWED',
   },
 };
+
+export const keyAccessLibraryService = 'libraries-access-key-secrect';
+
+export const keyAccessCourseService = 'course-access-key-secrect';
