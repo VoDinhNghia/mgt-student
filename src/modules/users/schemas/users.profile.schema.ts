@@ -60,86 +60,6 @@ export class Profile {
   @Prop()
   gender?: string;
 
-  @Prop({
-    type: [
-      {
-        attachment: {
-          type: mongoose.Types.ObjectId,
-          ref: 'attachments',
-        },
-        semester: {
-          type: mongoose.Types.ObjectId,
-          ref: 'semesters',
-        },
-      },
-    ],
-  }) // research articles, graduate theses
-  study?: [
-    {
-      id: string;
-      attachment: mongoose.Types.ObjectId;
-      semester: mongoose.Types.ObjectId;
-      type: string;
-    },
-  ];
-
-  @Prop({
-    type: [
-      {
-        semester: {
-          type: mongoose.Types.ObjectId,
-          ref: 'semesters',
-        },
-        subject: {
-          type: mongoose.Types.ObjectId,
-          ref: 'subjects',
-        },
-        attachment: {
-          type: mongoose.Types.ObjectId,
-          ref: 'attachments',
-        },
-      },
-    ],
-  })
-  studyProcess?: {
-    listSemester: [
-      {
-        id: string;
-        semester: mongoose.Types.ObjectId;
-        listSubject: [
-          // list subject
-          {
-            subject: mongoose.Types.ObjectId;
-            result: string; // failed or pass
-          },
-        ];
-      },
-    ];
-    toeicCertificate: {
-      id: string;
-      status: {
-        type: boolean;
-        default: false;
-      };
-      attachment: mongoose.Types.ObjectId;
-      scores: number;
-    };
-    itCertificate: {
-      id: string;
-      status: {
-        type: boolean;
-        default: false;
-      };
-      attachment: mongoose.Types.ObjectId;
-      scores: number;
-    };
-    status: {
-      // Are you still studying or graduating or saving?
-      type: string;
-      default: 'STUDYING';
-    };
-  };
-
   @Prop()
   dateOfBirth?: Date;
 
@@ -185,6 +105,11 @@ export class Profile {
 
   @Prop()
   object?: string; // doi tuong chinh sach
+
+  @Prop({
+    type: String,
+  })
+  status: string; // Are you still studying or graduating or saving?
 
   @Prop()
   unionDate?: Date;

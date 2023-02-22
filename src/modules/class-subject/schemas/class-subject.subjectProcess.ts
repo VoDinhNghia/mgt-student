@@ -43,23 +43,6 @@ export class SubjectProcess {
     percent?: string; // 20%
   };
 
-  @Prop({
-    type: [
-      {
-        studentsAbsent: {
-          type: mongoose.Schema.Types.ObjectId,
-          ref: 'users',
-        },
-      },
-    ],
-  })
-  report?: [
-    {
-      week?: number;
-      studentsAbsent?: mongoose.Types.ObjectId;
-    },
-  ];
-
   @Prop({ default: Date.now })
   createdAt?: Date;
 
