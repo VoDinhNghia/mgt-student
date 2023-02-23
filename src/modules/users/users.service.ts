@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
-import { UsersCreateDto } from './dto/users.create.dto';
+import { CreateUserDto } from './dto/users.create.dto';
 import { Users, UsersDocument } from './schemas/users.schema';
 import { Profile, ProfileDocument } from './schemas/users.profile.schema';
 import { cryptoPassWord } from 'src/commons/crypto';
@@ -11,6 +11,7 @@ import { validateEmail } from 'src/commons/validateEmail';
 import { CommonException } from 'src/abstracts/execeptionError';
 import { ValidateField } from 'src/abstracts/validateFieldById';
 import { Pagination } from 'src/abstracts/pagePagination';
+import { UpdateProfileDto } from './dto/user.update-profile.dto';
 
 @Injectable()
 export class UsersService {
@@ -30,17 +31,17 @@ export class UsersService {
   }
 
   async createUser(
-    usersCreateDto: UsersCreateDto,
+    usersDto: CreateUserDto,
     createBy: string,
   ): Promise<Users | any> {
-    await this.validateUser(usersCreateDto);
-    usersCreateDto.passWord = cryptoPassWord(usersCreateDto.passWord);
+    await this.validateUser(usersDto);
+    usersDto.passWord = cryptoPassWord(usersDto.passWord);
     const user = await new this.userSchema({
-      ...usersCreateDto,
+      ...usersDto,
       createdBy: createBy,
     }).save();
     await this.createUserProfile({
-      ...UsersCreateDto,
+      ...usersDto,
       user: user._id,
     });
     const result = this.findUserById(user._id);
@@ -48,7 +49,7 @@ export class UsersService {
     return result;
   }
 
-  async findUserAuth(email: string, passWord: string) {
+  async findUserAuth(email: string, passWord: string): Promise<Users | any> {
     const password = cryptoPassWord(passWord);
     const result = await this.userSchema
       .findOne({
@@ -64,7 +65,7 @@ export class UsersService {
     await this.userSchema.findByIdAndUpdate(id, { statusLogin: true });
   }
 
-  async findUserById(id: string): Promise<Users | any> {
+  async findUserById(id: string | any): Promise<Users | any> {
     const result = await this.userSchema.aggregate([
       { $match: { _id: new Types.ObjectId(id) } },
       {
@@ -72,24 +73,25 @@ export class UsersService {
           from: 'profiles',
           localField: '_id',
           foreignField: 'user',
-          as: 'user',
+          as: 'profile',
         },
       },
-      { $unwind: '$user' },
+      { $unwind: '$profile' },
     ]);
     if (!result[0]) {
       new CommonException(404, 'User not found.');
     }
-    return result;
+    return result[0];
   }
 
-  async findByEmail(email: string) {
-    return this.userSchema.findOne({ email });
-  }
-
-  async getAll(query: UsersFillterDto) {
+  async findAllsUsers(
+    query: UsersFillterDto,
+    userId: string,
+  ): Promise<Users[]> {
     const { searchKey, limit, page, role, status } = query;
-    const match: Record<string, any> = { $match: {} };
+    const match: Record<string, any> = {
+      $match: { _id: { $ne: new Types.ObjectId(userId) } },
+    };
     if (role) {
       match.$match.role = role;
     }
@@ -102,10 +104,10 @@ export class UsersService {
         from: 'profiles',
         localField: '_id',
         foreignField: 'user',
-        as: 'user',
+        as: 'profile',
       },
     };
-    aggregate = [...aggregate, match, lookup, { $unwind: '$user' }];
+    aggregate = [...aggregate, match, lookup, { $unwind: '$profile' }];
     if (searchKey) {
       aggregate = [
         ...aggregate,
@@ -130,9 +132,12 @@ export class UsersService {
     id: string,
     payload: Record<string, any>,
     updatedBy: string,
-  ) {
+  ): Promise<Users> {
     if (payload.email) {
       await this.validateUser(payload);
+    }
+    if (payload.passWord) {
+      payload.passWord = cryptoPassWord(payload.passWord);
     }
     const updateInfo = {
       ...payload,
@@ -144,13 +149,13 @@ export class UsersService {
     return result;
   }
 
-  async updateProfile(
+  async updateUserProfile(
     id: string,
-    profileDto: Record<string, any>,
-    updatedBy: string,
+    profileDto: UpdateProfileDto,
   ): Promise<Profile | any> {
-    console.log(id, profileDto, updatedBy);
-    return {};
+    const profile = await this.profileSchema.findByIdAndUpdate(id, profileDto);
+    const result = await this.findUserById(profile.user);
+    return result;
   }
 
   async importUser(createdBy: string, data: Record<string, any>[]) {
