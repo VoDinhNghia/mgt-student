@@ -75,15 +75,15 @@ export class AwardsController {
     return new ResponseRequest(res, true, `Update award success.`);
   }
 
-  @Delete('/:id')
-  @ApiBearerAuth()
-  @UseGuards(JwtAuthGuard)
-  @UseGuards(RoleGuard(roleTypeAccessApi.ADMIN))
-  async deleteAward(
-    @Res() res: Response,
-    @Param('id') id: string,
-  ): Promise<ResponseRequest> {
-    await this.awardService.deleteAward(id);
-    return new ResponseRequest(res, true, `Delete award success.`);
-  }
+  // @Delete('/:id')
+  // @ApiBearerAuth()
+  // @UseGuards(JwtAuthGuard)
+  // @UseGuards(RoleGuard(roleTypeAccessApi.ADMIN))
+  // async deleteAward(
+  //   @Res() res: Response,
+  //   @Param('id') id: string,
+  // ): Promise<ResponseRequest> {
+  //   await this.awardService.deleteAward(id);
+  //   return new ResponseRequest(res, true, `Delete award success.`);
+  // }
 }

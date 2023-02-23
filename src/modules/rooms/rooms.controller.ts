@@ -75,15 +75,15 @@ export class RoomsController {
     return new ResponseRequest(res, result, 'Update room success');
   }
 
-  @Delete('/:id')
-  @ApiBearerAuth()
-  @UseGuards(JwtAuthGuard)
-  @UseGuards(RoleGuard(roleTypeAccessApi.ADMIN))
-  async deleteRoom(
-    @Param('id') id: string,
-    @Res() res: Response,
-  ): Promise<ResponseRequest> {
-    const result = await this.roomService.deleteRoom(id);
-    return new ResponseRequest(res, result, 'Delete room success');
-  }
+  // @Delete('/:id')
+  // @ApiBearerAuth()
+  // @UseGuards(JwtAuthGuard)
+  // @UseGuards(RoleGuard(roleTypeAccessApi.ADMIN))
+  // async deleteRoom(
+  //   @Param('id') id: string,
+  //   @Res() res: Response,
+  // ): Promise<ResponseRequest> {
+  //   const result = await this.roomService.deleteRoom(id);
+  //   return new ResponseRequest(res, result, 'Delete room success');
+  // }
 }
