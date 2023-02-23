@@ -1,12 +1,15 @@
 import { ApiProperty } from '@nestjs/swagger';
 
 export class UsersUpdateDto {
-  @ApiProperty()
+  @ApiProperty({ required: false })
   email?: string;
 
-  @ApiProperty()
+  @ApiProperty({ required: false })
   role?: string;
 
-  @ApiProperty()
+  @ApiProperty({ required: false })
   status?: string;
+
+  @ApiProperty({ required: false, maxLength: 20, minLength: 6 })
+  passWord?: string;
 }

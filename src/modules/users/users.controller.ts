@@ -13,7 +13,7 @@ import {
   UploadedFile,
   UseInterceptors,
 } from '@nestjs/common';
-import { UsersCreateDto } from './dto/users.create.dto';
+import { CreateUserDto } from './dto/users.create.dto';
 import { UsersService } from './users.service';
 import { ApiBearerAuth, ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { roleTypeAccessApi, statusUser } from 'src/commons/constants';
@@ -26,7 +26,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { StorageObjectDto } from './dto/user.file-upload.dto';
 import { diskStorage } from 'multer';
 import { readFileSync } from 'fs';
-import { ProfileUpdateDto } from './dto/user.update-profile.dto';
+import { UpdateProfileDto } from './dto/user.update-profile.dto';
 import { ResponseRequest } from 'src/abstracts/responseApi';
 
 @Controller('users')
@@ -38,14 +38,14 @@ export class UsersController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard) // when need user info inside request then use
   @UseGuards(RoleGuard(roleTypeAccessApi.ADMIN))
-  async create(
-    @Body() usersCreateDto: UsersCreateDto,
+  async createUser(
+    @Body() userDto: CreateUserDto,
     @Req() req: Request,
     @Res() res: Response,
   ): Promise<ResponseRequest> {
     const { user }: Request | Record<string, any> = req;
     const userId: string = user._id;
-    const result = await this.service.createUser(usersCreateDto, userId);
+    const result = await this.service.createUser(userDto, userId);
     return new ResponseRequest(res, result, 'Create user success');
   }
 
@@ -95,16 +95,11 @@ export class UsersController {
   @UseGuards(RoleGuard(roleTypeAccessApi.FULL))
   async updateProfile(
     @Param('id') id: string,
-    @Body() updateProfileDto: ProfileUpdateDto,
+    @Body() updateProfileDto: UpdateProfileDto,
     @Req() req: Request,
     @Res() res: Response,
   ): Promise<ResponseRequest> {
-    const { user }: Request | Record<string, any> = req;
-    const result = await this.service.updateProfile(
-      id,
-      updateProfileDto,
-      user.userId,
-    );
+    const result = await this.service.updateUserProfile(id, updateProfileDto);
     return new ResponseRequest(res, result, 'Update profile user success');
   }
 
@@ -113,10 +108,12 @@ export class UsersController {
   @UseGuards(JwtAuthGuard)
   @UseGuards(RoleGuard(roleTypeAccessApi.ADMIN))
   async getAllUsers(
-    @Query() usersFillterDto: UsersFillterDto,
+    @Query() queryDto: UsersFillterDto,
     @Res() res: Response,
+    @Req() req: Request,
   ): Promise<ResponseRequest> {
-    const result = await this.service.getAll(usersFillterDto);
+    const { user }: Request | Record<string, any> = req;
+    const result = await this.service.findAllsUsers(queryDto, user.userId);
     return new ResponseRequest(res, result, 'Get all users success');
   }
 

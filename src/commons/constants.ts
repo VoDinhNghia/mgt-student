@@ -51,12 +51,14 @@ export const typeNews = {
   ENROLLMENT: 'ENROLLMENT', // enrollment information
 };
 
-export const statusStudent = {
-  STILL: 'STILL',
-  GRAD: 'GRADUATE',
-  RESERVE: 'RESERVE',
-  LEAVE: 'LEAVE',
-};
+export enum EstatusUserProfile {
+  STUDYING = 'STUDYING',
+  GRADUATE = 'GRADUATE',
+  SAVEING = 'SAVEING',
+  RESERVE = 'RESERVE',
+  LEAVE = 'LEAVE',
+  TEACHING = 'TEACHING',
+}
 
 export enum EroomType {
   CLASS_ROOM = 'CLASS_ROOM',

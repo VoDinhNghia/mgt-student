@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { Document } from 'mongoose';
+import { EstatusUserProfile } from 'src/commons/constants';
 
 export type ProfileDocument = Profile & Document;
 
@@ -69,7 +70,9 @@ export class Profile {
   @Prop()
   endDate?: Date;
 
-  @Prop() // class president, secretary
+  @Prop({
+    type: Array,
+  }) // class president, secretary
   positionHeld?: string[];
 
   @Prop({
@@ -79,14 +82,16 @@ export class Profile {
   award?: [mongoose.Types.ObjectId];
 
   @Prop({
-    type: [
-      {
-        country: {
-          type: mongoose.Types.ObjectId,
-          ref: 'countries',
-        },
+    type: {
+      country: {
+        type: mongoose.Types.ObjectId,
+        ref: 'countries',
       },
-    ],
+      province: String,
+      state: String,
+      permanentAddress: String,
+      temporaryAddress: String,
+    },
   })
   location?: {
     province: string;
@@ -96,7 +101,13 @@ export class Profile {
     temporaryAddress: string;
   };
 
-  @Prop({ type: Object })
+  @Prop({
+    type: {
+      id: String,
+      date: Date,
+      location: String,
+    },
+  })
   identityCardNumber?: {
     id?: string;
     date?: Date; // ngay cap
@@ -108,6 +119,7 @@ export class Profile {
 
   @Prop({
     type: String,
+    default: EstatusUserProfile.STUDYING,
   })
   status: string; // Are you still studying or graduating or saving?
 
