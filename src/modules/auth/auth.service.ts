@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { UsersService } from '../users/users.service';
 import { UsersDto } from '../users/dto/users.dto';
 import { JwtService } from '@nestjs/jwt';
+import { CommonException } from 'src/abstracts/execeptionError';
 
 @Injectable()
 export class AuthService {
@@ -11,29 +12,23 @@ export class AuthService {
   ) {}
 
   async validateUser(email: string, passWord: string) {
-    const user = await this.usersService.findByEmailAndPass(email, passWord);
+    const user = await this.usersService.findUserAuth(email, passWord);
     if (!user) {
-      return null;
+      new CommonException(401, `User or password incorrect.`);
     }
-    await this.usersService.update(user._id, { statusLogin: true });
+    await this.usersService.updateUserAuth(user._id);
     return user;
   }
 
-  async login(user: UsersDto) {
-    const existUser = await this.validateUser(user.email, user.passWord);
-    if (!existUser) {
-      return null;
-    }
+  async login(userDto: UsersDto) {
+    const user = await this.validateUser(userDto.email, userDto.passWord);
     const payload = {
-      email: existUser.email,
-      _id: existUser._id,
-      role: existUser.role,
-      status: existUser.status,
+      ...user,
       statusLogin: true,
     };
     return {
       ...payload,
-      historyLogin: existUser.historyLogin,
+      historyLogin: user.historyLogin,
       accessToken: this.jwtService.sign(payload),
     };
   }

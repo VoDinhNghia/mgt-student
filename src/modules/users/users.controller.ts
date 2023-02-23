@@ -77,7 +77,7 @@ export class UsersController {
   @Put('/:id')
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
-  @UseGuards(RoleGuard(roleTypeAccessApi.FULL))
+  @UseGuards(RoleGuard(roleTypeAccessApi.ADMIN))
   async updateUser(
     @Param('id') id: string,
     @Body() updateDto: UsersUpdateDto,
@@ -85,7 +85,7 @@ export class UsersController {
     @Res() res: Response,
   ): Promise<ResponseRequest> {
     const { user }: Request | Record<string, any> = req;
-    const result = await this.service.update(id, updateDto, user.userId);
+    const result = await this.service.updateUser(id, updateDto, user.userId);
     return new ResponseRequest(res, result, 'Update user success');
   }
 
@@ -130,7 +130,7 @@ export class UsersController {
     @Res() res: Response,
   ): Promise<ResponseRequest> {
     const { user }: Request | Record<string, any> = req;
-    const result = await this.service.update(
+    const result = await this.service.updateUser(
       id,
       { status: statusUser.INACTIVE },
       user.userId,
