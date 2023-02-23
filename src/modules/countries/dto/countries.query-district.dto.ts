@@ -1,11 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-export class QueryDistrictDto {
+import { QueryPagination } from 'src/abstracts/queryPaginationDto';
+export class QueryDistrictDto extends QueryPagination {
   @ApiProperty({ required: false })
   provinceId: string;
-
-  @ApiProperty({ default: 10 })
-  limit?: number;
-
-  @ApiProperty({ default: 1 })
-  page: number;
 }
