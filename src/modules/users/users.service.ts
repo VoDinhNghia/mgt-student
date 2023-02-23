@@ -38,25 +38,30 @@ export class UsersService {
     const user = await new this.userSchema({
       ...usersCreateDto,
       createdBy: createBy,
-      createdAt: new Date(),
     }).save();
     await this.createUserProfile({
       ...UsersCreateDto,
       user: user._id,
-      createdAt: new Date(),
     });
     const result = this.findUserById(user._id);
 
     return result;
   }
 
-  async findByEmailAndPass(email: string, passWord: string) {
-    const pass = cryptoPassWord(passWord);
-    return this.userSchema.findOne({
-      email,
-      passWord: pass,
-      status: statusUser.ACTIVE,
-    });
+  async findUserAuth(email: string, passWord: string) {
+    const password = cryptoPassWord(passWord);
+    const result = await this.userSchema
+      .findOne({
+        email,
+        passWord: password,
+        status: statusUser.ACTIVE,
+      })
+      .lean();
+    return result;
+  }
+
+  async updateUserAuth(id: string): Promise<void> {
+    await this.userSchema.findByIdAndUpdate(id, { statusLogin: true });
   }
 
   async findUserById(id: string): Promise<Users | any> {
@@ -121,17 +126,19 @@ export class UsersService {
     return result;
   }
 
-  async update(id: string, payload: Record<string, any>, updatedBy = '') {
+  async updateUser(
+    id: string,
+    payload: Record<string, any>,
+    updatedBy: string,
+  ) {
     if (payload.email) {
       await this.validateUser(payload);
     }
-    let updateInfo = payload;
-    if (updatedBy) {
-      updateInfo = {
-        ...updateInfo,
-        updatedBy,
-      };
-    }
+    const updateInfo = {
+      ...payload,
+      updatedBy,
+      updateAt: Date.now(),
+    };
     await this.userSchema.findByIdAndUpdate(id, updateInfo);
     const result = await this.findUserById(id);
     return result;
@@ -198,27 +205,23 @@ export class UsersService {
   }
 
   async initAdmin() {
-    const info = {
+    const adminDto = {
       email: 'admin.students@gmail.com',
       passWord: cryptoPassWord('123Code#'),
       status: statusUser.ACTIVE,
       statusLogin: false,
       role: roles.ADMIN,
     };
-    const options = { email: info.email };
+    const options = { email: adminDto.email };
     await this.validateField.existed(this.userSchema, options, 'Admin');
-    const createAdmin = await new this.userSchema({
-      ...info,
-      createdAt: new Date(),
-    }).save();
+    const admin = await new this.userSchema(adminDto).save();
     await this.createUserProfile({
       firstName: 'Admin',
       lastName: 'Student',
-      user: createAdmin._id,
-      createdAt: new Date(),
+      user: admin._id,
     });
-
-    return createAdmin;
+    const result = await this.findUserById(admin._id);
+    return result;
   }
 
   async createUserProfile(profileDto: Record<string, any>): Promise<void> {
