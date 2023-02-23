@@ -35,19 +35,17 @@ export class UsersService {
   ): Promise<Users | any> {
     await this.validateUser(usersCreateDto);
     usersCreateDto.passWord = cryptoPassWord(usersCreateDto.passWord);
-    const createUser = await new this.userSchema({
+    const user = await new this.userSchema({
       ...usersCreateDto,
       createdBy: createBy,
       createdAt: new Date(),
     }).save();
     await this.createUserProfile({
       ...UsersCreateDto,
-      user: createUser._id,
+      user: user._id,
       createdAt: new Date(),
     });
-    const result = this.getProfileUser({
-      user: new Types.ObjectId(createUser._id),
-    });
+    const result = this.findUserById(user._id);
 
     return result;
   }
@@ -62,22 +60,26 @@ export class UsersService {
   }
 
   async findUserById(id: string): Promise<Users | any> {
-    const result = await this.profileSchema
-      .findOne({ user: new Types.ObjectId(id) })
-      .populate('user', '', this.userSchema)
-      .exec();
+    const result = await this.userSchema.aggregate([
+      { $match: { _id: new Types.ObjectId(id) } },
+      {
+        $lookup: {
+          from: 'profiles',
+          localField: '_id',
+          foreignField: 'user',
+          as: 'user',
+        },
+      },
+      { $unwind: '$user' },
+    ]);
+    if (!result[0]) {
+      new CommonException(404, 'User not found.');
+    }
     return result;
   }
 
   async findByEmail(email: string) {
     return this.userSchema.findOne({ email });
-  }
-
-  async getProfileUser(query: object): Promise<unknown> {
-    return this.profileSchema
-      .find(query)
-      .populate('user', '', this.userSchema)
-      .exec();
   }
 
   async getAll(query: UsersFillterDto) {
@@ -98,7 +100,7 @@ export class UsersService {
         as: 'user',
       },
     };
-    aggregate = [...aggregate, match, lookup];
+    aggregate = [...aggregate, match, lookup, { $unwind: '$user' }];
     if (searchKey) {
       aggregate = [
         ...aggregate,
@@ -130,8 +132,8 @@ export class UsersService {
         updatedBy,
       };
     }
-    this.userSchema.findByIdAndUpdate(id, updateInfo);
-    const result = await this.getProfileUser({ userId: id });
+    await this.userSchema.findByIdAndUpdate(id, updateInfo);
+    const result = await this.findUserById(id);
     return result;
   }
 
