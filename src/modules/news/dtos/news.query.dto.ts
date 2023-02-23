@@ -1,12 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { QueryPagination } from 'src/abstracts/queryPaginationDto';
 import { typeNews } from 'src/commons/constants';
-export class QueryNewDto {
-  @ApiProperty({ default: 10 })
-  limit?: number;
-
-  @ApiProperty({ enum: typeNews })
+export class QueryNewDto extends QueryPagination {
+  @ApiProperty({ enum: typeNews, default: false })
   type?: string;
-
-  @ApiProperty({ default: 1 })
-  page?: number;
 }

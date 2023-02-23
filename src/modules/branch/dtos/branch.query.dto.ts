@@ -1,12 +1,4 @@
-import { ApiProperty } from '@nestjs/swagger';
+// import { ApiProperty } from '@nestjs/swagger';
+import { QueryPagination } from 'src/abstracts/queryPaginationDto';
 
-export class BranchQueryDto {
-  @ApiProperty({ required: false })
-  searchKey: string;
-
-  @ApiProperty({ default: 10 })
-  limit: number;
-
-  @ApiProperty({ default: 1 })
-  page: number;
-}
+export class BranchQueryDto extends QueryPagination {}

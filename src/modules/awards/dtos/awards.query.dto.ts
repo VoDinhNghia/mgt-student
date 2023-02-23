@@ -1,16 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { QueryPagination } from 'src/abstracts/queryPaginationDto';
 import { EtypeAward } from 'src/commons/constants';
 
-export class QueryAwardDto {
-  @ApiProperty({ required: false, default: 10 })
-  limit?: number;
-
-  @ApiProperty({ required: false, default: 1 })
-  page?: number;
-
-  @ApiProperty({ required: false })
-  searchKey?: string;
-
+export class QueryAwardDto extends QueryPagination {
   @ApiProperty({
     required: false,
     enum: EtypeAward,

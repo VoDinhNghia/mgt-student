@@ -10,6 +10,7 @@ import { UsersFillterDto } from './dto/user.filter.dto';
 import { validateEmail } from 'src/commons/validateEmail';
 import { CommonException } from 'src/abstracts/execeptionError';
 import { ValidateField } from 'src/abstracts/validateFieldById';
+import { Pagination } from 'src/abstracts/pagePagination';
 
 @Injectable()
 export class UsersService {
@@ -113,17 +114,8 @@ export class UsersService {
         },
       ];
     }
-    if (limit && page) {
-      aggregate = [
-        ...aggregate,
-        {
-          $skip: Number(limit) * Number(page) - Number(limit),
-        },
-        { $limit: Number(limit) },
-      ];
-    }
-
-    const result = await this.userSchema.aggregate(aggregate);
+    const aggPagination: any = new Pagination(limit, page, aggregate);
+    const result = await this.userSchema.aggregate(aggPagination);
     return result;
   }
 

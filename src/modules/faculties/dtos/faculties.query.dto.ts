@@ -1,9 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { QueryPagination } from 'src/abstracts/queryPaginationDto';
 
-export class FacultyQueryDto {
-  @ApiProperty({ required: false })
-  searchKey?: string;
-
+export class FacultyQueryDto extends QueryPagination {
   @ApiProperty({ required: false })
   branch?: string;
 }

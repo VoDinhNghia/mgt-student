@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { CommonException } from 'src/abstracts/execeptionError';
+import { Pagination } from 'src/abstracts/pagePagination';
 import { CreateNewDto } from './dtos/news.create.dto';
 import { QueryNewDto } from './dtos/news.query.dto';
 import { UpdateNewDto } from './dtos/news.update.dto';
@@ -29,28 +30,16 @@ export class NewsService {
   }
 
   async getLists(query: QueryNewDto) {
-    try {
-      const { limit, page, type } = query;
-      let aggregate: any[] = [];
-      const match: Record<string, any> = { $match: {} };
-      if (type) {
-        match.$match.type = type;
-      }
-      aggregate = [...aggregate, match];
-      if (limit && page) {
-        aggregate = [
-          ...aggregate,
-          {
-            $skip: Number(limit) * Number(page) - Number(limit),
-          },
-          { $limit: Number(limit) },
-        ];
-      }
-      const results = await this.newsSchema.aggregate(aggregate);
-      return results;
-    } catch (error) {
-      new CommonException(500, `Server interval.`);
+    const { limit, page, type } = query;
+    let aggregate: any[] = [];
+    const match: Record<string, any> = { $match: {} };
+    if (type) {
+      match.$match.type = type;
     }
+    aggregate = [...aggregate, match];
+    const aggPagination: any = new Pagination(limit, page, aggregate);
+    const results = await this.newsSchema.aggregate(aggPagination);
+    return results;
   }
 
   async updateNews(id: string, updateDto: UpdateNewDto) {
