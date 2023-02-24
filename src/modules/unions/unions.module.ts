@@ -5,7 +5,7 @@ import {
   Attachment,
   AttachmentlSchema,
 } from '../attachments/schemas/attachments.schema';
-import { Users, UsersSchema } from '../users/schemas/users.schema';
+import { Profile, ProfileSchema } from '../users/schemas/users.profile.schema';
 import { Union, UnionSchema } from './schemas/unions.schema';
 import { UnionsController } from './unions.controller';
 import { UnionsService } from './unions.service';
@@ -18,8 +18,8 @@ import { UnionsService } from './unions.service';
         schema: UnionSchema,
       },
       {
-        name: Users.name,
-        schema: UsersSchema,
+        name: Profile.name,
+        schema: ProfileSchema,
       },
       {
         name: Attachment.name,
