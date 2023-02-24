@@ -12,6 +12,13 @@ import { CommonException } from 'src/abstracts/execeptionError';
 import { ValidateField } from 'src/abstracts/validateFieldById';
 import { Pagination } from 'src/abstracts/pagePagination';
 import { UpdateProfileDto } from './dto/user.update-profile.dto';
+import {
+  LeaderSchool,
+  LeaderSchoolDocument,
+} from './schemas/users.leader-school.schema';
+import { CreateLeaderSchoolDto } from './dto/user.create.leader-school.dto';
+import { QueryLeaderSchoolDto } from './dto/user.query.leader-school.dto';
+import { UpdateLeaderSchoolDto } from './dto/user.update.leader-school.dto';
 
 @Injectable()
 export class UsersService {
@@ -19,6 +26,8 @@ export class UsersService {
     @InjectModel(Users.name) private readonly userSchema: Model<UsersDocument>,
     @InjectModel(Profile.name)
     private readonly profileSchema: Model<ProfileDocument>,
+    @InjectModel(LeaderSchool.name)
+    private readonly leaderSchoolSchema: Model<LeaderSchoolDocument>,
     private readonly validateField: ValidateField,
   ) {}
 
@@ -235,5 +244,62 @@ export class UsersService {
       await this.userSchema.findByIdAndDelete(profileDto.user);
       new CommonException(500, `Server interval.`);
     }
+  }
+
+  async createLeaderSchool(
+    leaderSchoolDto: CreateLeaderSchoolDto,
+  ): Promise<LeaderSchool> {
+    const profile = await this.profileSchema.findById(leaderSchoolDto.profile);
+    if (!profile) {
+      new CommonException(404, 'User profile not found.');
+    }
+    const leaderSchool = await this.leaderSchoolSchema.findOne({
+      profile: new Types.ObjectId(leaderSchoolDto.profile),
+    });
+    if (leaderSchool) {
+      new CommonException(409, 'User profile existed already.');
+    }
+    const createLeaderSchool = await new this.leaderSchoolSchema(
+      leaderSchoolDto,
+    ).save();
+    const result = await this.findLeaderSchoolById(createLeaderSchool._id);
+    return result;
+  }
+
+  async findLeaderSchoolById(id: string): Promise<LeaderSchool> {
+    const result = await this.leaderSchoolSchema
+      .findById(id)
+      .populate('profile', '', this.profileSchema)
+      .exec();
+    if (!result) {
+      new CommonException(404, 'Leader school not found.');
+    }
+    return result;
+  }
+
+  async updateLeaderSchool(
+    id: string,
+    updateLeaderDto: UpdateLeaderSchoolDto,
+  ): Promise<LeaderSchool> {
+    await this.leaderSchoolSchema.findByIdAndUpdate(id, updateLeaderDto);
+    const result = await this.findLeaderSchoolById(id);
+    return result;
+  }
+
+  async findAllLeaderSchool(
+    queryDto: QueryLeaderSchoolDto,
+  ): Promise<LeaderSchool[]> {
+    const { type } = queryDto;
+    const match = { $match: {} };
+    if (type) {
+      match.$match = {
+        'title.type': type,
+      };
+    }
+    const results = await this.leaderSchoolSchema
+      .find(match)
+      .populate('profile', '', this.profileSchema)
+      .exec();
+    return results;
   }
 }

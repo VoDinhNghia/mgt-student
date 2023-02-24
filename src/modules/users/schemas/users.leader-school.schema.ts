@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { Document } from 'mongoose';
+import { EtypeLeaderSchool } from 'src/commons/constants';
 
 export type LeaderSchoolDocument = LeaderSchool & Document;
 
@@ -24,7 +25,7 @@ export class LeaderSchool {
     {
       name: string; // ex: Secretary, Principal
       acceptDate: Date; // date of appointment to that position
-      status: boolean; // true: position held
+      type: EtypeLeaderSchool;
     },
   ];
 
