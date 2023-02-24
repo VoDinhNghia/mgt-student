@@ -27,12 +27,17 @@ export class Union {
   function?: string;
 
   @Prop({
-    attachment: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'attachments',
-    },
+    type: [
+      {
+        attachment: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: 'attachments',
+        },
+        description: String,
+      },
+    ],
   })
-  image?: [
+  images?: [
     {
       attachment?: mongoose.Types.ObjectId;
       description?: string;
@@ -40,12 +45,17 @@ export class Union {
   ];
 
   @Prop({
-    user: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'users',
-    },
+    type: [
+      {
+        user: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: 'users',
+        },
+        position: String,
+      },
+    ],
   })
-  member?: [
+  members?: [
     {
       user?: mongoose.Types.ObjectId;
       position?: string;

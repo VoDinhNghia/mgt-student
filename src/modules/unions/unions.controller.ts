@@ -5,7 +5,7 @@ import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { RoleGuard } from '../auth/role-auth.guard';
 import { UnionsService } from './unions.service';
 import { Response } from 'express';
-import { UnionCreateDto } from './dtos/unions.create.dto';
+import { CreateUnionDto } from './dtos/unions.create.dto';
 import { ResponseRequest } from 'src/abstracts/responseApi';
 
 @Controller('unions')
@@ -18,10 +18,10 @@ export class UnionsController {
   @UseGuards(JwtAuthGuard)
   @UseGuards(RoleGuard(roleTypeAccessApi.ADMIN))
   async create(
-    @Body() unionCreateDto: UnionCreateDto,
+    @Body() unionDto: CreateUnionDto,
     @Res() res: Response,
   ): Promise<ResponseRequest> {
-    const result = await this.unionService.createUnion(unionCreateDto);
+    const result = await this.unionService.createUnion(unionDto);
     return new ResponseRequest(res, result, 'Create union success');
   }
 }
