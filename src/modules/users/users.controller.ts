@@ -28,6 +28,9 @@ import { diskStorage } from 'multer';
 import { readFileSync } from 'fs';
 import { UpdateProfileDto } from './dto/user.update-profile.dto';
 import { ResponseRequest } from 'src/abstracts/responseApi';
+import { CreateLeaderSchoolDto } from './dto/user.create.leader-school.dto';
+import { UpdateLeaderSchoolDto } from './dto/user.update.leader-school.dto';
+import { QueryLeaderSchoolDto } from './dto/user.query.leader-school.dto';
 
 @Controller('users')
 @ApiTags('users')
@@ -101,6 +104,67 @@ export class UsersController {
   ): Promise<ResponseRequest> {
     const result = await this.service.updateUserProfile(id, updateProfileDto);
     return new ResponseRequest(res, result, 'Update profile user success');
+  }
+
+  @Post('/leader-school')
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @UseGuards(RoleGuard(roleTypeAccessApi.ADMIN))
+  async createLeaderSchool(
+    @Body() leaderSchoolDto: CreateLeaderSchoolDto,
+    @Res() res: Response,
+  ): Promise<ResponseRequest> {
+    const result = await this.service.createLeaderSchool(leaderSchoolDto);
+    return new ResponseRequest(res, result, 'Create leader school success.');
+  }
+
+  @Put('/leader-school/:id')
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @UseGuards(RoleGuard(roleTypeAccessApi.ADMIN))
+  async updateLeaderSchool(
+    @Param('id') id: string,
+    @Body() updateLeaderDto: UpdateLeaderSchoolDto,
+    @Res() res: Response,
+  ): Promise<ResponseRequest> {
+    const result = await this.service.updateLeaderSchool(id, updateLeaderDto);
+    return new ResponseRequest(res, result, 'Update leader school success.');
+  }
+
+  @Get('/leader-school')
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @UseGuards(RoleGuard(roleTypeAccessApi.ADMIN))
+  async getAllLeaderSchools(
+    @Query() queryLeaderDto: QueryLeaderSchoolDto,
+    @Res() res: Response,
+  ): Promise<ResponseRequest> {
+    const results = await this.service.findAllLeaderSchool(queryLeaderDto);
+    return new ResponseRequest(res, results, 'Get all leader school succees.');
+  }
+
+  @Get('/leader-school/:id')
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @UseGuards(RoleGuard(roleTypeAccessApi.ADMIN))
+  async getLeaderSchoolById(
+    @Param('id') id: string,
+    @Res() res: Response,
+  ): Promise<ResponseRequest> {
+    const result = await this.service.findLeaderSchoolById(id);
+    return new ResponseRequest(res, result, 'Get leader school succees.');
+  }
+
+  @Delete('/leader-school/:id')
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @UseGuards(RoleGuard(roleTypeAccessApi.ADMIN))
+  async deleteLeaderSchoolById(
+    @Param('id') id: string,
+    @Res() res: Response,
+  ): Promise<ResponseRequest> {
+    await this.service.deleteLeaderSchool(id);
+    return new ResponseRequest(res, true, 'Delete leader school succees.');
   }
 
   @Get()

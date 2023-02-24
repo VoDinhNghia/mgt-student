@@ -5,7 +5,7 @@ export class TitleLeaDerSchoolDto {
   @ApiProperty({ required: true })
   name: string;
 
-  @ApiProperty({ required: true, default: Date.now })
+  @ApiProperty({ required: true, default: new Date() })
   acceptDate: string;
 
   @ApiProperty({
@@ -13,5 +13,5 @@ export class TitleLeaDerSchoolDto {
     enum: EtypeLeaderSchool,
     default: EtypeLeaderSchool.PARTYCOMMITTEE,
   })
-  type: EtypeLeaderSchool;
+  type: string;
 }

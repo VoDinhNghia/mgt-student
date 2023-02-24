@@ -302,4 +302,8 @@ export class UsersService {
       .exec();
     return results;
   }
+
+  async deleteLeaderSchool(id: string): Promise<void> {
+    await this.leaderSchoolSchema.findByIdAndDelete(id);
+  }
 }
