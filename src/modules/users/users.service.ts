@@ -84,10 +84,7 @@ export class UsersService {
     return result[0];
   }
 
-  async findAllsUsers(
-    query: UsersFillterDto,
-    userId: string,
-  ): Promise<Users[]> {
+  async findAllUsers(query: UsersFillterDto, userId: string): Promise<Users[]> {
     const { searchKey, limit, page, role, status } = query;
     const match: Record<string, any> = {
       $match: { _id: { $ne: new Types.ObjectId(userId) } },

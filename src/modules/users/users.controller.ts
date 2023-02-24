@@ -113,7 +113,7 @@ export class UsersController {
     @Req() req: Request,
   ): Promise<ResponseRequest> {
     const { user }: Request | Record<string, any> = req;
-    const result = await this.service.findAllsUsers(queryDto, user.userId);
+    const result = await this.service.findAllUsers(queryDto, user.userId);
     return new ResponseRequest(res, result, 'Get all users success');
   }
 

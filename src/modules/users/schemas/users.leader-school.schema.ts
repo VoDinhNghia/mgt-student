@@ -6,36 +6,25 @@ export type LeaderSchoolDocument = LeaderSchool & Document;
 @Schema()
 export class LeaderSchool {
   @Prop({
-    type: [
-      {
-        user: {
-          type: mongoose.Types.ObjectId,
-          ref: 'users',
-        },
-      },
-    ],
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'profiles',
   })
-  partyCommittee?: [
-    {
-      user: mongoose.Types.ObjectId;
-      acceptDate: Date;
-    },
-  ];
+  user?: mongoose.Types.ObjectId;
 
   @Prop({
     type: [
       {
-        user: {
-          type: mongoose.Types.ObjectId,
-          ref: 'users',
-        },
+        name: String,
+        acceptDate: Date,
+        status: Boolean,
       },
     ],
   })
-  leader?: [
+  title?: [
     {
-      user: mongoose.Types.ObjectId;
-      term: string;
+      name: string; // ex: Secretary, Principal
+      acceptDate: Date; // date of appointment to that position
+      status: boolean; // true: position held
     },
   ];
 
