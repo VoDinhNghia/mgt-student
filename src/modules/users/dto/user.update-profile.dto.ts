@@ -14,7 +14,7 @@ export class UpdateProfileDto {
   middleName?: string;
 
   @ApiProperty({ required: false })
-  class?: string;
+  classId?: string;
 
   @ApiProperty({ required: false })
   faculty?: string;
