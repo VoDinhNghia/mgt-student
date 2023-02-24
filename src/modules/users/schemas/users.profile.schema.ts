@@ -17,7 +17,7 @@ export class Profile {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'classes',
   })
-  class?: mongoose.Types.ObjectId;
+  classId?: mongoose.Types.ObjectId;
 
   @Prop({
     type: mongoose.Schema.Types.ObjectId,

@@ -19,6 +19,21 @@ import {
 import { CreateLeaderSchoolDto } from './dto/user.create.leader-school.dto';
 import { QueryLeaderSchoolDto } from './dto/user.query.leader-school.dto';
 import { UpdateLeaderSchoolDto } from './dto/user.update.leader-school.dto';
+import { Majors, MajorsDocument } from '../faculties/schemas/major.schema';
+import { Course, CourseDocument } from '../courses/schemas/courses.schema';
+import {
+  ClassInfos,
+  ClassInfosDocument,
+} from '../class-subject/schemas/class-subject.class.schema';
+import {
+  Faculty,
+  FacultyDocument,
+} from '../faculties/schemas/faculties.schema';
+import { Award, AwardDocument } from '../awards/schemas/awards.schema';
+import {
+  DegreeLevel,
+  DegreeLevelDocument,
+} from '../degreelevel/schemas/degreelevel.schema';
 
 @Injectable()
 export class UsersService {
@@ -28,7 +43,19 @@ export class UsersService {
     private readonly profileSchema: Model<ProfileDocument>,
     @InjectModel(LeaderSchool.name)
     private readonly leaderSchoolSchema: Model<LeaderSchoolDocument>,
-    private readonly validateField: ValidateField,
+    @InjectModel(Majors.name)
+    private readonly majorSchema: Model<MajorsDocument>,
+    @InjectModel(Course.name)
+    private readonly courseSchema: Model<CourseDocument>,
+    @InjectModel(ClassInfos.name)
+    private readonly classSchema: Model<ClassInfosDocument>,
+    @InjectModel(Faculty.name)
+    private readonly facultySchema: Model<FacultyDocument>,
+    @InjectModel(Award.name)
+    private readonly awardSchema: Model<AwardDocument>,
+    @InjectModel(DegreeLevel.name)
+    private readonly degreeLevelSchema: Model<DegreeLevelDocument>,
+    private readonly validate: ValidateField,
   ) {}
 
   async validateUser(usersValidateDto: Record<string, any>): Promise<void> {
@@ -36,7 +63,35 @@ export class UsersService {
       new CommonException(400, `Email not correct format.`);
     }
     const options = { email: usersValidateDto.email };
-    await this.validateField.existed(this.userSchema, options, 'Email');
+    await this.validate.existed(this.userSchema, options, 'Email');
+  }
+
+  async validateProfile(fields: Record<string, any>): Promise<void> {
+    const { major, faculty, course, degreeLevel, classId, award = [] } = fields;
+    if (major) {
+      await this.validate.byId(this.majorSchema, major, 'Major');
+    }
+    if (faculty) {
+      await this.validate.byId(this.facultySchema, faculty, 'Faculty');
+    }
+    if (course) {
+      await this.validate.byId(this.courseSchema, course, 'Course');
+    }
+    if (degreeLevel) {
+      await this.validate.byId(
+        this.degreeLevelSchema,
+        degreeLevel,
+        'DegreeLevel',
+      );
+    }
+    if (classId) {
+      await this.validate.byId(this.classSchema, classId, 'Class');
+    }
+    if (award.length > 0) {
+      for (const item of award) {
+        await this.validate.byId(this.awardSchema, item, `Award ${item}`);
+      }
+    }
   }
 
   async createUser(
@@ -159,6 +214,7 @@ export class UsersService {
     id: string,
     profileDto: UpdateProfileDto,
   ): Promise<Profile | any> {
+    await this.validateProfile(profileDto);
     const profile = await this.profileSchema.findByIdAndUpdate(id, profileDto);
     const result = await this.findUserById(profile.user);
     return result;
@@ -224,7 +280,7 @@ export class UsersService {
       role: roles.ADMIN,
     };
     const options = { email: adminDto.email };
-    await this.validateField.existed(this.userSchema, options, 'Admin');
+    await this.validate.existed(this.userSchema, options, 'Admin');
     const admin = await new this.userSchema(adminDto).save();
     await this.createUserProfile({
       firstName: 'Admin',
@@ -238,10 +294,12 @@ export class UsersService {
   async createUserProfile(profileDto: Record<string, any>): Promise<void> {
     try {
       const options = { user: profileDto.user };
-      await this.validateField.existed(this.profileSchema, options, 'Profile');
+      await this.validate.existed(this.profileSchema, options, 'Profile');
+      await this.validateProfile(profileDto);
       await new this.profileSchema(profileDto).save();
-    } catch {
+    } catch (error) {
       await this.userSchema.findByIdAndDelete(profileDto.user);
+      console.log('eeee', error);
       new CommonException(500, `Server interval.`);
     }
   }
