@@ -83,7 +83,7 @@ export const keyAccessLibraryService = 'libraries-access-key-secrect';
 export const keyAccessCourseService = 'course-access-key-secrect';
 
 export enum EtypeLeaderSchool {
-  PARTYCOMMITTEE = 'PARTYCOMMITTEE',
-  SCHOOLBOARD = 'SCHOOLBOARD',
+  PARTYCOMMITTEE = 'PARTY_COMMITTEE',
+  SCHOOLBOARD = 'SCHOOL_BOARD',
   BOTH = 'BOTH', // Both of the above
 }

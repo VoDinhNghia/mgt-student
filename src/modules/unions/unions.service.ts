@@ -7,16 +7,20 @@ import {
   Attachment,
   AttachmentDocument,
 } from '../attachments/schemas/attachments.schema';
-import { Users, UsersDocument } from '../users/schemas/users.schema';
+import {
+  Profile,
+  ProfileDocument,
+} from '../users/schemas/users.profile.schema';
 import { CreateUnionDto } from './dtos/unions.create.dto';
+import { UpdateUnionDto } from './dtos/unions.update.dto';
 import { Union, UnionDocument } from './schemas/unions.schema';
 
 @Injectable()
 export class UnionsService {
   constructor(
     @InjectModel(Union.name) private readonly unionSchema: Model<UnionDocument>,
-    @InjectModel(Users.name)
-    private readonly userSchema: Model<UsersDocument>,
+    @InjectModel(Profile.name)
+    private readonly profileService: Model<ProfileDocument>,
     @InjectModel(Attachment.name)
     private readonly attachmentSchema: Model<AttachmentDocument>,
     private readonly validate: ValidateField,
@@ -36,7 +40,7 @@ export class UnionsService {
     if (members.length > 0) {
       for (const item of members) {
         await this.validate.byId(
-          this.userSchema,
+          this.profileService,
           item.user,
           `User ${item.user}`,
         );
@@ -54,12 +58,28 @@ export class UnionsService {
   async findUnionById(id: string): Promise<Union> {
     const result = await this.unionSchema
       .findById(id)
-      .populate('members.user', '', this.userSchema)
+      .populate('members.user', '', this.profileService)
       .populate('images.attachment', '', this.attachmentSchema)
       .exec();
     if (!result) {
       new CommonException(404, 'Union not found.');
     }
     return result;
+  }
+
+  async updateUnion(id: string, unionDto: UpdateUnionDto): Promise<Union> {
+    await this.validateUnion(unionDto);
+    await this.unionSchema.findByIdAndUpdate(id, unionDto);
+    const result = await this.findUnionById(id);
+    return result;
+  }
+
+  async findAllUnions(): Promise<Union[]> {
+    const results = await this.unionSchema
+      .find({})
+      .populate('members.user', '', this.profileService)
+      .populate('images.attachment', '', this.attachmentSchema)
+      .exec();
+    return results;
   }
 }

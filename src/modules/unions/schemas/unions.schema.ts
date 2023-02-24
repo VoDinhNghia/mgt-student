@@ -49,7 +49,7 @@ export class Union {
       {
         user: {
           type: mongoose.Schema.Types.ObjectId,
-          ref: 'users',
+          ref: 'profiles',
         },
         position: String,
       },

@@ -132,9 +132,6 @@ export class UsersController {
   }
 
   @Get('/leader-school')
-  @ApiBearerAuth()
-  @UseGuards(JwtAuthGuard)
-  @UseGuards(RoleGuard(roleTypeAccessApi.ADMIN))
   async getAllLeaderSchools(
     @Query() queryLeaderDto: QueryLeaderSchoolDto,
     @Res() res: Response,
@@ -144,9 +141,6 @@ export class UsersController {
   }
 
   @Get('/leader-school/:id')
-  @ApiBearerAuth()
-  @UseGuards(JwtAuthGuard)
-  @UseGuards(RoleGuard(roleTypeAccessApi.ADMIN))
   async getLeaderSchoolById(
     @Param('id') id: string,
     @Res() res: Response,
