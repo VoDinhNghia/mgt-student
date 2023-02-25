@@ -19,6 +19,7 @@ import { CoursesModule } from './modules/courses/courses.module';
 import { RoomsModule } from './modules/rooms/rooms.module';
 import { UnionsModule } from './modules/unions/unions.module';
 import { SemestersModule } from './modules/semesters/semesters.module';
+import { SchoolModule } from './modules/school/school.module';
 
 @Module({
   imports: [
@@ -40,6 +41,7 @@ import { SemestersModule } from './modules/semesters/semesters.module';
     RoomsModule,
     UnionsModule,
     SemestersModule,
+    SchoolModule,
   ],
   controllers: [AppController],
   providers: [AppService],

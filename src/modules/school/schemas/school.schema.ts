@@ -30,20 +30,41 @@ export class SchoolInfo {
   award?: [mongoose.Types.ObjectId];
 
   @Prop({
-    country: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'countries',
+    type: {
+      country: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'countries',
+      },
+      province: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'provinces',
+      },
+      district: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'districts',
+      },
+      ward: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'wards',
+      },
+      address: String,
     },
   })
   location?: {
-    province?: string;
+    province?: mongoose.Types.ObjectId;
     country?: mongoose.Types.ObjectId;
-    city?: string;
-    state?: string;
+    district?: mongoose.Types.ObjectId;
+    ward?: mongoose.Types.ObjectId;
     address?: string;
   };
 
-  @Prop()
+  @Prop({
+    type: {
+      email: String,
+      fax: String,
+      mobile: String,
+    },
+  })
   contactInfo?: {
     email?: string;
     fax?: string;
@@ -51,10 +72,17 @@ export class SchoolInfo {
   };
 
   @Prop({
-    attachment: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'attachments',
-    },
+    type: [
+      {
+        attachment: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: 'attachments',
+        },
+        name: String,
+        effectiveDate: Date,
+        content: String,
+      },
+    ],
   })
   policy?: [
     {
