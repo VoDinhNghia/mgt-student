@@ -87,3 +87,5 @@ export enum EtypeLeaderSchool {
   SCHOOLBOARD = 'SCHOOL_BOARD',
   BOTH = 'BOTH', // Both of the above
 }
+
+export const schoolId = 'school-01';
