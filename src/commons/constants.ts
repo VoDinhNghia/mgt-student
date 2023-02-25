@@ -94,3 +94,8 @@ export enum EscholarshirpType {
   EXCELLENCE = 'EXCELLENCE',
   GOOD = 'GOOD',
 }
+
+export enum EuserGender {
+  MALE = 'Male',
+  FEMALE = 'Female',
+}

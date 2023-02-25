@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { EstatusUserProfile } from 'src/commons/constants';
+import { EstatusUserProfile, EuserGender } from 'src/commons/constants';
 import { IdentityCardNumberDto } from './user.profile.identityCardNumber.dto';
 import { LocationProfileDto } from './user.profile.location.dto';
 
@@ -34,7 +34,11 @@ export class UpdateProfileDto {
   @ApiProperty({ required: false })
   mobile?: number;
 
-  @ApiProperty({ required: false })
+  @ApiProperty({
+    required: false,
+    enum: EuserGender,
+    default: EuserGender.MALE,
+  })
   gender?: string;
 
   @ApiProperty({ required: false })
