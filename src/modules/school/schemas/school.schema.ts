@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { Document } from 'mongoose';
+import { schoolId } from 'src/commons/constants';
 
 export type SchoolInfoDocument = SchoolInfo & Document;
 
@@ -10,6 +11,9 @@ export class SchoolInfo {
     required: true,
   })
   name?: string;
+
+  @Prop({ required: true, default: schoolId })
+  schoolId?: string;
 
   @Prop()
   schoolCode?: string;

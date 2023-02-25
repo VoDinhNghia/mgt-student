@@ -22,7 +22,7 @@ export class CreateSchoolDto {
   @ApiProperty({ required: false, type: LocationSchoolDto })
   location?: LocationSchoolDto;
 
-  @ApiProperty({ required: true, type: ContactSchoolDto })
+  @ApiProperty({ required: false, type: ContactSchoolDto })
   contactInfo?: ContactSchoolDto;
 
   @ApiProperty({ required: false, type: [PoliCySchoolDto] })
