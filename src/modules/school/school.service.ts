@@ -26,6 +26,7 @@ import {
   Wards,
 } from '../countries/schemas/countries.ward.schemas';
 import { CreateSchoolDto } from './dtos/school.create.dto';
+import { UpdateSchoolDto } from './dtos/school.update.dto';
 import { SchoolInfo, SchoolInfoDocument } from './schemas/school.schema';
 
 @Injectable()
@@ -48,16 +49,42 @@ export class SchoolService {
     private readonly validate: ValidateField,
   ) {}
 
-  async createSchool(schoolDto: CreateSchoolDto): Promise<void> {
-    const school = await this.findOneSchool({ schoolId: schoolId });
-    if (!school) {
-      await new this.schoolSchema(schoolDto).save();
+  async validateFieldSchoolDto(schoolDto: Record<string, any>): Promise<void> {
+    const { image = [], award = [], location = {} } = schoolDto;
+    const { country, province, district, ward } = location;
+    if (image.length > 0) {
+      for (const item of image) {
+        await this.validate.byId(
+          this.attachmentSchema,
+          item,
+          `Attachment ${item}`,
+        );
+      }
+    }
+    if (award.length > 0) {
+      for (const item of award) {
+        await this.validate.byId(this.awardSchema, item, `Award ${item}`);
+      }
+    }
+    if (country) {
+      await this.validate.byId(this.countrySchema, country, `Country`);
+    }
+    if (province) {
+      await this.validate.byId(this.provinceSchema, province, `Province`);
+    }
+    if (district) {
+      await this.validate.byId(this.districtSchema, district, `District`);
+    }
+    if (ward) {
+      await this.validate.byId(this.wardSchema, ward, `Ward`);
     }
   }
 
-  async findOneSchool(options: Record<string, any>): Promise<SchoolInfo> {
-    const result = await this.schoolSchema.findOne(options);
-    return result;
+  async createSchool(schoolDto: CreateSchoolDto): Promise<void> {
+    const school = await this.schoolSchema.findOne({ schoolId: schoolId });
+    if (!school) {
+      await new this.schoolSchema(schoolDto).save();
+    }
   }
 
   async findSchoolById(id: string): Promise<SchoolInfo> {
@@ -73,6 +100,29 @@ export class SchoolService {
     if (!result) {
       new CommonException(404, 'School not found');
     }
+    return result;
+  }
+
+  async updateSchool(
+    id: string,
+    schoolDto: UpdateSchoolDto,
+  ): Promise<SchoolInfo> {
+    await this.validateFieldSchoolDto(schoolDto);
+    await this.schoolSchema.findByIdAndUpdate(id, schoolDto);
+    const result = await this.findSchoolById(id);
+    return result;
+  }
+
+  async findAllSchool(): Promise<SchoolInfo[]> {
+    const result = await this.schoolSchema
+      .find()
+      .populate('image', '', this.attachmentSchema)
+      .populate('award', '', this.awardSchema)
+      .populate('location.country', '', this.countrySchema)
+      .populate('location.province', '', this.provinceSchema)
+      .populate('location.district', '', this.districtSchema)
+      .populate('location.ward', '', this.wardSchema)
+      .exec();
     return result;
   }
 }
