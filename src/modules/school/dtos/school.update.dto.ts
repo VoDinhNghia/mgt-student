@@ -3,14 +3,14 @@ import { ContactSchoolDto } from './school.contact.dto';
 import { LocationSchoolDto } from './school.location.dto';
 import { PoliCySchoolDto } from './school.policy.dto';
 
-export class CreateSchoolDto {
-  @ApiProperty({ required: true })
+export class UpdateSchoolDto {
+  @ApiProperty({ required: false })
   name?: string;
 
-  @ApiProperty({ required: true })
+  @ApiProperty({ required: false })
   schoolCode?: string;
 
-  @ApiProperty({ required: true, default: 40000 })
+  @ApiProperty({ required: false, default: 40000 })
   numberTotal?: number;
 
   @ApiProperty({ required: false, type: [String] })
@@ -22,13 +22,13 @@ export class CreateSchoolDto {
   @ApiProperty({ required: false, type: LocationSchoolDto })
   location?: LocationSchoolDto;
 
-  @ApiProperty({ required: true, type: ContactSchoolDto })
+  @ApiProperty({ required: false, type: ContactSchoolDto })
   contactInfo?: ContactSchoolDto;
 
   @ApiProperty({ required: false, type: [PoliCySchoolDto] })
   policy?: PoliCySchoolDto[];
 
-  @ApiProperty({ required: true, default: '2023-02-25' })
+  @ApiProperty({ required: false, default: '2023-02-25' })
   yearFound?: string;
 
   @ApiProperty({ required: false })

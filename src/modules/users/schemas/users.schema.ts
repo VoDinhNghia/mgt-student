@@ -13,7 +13,7 @@ export class Users {
   passWord: string;
 
   @Prop({ default: false })
-  statusLogin?: string;
+  statusLogin?: boolean;
 
   @Prop({ default: statusUser.ACTIVE })
   status?: string;
