@@ -4,6 +4,6 @@ import { ScholarshipService } from './scholarship.service';
 
 @Module({
   controllers: [ScholarshipController],
-  providers: [ScholarshipService]
+  providers: [ScholarshipService],
 })
 export class ScholarshipModule {}

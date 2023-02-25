@@ -94,11 +94,14 @@ export class UsersService {
     }
   }
 
+  // Ask students or lecturers ... to provide their personal email before joining the school
+  // => so that they can notify users via email later
   async createUser(
     usersDto: CreateUserDto,
     createBy: string,
   ): Promise<Users | any> {
     await this.validateUser(usersDto);
+    await this.validateProfile(usersDto);
     usersDto.passWord = cryptoPassWord(usersDto.passWord);
     const user = await new this.userSchema({
       ...usersDto,
@@ -286,6 +289,7 @@ export class UsersService {
       firstName: 'Admin',
       lastName: 'Student',
       user: admin._id,
+      code: '101_admin',
     });
     const result = await this.findUserById(admin._id);
     return result;
@@ -295,7 +299,6 @@ export class UsersService {
     try {
       const options = { user: profileDto.user };
       await this.validate.existed(this.profileSchema, options, 'Profile');
-      await this.validateProfile(profileDto);
       await new this.profileSchema(profileDto).save();
     } catch (error) {
       await this.userSchema.findByIdAndDelete(profileDto.user);

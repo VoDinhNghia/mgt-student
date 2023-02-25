@@ -1,19 +1,20 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { EuserGender } from 'src/commons/constants';
 import { UsersDto } from './users.dto';
 
 export class CreateUserDto extends UsersDto {
-  @ApiProperty()
+  @ApiProperty({ required: true })
   firstName: string;
 
-  @ApiProperty()
+  @ApiProperty({ required: true })
   lastName: string;
 
-  @ApiProperty()
+  @ApiProperty({ required: true })
   middleName: string;
 
-  @ApiProperty()
+  @ApiProperty({ required: true })
   mobile: number;
 
-  @ApiProperty()
+  @ApiProperty({ required: true, enum: EuserGender, default: EuserGender.MALE })
   gender: string;
 }
