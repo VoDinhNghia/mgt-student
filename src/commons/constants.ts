@@ -89,3 +89,8 @@ export enum EtypeLeaderSchool {
 }
 
 export const schoolId = 'school-01';
+
+export enum EscholarshirpType {
+  EXCELLENCE = 'EXCELLENCE',
+  GOOD = 'GOOD',
+}

@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { Document } from 'mongoose';
+import { EscholarshirpType } from 'src/commons/constants';
 
 export type ScholarshipDocument = Scholarship & Document;
 
@@ -17,8 +18,10 @@ export class Scholarship {
   })
   semester?: mongoose.Types.ObjectId;
 
-  @Prop()
-  type?: string; // good grade, good grade, full grade
+  @Prop({
+    default: EscholarshirpType.EXCELLENCE,
+  })
+  type?: string;
 
   @Prop()
   content?: string;
