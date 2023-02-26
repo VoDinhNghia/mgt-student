@@ -133,7 +133,6 @@ export class UsersService {
     profileId: string,
   ): Promise<boolean> {
     try {
-      // check again if access key incorrect => server die
       const createStudyProcess = this.httpService.post(
         `${linkAccessService.COURSE}/api/study-process`,
         { profile: profileId },
@@ -143,12 +142,10 @@ export class UsersService {
           },
         },
       );
-      createStudyProcess.subscribe((value) =>
-        console.log('createStudyProject', value),
-      );
+      await createStudyProcess.toPromise();
       return true;
-    } catch (error) {
-      console.log('error', error);
+    } catch {
+      // console.log('error', error);
       await this.userSchema.findByIdAndDelete(userId);
       await this.profileSchema.findByIdAndDelete(profileId);
       return false;
