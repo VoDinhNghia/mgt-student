@@ -1,6 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+import { linkAccessService } from './commons/constants';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -14,12 +15,12 @@ async function bootstrap() {
   SwaggerModule.setup('api-docs', app, document);
   app.enableCors({
     origin: [
-      'http://localhost:8000',
-      'http://localhost:8001',
-      'http://localhost:8002',
-      'http://localhost:3001',
-      'http://localhost:3002',
-      'http://localhost:3003',
+      linkAccessService.ADMIN_FRONTEND,
+      linkAccessService.FRONTEND,
+      linkAccessService.LIBRARY_FRONTEND,
+      linkAccessService.COURSE,
+      linkAccessService.LIBRARY,
+      linkAccessService.ATTENDANCE,
     ],
     methods: ['GET', 'POST', 'DELETE', 'PUT'],
     credentials: true,

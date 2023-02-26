@@ -51,15 +51,6 @@ export const typeNews = {
   ENROLLMENT: 'ENROLLMENT', // enrollment information
 };
 
-export enum EstatusUserProfile {
-  STUDYING = 'STUDYING',
-  GRADUATE = 'GRADUATE',
-  SAVEING = 'SAVEING',
-  RESERVE = 'RESERVE',
-  LEAVE = 'LEAVE',
-  TEACHING = 'TEACHING',
-}
-
 export enum EroomType {
   CLASS_ROOM = 'CLASS_ROOM',
   MEETING = 'MEETING',
@@ -99,3 +90,12 @@ export enum EuserGender {
   MALE = 'Male',
   FEMALE = 'Female',
 }
+
+export const linkAccessService = {
+  COURSE: 'http://localhost:3003',
+  LIBRARY: 'http://localhost:3002',
+  ATTENDANCE: 'http://localhost:3001',
+  ADMIN_FRONTEND: 'http://localhost:8000',
+  FRONTEND: 'http://localhost:8001',
+  LIBRARY_FRONTEND: 'http://localhost:8002',
+};
