@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { Document } from 'mongoose';
-import { EstatusUserProfile, EuserGender } from 'src/commons/constants';
+import { EuserGender } from 'src/commons/constants';
 import { getRandomCode } from 'src/commons/generateCodeProfile';
 
 export type ProfileDocument = Profile & Document;
@@ -44,7 +44,12 @@ export class Profile {
   })
   degreeLevel?: mongoose.Types.ObjectId; // Formal university, College...
 
-  @Prop({ maxlength: 10, minlength: 6, default: getRandomCode(6) }) // create function generate
+  @Prop({
+    maxlength: 10,
+    minlength: 6,
+    default: getRandomCode(6),
+    unique: true,
+  }) // create function generate
   code?: string; // student and lecturer code
 
   @Prop()
@@ -120,12 +125,6 @@ export class Profile {
 
   @Prop()
   object?: string; // doi tuong chinh sach
-
-  @Prop({
-    type: String,
-    default: EstatusUserProfile.STUDYING,
-  })
-  status: string; // Are you still studying or graduating or saving?
 
   @Prop()
   unionDate?: Date;

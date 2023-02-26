@@ -20,6 +20,7 @@ import { RoomsModule } from './modules/rooms/rooms.module';
 import { UnionsModule } from './modules/unions/unions.module';
 import { SemestersModule } from './modules/semesters/semesters.module';
 import { SchoolModule } from './modules/school/school.module';
+import { ScholarshipModule } from './modules/scholarship/scholarship.module';
 
 @Module({
   imports: [
@@ -42,6 +43,7 @@ import { SchoolModule } from './modules/school/school.module';
     UnionsModule,
     SemestersModule,
     SchoolModule,
+    ScholarshipModule,
   ],
   controllers: [AppController],
   providers: [AppService],

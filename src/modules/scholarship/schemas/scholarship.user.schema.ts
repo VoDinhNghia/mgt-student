@@ -27,5 +27,5 @@ export class ScholarshipUser {
   updateAt?: Date;
 }
 
-export const ScholarshipUserSettingSchema =
+export const ScholarshipUserSchema =
   SchemaFactory.createForClass(ScholarshipUser);

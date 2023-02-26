@@ -5,7 +5,12 @@ import { CreateUserDto } from './dto/users.create.dto';
 import { Users, UsersDocument } from './schemas/users.schema';
 import { Profile, ProfileDocument } from './schemas/users.profile.schema';
 import { cryptoPassWord } from 'src/commons/crypto';
-import { roles, statusUser } from 'src/commons/constants';
+import {
+  keyAccessCourseService,
+  linkAccessService,
+  roles,
+  statusUser,
+} from 'src/commons/constants';
 import { UsersFillterDto } from './dto/user.filter.dto';
 import { validateEmail } from 'src/commons/validateEmail';
 import { CommonException } from 'src/abstracts/execeptionError';
@@ -34,6 +39,7 @@ import {
   DegreeLevel,
   DegreeLevelDocument,
 } from '../degreelevel/schemas/degreelevel.schema';
+import { HttpService } from '@nestjs/axios';
 
 @Injectable()
 export class UsersService {
@@ -56,6 +62,7 @@ export class UsersService {
     @InjectModel(DegreeLevel.name)
     private readonly degreeLevelSchema: Model<DegreeLevelDocument>,
     private readonly validate: ValidateField,
+    private readonly httpService: HttpService,
   ) {}
 
   async validateUser(usersValidateDto: Record<string, any>): Promise<void> {
@@ -107,13 +114,45 @@ export class UsersService {
       ...usersDto,
       createdBy: createBy,
     }).save();
-    await this.createUserProfile({
+    const profile = await this.createUserProfile({
       ...usersDto,
       user: user._id,
     });
+    if (user.role === roles.STUDENT) {
+      const isCreate = await this.createStudyProcess(user._id, profile._id);
+      if (!isCreate) {
+        new CommonException(500, 'Can not create study process');
+      }
+    }
     const result = this.findUserById(user._id);
-
     return result;
+  }
+
+  async createStudyProcess(
+    userId: string,
+    profileId: string,
+  ): Promise<boolean> {
+    try {
+      // check again if access key incorrect => server die
+      const createStudyProcess = this.httpService.post(
+        `${linkAccessService.COURSE}/api/study-process`,
+        { profile: profileId },
+        {
+          headers: {
+            'key-access': keyAccessCourseService,
+          },
+        },
+      );
+      createStudyProcess.subscribe((value) =>
+        console.log('createStudyProject', value),
+      );
+      return true;
+    } catch (error) {
+      console.log('error', error);
+      await this.userSchema.findByIdAndDelete(userId);
+      await this.profileSchema.findByIdAndDelete(profileId);
+      return false;
+    }
   }
 
   async findUserAuth(email: string, passWord: string): Promise<Users | any> {
@@ -257,11 +296,18 @@ export class UsersService {
         continue;
       }
       try {
-        await new this.profileSchema({
+        const profile = await new this.profileSchema({
           ...item,
           user: user._id,
           createdBy,
         }).save();
+        if (user.role === roles.STUDENT) {
+          const isCreate = await this.createStudyProcess(user._id, profile._id);
+          if (!isCreate) {
+            item.status = 'Can not create study process.';
+            continue;
+          }
+        }
         item.status = 'Import user success.';
       } catch {
         item.status = 'Can not create profile.';
@@ -295,11 +341,14 @@ export class UsersService {
     return result;
   }
 
-  async createUserProfile(profileDto: Record<string, any>): Promise<void> {
+  async createUserProfile(
+    profileDto: Record<string, any>,
+  ): Promise<Profile | any> {
     try {
       const options = { user: profileDto.user };
       await this.validate.existed(this.profileSchema, options, 'Profile');
-      await new this.profileSchema(profileDto).save();
+      const result = await new this.profileSchema(profileDto).save();
+      return result;
     } catch (error) {
       await this.userSchema.findByIdAndDelete(profileDto.user);
       console.log('eeee', error);

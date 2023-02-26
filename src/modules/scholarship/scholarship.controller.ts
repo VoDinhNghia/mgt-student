@@ -1,4 +1,9 @@
 import { Controller } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
+import { ScholarshipService } from './scholarship.service';
 
-@Controller('scholarship')
-export class ScholarshipController {}
+@Controller('scholarships')
+@ApiTags('scholarships')
+export class ScholarshipController {
+  constructor(private readonly service: ScholarshipService) {}
+}
