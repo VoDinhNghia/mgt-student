@@ -24,18 +24,14 @@ export class Faculty {
   award?: [mongoose.Types.ObjectId];
 
   @Prop({
-    type: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'profiles',
-    },
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'profiles',
   })
   headOfSection?: mongoose.Types.ObjectId;
 
   @Prop({
-    type: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'profiles',
-    },
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'profiles',
   })
   eputeHead?: mongoose.Types.ObjectId;
 

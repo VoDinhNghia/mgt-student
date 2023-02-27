@@ -19,6 +19,9 @@ import { Response } from 'express';
 import { ResponseRequest } from 'src/abstracts/responseApi';
 import { FacultyQueryDto } from './dtos/faculties.query.dto';
 import { UpdateFacultyDto } from './dtos/faculties.update.dto';
+import { CreateMajorDto } from './dtos/major.create.dto';
+import { UpdateMajorDto } from './dtos/major.update.dto';
+import { MajorQueryDto } from './dtos/major.query.dto';
 
 @Controller('api/faculties')
 @ApiTags('faculties')
@@ -53,18 +56,6 @@ export class FacultiesController {
     return new ResponseRequest(res, result, 'Update faculty success.');
   }
 
-  @Get('/:id')
-  @ApiBearerAuth()
-  @UseGuards(JwtAuthGuard)
-  @UseGuards(RoleGuard(roleTypeAccessApi.FULL))
-  async getFacultyById(
-    @Param('id') id: string,
-    @Res() res: Response,
-  ): Promise<ResponseRequest> {
-    const result = await this.facultyService.findFacultyById(id);
-    return new ResponseRequest(res, result, 'Get faculty by id success');
-  }
-
   @Get()
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
@@ -75,5 +66,66 @@ export class FacultiesController {
   ): Promise<ResponseRequest> {
     const result = await this.facultyService.findAllFaculties(facultyQueryDto);
     return new ResponseRequest(res, result, 'Get faculties list success');
+  }
+
+  @Post('/major')
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @UseGuards(RoleGuard(roleTypeAccessApi.ADMIN))
+  async createMajor(
+    @Res() res: Response,
+    @Body() createMajorDto: CreateMajorDto,
+  ): Promise<ResponseRequest> {
+    const result = await this.facultyService.createMajor(createMajorDto);
+    return new ResponseRequest(res, result, 'Create major success');
+  }
+
+  @Put('/major/:id')
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @UseGuards(RoleGuard(roleTypeAccessApi.ADMIN))
+  async updateMajor(
+    @Param('id') id: string,
+    @Body() updateMajorDto: UpdateMajorDto,
+    @Res() res: Response,
+  ): Promise<ResponseRequest> {
+    const result = await this.facultyService.updateMajor(id, updateMajorDto);
+    return new ResponseRequest(res, result, 'Update major success.');
+  }
+
+  @Get('/major/:id')
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @UseGuards(RoleGuard(roleTypeAccessApi.FULL))
+  async getMajorById(
+    @Param('id') id: string,
+    @Res() res: Response,
+  ): Promise<ResponseRequest> {
+    const result = await this.facultyService.findMajorById(id);
+    return new ResponseRequest(res, result, 'Get major by id success');
+  }
+
+  @Get('/major')
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @UseGuards(RoleGuard(roleTypeAccessApi.FULL))
+  async getListMajors(
+    @Query() queryDto: MajorQueryDto,
+    @Res() res: Response,
+  ): Promise<ResponseRequest> {
+    const result = await this.facultyService.findAllMajors(queryDto);
+    return new ResponseRequest(res, result, 'Get majors list success');
+  }
+
+  @Get('/:id')
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @UseGuards(RoleGuard(roleTypeAccessApi.FULL))
+  async getFacultyById(
+    @Param('id') id: string,
+    @Res() res: Response,
+  ): Promise<ResponseRequest> {
+    const result = await this.facultyService.findFacultyById(id);
+    return new ResponseRequest(res, result, 'Get faculty by id success');
   }
 }

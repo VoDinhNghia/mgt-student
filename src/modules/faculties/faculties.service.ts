@@ -11,7 +11,11 @@ import {
 import { CreateFacultyDto } from './dtos/faculties.create.dto';
 import { FacultyQueryDto } from './dtos/faculties.query.dto';
 import { UpdateFacultyDto } from './dtos/faculties.update.dto';
+import { CreateMajorDto } from './dtos/major.create.dto';
+import { MajorQueryDto } from './dtos/major.query.dto';
+import { UpdateMajorDto } from './dtos/major.update.dto';
 import { Faculty, FacultyDocument } from './schemas/faculties.schema';
+import { Majors, MajorsDocument } from './schemas/major.schema';
 
 @Injectable()
 export class FacultiesService {
@@ -22,11 +26,13 @@ export class FacultiesService {
     private readonly awardSchema: Model<AwardDocument>,
     @InjectModel(Profile.name)
     private readonly profileSchema: Model<ProfileDocument>,
+    @InjectModel(Majors.name)
+    private readonly majorSchema: Model<MajorsDocument>,
     private readonly validate: ValidateField,
   ) {}
 
-  async validateFaculty(facultyDto: Record<string, any>): Promise<void> {
-    const { headOfSection, eputeHead, award = [] } = facultyDto;
+  async validateCommon(facultyDto: Record<string, any>): Promise<void> {
+    const { headOfSection, eputeHead, award = [], faculty } = facultyDto;
     if (award.length > 0) {
       for (const item of award) {
         await this.validate.byId(this.awardSchema, item, `Award ${item}`);
@@ -36,7 +42,7 @@ export class FacultiesService {
       await this.validate.byId(
         this.profileSchema,
         headOfSection,
-        'headOfSection rofile',
+        'headOfSection profile',
       );
     }
     if (eputeHead) {
@@ -46,11 +52,14 @@ export class FacultiesService {
         'eputeHead profile',
       );
     }
+    if (faculty) {
+      await this.validate.byId(this.facultySchema, faculty, 'Faculty');
+    }
   }
 
   async createFaculty(createFacultyDto: CreateFacultyDto): Promise<Faculty> {
     const option = { name: createFacultyDto.name };
-    await this.validateFaculty(createFacultyDto);
+    await this.validateCommon(createFacultyDto);
     await this.validate.existed(this.facultySchema, option, 'Faculty');
     const faculty = await new this.facultySchema(createFacultyDto).save();
     const result = await this.findFacultyById(faculty._id);
@@ -74,26 +83,61 @@ export class FacultiesService {
     id: string,
     facultyDto: UpdateFacultyDto,
   ): Promise<Faculty> {
-    await this.validateFaculty(facultyDto);
+    await this.validateCommon(facultyDto);
     await this.facultySchema.findByIdAndUpdate(id, facultyDto);
     const result = await this.findFacultyById(id);
     return result;
   }
 
   async findAllFaculties(facultyQueryDto: FacultyQueryDto): Promise<Faculty[]> {
-    const { searchKey, branch } = facultyQueryDto;
+    const { searchKey } = facultyQueryDto;
     const query: Record<string, any> = {};
     if (searchKey) {
       query.name = new RegExp(searchKey);
-    }
-    if (branch) {
-      query.branch = new Types.ObjectId(branch);
     }
     const results = await this.facultySchema
       .find(query)
       .populate('award', '', this.awardSchema)
       .populate('headOfSection', '', this.profileSchema)
       .populate('eputeHead', '', this.profileSchema)
+      .exec();
+    return results;
+  }
+
+  async createMajor(majorDto: CreateMajorDto): Promise<Majors> {
+    await this.validateCommon(majorDto);
+    const major = await new this.majorSchema(majorDto).save();
+    const result = await this.findMajorById(major._id);
+    return result;
+  }
+
+  async findMajorById(id: string): Promise<Majors> {
+    const result = await this.majorSchema
+      .findById(id)
+      .populate('faculty', '', this.facultySchema)
+      .exec();
+    if (!result) {
+      new CommonException(404, 'Major not found.');
+    }
+    return result;
+  }
+
+  async updateMajor(id: string, majorDto: UpdateMajorDto): Promise<Majors> {
+    await this.validateCommon(majorDto);
+    await this.majorSchema.findByIdAndUpdate(id, majorDto);
+    const result = await this.findMajorById(id);
+    return result;
+  }
+
+  async findAllMajors(queryDto: MajorQueryDto): Promise<Majors[]> {
+    const { faculty } = queryDto;
+    const query: Record<string, any> = {};
+    if (faculty) {
+      query.faculty = new Types.ObjectId(faculty);
+    }
+    const results = await this.majorSchema
+      .find(query)
+      .populate('faculty', '', this.facultySchema)
       .exec();
     return results;
   }

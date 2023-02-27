@@ -40,6 +40,7 @@ import {
   DegreeLevelDocument,
 } from '../degreelevel/schemas/degreelevel.schema';
 import { HttpService } from '@nestjs/axios';
+import { getRandomCode } from 'src/commons/generateCodeProfile';
 
 @Injectable()
 export class UsersService {
@@ -117,6 +118,7 @@ export class UsersService {
     const profile = await this.createUserProfile({
       ...usersDto,
       user: user._id,
+      code: getRandomCode(6),
     });
     if (user.role === roles.STUDENT) {
       const isCreate = await this.createStudyProcess(user._id, profile._id);
@@ -135,7 +137,7 @@ export class UsersService {
     try {
       const createStudyProcess = this.httpService.post(
         `${linkAccessService.COURSE}/api/study-process`,
-        { profile: profileId },
+        { user: profileId },
         {
           headers: {
             'key-access': keyAccessCourseService,
@@ -296,6 +298,7 @@ export class UsersService {
         const profile = await new this.profileSchema({
           ...item,
           user: user._id,
+          code: getRandomCode(6),
           createdBy,
         }).save();
         if (user.role === roles.STUDENT) {
