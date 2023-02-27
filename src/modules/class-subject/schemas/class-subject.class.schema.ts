@@ -20,9 +20,6 @@ export class ClassInfos {
   })
   degreeLevel?: mongoose.Types.ObjectId;
 
-  @Prop()
-  classSize?: number;
-
   @Prop({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'majors',
@@ -31,9 +28,12 @@ export class ClassInfos {
 
   @Prop({
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'users',
+    ref: 'profiles',
   })
   homeroomteacher?: mongoose.Types.ObjectId;
+
+  @Prop()
+  classSize?: number;
 
   @Prop({ default: Date.now })
   createdAt?: Date;
