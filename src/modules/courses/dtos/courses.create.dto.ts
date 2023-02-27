@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { OutputCourseDto } from './courses.ouput.dto';
 import { TrainningTimeCourseDto } from './courses.trainningTime.dto';
-export class CourseCreateDto {
+export class CreateCourseDto {
   @ApiProperty({ required: true, default: 'DHKHMT12A' })
   name: string;
 
