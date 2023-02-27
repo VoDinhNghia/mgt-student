@@ -7,40 +7,71 @@ export type SubjectProcessDocument = SubjectProcess & Document;
 export class SubjectProcess {
   @Prop({
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'user',
-  })
-  lecturer?: mongoose.Types.ObjectId;
-
-  @Prop({
-    type: mongoose.Schema.Types.ObjectId,
     ref: 'subjects',
   })
   subject?: mongoose.Types.ObjectId;
 
+  @Prop()
+  learnDate?: Date; // Monday
+
+  @Prop()
+  time?: string; // 8h - 10h A.M
+
+  @Prop()
+  startDate?: Date;
+
+  @Prop()
+  endDate?: Date;
+
   @Prop({
-    type: Object,
+    type: {
+      week: Number,
+      time: Number,
+      output: String,
+      percent: Number,
+      examDate: Date,
+    },
   })
   midTermTest?: {
     week?: number;
     time?: number; // 60'
-    outPut?: string; // content test
-    percent?: string; // 30%
+    output?: string; // content test
+    percent?: number; // 30% / 100%
+    examDate?: Date;
   };
 
-  @Prop({ type: Object })
+  @Prop({
+    type: {
+      week: Number,
+      time: Number,
+      output: String,
+      percent: Number,
+      examDate: Date,
+    },
+  })
   finalExam?: {
     week?: number;
     time?: number; // 60'
-    outPut?: string; // content Test
+    output?: string; // content Test
     percent?: string; // 50%
+    examDate?: Date;
   };
 
-  @Prop({ type: Object })
+  @Prop({
+    type: {
+      week: Number,
+      time: Number,
+      output: String,
+      percent: Number,
+      examDate: Date,
+    },
+  })
   studentEssay?: {
     week?: number;
     time?: number; // 60'
-    outPut?: string; // content Test
+    output?: string; // content Test
     percent?: string; // 20%
+    examDate?: number;
   };
 
   @Prop({ default: Date.now })

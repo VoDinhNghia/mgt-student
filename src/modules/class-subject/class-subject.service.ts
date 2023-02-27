@@ -44,6 +44,7 @@ export class ClassSubjectService {
     private readonly validateField: ValidateField,
   ) {}
 
+  // When create subject => create subject project
   async createClass(createClassDto: CreateClassDto): Promise<ClassInfos> {
     const { course, degreeLevel, major, homeroomteacher } = createClassDto;
     const options = { name: createClassDto?.name?.trim() };

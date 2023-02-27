@@ -10,7 +10,7 @@ export class Subjects {
 
   @Prop({
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'user',
+    ref: 'profiles',
   })
   lecturer?: mongoose.Types.ObjectId;
 
@@ -32,33 +32,23 @@ export class Subjects {
   })
   degreelevel?: mongoose.Types.ObjectId;
 
+  @Prop({
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'semesters',
+  })
+  semester?: mongoose.Types.ObjectId;
+
   @Prop()
   openTime?: Date;
 
   @Prop()
   closeTime?: Date;
 
-  @Prop({ type: Object })
-  schedule?: {
-    learnDate?: Date; // Monday
-    time?: string; // 8h - 10h A.M
-    startDate?: Date;
-    endDate?: Date;
-    semester?: mongoose.Types.ObjectId;
-    process?: mongoose.Types.ObjectId; // will have collection for schedule subject.
-  };
-
   @Prop()
   size?: number;
 
   @Prop()
   numberCredits?: number; // 3 TC
-
-  @Prop({
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'semesters',
-  })
-  semester?: mongoose.Types.ObjectId;
 
   @Prop()
   numberOfFailed?: number;
