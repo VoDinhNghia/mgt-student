@@ -4,6 +4,7 @@ import {
   Get,
   Param,
   Post,
+  Put,
   Query,
   Res,
   UseGuards,
@@ -17,8 +18,9 @@ import { FacultiesService } from './faculties.service';
 import { Response } from 'express';
 import { ResponseRequest } from 'src/abstracts/responseApi';
 import { FacultyQueryDto } from './dtos/faculties.query.dto';
+import { UpdateFacultyDto } from './dtos/faculties.update.dto';
 
-@Controller('faculties')
+@Controller('api/faculties')
 @ApiTags('faculties')
 export class FacultiesController {
   constructor(private readonly facultyService: FacultiesService) {}
@@ -27,7 +29,7 @@ export class FacultiesController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @UseGuards(RoleGuard(roleTypeAccessApi.ADMIN))
-  async createBranch(
+  async createFaculty(
     @Res() res: Response,
     @Body() createFacultyDto: CreateFacultyDto,
   ): Promise<ResponseRequest> {
@@ -35,11 +37,27 @@ export class FacultiesController {
     return new ResponseRequest(res, result, 'Create faculty success');
   }
 
+  @Put('/:id')
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @UseGuards(RoleGuard(roleTypeAccessApi.ADMIN))
+  async updateFaculty(
+    @Param('id') id: string,
+    @Body() updateFacultyDto: UpdateFacultyDto,
+    @Res() res: Response,
+  ): Promise<ResponseRequest> {
+    const result = await this.facultyService.updateFaculty(
+      id,
+      updateFacultyDto,
+    );
+    return new ResponseRequest(res, result, 'Update faculty success.');
+  }
+
   @Get('/:id')
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @UseGuards(RoleGuard(roleTypeAccessApi.FULL))
-  async getById(
+  async getFacultyById(
     @Param('id') id: string,
     @Res() res: Response,
   ): Promise<ResponseRequest> {
