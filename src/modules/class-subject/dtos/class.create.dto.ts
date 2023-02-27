@@ -4,7 +4,7 @@ export class CreateClassDto {
   @ApiProperty({ required: true })
   course?: string;
 
-  @ApiProperty({ required: true })
+  @ApiProperty({ required: true, default: 'DHKHMT12A' })
   name?: string;
 
   @ApiProperty({ required: true })

@@ -5,7 +5,7 @@ import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { RoleGuard } from '../auth/role-auth.guard';
 import { ClassSubjectService } from './class-subject.service';
 import { Response } from 'express';
-import { CreateClassDto } from './dtos/class-subject.create-class.dto';
+import { CreateClassDto } from './dtos/class.create.dto';
 import { ResponseRequest } from 'src/abstracts/responseApi';
 
 @Controller('api/class-subject')

@@ -23,7 +23,7 @@ module.exports = {
     'class-methods-use-this': 'off',
     'consistent-return': 'off',
     'func-names': 'off',
-    'max-len': ['error', { 'code': 150, 'ignoreTemplateLiterals': true }],
+    'max-len': ['error', { 'code': 200, 'ignoreTemplateLiterals': true }],
     'newline-per-chained-call': 'off',
     'no-await-in-loop': 'off',
     'no-continue': 'off',

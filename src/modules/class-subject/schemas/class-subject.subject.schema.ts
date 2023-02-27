@@ -16,9 +16,9 @@ export class Subjects {
 
   @Prop({
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'faculties',
+    ref: 'majors',
   })
-  faculty?: mongoose.Types.ObjectId;
+  major?: mongoose.Types.ObjectId;
 
   @Prop({
     type: mongoose.Schema.Types.ObjectId,
@@ -38,28 +38,28 @@ export class Subjects {
   })
   semester?: mongoose.Types.ObjectId;
 
-  @Prop()
+  @Prop({ default: Date.now })
   openTime?: Date;
 
-  @Prop()
+  @Prop({ default: Date.now })
   closeTime?: Date;
 
-  @Prop()
+  @Prop({ default: 60 })
   size?: number;
 
-  @Prop()
+  @Prop({ default: 3 })
   numberCredits?: number; // 3 TC
 
-  @Prop()
+  @Prop({ default: 0 })
   numberOfFailed?: number;
 
-  @Prop()
+  @Prop({ default: 0 })
   numberOfPass?: number;
 
   @Prop()
   comment?: string;
 
-  @Prop()
+  @Prop({ default: true })
   status?: boolean; // open: true, close: false
 
   @Prop({ default: Date.now })
