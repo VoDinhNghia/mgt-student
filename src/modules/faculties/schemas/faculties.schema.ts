@@ -24,24 +24,20 @@ export class Faculty {
   award?: [mongoose.Types.ObjectId];
 
   @Prop({
-    type: [
-      {
-        lecturer: {
-          type: mongoose.Schema.Types.ObjectId,
-          ref: 'profiles',
-        },
-        headOfSection: Boolean,
-        eputyHead: Boolean,
-      },
-    ],
-  })
-  lecturerList?: [
-    {
-      lecturer?: mongoose.Types.ObjectId;
-      headOfSection?: boolean;
-      eputyHead?: boolean;
+    type: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'profiles',
     },
-  ];
+  })
+  headOfSection?: mongoose.Types.ObjectId;
+
+  @Prop({
+    type: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'profiles',
+    },
+  })
+  eputeHead?: mongoose.Types.ObjectId;
 
   @Prop({ default: Date.now })
   createdAt?: Date;

@@ -1,9 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { LecturerListDto } from './faculties.lecturerList.dto';
-export class CreateFacultyDto {
-  @ApiProperty({ required: true })
-  branch?: string;
 
+export class CreateFacultyDto {
   @ApiProperty({ required: true })
   name?: string;
 
@@ -16,6 +13,9 @@ export class CreateFacultyDto {
   @ApiProperty({ required: false, type: [String] })
   award?: [string];
 
-  @ApiProperty({ required: true, type: [LecturerListDto] })
-  lecturerList?: [LecturerListDto];
+  @ApiProperty({ required: false })
+  headOfSection?: string;
+
+  @ApiProperty({ required: false })
+  eputeHead?: string;
 }

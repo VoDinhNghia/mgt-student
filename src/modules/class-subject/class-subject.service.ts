@@ -9,6 +9,10 @@ import {
   DegreeLevelDocument,
 } from '../degreelevel/schemas/degreelevel.schema';
 import { Majors, MajorsDocument } from '../faculties/schemas/major.schema';
+import {
+  Profile,
+  ProfileDocument,
+} from '../users/schemas/users.profile.schema';
 import { Users, UsersDocument } from '../users/schemas/users.schema';
 import { CreateClassDto } from './dtos/class-subject.create-class.dto';
 import {
@@ -35,6 +39,8 @@ export class ClassSubjectService {
     private readonly subjectProcessSchema: Model<SubjectProcessDocument>,
     @InjectModel(Users.name)
     private readonly userSchema: Model<UsersDocument>,
+    @InjectModel(Profile.name)
+    private readonly profileSchema: Model<ProfileDocument>,
     @InjectModel(Course.name)
     private readonly courseSchema: Model<CourseDocument>,
     @InjectModel(Majors.name)
@@ -45,19 +51,29 @@ export class ClassSubjectService {
   ) {}
 
   // When create subject => create subject project
-  async createClass(createClassDto: CreateClassDto): Promise<ClassInfos> {
-    const { course, degreeLevel, major, homeroomteacher } = createClassDto;
-    const options = { name: createClassDto?.name?.trim() };
-    await this.validateField.existed(this.classSchema, options, 'Class name');
+
+  async validateClass(classDto: Record<string, any>): Promise<void> {
+    const { course, degreeLevel, major, homeroomteacher } = classDto;
     await this.validateField.byId(this.courseSchema, course, 'Course');
-    await this.validateField.byId(this.userSchema, homeroomteacher, 'User');
+    if (homeroomteacher) {
+      await this.validateField.byId(
+        this.profileSchema,
+        homeroomteacher,
+        'User',
+      );
+    }
     await this.validateField.byId(this.majorSchema, major, 'Major');
     await this.validateField.byId(
       this.degreeLevelSchema,
       degreeLevel,
       'DegreeLevel',
     );
+  }
 
+  async createClass(createClassDto: CreateClassDto): Promise<ClassInfos> {
+    const options = { name: createClassDto?.name?.trim() };
+    await this.validateField.existed(this.classSchema, options, 'Class name');
+    await this.validateClass(createClassDto);
     const createNew = await new this.classSchema(createClassDto).save();
     return createNew;
   }
@@ -71,7 +87,13 @@ export class ClassSubjectService {
   }
 
   async findClassById(id: string): Promise<ClassInfos> {
-    const result = await this.classSchema.findById(id);
+    const result = await this.classSchema
+      .findById(id)
+      .populate('course', '', this.courseSchema)
+      .populate('degreelevel', '', this.degreeLevelSchema)
+      .populate('major', '', this.majorSchema)
+      .populate('homeroomteacher', '', this.profileSchema)
+      .exec();
     if (!result) {
       new CommonException(404, `Class not found`);
     }

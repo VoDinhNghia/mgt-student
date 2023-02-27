@@ -4,7 +4,6 @@ import { Model, Types } from 'mongoose';
 import { CommonException } from 'src/abstracts/execeptionError';
 import { ValidateField } from 'src/abstracts/validateFieldById';
 import { Award, AwardDocument } from '../awards/schemas/awards.schema';
-import { Branch, BranchDocument } from '../branch/schemas/branch.schema';
 import {
   Profile,
   ProfileDocument,
@@ -18,20 +17,40 @@ export class FacultiesService {
   constructor(
     @InjectModel(Faculty.name)
     private readonly facultySchema: Model<FacultyDocument>,
-    @InjectModel(Branch.name)
-    private readonly branchSchema: Model<BranchDocument>,
     @InjectModel(Award.name)
     private readonly awardSchema: Model<AwardDocument>,
     @InjectModel(Profile.name)
     private readonly profileSchema: Model<ProfileDocument>,
-    private readonly validateField: ValidateField,
+    private readonly validate: ValidateField,
   ) {}
 
+  async validateFaculty(facultyDto: Record<string, any>): Promise<void> {
+    const { headOfSection, eputeHead, award = [] } = facultyDto;
+    if (award.length > 0) {
+      for (const item of award) {
+        await this.validate.byId(this.awardSchema, item, `Award ${item}`);
+      }
+    }
+    if (headOfSection) {
+      await this.validate.byId(
+        this.profileSchema,
+        headOfSection,
+        'headOfSection rofile',
+      );
+    }
+    if (eputeHead) {
+      await this.validate.byId(
+        this.profileSchema,
+        eputeHead,
+        'eputeHead profile',
+      );
+    }
+  }
+
   async createFaculty(createFacultyDto: CreateFacultyDto): Promise<Faculty> {
-    const { branch } = createFacultyDto;
-    await this.validateField.byId(this.branchSchema, branch, 'Branch');
     const option = { name: createFacultyDto.name };
-    await this.validateField.existed(this.facultySchema, option, 'Faculty');
+    await this.validateFaculty(createFacultyDto);
+    await this.validate.existed(this.facultySchema, option, 'Faculty');
     const result = await new this.facultySchema(createFacultyDto).save();
     return result;
   }
@@ -39,9 +58,9 @@ export class FacultiesService {
   async findOneFaculty(options: Record<string, any>): Promise<Faculty> {
     const result = await this.facultySchema
       .findOne(options)
-      .populate('branch', '', this.branchSchema)
       .populate('award', '', this.awardSchema)
-      .populate('lecturerList.lecturer', '', this.profileSchema)
+      .populate('headOfSection', '', this.profileSchema)
+      .populate('eputeHead', '', this.profileSchema)
       .exec();
     if (!result) {
       new CommonException(404, 'Faculty not found.');
@@ -52,9 +71,9 @@ export class FacultiesService {
   async findFacultyById(id: string): Promise<Faculty> {
     const result = await this.facultySchema
       .findById(id)
-      .populate('branch', '', this.branchSchema)
       .populate('award', '', this.awardSchema)
-      .populate('lecturerList.lecturer', '', this.profileSchema)
+      .populate('headOfSection', '', this.profileSchema)
+      .populate('eputeHead', '', this.profileSchema)
       .exec();
     if (!result) {
       new CommonException(404, 'Faculty not found.');
@@ -73,9 +92,9 @@ export class FacultiesService {
     }
     const results = await this.facultySchema
       .find(query)
-      .populate('branch', '', this.branchSchema)
       .populate('award', '', this.awardSchema)
-      .populate('lecturerList.lecturer', '', this.profileSchema)
+      .populate('headOfSection', '', this.profileSchema)
+      .populate('eputeHead', '', this.profileSchema)
       .exec();
     return results;
   }
