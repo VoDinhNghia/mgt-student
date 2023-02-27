@@ -36,28 +36,18 @@ export class Course {
   };
 
   @Prop({
-    subject: {
-      type: [mongoose.Schema.Types.ObjectId],
-      ref: 'subjects',
-    },
-  })
-  schedule?: [
-    {
-      semester?: mongoose.Schema.Types.ObjectId;
-      subject?: [mongoose.Types.ObjectId]; // [Nhap Mon Lap Trinh]
-    },
-  ];
-
-  @Prop({
     type: {
       toeic: String,
-      it: String,
+      it: {
+        type: Boolean,
+        default: true,
+      },
       conditionDiff: String,
     },
   })
   output?: {
     toeic?: string; // 400, 450, 500 ...
-    it?: string;
+    it?: boolean;
     conditionDiff?: string; // GDTC, GDQP ...
   };
 

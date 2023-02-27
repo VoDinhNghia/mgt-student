@@ -7,6 +7,7 @@ import {
   DegreeLevelSchema,
 } from '../degreelevel/schemas/degreelevel.schema';
 import { Majors, MajorSchema } from '../faculties/schemas/major.schema';
+import { Profile, ProfileSchema } from '../users/schemas/users.profile.schema';
 import { Users, UsersSchema } from '../users/schemas/users.schema';
 import { ClassSubjectController } from './class-subject.controller';
 import { ClassSubjectService } from './class-subject.service';
@@ -33,6 +34,7 @@ import {
       { name: Majors.name, schema: MajorSchema },
       { name: Course.name, schema: CourseSchema },
       { name: DegreeLevel.name, schema: DegreeLevelSchema },
+      { name: Profile.name, schema: ProfileSchema },
     ]),
   ],
   providers: [ClassSubjectService, ValidateField],

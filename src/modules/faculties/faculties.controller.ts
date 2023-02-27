@@ -38,7 +38,7 @@ export class FacultiesController {
   @Get('/:id')
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
-  @UseGuards(RoleGuard(roleTypeAccessApi.ADMIN))
+  @UseGuards(RoleGuard(roleTypeAccessApi.FULL))
   async getById(
     @Param('id') id: string,
     @Res() res: Response,
@@ -50,7 +50,7 @@ export class FacultiesController {
   @Get()
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
-  @UseGuards(RoleGuard(roleTypeAccessApi.ADMIN))
+  @UseGuards(RoleGuard(roleTypeAccessApi.FULL))
   async getListFaculties(
     @Query() facultyQueryDto: FacultyQueryDto,
     @Res() res: Response,

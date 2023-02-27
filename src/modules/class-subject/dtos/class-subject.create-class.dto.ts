@@ -16,6 +16,6 @@ export class CreateClassDto {
   @ApiProperty({ required: true })
   major?: string;
 
-  @ApiProperty({ required: true })
+  @ApiProperty({ required: false })
   homeroomteacher?: string;
 }
