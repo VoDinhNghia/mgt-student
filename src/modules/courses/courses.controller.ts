@@ -8,7 +8,7 @@ import { Response } from 'express';
 import { CoursesService } from './courses.service';
 import { CourseCreateDto } from './dtos/courses.create.dto';
 
-@Controller('courses')
+@Controller('api/courses')
 @ApiTags('cources')
 export class CoursesController {
   constructor(private readonly courseService: CoursesService) {}

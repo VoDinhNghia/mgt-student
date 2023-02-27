@@ -16,7 +16,7 @@ export class Subjects {
 
   @Prop({
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'faculty',
+    ref: 'faculties',
   })
   faculty?: mongoose.Types.ObjectId;
 
@@ -28,7 +28,7 @@ export class Subjects {
 
   @Prop({
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'degreelevel',
+    ref: 'degreelevels',
   })
   degreelevel?: mongoose.Types.ObjectId;
 

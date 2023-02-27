@@ -8,7 +8,7 @@ import { Response } from 'express';
 import { CreateClassDto } from './dtos/class-subject.create-class.dto';
 import { ResponseRequest } from 'src/abstracts/responseApi';
 
-@Controller('class-subject')
+@Controller('api/class-subject')
 @ApiTags('class-subject')
 export class ClassSubjectController {
   constructor(private readonly classSubjectService: ClassSubjectService) {}

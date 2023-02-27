@@ -10,6 +10,7 @@ import {
 } from '../users/schemas/users.profile.schema';
 import { CreateFacultyDto } from './dtos/faculties.create.dto';
 import { FacultyQueryDto } from './dtos/faculties.query.dto';
+import { UpdateFacultyDto } from './dtos/faculties.update.dto';
 import { Faculty, FacultyDocument } from './schemas/faculties.schema';
 
 @Injectable()
@@ -51,20 +52,8 @@ export class FacultiesService {
     const option = { name: createFacultyDto.name };
     await this.validateFaculty(createFacultyDto);
     await this.validate.existed(this.facultySchema, option, 'Faculty');
-    const result = await new this.facultySchema(createFacultyDto).save();
-    return result;
-  }
-
-  async findOneFaculty(options: Record<string, any>): Promise<Faculty> {
-    const result = await this.facultySchema
-      .findOne(options)
-      .populate('award', '', this.awardSchema)
-      .populate('headOfSection', '', this.profileSchema)
-      .populate('eputeHead', '', this.profileSchema)
-      .exec();
-    if (!result) {
-      new CommonException(404, 'Faculty not found.');
-    }
+    const faculty = await new this.facultySchema(createFacultyDto).save();
+    const result = await this.findFacultyById(faculty._id);
     return result;
   }
 
@@ -78,6 +67,16 @@ export class FacultiesService {
     if (!result) {
       new CommonException(404, 'Faculty not found.');
     }
+    return result;
+  }
+
+  async updateFaculty(
+    id: string,
+    facultyDto: UpdateFacultyDto,
+  ): Promise<Faculty> {
+    await this.validateFaculty(facultyDto);
+    await this.facultySchema.findByIdAndUpdate(id, facultyDto);
+    const result = await this.findFacultyById(id);
     return result;
   }
 
