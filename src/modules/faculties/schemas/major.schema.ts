@@ -24,24 +24,22 @@ export class Majors {
   foundYear?: Date;
 
   @Prop({
-    type: mongoose.Schema.Types.ObjectId,
+    type: [mongoose.Schema.Types.ObjectId],
     ref: 'awards',
   })
   award?: [mongoose.Types.ObjectId];
 
   @Prop({
-    lecturer: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'users',
-    },
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'profiles',
   })
-  lecturerList?: [
-    {
-      lecturer?: mongoose.Types.ObjectId;
-      headOfSection?: boolean;
-      eputyHead?: boolean;
-    },
-  ];
+  headOfSection?: mongoose.Types.ObjectId;
+
+  @Prop({
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'profiles',
+  })
+  eputeHead?: mongoose.Types.ObjectId;
 
   @Prop({ default: Date.now })
   createdAt?: Date;
