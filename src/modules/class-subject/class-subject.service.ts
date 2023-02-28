@@ -135,8 +135,8 @@ export class ClassSubjectService {
   async createSubject(subjectDto: CreateSubjectDto): Promise<Subjects> {
     await this.validateCommon(subjectDto);
     const subject = await new this.subjectSchema(subjectDto).save();
-    const result = await this.findSubjectById(subject._id);
     await this.createSubjectProcess(subject._id, subjectDto);
+    const result = await this.findSubjectById(subject._id);
     return result;
   }
 
@@ -193,15 +193,6 @@ export class ClassSubjectService {
         },
       },
       { $unwind: '$course' },
-      {
-        $lookup: {
-          from: 'degreelevels',
-          localField: 'degreelevel',
-          foreignField: '_id',
-          as: 'degreelevel',
-        },
-      },
-      { $unwind: '$degreelevel' },
       {
         $lookup: {
           from: 'semesters',
