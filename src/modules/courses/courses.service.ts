@@ -22,9 +22,9 @@ export class CoursesService {
   ) {}
 
   async validateCourse(courseDto: CreateCourseDto): Promise<void> {
-    const { faculty } = courseDto;
-    if (faculty) {
-      await this.validate.byId(this.facultySchema, faculty, 'Faculty');
+    const { name } = courseDto;
+    if (name) {
+      await this.validate.existed(this.facultySchema, { name }, 'Course name');
     }
   }
 
@@ -46,7 +46,7 @@ export class CoursesService {
     return result;
   }
 
-  async updateCourse(id, courseDto: UpdateCourseDto): Promise<Course> {
+  async updateCourse(id: string, courseDto: UpdateCourseDto): Promise<Course> {
     await this.validateCourse(courseDto);
     await this.courseSchema.findByIdAndUpdate(id, courseDto);
     const result = await this.findCourseById(id);
