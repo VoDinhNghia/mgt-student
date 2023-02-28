@@ -128,4 +128,6 @@ export class FacultiesController {
     const result = await this.facultyService.findFacultyById(id);
     return new ResponseRequest(res, result, 'Get faculty by id success');
   }
+
+  // get all list subject of major by semester
 }
