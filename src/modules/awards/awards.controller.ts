@@ -20,7 +20,7 @@ import { CreateAwardDto } from './dtos/awards.create.dto';
 import { UpdateAwardDto } from './dtos/awards.update.dto';
 import { QueryAwardDto } from './dtos/awards.query.dto';
 
-@Controller('awards')
+@Controller('api/awards')
 @ApiTags('awards')
 export class AwardsController {
   constructor(private readonly awardService: AwardsService) {}

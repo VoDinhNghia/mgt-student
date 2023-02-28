@@ -18,7 +18,7 @@ import { CreateUnionDto } from './dtos/unions.create.dto';
 import { ResponseRequest } from 'src/abstracts/responseApi';
 import { UpdateUnionDto } from './dtos/unions.update.dto';
 
-@Controller('unions')
+@Controller('api/unions')
 @ApiTags('unions')
 export class UnionsController {
   constructor(private readonly unionService: UnionsService) {}

@@ -16,7 +16,7 @@ import { UsersService } from 'src/modules/users/users.service';
 import { ResponseRequest } from './abstracts/responseApi';
 // import { cryptoPassWord } from './commons/crypto';
 
-@Controller('auth')
+@Controller('api/auth')
 @ApiTags('auth')
 export class AppController {
   constructor(

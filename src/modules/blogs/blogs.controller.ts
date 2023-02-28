@@ -7,7 +7,7 @@ import { RoleGuard } from '../auth/role-auth.guard';
 import { roleTypeAccessApi } from 'src/commons/constants';
 import { ResponseRequest } from 'src/abstracts/responseApi';
 
-@Controller('blogs')
+@Controller('api/blogs')
 @ApiTags('blogs')
 export class BlogsController {
   constructor(private readonly blogService: BlogsService) {}

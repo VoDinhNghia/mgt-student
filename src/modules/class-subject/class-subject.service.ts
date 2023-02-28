@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { CommonException } from 'src/abstracts/execeptionError';
 import { ValidateField } from 'src/abstracts/validateFieldById';
 import { Course, CourseDocument } from '../courses/schemas/courses.schema';
@@ -23,7 +23,9 @@ import {
 } from '../users/schemas/users.profile.schema';
 import { Users, UsersDocument } from '../users/schemas/users.schema';
 import { CreateClassDto } from './dtos/class.create.dto';
+import { UpdateClassDto } from './dtos/class.update.dto';
 import { CreateSubjectDto } from './dtos/subject.create.dto';
+import { UpdateSubjectDto } from './dtos/subject.update.dto';
 import {
   ClassInfos,
   ClassInfosDocument,
@@ -123,25 +125,120 @@ export class ClassSubjectService {
     return result;
   }
 
+  async updateClass(id: string, classDto: UpdateClassDto): Promise<ClassInfos> {
+    await this.validateCommon(classDto);
+    await this.classSchema.findByIdAndUpdate(id, classDto);
+    const result = await this.findClassById(id);
+    return result;
+  }
+
   async createSubject(subjectDto: CreateSubjectDto): Promise<Subjects> {
     await this.validateCommon(subjectDto);
     const subject = await new this.subjectSchema(subjectDto).save();
     const result = await this.findSubjectById(subject._id);
+    await this.createSubjectProcess(subject._id, subjectDto);
     return result;
   }
 
+  async createSubjectProcess(
+    subjectId: string,
+    processDto: CreateSubjectDto,
+  ): Promise<SubjectProcess> {
+    try {
+      const result = await new this.subjectProcessSchema({
+        subject: subjectId,
+        ...processDto,
+      }).save();
+      return result;
+    } catch (error) {
+      console.log(error);
+      await this.subjectSchema.findByIdAndDelete(subjectId);
+      new CommonException(500, 'Can not create subject process.');
+    }
+  }
+
   async findSubjectById(id: string): Promise<Subjects> {
-    const result = await this.subjectSchema
-      .findById(id)
-      .populate('course', '', this.courseSchema)
-      .populate('degreelevel', '', this.degreeLevelSchema)
-      .populate('semester', '', this.semesterSchema)
-      .populate('lecturer', '', this.profileSchema)
-      .populate('major', '', this.majorSchema)
-      .exec();
-    if (!result) {
+    const aggre = [{ $match: { _id: new Types.ObjectId(id) } }];
+    const aggregate = this.lookupSubject(aggre);
+    const result = await this.subjectSchema.aggregate(aggregate);
+    if (!result[0]) {
       new CommonException(404, 'Subject not found.');
     }
+    return result[0];
+  }
+
+  async updateSubject(
+    id: string,
+    subjectDto: UpdateSubjectDto,
+  ): Promise<Subjects> {
+    await this.validateCommon(subjectDto);
+    await this.subjectSchema.findByIdAndUpdate(id, subjectDto);
+    await this.subjectProcessSchema.findOneAndUpdate(
+      { subject: new Types.ObjectId(id) },
+      subjectDto,
+    );
+    const result = await this.findSubjectById(id);
     return result;
+  }
+
+  lookupSubject(aggre = []) {
+    const aggregate = [
+      ...aggre,
+      {
+        $lookup: {
+          from: 'courses',
+          localField: 'course',
+          foreignField: '_id',
+          as: 'course',
+        },
+      },
+      { $unwind: '$course' },
+      {
+        $lookup: {
+          from: 'degreelevels',
+          localField: 'degreelevel',
+          foreignField: '_id',
+          as: 'degreelevel',
+        },
+      },
+      { $unwind: '$degreelevel' },
+      {
+        $lookup: {
+          from: 'semesters',
+          localField: 'semester',
+          foreignField: '_id',
+          as: 'semester',
+        },
+      },
+      { $unwind: '$semester' },
+      {
+        $lookup: {
+          from: 'profiles',
+          localField: 'lecturer',
+          foreignField: '_id',
+          as: 'lecturer',
+        },
+      },
+      { $unwind: '$lecturer' },
+      {
+        $lookup: {
+          from: 'majors',
+          localField: 'major',
+          foreignField: '_id',
+          as: 'major',
+        },
+      },
+      { $unwind: '$lecturer' },
+      {
+        $lookup: {
+          from: 'subjectprocesses',
+          localField: '_id',
+          foreignField: 'subject',
+          as: 'process',
+        },
+      },
+      { $unwind: '$process' },
+    ];
+    return aggregate;
   }
 }

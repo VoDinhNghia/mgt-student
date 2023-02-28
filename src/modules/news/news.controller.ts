@@ -21,7 +21,7 @@ import { UpdateNewDto } from './dtos/news.update.dto';
 import { QueryNewDto } from './dtos/news.query.dto';
 import { ResponseRequest } from 'src/abstracts/responseApi';
 
-@Controller('news')
+@Controller('api/news')
 @ApiTags('news')
 export class NewsController {
   constructor(private readonly newService: NewsService) {}

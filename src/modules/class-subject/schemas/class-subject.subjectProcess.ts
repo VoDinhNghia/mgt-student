@@ -12,7 +12,7 @@ export class SubjectProcess {
   subject?: mongoose.Types.ObjectId;
 
   @Prop()
-  learnDate?: Date; // Monday
+  learnDate?: string; // Monday
 
   @Prop()
   time?: string; // 8h - 10h A.M
