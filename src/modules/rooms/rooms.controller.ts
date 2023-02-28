@@ -20,7 +20,7 @@ import { Response } from 'express';
 import { QueryRoomDto } from './dtos/rooms.query.dto';
 import { UpdateRoomDto } from './dtos/rooms.update.dto';
 
-@Controller('rooms')
+@Controller('api/rooms')
 @ApiTags('rooms')
 export class RoomsController {
   constructor(private readonly roomService: RoomsService) {}

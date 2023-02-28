@@ -23,7 +23,7 @@ import { ResponseRequest } from 'src/abstracts/responseApi';
 import { RoleGuard } from '../auth/role-auth.guard';
 import { roleTypeAccessApi } from 'src/commons/constants';
 
-@Controller('countries')
+@Controller('api/countries')
 @ApiTags('countries')
 export class CountriesController {
   constructor(private readonly countryService: CountriesService) {}

@@ -20,7 +20,7 @@ import { StorageObjectDto } from '../users/dto/user.file-upload.dto';
 import { AttachmentsService } from './attachments.service';
 import { Request, Response } from 'express';
 import { ResponseRequest } from 'src/abstracts/responseApi';
-@Controller('attachments')
+@Controller('api/attachments')
 @ApiTags('attachments')
 export class AttachmentsController {
   constructor(private readonly attachmentService: AttachmentsService) {}

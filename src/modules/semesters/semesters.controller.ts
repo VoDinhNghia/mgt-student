@@ -19,7 +19,7 @@ import { SemestersService } from './semesters.service';
 import { Response } from 'express';
 import { UpdateSemesterDto } from './dtos/semesters.update.dto';
 
-@Controller('semesters')
+@Controller('api/semesters')
 @ApiTags('semesters')
 export class SemestersController {
   constructor(private readonly semesterService: SemestersService) {}

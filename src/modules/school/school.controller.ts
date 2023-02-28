@@ -17,7 +17,7 @@ import { Response } from 'express';
 import { ResponseRequest } from 'src/abstracts/responseApi';
 import { roleTypeAccessApi } from 'src/commons/constants';
 
-@Controller('school')
+@Controller('api/school')
 @ApiTags('school')
 export class SchoolController {
   constructor(private readonly schoolService: SchoolService) {

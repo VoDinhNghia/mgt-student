@@ -20,7 +20,7 @@ import { BranchQueryDto } from './dtos/branch.query.dto';
 import { BranchUpdateDto } from './dtos/branch.update.dto';
 import { ResponseRequest } from 'src/abstracts/responseApi';
 
-@Controller('branchs')
+@Controller('api/branchs')
 @ApiTags('branchs')
 export class BranchController {
   constructor(private readonly branchService: BranchService) {}

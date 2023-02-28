@@ -32,7 +32,7 @@ import { CreateLeaderSchoolDto } from './dto/user.create.leader-school.dto';
 import { UpdateLeaderSchoolDto } from './dto/user.update.leader-school.dto';
 import { QueryLeaderSchoolDto } from './dto/user.query.leader-school.dto';
 
-@Controller('users')
+@Controller('api/users')
 @ApiTags('users')
 export class UsersController {
   constructor(private readonly service: UsersService) {}
