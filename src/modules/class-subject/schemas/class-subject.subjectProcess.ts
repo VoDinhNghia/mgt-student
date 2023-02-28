@@ -53,7 +53,7 @@ export class SubjectProcess {
     week?: number;
     time?: number; // 60'
     output?: string; // content Test
-    percent?: string; // 50%
+    percent?: number; // 50%
     examDate?: Date;
   };
 
@@ -70,8 +70,8 @@ export class SubjectProcess {
     week?: number;
     time?: number; // 60'
     output?: string; // content Test
-    percent?: string; // 20%
-    examDate?: number;
+    percent?: number; // 20%
+    examDate?: Date;
   };
 
   @Prop({ default: Date.now })

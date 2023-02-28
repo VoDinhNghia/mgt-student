@@ -11,7 +11,7 @@ export class ProcessSubjectDto {
   output?: string;
 
   @ApiProperty({ required: true, default: 30 })
-  percent?: string;
+  percent?: number;
 
   @ApiProperty({ required: true, default: '2023-03-01' })
   examDate?: Date;
