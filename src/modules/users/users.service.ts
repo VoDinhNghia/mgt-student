@@ -5,12 +5,7 @@ import { CreateUserDto } from './dto/users.create.dto';
 import { Users, UsersDocument } from './schemas/users.schema';
 import { Profile, ProfileDocument } from './schemas/users.profile.schema';
 import { cryptoPassWord } from 'src/commons/crypto';
-import {
-  keyAccessCourseService,
-  linkAccessService,
-  roles,
-  statusUser,
-} from 'src/commons/constants';
+import { roles, statusUser } from 'src/commons/constants';
 import { UsersFillterDto } from './dto/user.filter.dto';
 import { validateEmail } from 'src/commons/validateEmail';
 import { CommonException } from 'src/abstracts/execeptionError';
@@ -39,8 +34,8 @@ import {
   DegreeLevel,
   DegreeLevelDocument,
 } from '../degreelevel/schemas/degreelevel.schema';
-import { HttpService } from '@nestjs/axios';
 import { getRandomCode } from 'src/commons/generateCodeProfile';
+import { DbConnection } from 'src/commons/dbConnection';
 
 @Injectable()
 export class UsersService {
@@ -63,7 +58,7 @@ export class UsersService {
     @InjectModel(DegreeLevel.name)
     private readonly degreeLevelSchema: Model<DegreeLevelDocument>,
     private readonly validate: ValidateField,
-    private readonly httpService: HttpService,
+    private readonly db: DbConnection,
   ) {}
 
   async validateUser(usersValidateDto: Record<string, any>): Promise<void> {
@@ -135,19 +130,32 @@ export class UsersService {
     profileId: string,
   ): Promise<boolean> {
     try {
-      const createStudyProcess = this.httpService.post(
-        `${linkAccessService.COURSE}/api/study-process`,
-        { user: profileId },
-        {
-          headers: {
-            'key-access': keyAccessCourseService,
-          },
+      const studyProcessDto: Record<string, any> = {
+        user: profileId,
+        status: 'STUDYING',
+        toeicCertificate: {
+          attachment: null,
+          scores: null,
+          expirationDate: null,
         },
-      );
-      await createStudyProcess.toPromise();
+        itCertificate: {
+          attachment: null,
+          scores: null,
+        },
+        createdAt: new Date(),
+        updateAt: new Date(),
+      };
+      const result = await this.db
+        .collection('studyprocesses')
+        .insertOne(studyProcessDto);
+      if (!result) {
+        await this.userSchema.findByIdAndDelete(userId);
+        await this.profileSchema.findByIdAndDelete(profileId);
+        return false;
+      }
       return true;
-    } catch {
-      // console.log('error', error);
+    } catch (error) {
+      console.log(error);
       await this.userSchema.findByIdAndDelete(userId);
       await this.profileSchema.findByIdAndDelete(profileId);
       return false;
@@ -270,6 +278,7 @@ export class UsersService {
       }
       const existedEmail = await this.userSchema.findOne({ email: item.email });
       let user: UsersDocument = null;
+      let profile: Record<string, any> = null;
       if (existedEmail) {
         item.status = 'Email existed already.';
         result.push(item);
@@ -295,26 +304,30 @@ export class UsersService {
         continue;
       }
       try {
-        const profile = await new this.profileSchema({
+        profile = await new this.profileSchema({
           ...item,
           user: user._id,
           code: getRandomCode(6),
           createdBy,
         }).save();
-        if (user.role === roles.STUDENT) {
-          const isCreate = await this.createStudyProcess(user._id, profile._id);
-          if (!isCreate) {
-            item.status = 'Can not create study process.';
-            continue;
-          }
-        }
-        item.status = 'Import user success.';
       } catch {
         item.status = 'Can not create profile.';
         await this.userSchema.findByIdAndDelete(user._id);
         result.push(item);
         continue;
       }
+      if (user.role === roles.STUDENT) {
+        const isCreateStudyProcess = await this.createStudyProcess(
+          user._id,
+          profile._id,
+        );
+        if (!isCreateStudyProcess) {
+          item.status = 'Can not create study process.';
+          result.push(item);
+          continue;
+        }
+      }
+      item.status = 'Import user success.';
       result.push(item);
     }
     return result;

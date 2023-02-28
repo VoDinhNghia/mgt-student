@@ -21,7 +21,7 @@ import {
   DegreeLevelSchema,
 } from '../degreelevel/schemas/degreelevel.schema';
 import { Majors, MajorSchema } from '../faculties/schemas/major.schema';
-import { HttpModule } from '@nestjs/axios';
+import { DbConnection } from 'src/commons/dbConnection';
 @Module({
   imports: [
     MongooseModule.forFeature([
@@ -35,9 +35,8 @@ import { HttpModule } from '@nestjs/axios';
       { name: DegreeLevel.name, schema: DegreeLevelSchema },
       { name: Majors.name, schema: MajorSchema },
     ]),
-    HttpModule,
   ],
-  providers: [UsersService, ValidateField],
+  providers: [UsersService, ValidateField, DbConnection],
   controllers: [UsersController],
   exports: [UsersService],
 })
