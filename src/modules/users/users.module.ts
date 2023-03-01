@@ -21,7 +21,10 @@ import {
   DegreeLevelSchema,
 } from '../degreelevel/schemas/degreelevel.schema';
 import { Majors, MajorSchema } from '../faculties/schemas/major.schema';
-import { DbConnection } from 'src/commons/dbConnection';
+import {
+  StudyProcess,
+  StudyProcessSchema,
+} from './schemas/study-process.schema';
 @Module({
   imports: [
     MongooseModule.forFeature([
@@ -34,9 +37,10 @@ import { DbConnection } from 'src/commons/dbConnection';
       { name: Award.name, schema: AwardSchema },
       { name: DegreeLevel.name, schema: DegreeLevelSchema },
       { name: Majors.name, schema: MajorSchema },
+      { name: StudyProcess.name, schema: StudyProcessSchema },
     ]),
   ],
-  providers: [UsersService, ValidateField, DbConnection],
+  providers: [UsersService, ValidateField],
   controllers: [UsersController],
   exports: [UsersService],
 })

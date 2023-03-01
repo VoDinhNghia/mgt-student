@@ -5,7 +5,7 @@ import { CreateUserDto } from './dto/users.create.dto';
 import { Users, UsersDocument } from './schemas/users.schema';
 import { Profile, ProfileDocument } from './schemas/users.profile.schema';
 import { cryptoPassWord } from 'src/commons/crypto';
-import { roles, statusUser } from 'src/commons/constants';
+import { EstatusUserProfile, roles, statusUser } from 'src/commons/constants';
 import { UsersFillterDto } from './dto/user.filter.dto';
 import { validateEmail } from 'src/commons/validateEmail';
 import { CommonException } from 'src/abstracts/execeptionError';
@@ -35,7 +35,11 @@ import {
   DegreeLevelDocument,
 } from '../degreelevel/schemas/degreelevel.schema';
 import { getRandomCode } from 'src/commons/generateCodeProfile';
-import { DbConnection } from 'src/commons/dbConnection';
+import {
+  StudyProcess,
+  StudyProcessDocument,
+} from './schemas/study-process.schema';
+import { CreateStudyProcessDto } from './dto/study-process.create.dto';
 
 @Injectable()
 export class UsersService {
@@ -57,8 +61,9 @@ export class UsersService {
     private readonly awardSchema: Model<AwardDocument>,
     @InjectModel(DegreeLevel.name)
     private readonly degreeLevelSchema: Model<DegreeLevelDocument>,
+    @InjectModel(StudyProcess.name)
+    private readonly studyProcessSchema: Model<StudyProcessDocument>,
     private readonly validate: ValidateField,
-    private readonly db: DbConnection,
   ) {}
 
   async validateUser(usersValidateDto: Record<string, any>): Promise<void> {
@@ -130,9 +135,9 @@ export class UsersService {
     profileId: string,
   ): Promise<boolean> {
     try {
-      const studyProcessDto: Record<string, any> = {
+      const studyProcessDto: CreateStudyProcessDto = {
         user: profileId,
-        status: 'STUDYING',
+        status: EstatusUserProfile.STUDYING,
         toeicCertificate: {
           attachment: null,
           scores: null,
@@ -142,12 +147,8 @@ export class UsersService {
           attachment: null,
           scores: null,
         },
-        createdAt: new Date(),
-        updateAt: new Date(),
       };
-      const result = await this.db
-        .collection('studyprocesses')
-        .insertOne(studyProcessDto);
+      const result = await new this.studyProcessSchema(studyProcessDto).save();
       if (!result) {
         await this.userSchema.findByIdAndDelete(userId);
         await this.profileSchema.findByIdAndDelete(profileId);

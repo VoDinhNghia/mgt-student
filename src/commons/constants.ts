@@ -99,3 +99,11 @@ export const linkAccessService = {
   FRONTEND: 'http://localhost:8001',
   LIBRARY_FRONTEND: 'http://localhost:8002',
 };
+
+export enum EstatusUserProfile {
+  STUDYING = 'STUDYING',
+  GRADUATE = 'GRADUATE',
+  SAVEING = 'SAVEING',
+  RESERVE = 'RESERVE',
+  LEAVE = 'LEAVE',
+}
