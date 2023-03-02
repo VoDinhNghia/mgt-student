@@ -9,8 +9,8 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { ResponseRequest } from 'src/abstracts/responseApi';
-import { roleTypeAccessApi } from 'src/commons/constants';
+import { ResponseRequest } from 'src/utils/responseApi';
+import { roleTypeAccessApi } from 'src/constants/constant';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { RoleGuard } from '../auth/role-auth.guard';
 import { DegreelevelService } from './degreelevel.service';

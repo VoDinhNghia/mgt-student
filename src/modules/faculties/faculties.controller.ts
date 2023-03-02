@@ -10,13 +10,13 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { roleTypeAccessApi } from 'src/commons/constants';
+import { roleTypeAccessApi } from 'src/constants/constant';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { RoleGuard } from '../auth/role-auth.guard';
 import { CreateFacultyDto } from './dtos/faculties.create.dto';
 import { FacultiesService } from './faculties.service';
 import { Response } from 'express';
-import { ResponseRequest } from 'src/abstracts/responseApi';
+import { ResponseRequest } from 'src/utils/responseApi';
 import { FacultyQueryDto } from './dtos/faculties.query.dto';
 import { UpdateFacultyDto } from './dtos/faculties.update.dto';
 import { CreateMajorDto } from './dtos/major.create.dto';

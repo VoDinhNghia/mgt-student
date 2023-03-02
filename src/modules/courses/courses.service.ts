@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { CommonException } from 'src/abstracts/execeptionError';
-import { ValidateField } from 'src/abstracts/validateFieldById';
+import { CommonException } from 'src/exceptions/execeptionError';
+import { ValidateField } from 'src/validates/validateFieldById';
 import {
   Faculty,
   FacultyDocument,

@@ -13,7 +13,7 @@ import { LoginDto } from './modules/auth/dtos/auth.login.dto';
 import { JwtAuthGuard } from './modules/auth/jwt-auth.guard';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { UsersService } from 'src/modules/users/users.service';
-import { ResponseRequest } from './abstracts/responseApi';
+import { ResponseRequest } from './utils/responseApi';
 // import { cryptoPassWord } from './commons/crypto';
 
 @Controller('api/auth')

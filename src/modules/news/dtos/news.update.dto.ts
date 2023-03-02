@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { typeNews } from 'src/commons/constants';
+import { typeNews } from 'src/constants/constant';
 export class UpdateNewDto {
   @ApiProperty({ required: false })
   title?: string;

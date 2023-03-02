@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { EscholarshirpType } from 'src/commons/constants';
+import { EscholarshirpType } from 'src/constants/constant';
 
 export class CreateScholarshipDto {
   @ApiProperty({ required: true })

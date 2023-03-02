@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { CommonException } from 'src/abstracts/execeptionError';
+import { CommonException } from 'src/exceptions/execeptionError';
 import { CreateRoomDto } from './dtos/rooms.create.dto';
 import { QueryRoomDto } from './dtos/rooms.query.dto';
 import { UpdateRoomDto } from './dtos/rooms.update.dto';

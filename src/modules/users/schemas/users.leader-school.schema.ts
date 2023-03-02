@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { Document } from 'mongoose';
-import { EtypeLeaderSchool } from 'src/commons/constants';
+import { EtypeLeaderSchool } from 'src/constants/constant';
 
 export type LeaderSchoolDocument = LeaderSchool & Document;
 

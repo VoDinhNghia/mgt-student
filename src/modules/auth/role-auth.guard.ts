@@ -1,4 +1,4 @@
-import { permission, roleTypeAccessApi } from 'src/commons/constants';
+import { permission, roleTypeAccessApi } from 'src/constants/constant';
 import { CanActivate, ExecutionContext, mixin, Type } from '@nestjs/common';
 import { UsersDto } from '../users/dto/users.dto';
 import { JwtAuthGuard } from './jwt-auth.guard';

@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { Document } from 'mongoose';
-import { schoolId } from 'src/commons/constants';
+import { schoolId } from 'src/constants/constant';
 
 export type SchoolInfoDocument = SchoolInfo & Document;
 

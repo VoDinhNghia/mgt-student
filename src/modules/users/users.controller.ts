@@ -16,7 +16,7 @@ import {
 import { CreateUserDto } from './dto/users.create.dto';
 import { UsersService } from './users.service';
 import { ApiBearerAuth, ApiConsumes, ApiTags } from '@nestjs/swagger';
-import { roleTypeAccessApi, statusUser } from 'src/commons/constants';
+import { roleTypeAccessApi, statusUser } from 'src/constants/constant';
 import { UsersUpdateDto } from './dto/user.update.dto';
 import { RoleGuard } from '../auth/role-auth.guard';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
@@ -27,7 +27,7 @@ import { StorageObjectDto } from './dto/user.file-upload.dto';
 import { diskStorage } from 'multer';
 import { readFileSync } from 'fs';
 import { UpdateProfileDto } from './dto/user.update-profile.dto';
-import { ResponseRequest } from 'src/abstracts/responseApi';
+import { ResponseRequest } from 'src/utils/responseApi';
 import { CreateLeaderSchoolDto } from './dto/user.create.leader-school.dto';
 import { UpdateLeaderSchoolDto } from './dto/user.update.leader-school.dto';
 import { QueryLeaderSchoolDto } from './dto/user.query.leader-school.dto';

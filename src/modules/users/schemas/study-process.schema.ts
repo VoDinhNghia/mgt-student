@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { Document } from 'mongoose';
-import { EstatusUserProfile } from 'src/commons/constants';
+import { EstatusUserProfile } from 'src/constants/constant';
 
 export type StudyProcessDocument = StudyProcess & Document;
 

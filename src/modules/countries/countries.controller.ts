@@ -19,9 +19,9 @@ import { join } from 'path';
 import { readFileSync } from 'fs';
 import { QueryPovinceDto } from './dto/countries.query-province.dto';
 import { QueryDistrictDto } from './dto/countries.query-district.dto';
-import { ResponseRequest } from 'src/abstracts/responseApi';
+import { ResponseRequest } from 'src/utils/responseApi';
 import { RoleGuard } from '../auth/role-auth.guard';
-import { roleTypeAccessApi } from 'src/commons/constants';
+import { roleTypeAccessApi } from 'src/constants/constant';
 
 @Controller('api/countries')
 @ApiTags('countries')

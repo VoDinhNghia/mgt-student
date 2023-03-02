@@ -4,13 +4,13 @@ import { Model, Types } from 'mongoose';
 import { CreateUserDto } from './dto/users.create.dto';
 import { Users, UsersDocument } from './schemas/users.schema';
 import { Profile, ProfileDocument } from './schemas/users.profile.schema';
-import { cryptoPassWord } from 'src/commons/crypto';
-import { EstatusUserProfile, roles, statusUser } from 'src/commons/constants';
+import { cryptoPassWord } from 'src/constants/crypto';
+import { EstatusUserProfile, roles, statusUser } from 'src/constants/constant';
 import { UsersFillterDto } from './dto/user.filter.dto';
-import { validateEmail } from 'src/commons/validateEmail';
-import { CommonException } from 'src/abstracts/execeptionError';
-import { ValidateField } from 'src/abstracts/validateFieldById';
-import { Pagination } from 'src/abstracts/pagePagination';
+import { validateEmail } from 'src/validates/validateEmail';
+import { CommonException } from 'src/exceptions/execeptionError';
+import { ValidateField } from 'src/validates/validateFieldById';
+import { Pagination } from 'src/utils/pagePagination';
 import { UpdateProfileDto } from './dto/user.update-profile.dto';
 import {
   LeaderSchool,
@@ -34,7 +34,7 @@ import {
   DegreeLevel,
   DegreeLevelDocument,
 } from '../degreelevel/schemas/degreelevel.schema';
-import { getRandomCode } from 'src/commons/generateCodeProfile';
+import { getRandomCode } from 'src/utils/generateCodeProfile';
 import {
   StudyProcess,
   StudyProcessDocument,

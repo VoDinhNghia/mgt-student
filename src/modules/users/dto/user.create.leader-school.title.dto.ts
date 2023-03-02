@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { EtypeLeaderSchool } from 'src/commons/constants';
+import { EtypeLeaderSchool } from 'src/constants/constant';
 
 export class TitleLeaDerSchoolDto {
   @ApiProperty({ required: true })

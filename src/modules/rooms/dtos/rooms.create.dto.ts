@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { EroomType } from 'src/commons/constants';
+import { EroomType } from 'src/constants/constant';
 import { DiviceRoomDto } from './rooms.divice.dto';
 
 export class CreateRoomDto {
