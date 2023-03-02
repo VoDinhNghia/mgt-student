@@ -7,6 +7,7 @@ import {
   Put,
   Res,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { roleTypeAccessApi } from 'src/constants/constant';
@@ -19,6 +20,7 @@ import { ResponseRequest } from 'src/utils/responseApi';
 import { CreateSubjectDto } from './dtos/subject.create.dto';
 import { UpdateSubjectDto } from './dtos/subject.update.dto';
 import { UpdateClassDto } from './dtos/class.update.dto';
+import { ValidatePercentPoint } from 'src/validates/validatePercentPointSubject';
 
 @Controller('api/class-subject')
 @ApiTags('class-subject')
@@ -41,6 +43,7 @@ export class ClassSubjectController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @UseGuards(RoleGuard(roleTypeAccessApi.ADMIN))
+  @UseInterceptors(ValidatePercentPoint)
   async createSubject(
     @Res() res: Response,
     @Body() subjectDto: CreateSubjectDto,
