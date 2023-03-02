@@ -4,8 +4,8 @@ import { BlogsService } from './blogs.service';
 import { Response } from 'express';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { RoleGuard } from '../auth/role-auth.guard';
-import { roleTypeAccessApi } from 'src/commons/constants';
-import { ResponseRequest } from 'src/abstracts/responseApi';
+import { roleTypeAccessApi } from 'src/constants/constant';
+import { ResponseRequest } from 'src/utils/responseApi';
 
 @Controller('api/blogs')
 @ApiTags('blogs')

@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { Document } from 'mongoose';
-import { EscholarshirpType } from 'src/commons/constants';
+import { EscholarshirpType } from 'src/constants/constant';
 
 export type ScholarshipDocument = Scholarship & Document;
 

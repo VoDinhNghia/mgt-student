@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { EtypeAward } from 'src/commons/constants';
+import { EtypeAward } from 'src/constants/constant';
 
 export class CreateAwardDto {
   @ApiProperty({ required: true })

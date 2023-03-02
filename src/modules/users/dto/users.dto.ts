@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { ErolesEnum } from 'src/commons/constants';
+import { ErolesEnum } from 'src/constants/constant';
 export class UsersDto {
   @ApiProperty({ required: true })
   email: string;

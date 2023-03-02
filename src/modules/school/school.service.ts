@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { CommonException } from 'src/abstracts/execeptionError';
-import { ValidateField } from 'src/abstracts/validateFieldById';
-import { schoolId } from 'src/commons/constants';
+import { CommonException } from 'src/exceptions/execeptionError';
+import { ValidateField } from 'src/validates/validateFieldById';
+import { schoolId } from 'src/constants/constant';
 import {
   Attachment,
   AttachmentDocument,

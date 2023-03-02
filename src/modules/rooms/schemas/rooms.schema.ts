@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
-import { EroomType } from 'src/commons/constants';
+import { EroomType } from 'src/constants/constant';
 
 export type RoomsDocument = Rooms & Document;
 

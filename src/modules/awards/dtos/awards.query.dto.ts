@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { QueryPagination } from 'src/abstracts/queryPaginationDto';
-import { EtypeAward } from 'src/commons/constants';
+import { QueryPagination } from 'src/utils/queryPaginationDto';
+import { EtypeAward } from 'src/constants/constant';
 
 export class QueryAwardDto extends QueryPagination {
   @ApiProperty({

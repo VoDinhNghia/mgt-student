@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { EuserGender } from 'src/commons/constants';
+import { EuserGender } from 'src/constants/constant';
 import { IdentityCardNumberDto } from './user.profile.identityCardNumber.dto';
 import { LocationProfileDto } from './user.profile.location.dto';
 

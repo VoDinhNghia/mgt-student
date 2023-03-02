@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { EstatusUserProfile } from 'src/commons/constants';
+import { EstatusUserProfile } from 'src/constants/constant';
 import { ItCertificateDto } from './study-process.itCer.dto';
 import { ToeicCertificateDto } from './study-process.toeicCer.dto';
 

@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { EuserGender } from 'src/commons/constants';
+import { EuserGender } from 'src/constants/constant';
 import { UsersDto } from './users.dto';
 
 export class CreateUserDto extends UsersDto {

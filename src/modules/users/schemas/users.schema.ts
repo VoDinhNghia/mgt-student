@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
-import { ErolesEnum, statusUser } from '../../../commons/constants';
+import { ErolesEnum, statusUser } from '../../../constants/constant';
 
 export type UsersDocument = Users & Document;
 
