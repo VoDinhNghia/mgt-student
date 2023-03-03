@@ -15,7 +15,7 @@ export class CreditManagement {
     type: String,
     required: true,
   })
-  total?: number; // money per credit
+  moneyPerCredit?: number; // money per credit
 
   @Prop({
     type: mongoose.Schema.Types.ObjectId,

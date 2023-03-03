@@ -1,42 +1,39 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { Document } from 'mongoose';
+import { getRandomCode } from 'src/utils/generateCodeProfile';
 
 export type PaymentStudyFeeDocument = PaymentStudyFee & Document;
 
 @Schema()
 export class PaymentStudyFee {
   @Prop({
-    type: Number, // random
+    default: getRandomCode(5),
     required: true,
   })
   receiptId?: number;
 
   @Prop({
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'users',
+    ref: 'profiles',
   })
   user?: mongoose.Types.ObjectId;
 
-  // When registering for a course, the data will be synchronized with this table to create and update
+  @Prop({ default: 0 })
+  totalMoney?: number;
+
   @Prop({
-    subject: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'subjects',
+    type: {
+      description: String,
+      bank: String,
+      numberAccount: Number,
+      type: String,
     },
   })
-  subjectList?: [
-    {
-      subject?: mongoose.Types.ObjectId;
-      total?: number; // Total amount to pay for this course (ex: 3TC * Amount per credit)
-    },
-  ];
-
-  @Prop()
   payments?: {
     description?: string;
     bank?: string;
     numberAccount?: number;
-    type?: string;
+    type?: string; // online, direct
   };
 
   @Prop({
@@ -46,7 +43,7 @@ export class PaymentStudyFee {
   semester?: mongoose.Types.ObjectId;
 
   @Prop()
-  status?: string;
+  status?: boolean;
 
   @Prop({ default: Date.now })
   createdAt?: Date;

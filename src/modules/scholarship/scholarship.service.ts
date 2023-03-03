@@ -40,6 +40,7 @@ export class ScholarshipService {
   // create function to calculate total student's final grade
   // => compare with condition in scholarshipsettings collection
   // => create document in userscholarships (create multi document)
+  // export list scholarship => file excel
 
   async getTrainningPointUser(
     profileId: string,
