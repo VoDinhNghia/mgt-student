@@ -107,3 +107,5 @@ export enum EstatusUserProfile {
   RESERVE = 'RESERVE',
   LEAVE = 'LEAVE',
 }
+
+export const trainningPointDefault = 60;
