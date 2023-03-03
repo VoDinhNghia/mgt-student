@@ -17,8 +17,8 @@ export class ScholarshipSettings {
   @Prop({ default: 65 })
   trainningPoints?: number;
 
-  @Prop({ default: 0 })
-  numberSujectsFailed: number;
+  @Prop({ default: 80 })
+  percentTuition?: number;
 
   @Prop({ default: Date.now })
   createdAt?: Date;

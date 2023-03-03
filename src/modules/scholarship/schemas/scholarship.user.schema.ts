@@ -20,6 +20,9 @@ export class ScholarshipUser {
   @Prop()
   point?: number;
 
+  @Prop({ default: 0 })
+  rewardMoney?: number; // totalMoney (collection paymentstudyfees) * percentTuition (colecction scholarshipsettings)
+
   @Prop({ default: Date.now })
   createdAt?: Date;
 
