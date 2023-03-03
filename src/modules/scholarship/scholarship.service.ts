@@ -1,6 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
+import { trainningPointDefault } from 'src/constants/constant';
+import { DbConnection } from 'src/constants/dbConnection';
 import {
   Attachment,
   AttachmentDocument,
@@ -32,9 +34,40 @@ export class ScholarshipService {
     private readonly semesterSchema: Model<SemesterDocument>,
     @InjectModel(Attachment.name)
     private readonly attachmentSchema: Model<AttachmentDocument>,
+    private readonly db: DbConnection,
   ) {}
 
   // create function to calculate total student's final grade
   // => compare with condition in scholarshipsettings collection
   // => create document in userscholarships (create multi document)
+
+  async getTrainningPointUser(
+    profileId: string,
+    semesterId: string,
+  ): Promise<number> {
+    const cursorAgg = await this.db.collection('tranningpoints').aggregate([
+      {
+        $match: {
+          user: new Types.ObjectId(profileId),
+          semester: new Types.ObjectId(semesterId),
+          status: true,
+        },
+      },
+      {
+        $lookup: {
+          from: 'volunteeprograms',
+          localField: 'program',
+          foreignField: '_id',
+          as: 'program',
+        },
+      },
+      { $unwind: '$program' },
+    ]);
+    const result = await cursorAgg?.toArray();
+    const totalTrainningPoint = result.reduce(
+      (x: any, y: any) => (x.program?.point ?? 0) + (y.program?.point ?? 0),
+      0,
+    );
+    return totalTrainningPoint + trainningPointDefault;
+  }
 }

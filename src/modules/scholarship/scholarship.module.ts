@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
+import { DbConnection } from 'src/constants/dbConnection';
 import {
   Attachment,
   AttachmentlSchema,
@@ -46,6 +47,6 @@ import { ScholarshipService } from './scholarship.service';
     ]),
   ],
   controllers: [ScholarshipController],
-  providers: [ScholarshipService],
+  providers: [ScholarshipService, DbConnection],
 })
 export class ScholarshipModule {}
