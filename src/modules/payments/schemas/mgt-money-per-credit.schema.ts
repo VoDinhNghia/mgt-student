@@ -1,10 +1,11 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { Document } from 'mongoose';
 
-export type CreditManagementDocument = CreditManagement & Document;
+export type MoneyPerCreditManagementDocument = MoneyPerCreditManagement &
+  Document;
 
 @Schema()
-export class CreditManagement {
+export class MoneyPerCreditManagement {
   @Prop({
     type: String,
     required: true,
@@ -30,5 +31,6 @@ export class CreditManagement {
   updateAt?: Date;
 }
 
-export const CreditManagementSchema =
-  SchemaFactory.createForClass(CreditManagement);
+export const MoneyPerCreditManagementSchema = SchemaFactory.createForClass(
+  MoneyPerCreditManagement,
+);

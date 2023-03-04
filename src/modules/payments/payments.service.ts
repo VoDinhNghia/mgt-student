@@ -3,11 +3,17 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model, ObjectId, Types } from 'mongoose';
 import { DbConnection } from 'src/constants/dbConnection';
 import { CommonException } from 'src/exceptions/execeptionError';
+import {
+  Semester,
+  SemesterDocument,
+} from '../semesters/schemas/semesters.schema';
+import { CreateMoneyPerCreditMgtDto } from './dtos/mgt-money-per-credit.create.dto';
+import { UpdateMoneyPerCreditMgtDto } from './dtos/mgt-money-per-credit.update.dto';
 import { QueryTuitionUser } from './dtos/query.tuition-user.dto';
 import {
-  CreditManagement,
-  CreditManagementDocument,
-} from './schemas/creditManagement.schema';
+  MoneyPerCreditManagement,
+  MoneyPerCreditManagementDocument,
+} from './schemas/mgt-money-per-credit.schema';
 import {
   PaymentStudyFee,
   PaymentStudyFeeDocument,
@@ -16,10 +22,12 @@ import {
 @Injectable()
 export class PaymentsService {
   constructor(
-    @InjectModel(CreditManagement.name)
-    private readonly creditManageSchema: Model<CreditManagementDocument>,
+    @InjectModel(MoneyPerCreditManagement.name)
+    private readonly moneyCreditSchema: Model<MoneyPerCreditManagementDocument>,
     @InjectModel(PaymentStudyFee.name)
     private readonly paymentSchema: Model<PaymentStudyFeeDocument>,
+    @InjectModel(Semester.name)
+    private readonly semesterSchema: Model<SemesterDocument>,
     private readonly db: DbConnection,
   ) {}
   // Will have method get tuition of user,
@@ -29,6 +37,68 @@ export class PaymentsService {
   // controller api path is /:userId
   // method create (cashier role) => check user, semester if !null => update status => true
   // if payment is online ? what is flow?
+
+  async validateMoneyPerCreditMgt(
+    creditMgtDto: CreateMoneyPerCreditMgtDto,
+  ): Promise<void> {
+    const { semester } = creditMgtDto;
+    if (semester) {
+      const semesterInfo = await this.semesterSchema.findOne({
+        _id: new Types.ObjectId(semester),
+      });
+      if (!semesterInfo) {
+        new CommonException(404, 'Semester not found.');
+      }
+      const creditInfo = await this.moneyCreditSchema.findOne({
+        semester: new Types.ObjectId(semester),
+      });
+      if (creditInfo) {
+        new CommonException(
+          409,
+          'Money per credit of this semester existed already.',
+        );
+      }
+    }
+  }
+
+  async createMoneyPerCreditMgt(
+    creditMgtDto: CreateMoneyPerCreditMgtDto,
+  ): Promise<MoneyPerCreditManagement> {
+    await this.validateMoneyPerCreditMgt(creditMgtDto);
+    const result = await new this.moneyCreditSchema(creditMgtDto).save();
+    return result;
+  }
+
+  async updateMoneyPerCreditMgt(
+    id: string,
+    creditMgtDto: UpdateMoneyPerCreditMgtDto,
+  ): Promise<MoneyPerCreditManagement> {
+    await this.validateMoneyPerCreditMgt(creditMgtDto);
+    await this.moneyCreditSchema.findByIdAndUpdate(id, creditMgtDto);
+    const result = await this.findByIdMoneyPerCreditMgt(id);
+    return result;
+  }
+
+  async findByIdMoneyPerCreditMgt(
+    id: string,
+  ): Promise<MoneyPerCreditManagement> {
+    const result = await this.moneyCreditSchema
+      .findById(id)
+      .populate('semester', '', this.semesterSchema)
+      .exec();
+    if (!result) {
+      new CommonException(404, 'Money per credit not found.');
+    }
+    return result;
+  }
+
+  async findAllMoneyPerCreditMgt(): Promise<MoneyPerCreditManagement[]> {
+    const results = await this.moneyCreditSchema
+      .find({})
+      .populate('semester', '', this.semesterSchema)
+      .exec();
+    return results;
+  }
 
   async findTuitionUserInSemester(
     queryDto: QueryTuitionUser,
@@ -75,7 +145,7 @@ export class PaymentsService {
     subjectList = [],
     semester: string,
   ): Promise<Record<string, any>[]> {
-    const creditMgt = await this.creditManageSchema.findOne({
+    const creditMgt = await this.moneyCreditSchema.findOne({
       semester: new Types.ObjectId(semester),
     });
     if (!creditMgt) {
