@@ -11,10 +11,6 @@ import {
 } from '../semesters/schemas/semesters.schema';
 import { Scholarship, ScholarshipSchema } from './schemas/scholarship.schema';
 import {
-  ScholarshipSettings,
-  ScholarshipSettingSchema,
-} from './schemas/scholarship.setting.schema';
-import {
   ScholarshipUser,
   ScholarshipUserSchema,
 } from './schemas/scholarship.user.schema';
@@ -27,10 +23,6 @@ import { ScholarshipService } from './scholarship.service';
       {
         name: Scholarship.name,
         schema: ScholarshipSchema,
-      },
-      {
-        name: ScholarshipSettings.name,
-        schema: ScholarshipSettingSchema,
       },
       {
         name: ScholarshipUser.name,

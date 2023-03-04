@@ -3,6 +3,8 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { trainningPointDefault } from 'src/constants/constant';
 import { DbConnection } from 'src/constants/dbConnection';
+import { CommonException } from 'src/exceptions/execeptionError';
+import { Pagination } from 'src/utils/pagePagination';
 import {
   Attachment,
   AttachmentDocument,
@@ -11,11 +13,10 @@ import {
   Semester,
   SemesterDocument,
 } from '../semesters/schemas/semesters.schema';
+import { CreateScholarshipDto } from './dtos/scholarship.create.dto';
+import { QueryScholarshipDto } from './dtos/scholarship.query.dto';
+import { UpdateScholarshipDto } from './dtos/scholarship.update.dto';
 import { Scholarship, ScholarshipDocument } from './schemas/scholarship.schema';
-import {
-  ScholarshipSettingDocument,
-  ScholarshipSettings,
-} from './schemas/scholarship.setting.schema';
 import {
   ScholarshipUser,
   ScholarshipUserDocument,
@@ -26,8 +27,6 @@ export class ScholarshipService {
   constructor(
     @InjectModel(Scholarship.name)
     private readonly scholarshipSchema: Model<ScholarshipDocument>,
-    @InjectModel(ScholarshipSettings.name)
-    private readonly scholarshipSettingSchema: Model<ScholarshipSettingDocument>,
     @InjectModel(ScholarshipUser.name)
     private readonly scholarshipUserSchema: Model<ScholarshipUserDocument>,
     @InjectModel(Semester.name)
@@ -41,6 +40,87 @@ export class ScholarshipService {
   // => compare with condition in scholarshipsettings collection
   // => create document in userscholarships (create multi document)
   // export list scholarship => file excel
+
+  async validateScholarShip(
+    scholarshipDto: CreateScholarshipDto,
+  ): Promise<void> {
+    const { semester, name } = scholarshipDto;
+    if (semester) {
+      const semesterInfo = await this.semesterSchema.findById(semester);
+      if (!semesterInfo) {
+        new CommonException(404, 'Semester not found.');
+      }
+    }
+    if (name) {
+      const scholarship = await this.scholarshipSchema.findOne({
+        semester: new Types.ObjectId(semester),
+        name: name.trim(),
+      });
+      if (scholarship) {
+        new CommonException(409, 'Scholarship name existed already.');
+      }
+    }
+  }
+
+  async createScholarship(
+    scholarshipDto: CreateScholarshipDto,
+  ): Promise<Scholarship> {
+    await this.validateScholarShip(scholarshipDto);
+    const result = await new this.scholarshipSchema(scholarshipDto).save();
+    return result;
+  }
+
+  async updateScholarship(
+    id: string,
+    scholarshipDto: UpdateScholarshipDto,
+  ): Promise<Scholarship> {
+    await this.validateScholarShip(scholarshipDto);
+    await this.scholarshipSchema.findByIdAndUpdate(id, scholarshipDto);
+    const result = await this.findScholarshipById(id);
+    return result;
+  }
+
+  async findScholarshipById(id: string): Promise<Scholarship> {
+    const result = await this.scholarshipSchema
+      .findById(id)
+      .populate('semester', '', this.semesterSchema)
+      .exec();
+    if (!result) {
+      new CommonException(404, 'Scholarship not found.');
+    }
+    return result;
+  }
+
+  async findAllScholarship(
+    queryDto: QueryScholarshipDto,
+  ): Promise<Scholarship[]> {
+    const { semester, type, limit, page, searchKey } = queryDto;
+    const match: Record<string, any> = { $match: {} };
+    if (semester) {
+      match.$match.semester = new Types.ObjectId(semester);
+    }
+    if (type) {
+      match.$match.type = type.trim();
+    }
+    if (searchKey) {
+      match.$match.$or = [{ name: new RegExp(searchKey) }];
+    }
+    const agg = [
+      match,
+      {
+        $lookup: {
+          from: 'semesters',
+          localField: 'semester',
+          foreignField: '_id',
+          as: 'semester',
+        },
+      },
+      { $unwind: '$semester' },
+    ];
+    const aggregate: any = new Pagination(limit, page, agg);
+    const results = await this.scholarshipSchema.aggregate(aggregate);
+    return results;
+  }
 
   async getTrainningPointUser(
     profileId: string,

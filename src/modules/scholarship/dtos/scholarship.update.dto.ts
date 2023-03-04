@@ -1,30 +1,30 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { EscholarshirpType } from 'src/constants/constant';
 
-export class CreateScholarshipDto {
-  @ApiProperty({ required: true })
+export class UpdateScholarshipDto {
+  @ApiProperty({ required: false })
   name?: string;
 
-  @ApiProperty({ required: true })
+  @ApiProperty({ required: false })
   semester?: string;
 
   @ApiProperty({
-    required: true,
+    required: false,
     enum: EscholarshirpType,
     default: EscholarshirpType.EXCELLENCE,
   })
   type?: string;
 
-  @ApiProperty({ required: true })
+  @ApiProperty({ required: false })
   content?: string;
 
-  @ApiProperty({ default: 8.0, required: true })
+  @ApiProperty({ default: 8.0, required: false })
   accumulatedPoints?: number;
 
   @ApiProperty({ default: 65, required: false })
   trainningPoints?: number;
 
-  @ApiProperty({ default: 80, required: true })
+  @ApiProperty({ default: 80, required: false })
   percentTuition?: number;
 
   @ApiProperty({ required: false })
