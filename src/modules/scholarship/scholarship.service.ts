@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model, Types } from 'mongoose';
+import { Model, ObjectId, Types } from 'mongoose';
 import { trainningPointDefault } from 'src/constants/constant';
 import { DbConnection } from 'src/constants/dbConnection';
 import { CommonException } from 'src/exceptions/execeptionError';
@@ -13,6 +13,7 @@ import {
   Semester,
   SemesterDocument,
 } from '../semesters/schemas/semesters.schema';
+import { CreateScholarshipUser } from './dtos/scholarship-user.create.dto';
 import { CreateScholarshipDto } from './dtos/scholarship.create.dto';
 import { QueryScholarshipDto } from './dtos/scholarship.query.dto';
 import { UpdateScholarshipDto } from './dtos/scholarship.update.dto';
@@ -120,6 +121,79 @@ export class ScholarshipService {
     const aggregate: any = new Pagination(limit, page, agg);
     const results = await this.scholarshipSchema.aggregate(aggregate);
     return results;
+  }
+
+  async createScholarshipUser(
+    scholarshipUserDto: CreateScholarshipUser,
+  ): Promise<ScholarshipUser> {
+    await this.validateScholarshipUser(scholarshipUserDto);
+    const result = await new this.scholarshipUserSchema(
+      scholarshipUserDto,
+    ).save();
+    return result;
+  }
+
+  async validateScholarshipUser(
+    scholarshipUserDto: CreateScholarshipUser,
+  ): Promise<void> {
+    const { user, scholarship } = scholarshipUserDto;
+    if (user) {
+      const profile = await this.db
+        .collection('profiles')
+        .findOne({ _id: new Types.ObjectId(user) });
+      if (!profile) {
+        new CommonException(404, 'User not found.');
+      }
+    }
+    if (scholarship) {
+      const scholarshipInfo = await this.scholarshipSchema.findById(
+        scholarship,
+      );
+      if (!scholarshipInfo) {
+        new CommonException(404, 'Scholarship not found.');
+      }
+    }
+  }
+
+  async getAccumalatedUser(semester: string): Promise<Record<string, any>[]> {
+    const subjectIds = await this.getSubjectIds(semester);
+    const match = { $match: { subject: { $in: subjectIds } } };
+    const aggregate = [
+      match,
+      {
+        $lookup: {
+          from: 'studyprocesses',
+          localField: 'studyprocess',
+          foreignField: '_id',
+          as: 'studyprocess',
+        },
+      },
+      { $unwind: '$studyprocess' },
+      {
+        $lookup: {
+          from: 'profiles',
+          localField: 'studyprocess.user',
+          foreignField: '_id',
+          as: 'userProfile',
+        },
+      },
+      { $unwind: '$userProfile' },
+    ];
+    const cursorAgg = await this.db
+      .collection('subjectregisters')
+      .aggregate(aggregate);
+    const result = await cursorAgg.toArray();
+    return result;
+  }
+
+  async getSubjectIds(semester: string): Promise<ObjectId[]> {
+    const subjectList = await this.db
+      .collection('subjects')
+      .find({ semester: new Types.ObjectId(semester), status: true });
+    const subjectIds = subjectList.map((subject) => {
+      return subject._id;
+    });
+    return subjectIds;
   }
 
   async getTrainningPointUser(
