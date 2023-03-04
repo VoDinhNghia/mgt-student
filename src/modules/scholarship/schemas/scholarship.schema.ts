@@ -26,6 +26,15 @@ export class Scholarship {
   @Prop()
   content?: string;
 
+  @Prop({ default: 8.0 })
+  accumulatedPoints?: number;
+
+  @Prop({ default: 65 })
+  trainningPoints?: number;
+
+  @Prop({ default: 80 })
+  percentTuition?: number;
+
   @Prop({
     type: [mongoose.Schema.Types.ObjectId],
     ref: 'attachments',
