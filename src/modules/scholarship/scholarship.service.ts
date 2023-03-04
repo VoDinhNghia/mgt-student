@@ -190,7 +190,7 @@ export class ScholarshipService {
     const subjectList = await this.db
       .collection('subjects')
       .find({ semester: new Types.ObjectId(semester), status: true });
-    const subjectIds = subjectList.map((subject) => {
+    const subjectIds = subjectList.map((subject: any) => {
       return subject._id;
     });
     return subjectIds;

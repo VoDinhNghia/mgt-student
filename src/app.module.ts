@@ -22,6 +22,7 @@ import { SemestersModule } from './modules/semesters/semesters.module';
 import { SchoolModule } from './modules/school/school.module';
 import { ScholarshipModule } from './modules/scholarship/scholarship.module';
 import { DegreelevelModule } from './modules/degreelevel/degreelevel.module';
+import { PaymentsModule } from './modules/payments/payments.module';
 
 @Module({
   imports: [
@@ -46,6 +47,7 @@ import { DegreelevelModule } from './modules/degreelevel/degreelevel.module';
     SchoolModule,
     ScholarshipModule,
     DegreelevelModule,
+    PaymentsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
