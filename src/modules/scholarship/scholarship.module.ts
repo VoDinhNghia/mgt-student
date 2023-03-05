@@ -9,6 +9,7 @@ import {
   Semester,
   SemesterSchema,
 } from '../semesters/schemas/semesters.schema';
+import { Profile, ProfileSchema } from '../users/schemas/users.profile.schema';
 import { Scholarship, ScholarshipSchema } from './schemas/scholarship.schema';
 import {
   ScholarshipUser,
@@ -35,6 +36,10 @@ import { ScholarshipService } from './scholarship.service';
       {
         name: Attachment.name,
         schema: AttachmentlSchema,
+      },
+      {
+        name: Profile.name,
+        schema: ProfileSchema,
       },
     ]),
   ],
