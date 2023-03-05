@@ -1,10 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model, ObjectId, Types } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { trainningPointDefault } from 'src/constants/constant';
 import { DbConnection } from 'src/constants/dbConnection';
 import { CommonException } from 'src/exceptions/execeptionError';
 import { Pagination } from 'src/utils/pagePagination';
+import { SubjectUserRegister } from 'src/utils/subjectUserRegister';
 import {
   Attachment,
   AttachmentDocument,
@@ -155,48 +156,40 @@ export class ScholarshipService {
     }
   }
 
-  async getAccumalatedUser(semester: string): Promise<Record<string, any>[]> {
-    const subjectIds = await this.getSubjectIds(semester);
-    const match = { $match: { subject: { $in: subjectIds } } };
-    const aggregate = [
-      match,
-      {
-        $lookup: {
-          from: 'studyprocesses',
-          localField: 'studyprocess',
-          foreignField: '_id',
-          as: 'studyprocess',
-        },
-      },
-      { $unwind: '$studyprocess' },
-      {
-        $lookup: {
-          from: 'profiles',
-          localField: 'studyprocess.user',
-          foreignField: '_id',
-          as: 'userProfile',
-        },
-      },
-      { $unwind: '$userProfile' },
-    ];
-    const cursorAgg = await this.db
-      .collection('subjectregisters')
-      .aggregate(aggregate);
-    const result = await cursorAgg.toArray();
-    return result;
+  async findAllAccumalatedAndTrainningPoint(
+    semester: string,
+  ): Promise<Record<string, any>[]> {
+    const semesterInfo = await this.db
+      .collection('semesters')
+      .findOne({ _id: new Types.ObjectId(semester) });
+    if (!semesterInfo) {
+      new CommonException(404, 'Semester not found.');
+    }
+    // get all studyprocesses with status: STUDYING, aggregate to get info user
+    // use for => call getTotalAccumalatedUserInSemester and getTrainningPointUserInSemester
+    return [];
   }
 
-  async getSubjectIds(semester: string): Promise<ObjectId[]> {
-    const subjectList = await this.db
-      .collection('subjects')
-      .find({ semester: new Types.ObjectId(semester), status: true });
-    const subjectIds = subjectList.map((subject: any) => {
-      return subject._id;
-    });
-    return subjectIds;
+  async getTotalAccumalatedUserInSemester(
+    semester: string,
+    profileId: string,
+  ): Promise<number> {
+    const subjectService = new SubjectUserRegister(this.db);
+    const subjectIds = await subjectService.getSubjectLists(semester);
+    const result = await subjectService.getSubjectUserInSemester(
+      profileId,
+      subjectIds,
+    );
+    let totalAccumalated = 0;
+    let totalNumberCredits = 0;
+    for (const item of result) {
+      totalAccumalated += item?.accumalatedPoint * item?.subject?.numberCredits;
+      totalNumberCredits += item?.subject?.numberCredits;
+    }
+    return totalAccumalated / totalNumberCredits;
   }
 
-  async getTrainningPointUser(
+  async getTrainningPointUserInSemester(
     profileId: string,
     semesterId: string,
   ): Promise<number> {
