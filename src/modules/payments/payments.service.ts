@@ -93,6 +93,8 @@ export class PaymentsService {
     return results;
   }
 
+  // async createUserPayment()
+
   async findTuitionUserInSemester(
     queryDto: QueryTuitionUser,
   ): Promise<Record<string, any>> {
