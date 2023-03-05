@@ -12,8 +12,8 @@ export class CreateUserDto extends UsersDto {
   @ApiProperty({ required: true })
   middleName: string;
 
-  @ApiProperty({ required: true })
-  mobile: number;
+  @ApiProperty({ required: true, default: '0984848480' })
+  mobile: string;
 
   @ApiProperty({ required: true, enum: EuserGender, default: EuserGender.MALE })
   gender: string;

@@ -31,8 +31,8 @@ export class UpdateProfileDto {
   @ApiProperty({ required: false })
   avatar?: string;
 
-  @ApiProperty({ required: false })
-  mobile?: number;
+  @ApiProperty({ required: false, default: '0948494849' })
+  mobile?: string;
 
   @ApiProperty({
     required: false,

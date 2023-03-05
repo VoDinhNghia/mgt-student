@@ -65,7 +65,7 @@ export class Profile {
   avatar?: string;
 
   @Prop()
-  mobile?: number;
+  mobile?: string;
 
   @Prop({ enum: EuserGender, default: EuserGender.MALE })
   gender?: string;

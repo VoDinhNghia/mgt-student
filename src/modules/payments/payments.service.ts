@@ -4,6 +4,7 @@ import { Model, ObjectId, Types } from 'mongoose';
 import { EstatusPayments } from 'src/constants/constant';
 import { DbConnection } from 'src/constants/dbConnection';
 import { CommonException } from 'src/exceptions/execeptionError';
+import { getRandomCodeReceiptId } from 'src/utils/generateCodePayment';
 import {
   Semester,
   SemesterDocument,
@@ -108,7 +109,12 @@ export class PaymentsService {
       new CommonException(404, 'User profile not found.');
     }
     await this.validateSemester(semester);
-    const result = await new this.paymentSchema(paymentDto).save();
+    const newPaymentDto: CreateUserPaymentDto & { receiptId: string } = {
+      ...paymentDto,
+      receiptId: getRandomCodeReceiptId(4),
+    };
+    const newDocument = await new this.paymentSchema(newPaymentDto).save();
+    const result = await this.findUserPaymentById(newDocument._id);
     return result;
   }
 
@@ -139,6 +145,7 @@ export class PaymentsService {
     queryDto: QueryTuitionUser,
   ): Promise<Record<string, any>> {
     const { semester, profile } = queryDto;
+    await this.validateSemester(semester);
     const studyprocess = await this.db
       .collection('studyprocesses')
       .findOne({ user: new Types.ObjectId(profile) });
@@ -175,14 +182,15 @@ export class PaymentsService {
     });
     return {
       listSubjects: listSubjectUser,
-      tuitionStatus: tuitionInsemester.status || EstatusPayments.OWED,
+      tuitionStatus: tuitionInsemester?.status || EstatusPayments.OWED,
     };
   }
 
   async getSubjectLists(semester: string): Promise<ObjectId[]> {
-    const subjectList = await this.db
+    const cursorQuery = await this.db
       .collection('subjects')
       .find({ semester: new Types.ObjectId(semester), status: true });
+    const subjectList = await cursorQuery.toArray();
     const subjectIds = subjectList.map((subject: any) => {
       return subject._id;
     });
@@ -197,7 +205,7 @@ export class PaymentsService {
       semester: new Types.ObjectId(semester),
     });
     if (!creditMgt) {
-      new CommonException(404, 'Credit management not found');
+      new CommonException(404, 'Money per credit not found.');
     }
     const { moneyPerCredit } = creditMgt;
     for (const item of subjectList) {

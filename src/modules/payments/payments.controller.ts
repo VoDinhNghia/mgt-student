@@ -5,6 +5,7 @@ import {
   Param,
   Post,
   Put,
+  Query,
   Res,
   UseGuards,
 } from '@nestjs/common';
@@ -17,6 +18,8 @@ import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { RoleGuard } from '../auth/role-auth.guard';
 import { ErolesUser } from 'src/constants/constant';
 import { UpdateMoneyPerCreditMgtDto } from './dtos/mgt-money-per-credit.update.dto';
+import { QueryTuitionUser } from './dtos/query.tuition-user.dto';
+import { CreateUserPaymentDto } from './dtos/user.payments.create.dto';
 
 @Controller('api/payments')
 @ApiTags('payments')
@@ -68,5 +71,31 @@ export class PaymentsController {
   ): Promise<ResponseRequest> {
     const result = await this.paymentService.findByIdMoneyPerCreditMgt(id);
     return new ResponseRequest(res, result, 'Get mgt money credit success.');
+  }
+
+  @Get('/user-tuition/')
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @UseGuards(RoleGuard([ErolesUser.ACCOUNTANT, ErolesUser.STUDENT]))
+  async getTuitionUserInSemester(
+    @Query() queryDto: QueryTuitionUser,
+    @Res() res: Response,
+  ): Promise<ResponseRequest> {
+    const result = await this.paymentService.findTuitionUserInSemester(
+      queryDto,
+    );
+    return new ResponseRequest(res, result, 'Get tuition of user success.');
+  }
+
+  @Post('/user-tuition')
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @UseGuards(RoleGuard([ErolesUser.ACCOUNTANT]))
+  async createUserPayment(
+    @Body() userPaymentDto: CreateUserPaymentDto,
+    @Res() res: ResponseRequest,
+  ): Promise<ResponseRequest> {
+    const result = await this.paymentService.createUserPayment(userPaymentDto);
+    return new ResponseRequest(res, result, 'Create user payment success.');
   }
 }
