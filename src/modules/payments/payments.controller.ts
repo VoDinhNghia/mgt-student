@@ -15,7 +15,7 @@ import { PaymentsService } from './payments.service';
 import { Response } from 'express';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { RoleGuard } from '../auth/role-auth.guard';
-import { roleTypeAccessApi } from 'src/constants/constant';
+import { ErolesUser } from 'src/constants/constant';
 import { UpdateMoneyPerCreditMgtDto } from './dtos/mgt-money-per-credit.update.dto';
 
 @Controller('api/payments')
@@ -26,7 +26,7 @@ export class PaymentsController {
   @Post('/amount-credit')
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
-  @UseGuards(RoleGuard(roleTypeAccessApi.ADMIN))
+  @UseGuards(RoleGuard([ErolesUser.ADMIN]))
   async createMoneyPerCreditMgt(
     @Body() createCreditmgtDto: CreateMoneyPerCreditMgtDto,
     @Res() res: Response,
@@ -40,7 +40,7 @@ export class PaymentsController {
   @Put('/amount-credit/:id')
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
-  @UseGuards(RoleGuard(roleTypeAccessApi.ADMIN))
+  @UseGuards(RoleGuard([ErolesUser.ADMIN]))
   async updateMoneyPerCreditMgt(
     @Param('id') id: string,
     @Body() updateCreditmgtDto: UpdateMoneyPerCreditMgtDto,

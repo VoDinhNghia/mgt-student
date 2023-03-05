@@ -11,7 +11,7 @@ import {
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { ResponseRequest } from 'src/utils/responseApi';
-import { roleTypeAccessApi } from 'src/constants/constant';
+import { ErolesUser } from 'src/constants/constant';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { RoleGuard } from '../auth/role-auth.guard';
 import { CreateRoomDto } from './dtos/rooms.create.dto';
@@ -28,7 +28,7 @@ export class RoomsController {
   @Post()
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
-  @UseGuards(RoleGuard(roleTypeAccessApi.ADMIN))
+  @UseGuards(RoleGuard([ErolesUser.ADMIN]))
   async createRoom(
     @Body() createRoomDto: CreateRoomDto,
     @Res() res: Response,
@@ -40,7 +40,7 @@ export class RoomsController {
   @Get()
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
-  @UseGuards(RoleGuard(roleTypeAccessApi.FULL))
+  @UseGuards(RoleGuard([ErolesUser.ADMIN]))
   async getRooms(
     @Query() queryRoomDto: QueryRoomDto,
     @Res() res: Response,
@@ -52,7 +52,15 @@ export class RoomsController {
   @Get('/:id')
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
-  @UseGuards(RoleGuard(roleTypeAccessApi.FULL))
+  @UseGuards(
+    RoleGuard([
+      ErolesUser.ADMIN,
+      ErolesUser.LECTURER,
+      ErolesUser.ACCOUNTANT,
+      ErolesUser.LIBRARIAN,
+      ErolesUser.STUDENT,
+    ]),
+  )
   async getRoomById(
     @Param('id') id: string,
     @Res() res: Response,
@@ -64,7 +72,7 @@ export class RoomsController {
   @Put('/:id')
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
-  @UseGuards(RoleGuard(roleTypeAccessApi.ADMIN))
+  @UseGuards(RoleGuard([ErolesUser.ADMIN]))
   async updateRoom(
     @Param('id') id: string,
     @Body() updateRoomDto: UpdateRoomDto,
@@ -73,16 +81,4 @@ export class RoomsController {
     const result = await this.roomService.updateRoom(id, updateRoomDto);
     return new ResponseRequest(res, result, 'Update room success');
   }
-
-  // @Delete('/:id')
-  // @ApiBearerAuth()
-  // @UseGuards(JwtAuthGuard)
-  // @UseGuards(RoleGuard(roleTypeAccessApi.ADMIN))
-  // async deleteRoom(
-  //   @Param('id') id: string,
-  //   @Res() res: Response,
-  // ): Promise<ResponseRequest> {
-  //   const result = await this.roomService.deleteRoom(id);
-  //   return new ResponseRequest(res, result, 'Delete room success');
-  // }
 }

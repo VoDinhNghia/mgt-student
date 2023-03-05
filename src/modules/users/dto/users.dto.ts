@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { ErolesEnum } from 'src/constants/constant';
+import { ErolesUser } from 'src/constants/constant';
 export class UsersDto {
   @ApiProperty({ required: true })
   email: string;
@@ -9,8 +9,8 @@ export class UsersDto {
 
   @ApiProperty({
     required: true,
-    enum: ErolesEnum,
-    default: ErolesEnum.STUDENT,
+    enum: ErolesUser,
+    default: ErolesUser.STUDENT,
   })
   role?: string;
 }

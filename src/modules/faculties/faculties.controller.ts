@@ -10,7 +10,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { roleTypeAccessApi } from 'src/constants/constant';
+import { ErolesUser } from 'src/constants/constant';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { RoleGuard } from '../auth/role-auth.guard';
 import { CreateFacultyDto } from './dtos/faculties.create.dto';
@@ -31,7 +31,7 @@ export class FacultiesController {
   @Post()
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
-  @UseGuards(RoleGuard(roleTypeAccessApi.ADMIN))
+  @UseGuards(RoleGuard([ErolesUser.ADMIN]))
   async createFaculty(
     @Res() res: Response,
     @Body() createFacultyDto: CreateFacultyDto,
@@ -43,7 +43,7 @@ export class FacultiesController {
   @Put('/:id')
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
-  @UseGuards(RoleGuard(roleTypeAccessApi.ADMIN))
+  @UseGuards(RoleGuard([ErolesUser.ADMIN]))
   async updateFaculty(
     @Param('id') id: string,
     @Body() updateFacultyDto: UpdateFacultyDto,
@@ -59,7 +59,7 @@ export class FacultiesController {
   @Get()
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
-  @UseGuards(RoleGuard(roleTypeAccessApi.FULL))
+  @UseGuards(RoleGuard([ErolesUser.ADMIN]))
   async getListFaculties(
     @Query() facultyQueryDto: FacultyQueryDto,
     @Res() res: Response,
@@ -71,7 +71,7 @@ export class FacultiesController {
   @Post('/major')
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
-  @UseGuards(RoleGuard(roleTypeAccessApi.ADMIN))
+  @UseGuards(RoleGuard([ErolesUser.ADMIN]))
   async createMajor(
     @Res() res: Response,
     @Body() createMajorDto: CreateMajorDto,
@@ -83,7 +83,7 @@ export class FacultiesController {
   @Put('/major/:id')
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
-  @UseGuards(RoleGuard(roleTypeAccessApi.ADMIN))
+  @UseGuards(RoleGuard([ErolesUser.ADMIN]))
   async updateMajor(
     @Param('id') id: string,
     @Body() updateMajorDto: UpdateMajorDto,
@@ -96,7 +96,7 @@ export class FacultiesController {
   @Get('/major/:id')
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
-  @UseGuards(RoleGuard(roleTypeAccessApi.FULL))
+  @UseGuards(RoleGuard([ErolesUser.ADMIN]))
   async getMajorById(
     @Param('id') id: string,
     @Res() res: Response,
@@ -108,7 +108,7 @@ export class FacultiesController {
   @Get('/major')
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
-  @UseGuards(RoleGuard(roleTypeAccessApi.FULL))
+  @UseGuards(RoleGuard([ErolesUser.ADMIN]))
   async getListMajors(
     @Query() queryDto: MajorQueryDto,
     @Res() res: Response,
@@ -120,7 +120,7 @@ export class FacultiesController {
   @Get('/:id')
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
-  @UseGuards(RoleGuard(roleTypeAccessApi.FULL))
+  @UseGuards(RoleGuard([ErolesUser.ADMIN]))
   async getFacultyById(
     @Param('id') id: string,
     @Res() res: Response,

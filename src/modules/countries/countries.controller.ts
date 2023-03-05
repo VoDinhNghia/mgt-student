@@ -21,7 +21,7 @@ import { QueryPovinceDto } from './dto/countries.query-province.dto';
 import { QueryDistrictDto } from './dto/countries.query-district.dto';
 import { ResponseRequest } from 'src/utils/responseApi';
 import { RoleGuard } from '../auth/role-auth.guard';
-import { roleTypeAccessApi } from 'src/constants/constant';
+import { ErolesUser } from 'src/constants/constant';
 
 @Controller('api/countries')
 @ApiTags('countries')
@@ -73,7 +73,7 @@ export class CountriesController {
   @Post('/init-data')
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
-  @UseGuards(RoleGuard(roleTypeAccessApi.ADMIN))
+  @UseGuards(RoleGuard([ErolesUser.ADMIN]))
   async initCountries(@Res() res: Response): Promise<ResponseRequest> {
     const data = this.readFileJson('countries.json');
     const result = await this.countryService.initCountries(data);
@@ -83,7 +83,7 @@ export class CountriesController {
   @Put('/:id')
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
-  @UseGuards(RoleGuard(roleTypeAccessApi.ADMIN))
+  @UseGuards(RoleGuard([ErolesUser.ADMIN]))
   async update(
     @Param('id') id: string,
     @Body() updateCountriesDto: UpdateCountriesDto,
@@ -99,7 +99,7 @@ export class CountriesController {
   @Post('/province/init-data')
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
-  @UseGuards(RoleGuard(roleTypeAccessApi.ADMIN))
+  @UseGuards(RoleGuard([ErolesUser.ADMIN]))
   async initProvince(@Res() res: Response): Promise<ResponseRequest> {
     const data = this.readFileJson('province.json');
     const result = await this.countryService.initProvinces(data);
@@ -109,7 +109,7 @@ export class CountriesController {
   @Post('/district/init-data')
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
-  @UseGuards(RoleGuard(roleTypeAccessApi.ADMIN))
+  @UseGuards(RoleGuard([ErolesUser.ADMIN]))
   async initDistrict(@Res() res: Response): Promise<ResponseRequest> {
     const data = this.readFileJson('district.json');
     const result = await this.countryService.initDisTricts(data);
@@ -119,7 +119,7 @@ export class CountriesController {
   @Post('/ward/init-data')
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
-  @UseGuards(RoleGuard(roleTypeAccessApi.ADMIN))
+  @UseGuards(RoleGuard([ErolesUser.STUDENT, ErolesUser.ADMIN]))
   async initWard(@Res() res: Response): Promise<ResponseRequest> {
     const data = this.readFileJson('ward.json');
     const result = await this.countryService.initWards(data);

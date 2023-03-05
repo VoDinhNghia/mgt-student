@@ -10,7 +10,7 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { roleTypeAccessApi } from 'src/constants/constant';
+import { ErolesUser } from 'src/constants/constant';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { RoleGuard } from '../auth/role-auth.guard';
 import { ClassSubjectService } from './class-subject.service';
@@ -30,7 +30,7 @@ export class ClassSubjectController {
   @Post('/class')
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
-  @UseGuards(RoleGuard(roleTypeAccessApi.ADMIN))
+  @UseGuards(RoleGuard([ErolesUser.ADMIN]))
   async createClass(
     @Res() res: Response,
     @Body() createClassDto: CreateClassDto,
@@ -42,7 +42,7 @@ export class ClassSubjectController {
   @Post('/subject')
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
-  @UseGuards(RoleGuard(roleTypeAccessApi.ADMIN))
+  @UseGuards(RoleGuard([ErolesUser.ADMIN]))
   @UseInterceptors(ValidatePercentPoint)
   async createSubject(
     @Res() res: Response,
@@ -55,7 +55,7 @@ export class ClassSubjectController {
   @Put('/subject/:id')
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
-  @UseGuards(RoleGuard(roleTypeAccessApi.ADMIN))
+  @UseGuards(RoleGuard([ErolesUser.ADMIN]))
   async updateSubject(
     @Param('id') id: string,
     @Res() res: Response,
@@ -68,7 +68,7 @@ export class ClassSubjectController {
   @Put('/class/:id')
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
-  @UseGuards(RoleGuard(roleTypeAccessApi.ADMIN))
+  @UseGuards(RoleGuard([ErolesUser.ADMIN]))
   async updateCalss(
     @Param('id') id: string,
     @Res() res: Response,

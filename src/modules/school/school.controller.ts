@@ -15,7 +15,7 @@ import { UpdateSchoolDto } from './dtos/school.update.dto';
 import { SchoolService } from './school.service';
 import { Response } from 'express';
 import { ResponseRequest } from 'src/utils/responseApi';
-import { roleTypeAccessApi } from 'src/constants/constant';
+import { ErolesUser } from 'src/constants/constant';
 
 @Controller('api/school')
 @ApiTags('school')
@@ -38,7 +38,7 @@ export class SchoolController {
   @Put('/:id')
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
-  @UseGuards(RoleGuard(roleTypeAccessApi.ADMIN))
+  @UseGuards(RoleGuard([ErolesUser.ADMIN]))
   async updateSchool(
     @Param('id') id: string,
     @Body() schoolDto: UpdateSchoolDto,
