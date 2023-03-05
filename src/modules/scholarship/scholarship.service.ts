@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import {
+  considerConditionScholarshipPoint,
   EstatusUserProfile,
   trainningPointDefault,
 } from 'src/constants/constant';
@@ -17,10 +18,15 @@ import {
   Semester,
   SemesterDocument,
 } from '../semesters/schemas/semesters.schema';
+import {
+  Profile,
+  ProfileDocument,
+} from '../users/schemas/users.profile.schema';
 import { CreateScholarshipUser } from './dtos/scholarship-user.create.dto';
 import { CreateScholarshipDto } from './dtos/scholarship.create.dto';
 import { QueryScholarshipDto } from './dtos/scholarship.query.dto';
 import { UpdateScholarshipDto } from './dtos/scholarship.update.dto';
+import { QueryUserScholarshipDto } from './dtos/scholarship.user.query.dto';
 import { Scholarship, ScholarshipDocument } from './schemas/scholarship.schema';
 import {
   ScholarshipUser,
@@ -38,13 +44,11 @@ export class ScholarshipService {
     private readonly semesterSchema: Model<SemesterDocument>,
     @InjectModel(Attachment.name)
     private readonly attachmentSchema: Model<AttachmentDocument>,
+    @InjectModel(Profile.name)
+    private readonly profileSchema: Model<ProfileDocument>,
     private readonly db: DbConnection,
   ) {}
-
-  // create function to calculate total student's final grade
-  // => compare with condition in scholarshipsettings collection
-  // => create document in userscholarships (create multi document)
-  // export list scholarship => file excel
+  // export list user scholarship => file excel
 
   async validateScholarShip(
     scholarshipDto: CreateScholarshipDto,
@@ -127,6 +131,73 @@ export class ScholarshipService {
     return results;
   }
 
+  async findAllUserScholarShip(
+    queryDto: QueryUserScholarshipDto,
+  ): Promise<Record<string, any>[]> {
+    const { scholarship, user, semester } = queryDto;
+    let aggregate = [];
+    const matchOne: Record<string, any> = { $match: {} };
+    if (scholarship) {
+      matchOne.$match.scholarship = new Types.ObjectId(scholarship);
+    }
+    if (user) {
+      matchOne.$match.user = new Types.ObjectId(user);
+    }
+    const lookup = [
+      {
+        $lookup: {
+          from: 'scholarships',
+          localField: 'scholarship',
+          foreignField: '_id',
+          as: 'scholarship',
+        },
+      },
+      { $unwind: '$scholarship' },
+      {
+        $lookup: {
+          from: 'profiles',
+          localField: 'user',
+          foreignField: '_id',
+          as: 'user',
+        },
+      },
+      { $unwind: '$user' },
+    ];
+    aggregate = [...aggregate, matchOne, ...lookup];
+    if (semester) {
+      aggregate = [
+        ...aggregate,
+        {
+          $match: { 'scholarship.semester': new Types.ObjectId(semester) },
+        },
+      ];
+    }
+    const results = await this.scholarshipUserSchema.aggregate(aggregate);
+    for (const item of results) {
+      const tuition = await this.getUserPaymentStudyFee(
+        item?.scholarship?.semester,
+        item?.user?._id,
+      );
+      const rewardMoney =
+        ((tuition?.totalMoney || 0) *
+          (item?.scholarship?.percentTuition || 0)) /
+        100;
+      item.rewardMoney = rewardMoney;
+    }
+    return results;
+  }
+
+  async getUserPaymentStudyFee(
+    semester: string,
+    profile: string,
+  ): Promise<Record<string, any>> {
+    const result = await this.db.collection('paymentstudyfees').findOne({
+      semester: new Types.ObjectId(semester),
+      user: new Types.ObjectId(profile),
+    });
+    return result;
+  }
+
   async createUserScholarshipInSemester(
     semester: string,
   ): Promise<Record<string, any>[]> {
@@ -143,15 +214,15 @@ export class ScholarshipService {
     const data = [];
     for (const item of studyProcessLists) {
       try {
-        const accumalatedPoint = await this.getTotalAccumalatedUserInSemester(
+        const accumalatedPoint = await this.getUserTotalAccumalated(
           semester,
           item.user,
         );
-        const tranningpoint = await this.getTrainningPointUserInSemester(
+        const tranningpoint = await this.getUserTrainningPoint(
           item.user,
           semester,
         );
-        if (accumalatedPoint < 6.5) {
+        if (accumalatedPoint < considerConditionScholarshipPoint) {
           continue;
         }
         const getCondition = await this.considerConditions(
@@ -159,23 +230,25 @@ export class ScholarshipService {
           tranningpoint,
           semester,
         );
-        if (getCondition) {
-          const userscholarshipDto: CreateScholarshipUser = {
-            scholarship: getCondition._id,
-            user: item.user,
-            accumalatedPoint: accumalatedPoint,
-            trainningPoint: tranningpoint,
-          };
-          const existed = await this.scholarshipUserSchema.findOne({
-            scholarship: getCondition._id,
-            user: item.user,
-          });
-          if (!existed) {
-            data.push(
-              await new this.scholarshipUserSchema(userscholarshipDto).save(),
-            );
-          }
+        if (!getCondition) {
+          continue;
         }
+        const userscholarshipDto: CreateScholarshipUser = {
+          scholarship: getCondition._id,
+          user: item.user,
+          accumalatedPoint: accumalatedPoint,
+          trainningPoint: tranningpoint,
+        };
+        const existed = await this.scholarshipUserSchema.findOne({
+          scholarship: getCondition._id,
+          user: item.user,
+        });
+        if (existed) {
+          continue;
+        }
+        data.push(
+          await new this.scholarshipUserSchema(userscholarshipDto).save(),
+        );
       } catch (error) {
         console.log(error);
         continue;
@@ -198,7 +271,7 @@ export class ScholarshipService {
     return result;
   }
 
-  async getTotalAccumalatedUserInSemester(
+  async getUserTotalAccumalated(
     semester: string,
     profileId: string,
   ): Promise<number> {
@@ -221,7 +294,7 @@ export class ScholarshipService {
     return totalAccumalated / totalNumberCredits;
   }
 
-  async getTrainningPointUserInSemester(
+  async getUserTrainningPoint(
     profileId: string,
     semesterId: string,
   ): Promise<number> {

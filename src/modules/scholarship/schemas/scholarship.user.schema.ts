@@ -22,7 +22,7 @@ export class ScholarshipUser {
 
   @Prop()
   trainningPoint?: number;
-  // totalMoney (collection paymentstudyfees) * percentTuition (colecction scholarshipsettings)
+  // totalMoney (collection paymentstudyfees) * percentTuition (collection scholarships)
   // rewardMoney will calculate when call api get scholarship
 
   @Prop({ default: Date.now })

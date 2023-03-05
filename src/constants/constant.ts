@@ -85,3 +85,5 @@ export const linkAccessService = {
 };
 
 export const trainningPointDefault = 60;
+
+export const considerConditionScholarshipPoint = 6.5;
