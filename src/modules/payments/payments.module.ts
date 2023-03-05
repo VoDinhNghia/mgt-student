@@ -5,6 +5,7 @@ import {
   Semester,
   SemesterSchema,
 } from '../semesters/schemas/semesters.schema';
+import { Profile, ProfileSchema } from '../users/schemas/users.profile.schema';
 import { PaymentsController } from './payments.controller';
 import { PaymentsService } from './payments.service';
 import {
@@ -25,6 +26,7 @@ import {
       },
       { name: PaymentStudyFee.name, schema: PaymentStudyFeeSchema },
       { name: Semester.name, schema: SemesterSchema },
+      { name: Profile.name, schema: ProfileSchema },
     ]),
   ],
   providers: [PaymentsService, DbConnection],

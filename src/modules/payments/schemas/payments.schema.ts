@@ -10,6 +10,7 @@ export class PaymentStudyFee {
   @Prop({
     default: getRandomCodeReceiptId(4),
     required: true,
+    unique: true,
   })
   receiptId?: number;
 
