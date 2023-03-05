@@ -1,10 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model, ObjectId, Types } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { EstatusPayments } from 'src/constants/constant';
 import { DbConnection } from 'src/constants/dbConnection';
 import { CommonException } from 'src/exceptions/execeptionError';
 import { getRandomCodeReceiptId } from 'src/utils/generateCodePayment';
+import { SubjectUserRegister } from 'src/utils/subjectUserRegister';
 import {
   Semester,
   SemesterDocument,
@@ -146,35 +147,12 @@ export class PaymentsService {
   ): Promise<Record<string, any>> {
     const { semester, profile } = queryDto;
     await this.validateSemester(semester);
-    const studyprocess = await this.db
-      .collection('studyprocesses')
-      .findOne({ user: new Types.ObjectId(profile) });
-    if (!studyprocess) {
-      new CommonException(404, 'user study processes not found.');
-    }
-    const subjectIds = await this.getSubjectLists(semester);
-    const match = {
-      $match: {
-        subject: { $in: subjectIds },
-        studyprocess: studyprocess._id,
-      },
-    };
-    const aggregate = [
-      match,
-      {
-        $lookup: {
-          from: 'subjects',
-          localField: 'subject',
-          foreignField: '_id',
-          as: 'subject',
-        },
-      },
-      { $unwind: '$subject' },
-    ];
-    const cursorAgg = await this.db
-      .collection('subjectregisters')
-      .aggregate(aggregate);
-    const result = await cursorAgg.toArray();
+    const subjectService = new SubjectUserRegister(this.db);
+    const subjectIds = await subjectService.getSubjectLists(semester);
+    const result = await subjectService.getSubjectUserInSemester(
+      profile,
+      subjectIds,
+    );
     const listSubjectUser = await this.getTotalMoneySubject(result, semester);
     const tuitionInsemester = await this.paymentSchema.findOne({
       user: new Types.ObjectId(profile),
@@ -184,17 +162,6 @@ export class PaymentsService {
       listSubjects: listSubjectUser,
       tuitionStatus: tuitionInsemester?.status || EstatusPayments.OWED,
     };
-  }
-
-  async getSubjectLists(semester: string): Promise<ObjectId[]> {
-    const cursorQuery = await this.db
-      .collection('subjects')
-      .find({ semester: new Types.ObjectId(semester), status: true });
-    const subjectList = await cursorQuery.toArray();
-    const subjectIds = subjectList.map((subject: any) => {
-      return subject._id;
-    });
-    return subjectIds;
   }
 
   async getTotalMoneySubject(
