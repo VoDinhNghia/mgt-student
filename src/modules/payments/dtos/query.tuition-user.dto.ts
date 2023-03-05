@@ -5,7 +5,7 @@ export class QueryTuitionUser {
   semester: string;
 
   @ApiProperty({ required: true })
-  userProcess?: string;
+  profile?: string;
 
   @ApiProperty({ required: false })
   faculty?: string;
