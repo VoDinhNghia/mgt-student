@@ -11,6 +11,14 @@ export enum EstatusUser {
   INACTIVE = 'INACTIVE',
 }
 
+export enum EstatusUserProfile {
+  STUDYING = 'STUDYING',
+  GRADUATE = 'GRADUATE',
+  SAVEING = 'SAVEING',
+  RESERVE = 'RESERVE',
+  LEAVE = 'LEAVE',
+}
+
 export enum EtypeAward {
   PERSONAL = 'PERSONAL',
   GROUP = 'GROUP',
@@ -35,16 +43,15 @@ export enum EroomType {
   LIBRARIAN = 'LIBRARIAN',
 }
 
-export const typePayments = {
-  payments: {
-    CASH: 'CASH',
-    ONLINE: 'ONLINE',
-  },
-  status: {
-    PAID: 'PAID',
-    OWED: 'OWED',
-  },
-};
+export enum EtypePayments {
+  CASH = 'CASH',
+  ONLINE = 'ONLINE',
+}
+
+export enum EstatusPayments {
+  PAID = 'PAID',
+  OWED = 'OWED',
+}
 
 export const keyAccessLibraryService = 'libraries-access-key-secrect';
 
@@ -76,13 +83,5 @@ export const linkAccessService = {
   FRONTEND: 'http://localhost:8001',
   LIBRARY_FRONTEND: 'http://localhost:8002',
 };
-
-export enum EstatusUserProfile {
-  STUDYING = 'STUDYING',
-  GRADUATE = 'GRADUATE',
-  SAVEING = 'SAVEING',
-  RESERVE = 'RESERVE',
-  LEAVE = 'LEAVE',
-}
 
 export const trainningPointDefault = 60;
