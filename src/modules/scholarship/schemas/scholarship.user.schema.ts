@@ -18,10 +18,12 @@ export class ScholarshipUser {
   user?: mongoose.Types.ObjectId;
 
   @Prop()
-  point?: number;
+  accumalatedPoint?: number;
 
-  @Prop({ default: 0 })
-  rewardMoney?: number; // totalMoney (collection paymentstudyfees) * percentTuition (colecction scholarshipsettings)
+  @Prop()
+  trainningPoint?: number;
+  // totalMoney (collection paymentstudyfees) * percentTuition (colecction scholarshipsettings)
+  // rewardMoney will calculate when call api get scholarship
 
   @Prop({ default: Date.now })
   createdAt?: Date;

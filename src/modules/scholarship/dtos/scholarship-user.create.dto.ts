@@ -8,8 +8,8 @@ export class CreateScholarshipUser {
   user?: string;
 
   @ApiProperty({ required: true })
-  point?: number;
+  accumalatedPoint?: number;
 
   @ApiProperty({ required: true })
-  rewardMoney?: number;
+  trainningPoint?: number;
 }

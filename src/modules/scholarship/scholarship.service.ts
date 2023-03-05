@@ -1,7 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
-import { trainningPointDefault } from 'src/constants/constant';
+import {
+  EstatusUserProfile,
+  trainningPointDefault,
+} from 'src/constants/constant';
 import { DbConnection } from 'src/constants/dbConnection';
 import { CommonException } from 'src/exceptions/execeptionError';
 import { Pagination } from 'src/utils/pagePagination';
@@ -124,39 +127,7 @@ export class ScholarshipService {
     return results;
   }
 
-  async createScholarshipUser(
-    scholarshipUserDto: CreateScholarshipUser,
-  ): Promise<ScholarshipUser> {
-    await this.validateScholarshipUser(scholarshipUserDto);
-    const result = await new this.scholarshipUserSchema(
-      scholarshipUserDto,
-    ).save();
-    return result;
-  }
-
-  async validateScholarshipUser(
-    scholarshipUserDto: CreateScholarshipUser,
-  ): Promise<void> {
-    const { user, scholarship } = scholarshipUserDto;
-    if (user) {
-      const profile = await this.db
-        .collection('profiles')
-        .findOne({ _id: new Types.ObjectId(user) });
-      if (!profile) {
-        new CommonException(404, 'User not found.');
-      }
-    }
-    if (scholarship) {
-      const scholarshipInfo = await this.scholarshipSchema.findById(
-        scholarship,
-      );
-      if (!scholarshipInfo) {
-        new CommonException(404, 'Scholarship not found.');
-      }
-    }
-  }
-
-  async findAllAccumalatedAndTrainningPoint(
+  async createUserScholarshipInSemester(
     semester: string,
   ): Promise<Record<string, any>[]> {
     const semesterInfo = await this.db
@@ -165,9 +136,66 @@ export class ScholarshipService {
     if (!semesterInfo) {
       new CommonException(404, 'Semester not found.');
     }
-    // get all studyprocesses with status: STUDYING, aggregate to get info user
-    // use for => call getTotalAccumalatedUserInSemester and getTrainningPointUserInSemester
-    return [];
+    const cursorFind = await this.db
+      .collection('studyprocesses')
+      .find({ status: EstatusUserProfile.STUDYING });
+    const studyProcessLists = await cursorFind.toArray();
+    const data = [];
+    for (const item of studyProcessLists) {
+      try {
+        const accumalatedPoint = await this.getTotalAccumalatedUserInSemester(
+          semester,
+          item.user,
+        );
+        const tranningpoint = await this.getTrainningPointUserInSemester(
+          item.user,
+          semester,
+        );
+        if (accumalatedPoint < 6.5) {
+          continue;
+        }
+        const getCondition = await this.considerConditions(
+          accumalatedPoint,
+          tranningpoint,
+          semester,
+        );
+        if (getCondition) {
+          const userscholarshipDto: CreateScholarshipUser = {
+            scholarship: getCondition._id,
+            user: item.user,
+            accumalatedPoint: accumalatedPoint,
+            trainningPoint: tranningpoint,
+          };
+          const existed = await this.scholarshipUserSchema.findOne({
+            scholarship: getCondition._id,
+            user: item.user,
+          });
+          if (!existed) {
+            data.push(
+              await new this.scholarshipUserSchema(userscholarshipDto).save(),
+            );
+          }
+        }
+      } catch (error) {
+        console.log(error);
+        continue;
+      }
+    }
+    return data;
+  }
+
+  async considerConditions(
+    accumalatedPoint: number,
+    tranningpoint: number,
+    semester: string,
+  ): Promise<Record<string, any>> {
+    const result = await this.scholarshipSchema.findOne({
+      semester: new Types.ObjectId(semester),
+      minimunPoints: { $lt: accumalatedPoint },
+      maximunPoints: { $gt: accumalatedPoint },
+      trainningPoints: { $lt: tranningpoint },
+    });
+    return result;
   }
 
   async getTotalAccumalatedUserInSemester(
@@ -182,9 +210,13 @@ export class ScholarshipService {
     );
     let totalAccumalated = 0;
     let totalNumberCredits = 0;
+    if (result.length <= 0) {
+      return 0;
+    }
     for (const item of result) {
-      totalAccumalated += item?.accumalatedPoint * item?.subject?.numberCredits;
-      totalNumberCredits += item?.subject?.numberCredits;
+      totalAccumalated +=
+        (item?.accumalatedPoint || 0) * item?.subject?.numberCredits;
+      totalNumberCredits += item?.subject?.numberCredits || 0;
     }
     return totalAccumalated / totalNumberCredits;
   }
@@ -216,6 +248,7 @@ export class ScholarshipService {
       (x: any, y: any) => (x.program?.point ?? 0) + (y.program?.point ?? 0),
       0,
     );
-    return totalTrainningPoint + trainningPointDefault;
+    const point = totalTrainningPoint + trainningPointDefault;
+    return point > 100 ? 100 : point;
   }
 }

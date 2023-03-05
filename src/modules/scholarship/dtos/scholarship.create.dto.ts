@@ -19,7 +19,10 @@ export class CreateScholarshipDto {
   content?: string;
 
   @ApiProperty({ default: 8.0, required: true })
-  accumulatedPoints?: number;
+  minimunPoints?: number;
+
+  @ApiProperty({ default: 8.9, required: true })
+  maximunPoints?: number;
 
   @ApiProperty({ default: 65, required: false })
   trainningPoints?: number;

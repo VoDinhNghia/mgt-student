@@ -37,7 +37,7 @@ export class SubjectUserRegister {
       .collection('subjectregisters')
       .aggregate(aggregate);
     const result = await cursorAgg.toArray();
-    return result;
+    return result ?? [];
   }
 
   async getSubjectLists(semester: string): Promise<ObjectId[]> {

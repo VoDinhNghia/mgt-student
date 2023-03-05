@@ -18,8 +18,11 @@ export class UpdateScholarshipDto {
   @ApiProperty({ required: false })
   content?: string;
 
-  @ApiProperty({ default: 8.0, required: false })
-  accumulatedPoints?: number;
+  @ApiProperty({ default: 8.0, required: true })
+  minimunPoints?: number;
+
+  @ApiProperty({ default: 8.9, required: true })
+  maximunPoints?: number;
 
   @ApiProperty({ default: 65, required: false })
   trainningPoints?: number;
