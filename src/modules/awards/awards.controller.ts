@@ -10,7 +10,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { roleTypeAccessApi } from 'src/constants/constant';
+import { ErolesUser } from 'src/constants/constant';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { RoleGuard } from '../auth/role-auth.guard';
 import { AwardsService } from './awards.service';
@@ -28,7 +28,7 @@ export class AwardsController {
   @Post()
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
-  @UseGuards(RoleGuard(roleTypeAccessApi.ADMIN))
+  @UseGuards(RoleGuard([ErolesUser.ADMIN]))
   async createAward(
     @Res() res: Response,
     @Body() createAwardDto: CreateAwardDto,
@@ -38,9 +38,6 @@ export class AwardsController {
   }
 
   @Get()
-  @ApiBearerAuth()
-  @UseGuards(JwtAuthGuard)
-  @UseGuards(RoleGuard(roleTypeAccessApi.FULL))
   async getAllAward(
     @Query() queryAwardDto: QueryAwardDto,
     @Res() res: Response,
@@ -50,9 +47,6 @@ export class AwardsController {
   }
 
   @Get('/:id')
-  @ApiBearerAuth()
-  @UseGuards(JwtAuthGuard)
-  @UseGuards(RoleGuard(roleTypeAccessApi.FULL))
   async getAwardById(
     @Res() res: Response,
     @Param('id') id: string,
@@ -64,7 +58,7 @@ export class AwardsController {
   @Put('/:id')
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
-  @UseGuards(RoleGuard(roleTypeAccessApi.ADMIN))
+  @UseGuards(RoleGuard([ErolesUser.ADMIN]))
   async updateAward(
     @Res() res: Response,
     @Param('id') id: string,
@@ -73,16 +67,4 @@ export class AwardsController {
     await this.awardService.updateAward(id, updateAwardDto);
     return new ResponseRequest(res, true, `Update award success.`);
   }
-
-  // @Delete('/:id')
-  // @ApiBearerAuth()
-  // @UseGuards(JwtAuthGuard)
-  // @UseGuards(RoleGuard(roleTypeAccessApi.ADMIN))
-  // async deleteAward(
-  //   @Res() res: Response,
-  //   @Param('id') id: string,
-  // ): Promise<ResponseRequest> {
-  //   await this.awardService.deleteAward(id);
-  //   return new ResponseRequest(res, true, `Delete award success.`);
-  // }
 }

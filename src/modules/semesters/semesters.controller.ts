@@ -11,7 +11,7 @@ import {
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { ResponseRequest } from 'src/utils/responseApi';
-import { roleTypeAccessApi } from 'src/constants/constant';
+import { ErolesUser } from 'src/constants/constant';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { RoleGuard } from '../auth/role-auth.guard';
 import { CreateSemesterDto } from './dtos/semesters.create.dto';
@@ -27,7 +27,7 @@ export class SemestersController {
   @Post()
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
-  @UseGuards(RoleGuard(roleTypeAccessApi.ADMIN))
+  @UseGuards(RoleGuard([ErolesUser.ADMIN]))
   async createSemester(
     @Body() semesterDto: CreateSemesterDto,
     @Res() res: Response,
@@ -39,7 +39,7 @@ export class SemestersController {
   @Put('/:id')
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
-  @UseGuards(RoleGuard(roleTypeAccessApi.ADMIN))
+  @UseGuards(RoleGuard([ErolesUser.ADMIN]))
   async updateSemester(
     @Param('id') id: string,
     @Body() updateDto: UpdateSemesterDto,
@@ -52,7 +52,7 @@ export class SemestersController {
   @Delete('/:id')
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
-  @UseGuards(RoleGuard(roleTypeAccessApi.ADMIN))
+  @UseGuards(RoleGuard([ErolesUser.ADMIN]))
   async deleteSemester(
     @Param('id') id: string,
     @Res() res: Response,

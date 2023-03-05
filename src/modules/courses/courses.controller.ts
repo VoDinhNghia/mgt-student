@@ -10,7 +10,7 @@ import {
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { ResponseRequest } from 'src/utils/responseApi';
-import { roleTypeAccessApi } from 'src/constants/constant';
+import { ErolesUser } from 'src/constants/constant';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { RoleGuard } from '../auth/role-auth.guard';
 import { Response } from 'express';
@@ -26,7 +26,7 @@ export class CoursesController {
   @Post()
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
-  @UseGuards(RoleGuard(roleTypeAccessApi.ADMIN))
+  @UseGuards(RoleGuard([ErolesUser.ADMIN]))
   async createCourse(
     @Res() res: Response,
     @Body() courseDto: CreateCourseDto,
@@ -38,7 +38,7 @@ export class CoursesController {
   @Put('/:id')
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
-  @UseGuards(RoleGuard(roleTypeAccessApi.ADMIN))
+  @UseGuards(RoleGuard([ErolesUser.ADMIN]))
   async updateCourse(
     @Param('id') id: string,
     @Body() courseDto: UpdateCourseDto,
@@ -51,7 +51,7 @@ export class CoursesController {
   @Get('/:id')
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
-  @UseGuards(RoleGuard(roleTypeAccessApi.FULL))
+  @UseGuards(RoleGuard([ErolesUser.ADMIN]))
   async getCourseById(
     @Param('id') id: string,
     @Res() res: Response,
@@ -63,7 +63,9 @@ export class CoursesController {
   @Get()
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
-  @UseGuards(RoleGuard(roleTypeAccessApi.FULL))
+  @UseGuards(
+    RoleGuard([ErolesUser.ADMIN, ErolesUser.LECTURER, ErolesUser.STUDENT]),
+  )
   async getListFaculties(@Res() res: Response): Promise<ResponseRequest> {
     const result = await this.courseService.findAllCourses();
     return new ResponseRequest(res, result, 'Get course list success');

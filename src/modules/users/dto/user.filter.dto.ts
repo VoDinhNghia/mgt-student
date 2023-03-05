@@ -1,11 +1,15 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { QueryPagination } from 'src/utils/queryPaginationDto';
-import { statusUser, ErolesEnum } from 'src/constants/constant';
+import { EstatusUser, ErolesUser } from 'src/constants/constant';
 
 export class UsersFillterDto extends QueryPagination {
-  @ApiProperty({ required: false, enum: ErolesEnum })
+  @ApiProperty({ required: false, enum: ErolesUser })
   role?: string;
 
-  @ApiProperty({ required: false, enum: statusUser.ENUM })
+  @ApiProperty({
+    required: false,
+    enum: EstatusUser,
+    default: EstatusUser.ACTIVE,
+  })
   status?: string;
 }

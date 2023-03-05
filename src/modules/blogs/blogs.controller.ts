@@ -4,7 +4,7 @@ import { BlogsService } from './blogs.service';
 import { Response } from 'express';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { RoleGuard } from '../auth/role-auth.guard';
-import { roleTypeAccessApi } from 'src/constants/constant';
+import { ErolesUser } from 'src/constants/constant';
 import { ResponseRequest } from 'src/utils/responseApi';
 
 @Controller('api/blogs')
@@ -15,7 +15,7 @@ export class BlogsController {
   @Post()
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
-  @UseGuards(RoleGuard(roleTypeAccessApi.ADMIN))
+  @UseGuards(RoleGuard([ErolesUser.ADMIN]))
   async createBlog(@Res() res: Response): Promise<ResponseRequest> {
     return new ResponseRequest(res, 'OK', `Create blog success.`);
   }

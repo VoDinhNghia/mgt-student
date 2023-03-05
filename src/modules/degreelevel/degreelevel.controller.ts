@@ -10,7 +10,7 @@ import {
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { ResponseRequest } from 'src/utils/responseApi';
-import { roleTypeAccessApi } from 'src/constants/constant';
+import { ErolesUser } from 'src/constants/constant';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { RoleGuard } from '../auth/role-auth.guard';
 import { DegreelevelService } from './degreelevel.service';
@@ -26,7 +26,7 @@ export class DegreelevelController {
   @Post()
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
-  @UseGuards(RoleGuard(roleTypeAccessApi.ADMIN))
+  @UseGuards(RoleGuard([ErolesUser.ADMIN]))
   async createDegreeLevel(
     @Body() degreeLevelDto: CreateDegreeLevelDto,
     @Res() res: Response,
@@ -40,7 +40,7 @@ export class DegreelevelController {
   @Put('/:id')
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
-  @UseGuards(RoleGuard(roleTypeAccessApi.ADMIN))
+  @UseGuards(RoleGuard([ErolesUser.ADMIN]))
   async updateDegreeLevel(
     @Param('id') id: string,
     @Body() degreeLevelDto: UpdateDegreeLevelDto,

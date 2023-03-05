@@ -5,7 +5,11 @@ import { CreateUserDto } from './dto/users.create.dto';
 import { Users, UsersDocument } from './schemas/users.schema';
 import { Profile, ProfileDocument } from './schemas/users.profile.schema';
 import { cryptoPassWord } from 'src/constants/crypto';
-import { EstatusUserProfile, roles, statusUser } from 'src/constants/constant';
+import {
+  EstatusUserProfile,
+  ErolesUser,
+  EstatusUser,
+} from 'src/constants/constant';
 import { UsersFillterDto } from './dto/user.filter.dto';
 import { validateEmail } from 'src/validates/validateEmail';
 import { CommonException } from 'src/exceptions/execeptionError';
@@ -120,7 +124,7 @@ export class UsersService {
       user: user._id,
       code: getRandomCode(6),
     });
-    if (user.role === roles.STUDENT) {
+    if (user.role === ErolesUser.STUDENT) {
       const isCreate = await this.createStudyProcess(user._id, profile._id);
       if (!isCreate) {
         new CommonException(500, 'Can not create study process');
@@ -169,7 +173,7 @@ export class UsersService {
       .findOne({
         email,
         passWord: password,
-        status: statusUser.ACTIVE,
+        status: EstatusUser.ACTIVE,
       })
       .lean();
     return result;
@@ -317,7 +321,7 @@ export class UsersService {
         result.push(item);
         continue;
       }
-      if (user.role === roles.STUDENT) {
+      if (user.role === ErolesUser.STUDENT) {
         const isCreateStudyProcess = await this.createStudyProcess(
           user._id,
           profile._id,
@@ -338,9 +342,9 @@ export class UsersService {
     const adminDto = {
       email: 'admin.students@gmail.com',
       passWord: cryptoPassWord('123Code#'),
-      status: statusUser.ACTIVE,
+      status: EstatusUser.ACTIVE,
       statusLogin: false,
-      role: roles.ADMIN,
+      role: ErolesUser.ADMIN,
     };
     const options = { email: adminDto.email };
     await this.validate.existed(this.userSchema, options, 'Admin');

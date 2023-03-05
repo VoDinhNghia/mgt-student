@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
-import { ErolesEnum, statusUser } from '../../../constants/constant';
+import { ErolesUser, EstatusUser } from '../../../constants/constant';
 
 export type UsersDocument = Users & Document;
 
@@ -15,10 +15,10 @@ export class Users {
   @Prop({ default: false })
   statusLogin?: boolean;
 
-  @Prop({ default: statusUser.ACTIVE })
+  @Prop({ default: EstatusUser.ACTIVE })
   status?: string;
 
-  @Prop({ enum: ErolesEnum, default: ErolesEnum.STUDENT })
+  @Prop({ enum: ErolesUser, default: ErolesUser.STUDENT })
   role?: string;
 
   @Prop({ default: null })

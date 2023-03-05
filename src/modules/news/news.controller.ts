@@ -11,7 +11,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { roleTypeAccessApi } from 'src/constants/constant';
+import { ErolesUser } from 'src/constants/constant';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { RoleGuard } from '../auth/role-auth.guard';
 import { CreateNewDto } from './dtos/news.create.dto';
@@ -29,7 +29,7 @@ export class NewsController {
   @Post()
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
-  @UseGuards(RoleGuard(roleTypeAccessApi.ADMIN))
+  @UseGuards(RoleGuard([ErolesUser.ADMIN]))
   async createNews(
     @Body() createNewDto: CreateNewDto,
     @Res() res: Response,
@@ -41,7 +41,7 @@ export class NewsController {
   @Get('/:id')
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
-  @UseGuards(RoleGuard(roleTypeAccessApi.ADMIN))
+  @UseGuards(RoleGuard([ErolesUser.ADMIN]))
   async getById(
     @Param('id') id: string,
     @Res() res: Response,
@@ -53,7 +53,7 @@ export class NewsController {
   @Put('/:id')
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
-  @UseGuards(RoleGuard(roleTypeAccessApi.ADMIN))
+  @UseGuards(RoleGuard([ErolesUser.ADMIN]))
   async updateNews(
     @Param('id') id: string,
     @Body() updateNewDto: UpdateNewDto,
@@ -66,7 +66,7 @@ export class NewsController {
   @Get()
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
-  @UseGuards(RoleGuard(roleTypeAccessApi.ADMIN))
+  @UseGuards(RoleGuard([ErolesUser.ADMIN]))
   async getListNews(
     @Query() queryNewDto: QueryNewDto,
     @Res() res: Response,
@@ -78,7 +78,7 @@ export class NewsController {
   @Delete('/:id')
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
-  @UseGuards(RoleGuard(roleTypeAccessApi.ADMIN))
+  @UseGuards(RoleGuard([ErolesUser.ADMIN]))
   async deleteNews(
     @Param('id') id: string,
     @Res() res: Response,
