@@ -27,7 +27,10 @@ export class Scholarship {
   content?: string;
 
   @Prop({ default: 8.0 })
-  accumulatedPoints?: number;
+  minimunPoints?: number;
+
+  @Prop({ default: 8.9 })
+  maximunPoints?: number;
 
   @Prop({ default: 65 })
   trainningPoints?: number;

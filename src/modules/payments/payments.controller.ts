@@ -93,7 +93,7 @@ export class PaymentsController {
   @UseGuards(RoleGuard([ErolesUser.ACCOUNTANT]))
   async createUserPayment(
     @Body() userPaymentDto: CreateUserPaymentDto,
-    @Res() res: ResponseRequest,
+    @Res() res: Response,
   ): Promise<ResponseRequest> {
     const result = await this.paymentService.createUserPayment(userPaymentDto);
     return new ResponseRequest(res, result, 'Create user payment success.');
