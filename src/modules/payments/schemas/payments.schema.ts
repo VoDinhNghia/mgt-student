@@ -12,7 +12,7 @@ export class PaymentStudyFee {
     required: true,
     unique: true,
   })
-  receiptId?: number;
+  receiptId?: string;
 
   @Prop({
     type: mongoose.Schema.Types.ObjectId,
