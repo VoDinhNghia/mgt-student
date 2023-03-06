@@ -4,6 +4,7 @@ export enum ErolesUser {
   LECTURER = 'LECTURER',
   LIBRARIAN = 'LIBRARIAN',
   ACCOUNTANT = 'ACCOUNTANT',
+  STAFF = 'STAFF',
 }
 
 export enum EstatusUser {
@@ -28,13 +29,14 @@ export enum EtypeAward {
   UNIVERSITY = 'UNIVERSITY',
 }
 
-export const typeNews = {
-  FACULTY: 'FACULTY',
-  CLASS: 'CLASS',
-  MAJORS: 'MAJORS',
-  UNIVERSITY: 'UNIVERSITY',
-  ENROLLMENT: 'ENROLLMENT', // enrollment information
-};
+export enum EtypeNews {
+  FACULTY = 'FACULTY',
+  CLASS = 'CLASS',
+  MAJORS = 'MAJORS',
+  UNIVERSITY = 'UNIVERSITY',
+  ENROLLMENT = 'ENROLLMENT', // enrollment information
+  DEPARTMENT = 'DEPARTMENT',
+}
 
 export enum EroomType {
   CLASS_ROOM = 'CLASS_ROOM',
