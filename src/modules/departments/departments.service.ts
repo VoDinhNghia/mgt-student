@@ -23,6 +23,7 @@ import { Rooms, RoomsDocument } from '../rooms/schemas/rooms.schema';
 import { ErolesUser, EroomType } from 'src/constants/constant';
 import { UpdateDepartmentDto } from './dtos/department.update.dto';
 import { Users, UsersDocument } from '../users/schemas/users.schema';
+import { UpdateStaffDepartmentDto } from './dtos/department.staff.update.dto';
 
 @Injectable()
 export class DepartmentsService {
@@ -155,18 +156,12 @@ export class DepartmentsService {
     staffDto: CreateMultiStaffDepartmentDto,
   ): Promise<DepartmentStaff[]> {
     const { department, staffs = [] } = staffDto;
-    const departmentInfo = await this.deparmentSchema.findById(department);
-    if (!departmentInfo) {
-      new CommonException(404, 'Department not found.');
-    }
+    await this.findDepartmentById(department);
     const staffLists = unionBy(staffs, 'staff');
     const results = [];
     for (const item of staffLists) {
       try {
-        const staffInfo: Record<string, any> = await this.profileSchema
-          .findById(item.staff)
-          .populate('user', '', this.userSchema)
-          .exec();
+        const staffInfo = await this.findUserProfile(item.staff);
         if (!staffInfo) {
           continue;
         }
@@ -186,5 +181,52 @@ export class DepartmentsService {
       }
     }
     return results;
+  }
+
+  async createDepartmentStaff(
+    staffDto: CreateStaffDepartmentDto,
+  ): Promise<DepartmentStaff> {
+    const { department, staff } = staffDto;
+    await this.findDepartmentById(department);
+    const staffInfo = await this.findUserProfile(staff);
+    if (!staffInfo) {
+      new CommonException(404, 'Staff not found.');
+    }
+    const result = await new this.staffSchema(staffDto).save();
+    return result;
+  }
+
+  async updateDepartmentStaff(
+    id: string,
+    staffDto: UpdateStaffDepartmentDto,
+  ): Promise<DepartmentStaff> {
+    const { department, joinDate } = staffDto;
+    if (department) {
+      await this.findDepartmentById(department);
+    }
+    const staff: Record<string, any> = await this.staffSchema.findById(id);
+    if (!staff) {
+      new CommonException(404, 'Staff not found.');
+    }
+    staff.department = department || staff.department;
+    staff.joinDate = joinDate || staff.joinDate;
+    await staff.save();
+    return staff;
+  }
+
+  async deleteDepartmentStaff(id: string): Promise<void> {
+    const staff: Record<string, any> = await this.staffSchema.findById(id);
+    if (!staff) {
+      new CommonException(404, 'Staff not found.');
+    }
+    await this.staffSchema.findByIdAndDelete(id);
+  }
+
+  async findUserProfile(profile: string): Promise<Record<string, any>> {
+    const staffInfo: Record<string, any> = await this.profileSchema
+      .findById(profile)
+      .populate('user', '', this.userSchema)
+      .exec();
+    return staffInfo;
   }
 }

@@ -1,4 +1,13 @@
-import { Body, Controller, Post, Res, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  Put,
+  Res,
+  UseGuards,
+} from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { ErolesUser } from 'src/constants/constant';
 import { ResponseRequest } from 'src/utils/responseApi';
@@ -6,6 +15,9 @@ import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { RoleGuard } from '../auth/role-auth.guard';
 import { DepartmentsService } from './departments.service';
 import { CreateMultiStaffDepartmentDto } from './dtos/department.staff.create-multi.dto';
+import { CreateStaffDepartmentDto } from './dtos/department.staff.create.dto';
+import { UpdateStaffDepartmentDto } from './dtos/department.staff.update.dto';
+import { UpdateDepartmentDto } from './dtos/department.update.dto';
 import { CreateDepartmentDto } from './dtos/departments.create.dto';
 
 @Controller('api/departments')
@@ -25,6 +37,19 @@ export class DepartmentsController {
     return new ResponseRequest(res, result, 'Create department success.');
   }
 
+  @Put('/:id')
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @UseGuards(RoleGuard([ErolesUser.ADMIN]))
+  async updateDepartment(
+    @Param('id') id: string,
+    @Body() departmentDto: UpdateDepartmentDto,
+    @Res() res: Response,
+  ): Promise<ResponseRequest> {
+    const result = await this.service.updateDepartment(id, departmentDto);
+    return new ResponseRequest(res, result, 'Update department success.');
+  }
+
   @Post('/staff/multi')
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
@@ -35,5 +60,57 @@ export class DepartmentsController {
   ): Promise<ResponseRequest> {
     const result = await this.service.createMultiStaffDepartment(staffDto);
     return new ResponseRequest(res, result, 'Create multi staff success.');
+  }
+
+  @Post('/staff')
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @UseGuards(RoleGuard([ErolesUser.ADMIN]))
+  async createDepartmentStaff(
+    @Body() staffDto: CreateStaffDepartmentDto,
+    @Res() res: Response,
+  ): Promise<ResponseRequest> {
+    const result = await this.service.createDepartmentStaff(staffDto);
+    return new ResponseRequest(res, result, 'Create staff success.');
+  }
+
+  @Put('/:id')
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @UseGuards(RoleGuard([ErolesUser.ADMIN]))
+  async updateDepartmentStaff(
+    @Param('id') id: string,
+    @Body() staffDto: UpdateStaffDepartmentDto,
+    @Res() res: Response,
+  ): Promise<ResponseRequest> {
+    const result = await this.service.updateDepartmentStaff(id, staffDto);
+    return new ResponseRequest(res, result, 'Update staff success.');
+  }
+
+  @Put('/:id')
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @UseGuards(RoleGuard([ErolesUser.ADMIN]))
+  async deleteDepartmentStaff(
+    @Param('id') id: string,
+    @Res() res: Response,
+  ): Promise<ResponseRequest> {
+    const result = await this.service.deleteDepartmentStaff(id);
+    return new ResponseRequest(res, result, 'Delete staff success.');
+  }
+
+  @Get('')
+  async getAllDepartment(@Res() res: Response): Promise<ResponseRequest> {
+    const result = await this.service.findAllDepartment();
+    return new ResponseRequest(res, result, 'Get department success.');
+  }
+
+  @Get('/:id')
+  async getDepartmentById(
+    @Param('id') id: string,
+    @Res() res: Response,
+  ): Promise<ResponseRequest> {
+    const result = await this.service.findDepartmentById(id);
+    return new ResponseRequest(res, result, 'Get department success.');
   }
 }
