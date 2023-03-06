@@ -8,50 +8,43 @@ export class Center {
   @Prop({ required: true })
   name?: string;
 
-  @Prop({
-    type: mongoose.Types.ObjectId,
-    ref: 'rooms',
-  })
-  room?: mongoose.Types.ObjectId;
-
-  @Prop({
-    type: [
-      {
-        header: {
-          type: mongoose.Types.ObjectId,
-          ref: 'user',
-        },
-        listLecture: [
-          {
-            type: mongoose.Types.ObjectId,
-            ref: 'user',
-          },
-        ],
-      },
-    ],
-  })
-  hummanResource?: {
-    header: mongoose.Types.ObjectId;
-    listLecture?: [mongoose.Types.ObjectId];
-  };
-
   @Prop()
-  founding?: Date;
+  introduction?: string;
 
   @Prop({
     type: mongoose.Types.ObjectId,
-    ref: 'awards',
+    ref: 'profiles',
   })
-  award?: mongoose.Types.ObjectId;
+  manager?: mongoose.Types.ObjectId;
 
   @Prop()
-  contact?: [
+  founding?: string;
+
+  @Prop([
     {
-      email?: string;
-      fax?: string;
-      mobile?: string;
+      type: mongoose.Types.ObjectId,
+      ref: 'awards',
     },
-  ];
+  ])
+  award?: [mongoose.Types.ObjectId];
+
+  @Prop({
+    type: {
+      office: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'rooms',
+      },
+      email: String,
+      phone: String,
+      fax: String,
+    },
+  })
+  contacts?: {
+    office?: mongoose.Types.ObjectId;
+    email?: string;
+    phone?: string;
+    fax?: string;
+  };
 
   @Prop({ default: Date.now })
   createdAt?: Date;
