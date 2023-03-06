@@ -26,9 +26,6 @@ export class UpdateProfileDto {
   course?: string;
 
   @ApiProperty({ required: false })
-  department?: string;
-
-  @ApiProperty({ required: false })
   degreeLevel?: string;
 
   @ApiProperty({ required: false })
