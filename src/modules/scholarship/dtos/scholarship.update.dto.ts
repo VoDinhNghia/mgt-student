@@ -30,6 +30,9 @@ export class UpdateScholarshipDto {
   @ApiProperty({ default: 80, required: false })
   percentTuition?: number;
 
+  @ApiProperty({ required: false, default: 11 })
+  numberCredit?: number;
+
   @ApiProperty({ required: false })
   attachment?: string[];
 }
