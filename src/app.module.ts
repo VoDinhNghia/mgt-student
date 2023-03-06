@@ -23,6 +23,7 @@ import { SchoolModule } from './modules/school/school.module';
 import { ScholarshipModule } from './modules/scholarship/scholarship.module';
 import { DegreelevelModule } from './modules/degreelevel/degreelevel.module';
 import { PaymentsModule } from './modules/payments/payments.module';
+import { InstituteModule } from './modules/institute/institute.module';
 
 @Module({
   imports: [
@@ -48,6 +49,7 @@ import { PaymentsModule } from './modules/payments/payments.module';
     ScholarshipModule,
     DegreelevelModule,
     PaymentsModule,
+    InstituteModule,
   ],
   controllers: [AppController],
   providers: [AppService],
