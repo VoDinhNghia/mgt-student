@@ -4,7 +4,9 @@ import {
   Attachment,
   AttachmentlSchema,
 } from '../attachments/schemas/attachments.schema';
+import { Rooms, RoomSchema } from '../rooms/schemas/rooms.schema';
 import { Profile, ProfileSchema } from '../users/schemas/users.profile.schema';
+import { Users, UsersSchema } from '../users/schemas/users.schema';
 import { DepartmentsController } from './departments.controller';
 import { DepartmentsService } from './departments.service';
 import { Departments, DepartmentSchema } from './schemas/departments.schema';
@@ -23,6 +25,8 @@ import {
       { name: DepartmentStaff.name, schema: DepartmentStaffSchema },
       { name: Profile.name, schema: ProfileSchema },
       { name: Attachment.name, schema: AttachmentlSchema },
+      { name: Rooms.name, schema: RoomSchema },
+      { name: Users.name, schema: UsersSchema },
     ]),
   ],
   providers: [DepartmentsService],

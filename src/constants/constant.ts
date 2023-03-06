@@ -43,6 +43,7 @@ export enum EroomType {
   MEETING = 'MEETING',
   GROUP_STUDY = 'GROUP_STUDY',
   LIBRARIAN = 'LIBRARIAN',
+  OFFICE_DEPARTMENT = 'OFFICE_DEPARTMENT',
 }
 
 export enum EtypePayments {

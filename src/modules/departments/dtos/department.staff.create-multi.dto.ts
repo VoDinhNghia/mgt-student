@@ -1,9 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { CreateStaffDepartmentDto } from './department.staff.create.dto';
+import { StaffDepartmentCommonDto } from './department.staff.dto';
 
 export class CreateMultiStaffDepartmentDto {
-  @ApiProperty({ required: true, type: [CreateStaffDepartmentDto] })
-  staffs?: CreateStaffDepartmentDto[];
+  @ApiProperty({ required: true, type: [StaffDepartmentCommonDto] })
+  staffs?: StaffDepartmentCommonDto[];
 
   @ApiProperty({ required: true })
   department?: string;
