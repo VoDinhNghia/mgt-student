@@ -1,15 +1,3 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ContactCommonDto } from 'src/utils/contact.dto';
 
-export class ContactDepartmentDto {
-  @ApiProperty({ required: true })
-  office?: string;
-
-  @ApiProperty({ required: true })
-  email?: string;
-
-  @ApiProperty({ required: true })
-  phone?: string;
-
-  @ApiProperty({ required: false })
-  fax?: string;
-}
+export class ContactDepartmentDto extends ContactCommonDto {}
