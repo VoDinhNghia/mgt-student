@@ -32,6 +32,12 @@ export class UpdateSubjectDto {
   @ApiProperty({ required: false, default: 3 })
   numberCredits?: number; // 3 TC
 
+  @ApiProperty({ required: false, default: false })
+  elective?: boolean;
+
+  @ApiProperty({ required: false, default: true })
+  calculateCumulativePoint?: boolean;
+
   // create subject process
   @ApiProperty({ required: false, default: 'Monday' })
   learnDate?: string;

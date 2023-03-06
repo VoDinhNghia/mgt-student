@@ -35,6 +35,9 @@ export class Scholarship {
   @Prop({ default: 65 })
   trainningPoints?: number;
 
+  @Prop({ default: 12 })
+  numberCredit?: number;
+
   @Prop({ default: 80 })
   percentTuition?: number;
 
