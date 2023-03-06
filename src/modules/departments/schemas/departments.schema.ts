@@ -5,12 +5,6 @@ export type DepartmentsDocument = Departments & Document;
 
 @Schema()
 export class Departments {
-  @Prop({
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'faculties',
-  })
-  faculty?: mongoose.Types.ObjectId;
-
   @Prop()
   name?: string;
 
@@ -22,23 +16,63 @@ export class Departments {
 
   @Prop({
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'awards',
+    ref: 'profiles',
   })
-  award?: [mongoose.Types.ObjectId];
+  manager?: mongoose.Types.ObjectId;
 
   @Prop({
-    lecturer: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'users',
+    type: {
+      office: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'rooms',
+      },
+      email: String,
+      phone: String,
+      fax: String,
     },
   })
-  lecturerList?: [
+  contacts?: {
+    office?: mongoose.Types.ObjectId;
+    email?: string;
+    phone?: string;
+    fax?: string;
+  };
+
+  @Prop({
+    type: [
+      {
+        title: String,
+        content: String,
+      },
+    ],
+  })
+  function?: [
     {
-      lecturer?: mongoose.Types.ObjectId;
-      headOfSection?: boolean;
-      eputyHead?: boolean;
+      title?: string;
+      content?: string;
     },
   ];
+
+  @Prop({
+    type: [
+      {
+        title: String,
+        content: String,
+      },
+    ],
+  })
+  task?: [
+    {
+      title?: string;
+      content?: string;
+    },
+  ];
+
+  @Prop({
+    type: [mongoose.Schema.Types.ObjectId],
+    ref: 'attachments',
+  })
+  attachment?: [mongoose.Types.ObjectId];
 
   @Prop({ default: Date.now })
   createdAt?: Date;

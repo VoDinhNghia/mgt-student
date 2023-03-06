@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { typeNews } from 'src/constants/constant';
+import { EtypeNews } from 'src/constants/constant';
 export class CreateNewDto {
   @ApiProperty({ required: true })
   title: string;
@@ -7,7 +7,11 @@ export class CreateNewDto {
   @ApiProperty()
   content?: string;
 
-  @ApiProperty({ required: true, enum: typeNews })
+  @ApiProperty({
+    required: true,
+    enum: EtypeNews,
+    default: EtypeNews.UNIVERSITY,
+  })
   type?: string;
 
   @ApiProperty()
