@@ -25,6 +25,7 @@ import { DegreelevelModule } from './modules/degreelevel/degreelevel.module';
 import { PaymentsModule } from './modules/payments/payments.module';
 import { InstituteModule } from './modules/institute/institute.module';
 import { DepartmentsModule } from './modules/departments/departments.module';
+import { CenterModule } from './modules/center/center.module';
 
 @Module({
   imports: [
@@ -52,6 +53,7 @@ import { DepartmentsModule } from './modules/departments/departments.module';
     PaymentsModule,
     InstituteModule,
     DepartmentsModule,
+    CenterModule,
   ],
   controllers: [AppController],
   providers: [AppService],
