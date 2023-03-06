@@ -34,12 +34,6 @@ export class Profile {
 
   @Prop({
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'departments',
-  })
-  department?: mongoose.Types.ObjectId;
-
-  @Prop({
-    type: mongoose.Schema.Types.ObjectId,
     ref: 'courses',
   })
   course?: mongoose.Types.ObjectId;
