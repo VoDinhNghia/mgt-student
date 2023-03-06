@@ -12,7 +12,7 @@ export class Departments {
   introduction?: string;
 
   @Prop()
-  foundYear?: Date;
+  foundYear?: string;
 
   @Prop({
     type: mongoose.Schema.Types.ObjectId,
