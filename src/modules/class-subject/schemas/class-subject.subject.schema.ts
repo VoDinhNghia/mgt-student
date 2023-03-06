@@ -50,6 +50,12 @@ export class Subjects {
   @Prop({ default: 3 })
   numberCredits?: number; // 3 TC
 
+  @Prop({ default: false })
+  elective?: boolean;
+
+  @Prop({ default: true }) // ex: GDTC not calculate cumumalative
+  calculateCumulativePoint?: boolean;
+
   @Prop({ default: 0 })
   numberOfFailed?: number;
 

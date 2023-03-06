@@ -214,10 +214,10 @@ export class ScholarshipService {
     const data = [];
     for (const item of studyProcessLists) {
       try {
-        const accumalatedPoint = await this.getUserTotalAccumalated(
-          semester,
-          item.user,
-        );
+        const { totalAccumalated, totalNumberCredits } =
+          await this.getUserTotalAccumalated(semester, item.user);
+        const accumalatedPoint =
+          totalNumberCredits > 0 ? totalAccumalated / totalNumberCredits : 0;
         const tranningpoint = await this.getUserTrainningPoint(
           item.user,
           semester,
@@ -228,6 +228,7 @@ export class ScholarshipService {
         const getCondition = await this.considerConditions(
           accumalatedPoint,
           tranningpoint,
+          totalNumberCredits,
           semester,
         );
         if (!getCondition) {
@@ -250,7 +251,7 @@ export class ScholarshipService {
           await new this.scholarshipUserSchema(userscholarshipDto).save(),
         );
       } catch (error) {
-        console.log(error);
+        // console.log(error);
         continue;
       }
     }
@@ -260,6 +261,7 @@ export class ScholarshipService {
   async considerConditions(
     accumalatedPoint: number,
     tranningpoint: number,
+    numberCredit: number,
     semester: string,
   ): Promise<Record<string, any>> {
     const result = await this.scholarshipSchema.findOne({
@@ -267,6 +269,7 @@ export class ScholarshipService {
       minimunPoints: { $lt: accumalatedPoint },
       maximunPoints: { $gt: accumalatedPoint },
       trainningPoints: { $lt: tranningpoint },
+      numberCredit: { $lt: numberCredit },
     });
     return result;
   }
@@ -274,7 +277,7 @@ export class ScholarshipService {
   async getUserTotalAccumalated(
     semester: string,
     profileId: string,
-  ): Promise<number> {
+  ): Promise<{ totalAccumalated: number; totalNumberCredits: number }> {
     const subjectService = new SubjectUserRegister(this.db);
     const subjectIds = await subjectService.getSubjectLists(semester);
     const result = await subjectService.getSubjectUserInSemester(
@@ -284,14 +287,16 @@ export class ScholarshipService {
     let totalAccumalated = 0;
     let totalNumberCredits = 0;
     if (result.length <= 0) {
-      return 0;
+      return { totalAccumalated, totalNumberCredits };
     }
     for (const item of result) {
-      totalAccumalated +=
-        (item?.accumalatedPoint || 0) * item?.subject?.numberCredits;
-      totalNumberCredits += item?.subject?.numberCredits || 0;
+      if (item.subject?.calculateCumulativePoint) {
+        totalAccumalated +=
+          (item?.accumalatedPoint || 0) * item?.subject?.numberCredits;
+        totalNumberCredits += item?.subject?.numberCredits || 0;
+      }
     }
-    return totalAccumalated / totalNumberCredits;
+    return { totalAccumalated, totalNumberCredits };
   }
 
   async getUserTrainningPoint(

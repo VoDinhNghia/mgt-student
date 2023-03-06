@@ -45,6 +45,12 @@ export class CreateSubjectDto {
   @ApiProperty({ required: true, default: '2023-03-28' })
   endDate?: Date;
 
+  @ApiProperty({ required: true, default: false })
+  elective?: boolean;
+
+  @ApiProperty({ required: true, default: true })
+  calculateCumulativePoint?: boolean;
+
   @ApiProperty({ required: true, type: ProcessSubjectDto })
   midTermTest?: ProcessSubjectDto;
 
