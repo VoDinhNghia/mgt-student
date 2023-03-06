@@ -1,9 +1,3 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { FunctionAndTaskDto } from 'src/utils/functionAndTask.dto';
 
-export class FunctionAndTaskDepartmentDto {
-  @ApiProperty({ required: true })
-  title?: string;
-
-  @ApiProperty({ required: true })
-  content?: string;
-}
+export class FunctionAndTaskDepartmentDto extends FunctionAndTaskDto {}
