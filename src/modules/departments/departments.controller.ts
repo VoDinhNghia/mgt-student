@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Post,
@@ -74,7 +75,7 @@ export class DepartmentsController {
     return new ResponseRequest(res, result, 'Create staff success.');
   }
 
-  @Put('/:id')
+  @Put('/staff/:id')
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @UseGuards(RoleGuard([ErolesUser.ADMIN]))
@@ -87,7 +88,7 @@ export class DepartmentsController {
     return new ResponseRequest(res, result, 'Update staff success.');
   }
 
-  @Put('/:id')
+  @Delete('/staff/:id')
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @UseGuards(RoleGuard([ErolesUser.ADMIN]))
@@ -95,11 +96,11 @@ export class DepartmentsController {
     @Param('id') id: string,
     @Res() res: Response,
   ): Promise<ResponseRequest> {
-    const result = await this.service.deleteDepartmentStaff(id);
-    return new ResponseRequest(res, result, 'Delete staff success.');
+    await this.service.deleteDepartmentStaff(id);
+    return new ResponseRequest(res, true, 'Delete staff success.');
   }
 
-  @Get('')
+  @Get()
   async getAllDepartment(@Res() res: Response): Promise<ResponseRequest> {
     const result = await this.service.findAllDepartment();
     return new ResponseRequest(res, result, 'Get department success.');

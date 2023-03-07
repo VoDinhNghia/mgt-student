@@ -60,8 +60,8 @@ export class InstituteController {
     @Param('id') id: string,
     @Res() res: ResponseRequest,
   ): Promise<ResponseRequest> {
-    const result = await this.instutiteService.deleteInstitude(id);
-    return new ResponseRequest(res, result, 'Delete institute success.');
+    await this.instutiteService.deleteInstitude(id);
+    return new ResponseRequest(res, true, 'Delete institute success.');
   }
 
   @Get()
