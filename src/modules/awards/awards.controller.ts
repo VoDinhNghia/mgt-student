@@ -15,7 +15,7 @@ import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { RoleGuard } from '../auth/role-auth.guard';
 import { AwardsService } from './awards.service';
 import { Response } from 'express';
-import { ResponseRequest } from 'src/utils/responseApi';
+import { ResponseRequest } from 'src/utils/response-api';
 import { CreateAwardDto } from './dtos/awards.create.dto';
 import { UpdateAwardDto } from './dtos/awards.update.dto';
 import { QueryAwardDto } from './dtos/awards.query.dto';

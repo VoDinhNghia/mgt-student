@@ -18,7 +18,7 @@ import { Response } from 'express';
 import { BranchCreateDto } from './dtos/branch.create.dto';
 import { BranchQueryDto } from './dtos/branch.query.dto';
 import { BranchUpdateDto } from './dtos/branch.update.dto';
-import { ResponseRequest } from 'src/utils/responseApi';
+import { ResponseRequest } from 'src/utils/response-api';
 
 @Controller('api/branchs')
 @ApiTags('branchs')

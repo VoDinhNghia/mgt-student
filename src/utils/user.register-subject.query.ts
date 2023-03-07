@@ -1,6 +1,6 @@
 import { ObjectId, Types } from 'mongoose';
-import { DbConnection } from 'src/constants/dbConnection';
-import { CommonException } from 'src/exceptions/execeptionError';
+import { DbConnection } from 'src/constants/db.mongo.connection';
+import { CommonException } from 'src/exceptions/exeception.common-error';
 
 export class SubjectUserRegister {
   constructor(private readonly db: DbConnection) {}

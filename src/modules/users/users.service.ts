@@ -11,10 +11,10 @@ import {
   EstatusUser,
 } from 'src/constants/constant';
 import { UsersFillterDto } from './dto/user.filter.dto';
-import { validateEmail } from 'src/validates/validateEmail';
-import { CommonException } from 'src/exceptions/execeptionError';
-import { ValidateField } from 'src/validates/validateFieldById';
-import { Pagination } from 'src/utils/pagePagination';
+import { validateEmail } from 'src/validates/validate.email';
+import { CommonException } from 'src/exceptions/exeception.common-error';
+import { ValidateField } from 'src/validates/validate.field-id.dto';
+import { Pagination } from 'src/utils/page.pagination';
 import { UpdateProfileDto } from './dto/user.update-profile.dto';
 import {
   LeaderSchool,
@@ -38,7 +38,7 @@ import {
   DegreeLevel,
   DegreeLevelDocument,
 } from '../degreelevel/schemas/degreelevel.schema';
-import { getRandomCode } from 'src/utils/generateCodeProfile';
+import { getRandomCode } from 'src/utils/generate.code-profile';
 import {
   StudyProcess,
   StudyProcessDocument,

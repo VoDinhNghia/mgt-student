@@ -27,7 +27,7 @@ import { StorageObjectDto } from './dto/user.file-upload.dto';
 import { diskStorage } from 'multer';
 import { readFileSync } from 'fs';
 import { UpdateProfileDto } from './dto/user.update-profile.dto';
-import { ResponseRequest } from 'src/utils/responseApi';
+import { ResponseRequest } from 'src/utils/response-api';
 import { CreateLeaderSchoolDto } from './dto/user.create.leader-school.dto';
 import { UpdateLeaderSchoolDto } from './dto/user.update.leader-school.dto';
 import { QueryLeaderSchoolDto } from './dto/user.query.leader-school.dto';

@@ -10,7 +10,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { ResponseRequest } from 'src/utils/responseApi';
+import { ResponseRequest } from 'src/utils/response-api';
 import { CreateMoneyPerCreditMgtDto } from './dtos/mgt-money-per-credit.create.dto';
 import { PaymentsService } from './payments.service';
 import { Response } from 'express';

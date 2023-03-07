@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import { DbConnection } from 'src/constants/dbConnection';
+import { DbConnection } from 'src/constants/db.mongo.connection';
 import {
   Attachment,
   AttachmentlSchema,

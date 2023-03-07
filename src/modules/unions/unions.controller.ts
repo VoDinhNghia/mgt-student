@@ -15,7 +15,7 @@ import { RoleGuard } from '../auth/role-auth.guard';
 import { UnionsService } from './unions.service';
 import { Response } from 'express';
 import { CreateUnionDto } from './dtos/unions.create.dto';
-import { ResponseRequest } from 'src/utils/responseApi';
+import { ResponseRequest } from 'src/utils/response-api';
 import { UpdateUnionDto } from './dtos/unions.update.dto';
 
 @Controller('api/unions')

@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { CommonException } from 'src/exceptions/execeptionError';
-import { Pagination } from 'src/utils/pagePagination';
+import { CommonException } from 'src/exceptions/exeception.common-error';
+import { Pagination } from 'src/utils/page.pagination';
 import { CreateNewDto } from './dtos/news.create.dto';
 import { QueryNewDto } from './dtos/news.query.dto';
 import { UpdateNewDto } from './dtos/news.update.dto';

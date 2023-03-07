@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import { ValidateField } from 'src/validates/validateFieldById';
+import { ValidateField } from 'src/validates/validate.field-id.dto';
 import { Course, CourseSchema } from '../courses/schemas/courses.schema';
 import {
   DegreeLevel,

@@ -4,7 +4,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { Users, UsersSchema } from './schemas/users.schema';
 import { UsersController } from './users.controller';
 import { Profile, ProfileSchema } from './schemas/users.profile.schema';
-import { ValidateField } from 'src/validates/validateFieldById';
+import { ValidateField } from 'src/validates/validate.field-id.dto';
 import {
   LeaderSchool,
   LeaderSchoolSchema,
