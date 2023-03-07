@@ -1,22 +1,22 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { CenterContacts } from './center.contacts.dto';
 
-export class CreateCenterDto {
-  @ApiProperty({ required: true })
+export class UpdateCenterDto {
+  @ApiProperty({ required: false })
   name?: string;
 
-  @ApiProperty({ required: true })
+  @ApiProperty({ required: false })
   introduction?: string;
 
-  @ApiProperty({ required: true })
+  @ApiProperty({ required: false })
   director?: string;
 
-  @ApiProperty({ required: true })
+  @ApiProperty({ required: false })
   foundYear?: string;
 
   @ApiProperty({ required: false, type: [String] })
   award?: string[];
 
-  @ApiProperty({ required: true, type: CenterContacts })
+  @ApiProperty({ required: false, type: CenterContacts })
   contacts?: CenterContacts;
 }

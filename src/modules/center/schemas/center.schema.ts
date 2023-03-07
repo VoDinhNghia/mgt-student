@@ -15,10 +15,10 @@ export class Center {
     type: mongoose.Types.ObjectId,
     ref: 'profiles',
   })
-  manager?: mongoose.Types.ObjectId;
+  director?: mongoose.Types.ObjectId;
 
   @Prop()
-  founding?: string;
+  foundYear?: string;
 
   @Prop([
     {
