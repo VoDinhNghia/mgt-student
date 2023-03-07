@@ -96,3 +96,5 @@ export enum EactionLog {
   UPDATE = 'UPDATE',
   DELETE = 'DELETE',
 }
+
+export const urlAccessImageLocal = 'http://localhost:3000/attachments';

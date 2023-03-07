@@ -25,7 +25,7 @@ export class Attachment {
 
   @Prop({
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'user',
+    ref: 'profiles',
   })
   uploadBy?: mongoose.Types.ObjectId;
 

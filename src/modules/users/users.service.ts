@@ -169,14 +169,31 @@ export class UsersService {
 
   async findUserAuth(email: string, passWord: string): Promise<Users | any> {
     const password = cryptoPassWord(passWord);
-    const result = await this.userSchema
-      .findOne({
-        email,
-        passWord: password,
-        status: EstatusUser.ACTIVE,
-      })
-      .lean();
-    return result;
+    const result = await this.userSchema.aggregate([
+      { $match: { email, passWord: password, status: EstatusUser.ACTIVE } },
+      {
+        $lookup: {
+          from: 'profiles',
+          localField: '_id',
+          foreignField: 'user',
+          as: 'profile',
+        },
+      },
+      { $unwind: '$profile' },
+      {
+        $project: {
+          _id: 1,
+          email: 1,
+          role: 1,
+          status: 1,
+          'profile._id': 1,
+          'profile.firstName': 1,
+          'profile.lastName': 1,
+          'profile.middleName': 1,
+        },
+      },
+    ]);
+    return result[0] ?? null;
   }
 
   async updateUserAuth(id: string): Promise<void> {
