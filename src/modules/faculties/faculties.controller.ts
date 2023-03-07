@@ -16,7 +16,7 @@ import { RoleGuard } from '../auth/role-auth.guard';
 import { CreateFacultyDto } from './dtos/faculties.create.dto';
 import { FacultiesService } from './faculties.service';
 import { Response } from 'express';
-import { ResponseRequest } from 'src/utils/responseApi';
+import { ResponseRequest } from 'src/utils/response-api';
 import { FacultyQueryDto } from './dtos/faculties.query.dto';
 import { UpdateFacultyDto } from './dtos/faculties.update.dto';
 import { CreateMajorDto } from './dtos/major.create.dto';

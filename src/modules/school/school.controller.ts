@@ -14,7 +14,7 @@ import { CreateSchoolDto } from './dtos/school.create.dto';
 import { UpdateSchoolDto } from './dtos/school.update.dto';
 import { SchoolService } from './school.service';
 import { Response } from 'express';
-import { ResponseRequest } from 'src/utils/responseApi';
+import { ResponseRequest } from 'src/utils/response-api';
 import { ErolesUser } from 'src/constants/constant';
 
 @Controller('api/school')

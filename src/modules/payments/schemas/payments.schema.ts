@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { Document } from 'mongoose';
 import { EstatusPayments, EtypePayments } from 'src/constants/constant';
-import { getRandomCodeReceiptId } from 'src/utils/generateCodePayment';
+import { getRandomCodeReceiptId } from 'src/utils/generate.code-payment';
 
 export type PaymentStudyFeeDocument = PaymentStudyFee & Document;
 

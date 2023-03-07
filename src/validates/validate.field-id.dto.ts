@@ -1,4 +1,4 @@
-import { CommonException } from '../exceptions/execeptionError';
+import { CommonException } from '../exceptions/exeception.common-error';
 
 export class ValidateField {
   async byId(schema: any, id: string, message: string): Promise<void> {

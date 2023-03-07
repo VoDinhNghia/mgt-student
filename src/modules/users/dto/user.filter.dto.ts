@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { QueryPagination } from 'src/utils/queryPaginationDto';
+import { QueryPagination } from 'src/utils/page.query.pagination.dto';
 import { EstatusUser, ErolesUser } from 'src/constants/constant';
 
 export class UsersFillterDto extends QueryPagination {

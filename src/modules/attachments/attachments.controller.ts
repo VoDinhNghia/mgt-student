@@ -19,7 +19,7 @@ import { RoleGuard } from '../auth/role-auth.guard';
 import { StorageObjectDto } from '../users/dto/user.file-upload.dto';
 import { AttachmentsService } from './attachments.service';
 import { Request, Response } from 'express';
-import { ResponseRequest } from 'src/utils/responseApi';
+import { ResponseRequest } from 'src/utils/response-api';
 @Controller('api/attachments')
 @ApiTags('attachments')
 export class AttachmentsController {

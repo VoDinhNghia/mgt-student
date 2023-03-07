@@ -19,7 +19,7 @@ import { join } from 'path';
 import { readFileSync } from 'fs';
 import { QueryPovinceDto } from './dto/countries.query-province.dto';
 import { QueryDistrictDto } from './dto/countries.query-district.dto';
-import { ResponseRequest } from 'src/utils/responseApi';
+import { ResponseRequest } from 'src/utils/response-api';
 import { RoleGuard } from '../auth/role-auth.guard';
 import { ErolesUser } from 'src/constants/constant';
 

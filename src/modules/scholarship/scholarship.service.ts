@@ -6,10 +6,10 @@ import {
   EstatusUserProfile,
   trainningPointDefault,
 } from 'src/constants/constant';
-import { DbConnection } from 'src/constants/dbConnection';
-import { CommonException } from 'src/exceptions/execeptionError';
-import { Pagination } from 'src/utils/pagePagination';
-import { SubjectUserRegister } from 'src/utils/subjectUserRegister';
+import { DbConnection } from 'src/constants/db.mongo.connection';
+import { CommonException } from 'src/exceptions/exeception.common-error';
+import { Pagination } from 'src/utils/page.pagination';
+import { SubjectUserRegister } from 'src/utils/user.register-subject.query';
 import {
   Attachment,
   AttachmentDocument,

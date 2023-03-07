@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
-import { CommonException } from 'src/exceptions/execeptionError';
+import { CommonException } from 'src/exceptions/exeception.common-error';
 import {
   Attachment,
   AttachmentDocument,

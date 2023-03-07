@@ -5,7 +5,7 @@ import { Response } from 'express';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { RoleGuard } from '../auth/role-auth.guard';
 import { ErolesUser } from 'src/constants/constant';
-import { ResponseRequest } from 'src/utils/responseApi';
+import { ResponseRequest } from 'src/utils/response-api';
 
 @Controller('api/blogs')
 @ApiTags('blogs')

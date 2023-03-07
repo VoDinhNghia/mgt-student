@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { Document } from 'mongoose';
 import { EuserGender } from 'src/constants/constant';
-import { getRandomCode } from 'src/utils/generateCodeProfile';
+import { getRandomCode } from 'src/utils/generate.code-profile';
 
 export type ProfileDocument = Profile & Document;
 

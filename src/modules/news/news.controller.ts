@@ -19,7 +19,7 @@ import { NewsService } from './news.service';
 import { Response } from 'express';
 import { UpdateNewDto } from './dtos/news.update.dto';
 import { QueryNewDto } from './dtos/news.query.dto';
-import { ResponseRequest } from 'src/utils/responseApi';
+import { ResponseRequest } from 'src/utils/response-api';
 
 @Controller('api/news')
 @ApiTags('news')

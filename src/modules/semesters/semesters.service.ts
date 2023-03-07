@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { CommonException } from 'src/exceptions/execeptionError';
+import { CommonException } from 'src/exceptions/exeception.common-error';
 import { CreateSemesterDto } from './dtos/semesters.create.dto';
 import { UpdateSemesterDto } from './dtos/semesters.update.dto';
 import { Semester, SemesterDocument } from './schemas/semesters.schema';

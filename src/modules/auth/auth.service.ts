@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { UsersService } from '../users/users.service';
 import { UsersDto } from '../users/dto/users.dto';
 import { JwtService } from '@nestjs/jwt';
-import { CommonException } from 'src/exceptions/execeptionError';
+import { CommonException } from 'src/exceptions/exeception.common-error';
 
 @Injectable()
 export class AuthService {

@@ -16,11 +16,11 @@ import { RoleGuard } from '../auth/role-auth.guard';
 import { ClassSubjectService } from './class-subject.service';
 import { Response } from 'express';
 import { CreateClassDto } from './dtos/class.create.dto';
-import { ResponseRequest } from 'src/utils/responseApi';
+import { ResponseRequest } from 'src/utils/response-api';
 import { CreateSubjectDto } from './dtos/subject.create.dto';
 import { UpdateSubjectDto } from './dtos/subject.update.dto';
 import { UpdateClassDto } from './dtos/class.update.dto';
-import { ValidatePercentPoint } from 'src/validates/validatePercentPointSubject';
+import { ValidatePercentPoint } from 'src/validates/validate.percent-point.subject';
 
 @Controller('api/class-subject')
 @ApiTags('class-subject')
