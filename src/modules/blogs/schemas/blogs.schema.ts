@@ -25,7 +25,7 @@ export class Blog {
       {
         user: {
           type: mongoose.Types.ObjectId,
-          ref: 'user',
+          ref: 'profiles',
         },
       },
     ],
@@ -42,7 +42,7 @@ export class Blog {
       {
         user: {
           type: mongoose.Types.ObjectId,
-          ref: 'user',
+          ref: 'profiles',
         },
       },
     ],
@@ -50,7 +50,7 @@ export class Blog {
   likes?: [
     {
       user: mongoose.Types.ObjectId;
-      status: number; // 0 like, 1 dislike
+      status: boolean; // true like, false dislike
       emotion: string; // link path in folder public to get url
     },
   ];
