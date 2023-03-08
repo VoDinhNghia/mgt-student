@@ -18,10 +18,10 @@ export class Award {
   })
   attachment?: [mongoose.Types.ObjectId];
 
-  @Prop()
+  @Prop({ required: true })
   location?: string;
 
-  @Prop()
+  @Prop({ default: EtypeAward.UNIVERSITY })
   type?: EtypeAward;
 
   @Prop()

@@ -13,7 +13,7 @@ export class MoneyPerCreditManagement {
   name?: string;
 
   @Prop({
-    type: String,
+    type: Number,
     required: true,
   })
   moneyPerCredit?: number; // money per credit

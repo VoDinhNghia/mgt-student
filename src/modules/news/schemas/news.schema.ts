@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { Document } from 'mongoose';
+import { EtypeNews } from 'src/constants/constant';
 
 export type NewsDocument = News & Document;
 
@@ -11,7 +12,7 @@ export class News {
   @Prop()
   content?: string;
 
-  @Prop({ required: true })
+  @Prop({ required: true, default: EtypeNews.UNIVERSITY })
   type?: string;
 
   @Prop()
