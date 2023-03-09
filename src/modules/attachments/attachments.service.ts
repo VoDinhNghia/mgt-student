@@ -21,19 +21,19 @@ export class AttachmentsService {
   ): Promise<Attachment> {
     const attachmentDto: CreateAttachmentDto = {
       ...fileDto,
+      url: `${urlAccessImageLocal}/${fileDto.filename}`,
       uploadBy,
     };
     const attachment = await new this.attachmentSchema(attachmentDto).save();
     return attachment;
   }
 
-  async getAttachmentById(id: string): Promise<string> {
+  async getAttachmentById(id: string): Promise<Attachment> {
     const result = await this.attachmentSchema.findById(id);
     if (!result) {
       new CommonException(404, 'Attachment not found.');
     }
-    const url = `${urlAccessImageLocal}/${result.filename}`;
-    return url;
+    return result;
   }
 
   async deleteAttachment(id: string, profileId: string): Promise<void> {
