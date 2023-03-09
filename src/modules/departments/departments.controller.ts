@@ -29,7 +29,7 @@ export class DepartmentsController {
   @Post()
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
-  @UseGuards(RoleGuard([ErolesUser.ADMIN]))
+  @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
   async createDepartment(
     @Body() departmentDto: CreateDepartmentDto,
     @Res() res: Response,
@@ -41,7 +41,7 @@ export class DepartmentsController {
   @Put('/:id')
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
-  @UseGuards(RoleGuard([ErolesUser.ADMIN]))
+  @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
   async updateDepartment(
     @Param('id') id: string,
     @Body() departmentDto: UpdateDepartmentDto,
@@ -54,7 +54,7 @@ export class DepartmentsController {
   @Post('/staff/multi')
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
-  @UseGuards(RoleGuard([ErolesUser.ADMIN]))
+  @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
   async createDepartmentMultiStaff(
     @Body() staffDto: CreateMultiStaffDepartmentDto,
     @Res() res: Response,
@@ -66,7 +66,7 @@ export class DepartmentsController {
   @Post('/staff')
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
-  @UseGuards(RoleGuard([ErolesUser.ADMIN]))
+  @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
   async createDepartmentStaff(
     @Body() staffDto: CreateStaffDepartmentDto,
     @Res() res: Response,
@@ -78,7 +78,7 @@ export class DepartmentsController {
   @Put('/staff/:id')
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
-  @UseGuards(RoleGuard([ErolesUser.ADMIN]))
+  @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
   async updateDepartmentStaff(
     @Param('id') id: string,
     @Body() staffDto: UpdateStaffDepartmentDto,
@@ -91,7 +91,7 @@ export class DepartmentsController {
   @Delete('/staff/:id')
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
-  @UseGuards(RoleGuard([ErolesUser.ADMIN]))
+  @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
   async deleteDepartmentStaff(
     @Param('id') id: string,
     @Res() res: Response,

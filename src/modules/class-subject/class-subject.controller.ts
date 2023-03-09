@@ -30,7 +30,7 @@ export class ClassSubjectController {
   @Post('/class')
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
-  @UseGuards(RoleGuard([ErolesUser.ADMIN]))
+  @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
   async createClass(
     @Res() res: Response,
     @Body() createClassDto: CreateClassDto,
@@ -42,7 +42,7 @@ export class ClassSubjectController {
   @Post('/subject')
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
-  @UseGuards(RoleGuard([ErolesUser.ADMIN]))
+  @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
   @UseInterceptors(ValidatePercentPoint)
   async createSubject(
     @Res() res: Response,
@@ -55,7 +55,7 @@ export class ClassSubjectController {
   @Put('/subject/:id')
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
-  @UseGuards(RoleGuard([ErolesUser.ADMIN]))
+  @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
   async updateSubject(
     @Param('id') id: string,
     @Res() res: Response,
@@ -68,7 +68,7 @@ export class ClassSubjectController {
   @Put('/class/:id')
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
-  @UseGuards(RoleGuard([ErolesUser.ADMIN]))
+  @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
   async updateCalss(
     @Param('id') id: string,
     @Res() res: Response,

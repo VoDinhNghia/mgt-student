@@ -27,7 +27,7 @@ export class InstituteController {
   @Post()
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
-  @UseGuards(RoleGuard([ErolesUser.ADMIN]))
+  @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
   async createInstitute(
     @Body() instituteDto: CreateInstituteDto,
     @Res() res: Response,
@@ -39,7 +39,7 @@ export class InstituteController {
   @Put('/:id')
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
-  @UseGuards(RoleGuard([ErolesUser.ADMIN]))
+  @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
   async updateInstitute(
     @Param('id') id: string,
     @Body() instituteDto: UpdateInstituteDto,
@@ -55,7 +55,7 @@ export class InstituteController {
   @Delete('/:id')
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
-  @UseGuards(RoleGuard([ErolesUser.ADMIN]))
+  @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
   async deleteInstitute(
     @Param('id') id: string,
     @Res() res: ResponseRequest,

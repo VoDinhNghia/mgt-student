@@ -26,7 +26,7 @@ export class UnionsController {
   @Post()
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
-  @UseGuards(RoleGuard([ErolesUser.ADMIN]))
+  @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
   async create(
     @Body() unionDto: CreateUnionDto,
     @Res() res: Response,
@@ -38,7 +38,7 @@ export class UnionsController {
   @Put('/:id')
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
-  @UseGuards(RoleGuard([ErolesUser.ADMIN]))
+  @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
   async updateUnion(
     @Param('id') id: string,
     @Body() unionDto: UpdateUnionDto,
