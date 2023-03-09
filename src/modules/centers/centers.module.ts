@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
-import { CenterService } from './center.service';
-import { CenterController } from './center.controller';
+import { CenterService } from './centers.service';
+import { CenterController } from './centers.controller';
 import { MongooseModule } from '@nestjs/mongoose';
-import { Center, CenterSchema } from './schemas/center.schema';
+import { Center, CenterSchema } from './schemas/centers.schema';
 import { Rooms, RoomSchema } from '../rooms/schemas/rooms.schema';
 import { Award, AwardSchema } from '../awards/schemas/awards.schema';
 import { Profile, ProfileSchema } from '../users/schemas/users.profile.schema';

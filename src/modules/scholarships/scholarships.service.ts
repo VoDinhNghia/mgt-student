@@ -27,11 +27,11 @@ import { CreateScholarshipDto } from './dtos/scholarship.create.dto';
 import { QueryScholarshipDto } from './dtos/scholarship.query.dto';
 import { UpdateScholarshipDto } from './dtos/scholarship.update.dto';
 import { QueryUserScholarshipDto } from './dtos/scholarship.user.query.dto';
-import { Scholarship, ScholarshipDocument } from './schemas/scholarship.schema';
+import { Scholarship, ScholarshipDocument } from './schemas/scholarships.schema';
 import {
   ScholarshipUser,
   ScholarshipUserDocument,
-} from './schemas/scholarship.user.schema';
+} from './scholarships.user.schema';
 
 @Injectable()
 export class ScholarshipService {

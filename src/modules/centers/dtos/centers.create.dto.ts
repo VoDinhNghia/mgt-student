@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { CenterContacts } from './center.contacts.dto';
+import { CenterContacts } from './centers.contacts.dto';
 
 export class CreateCenterDto {
   @ApiProperty({ required: true })

@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { BranchContactInfoDto } from './branch.contact-info.dto';
-import { BranchLocationDto } from './branch.location.dto';
+import { BranchContactInfoDto } from './branchs.contact-info.dto';
+import { BranchLocationDto } from './branchs.location.dto';
 
 export class BranchCreateDto {
   @ApiProperty({ required: true })

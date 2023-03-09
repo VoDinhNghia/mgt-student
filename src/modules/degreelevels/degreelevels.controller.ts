@@ -13,10 +13,10 @@ import { ResponseRequest } from 'src/utils/response-api';
 import { ErolesUser } from 'src/constants/constant';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { RoleGuard } from '../auth/role-auth.guard';
-import { DegreelevelService } from './degreelevel.service';
-import { CreateDegreeLevelDto } from './dtos/degreelevel.create.dto';
+import { DegreelevelService } from './degreelevels.service';
+import { CreateDegreeLevelDto } from './dtos/degreelevels.create.dto';
 import { Response } from 'express';
-import { UpdateDegreeLevelDto } from './dtos/degreeLevel.update.dto';
+import { UpdateDegreeLevelDto } from './dtos/degreeLevels.update.dto';
 
 @Controller('api/degreelevels')
 @ApiTags('degreelevels')

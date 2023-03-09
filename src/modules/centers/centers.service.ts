@@ -8,10 +8,10 @@ import {
   Profile,
   ProfileDocument,
 } from '../users/schemas/users.profile.schema';
-import { CreateCenterDto } from './dtos/center.create.dto';
-import { Center, CenterDocument } from './schemas/center.schema';
+import { CreateCenterDto } from './dtos/centers.create.dto';
+import { Center, CenterDocument } from './schemas/centers.schema';
 import { uniq } from 'lodash';
-import { UpdateCenterDto } from './dtos/center.update.dto';
+import { UpdateCenterDto } from './dtos/centers.update.dto';
 
 @Injectable()
 export class CenterService {

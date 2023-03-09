@@ -37,7 +37,7 @@ import { Award, AwardDocument } from '../awards/schemas/awards.schema';
 import {
   DegreeLevel,
   DegreeLevelDocument,
-} from '../degreelevel/schemas/degreelevel.schema';
+} from '../degreelevels/schemas/degreelevels.schema';
 import { getRandomCode } from 'src/utils/generate.code-profile';
 import {
   StudyProcess,

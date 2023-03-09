@@ -18,7 +18,7 @@ import { CreateUserScholarshipInSemester } from './dtos/admin.create.user-schola
 import { CreateScholarshipDto } from './dtos/scholarship.create.dto';
 import { QueryScholarshipDto } from './dtos/scholarship.query.dto';
 import { QueryUserScholarshipDto } from './dtos/scholarship.user.query.dto';
-import { ScholarshipService } from './scholarship.service';
+import { ScholarshipService } from './scholarships.service';
 
 @Controller('api/scholarships')
 @ApiTags('scholarships')
