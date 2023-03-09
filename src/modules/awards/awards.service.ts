@@ -5,10 +5,6 @@ import { CommonException } from 'src/exceptions/exeception.common-error';
 import { LookupCommon } from 'src/utils/lookup.query.aggregate-query';
 import { Pagination } from 'src/utils/page.pagination';
 import { ValidateAttachmentIds } from 'src/validates/validate.attachment-id-list.dto';
-import {
-  Attachment,
-  AttachmentDocument,
-} from '../attachments/schemas/attachments.schema';
 import { CreateAwardDto } from './dtos/awards.create.dto';
 import { QueryAwardDto } from './dtos/awards.query.dto';
 import { UpdateAwardDto } from './dtos/awards.update.dto';
@@ -19,8 +15,6 @@ export class AwardsService {
   constructor(
     @InjectModel(Award.name)
     private readonly awardSchema: Model<AwardDocument>,
-    @InjectModel(Attachment.name)
-    private readonly attachmentSchema: Model<AttachmentDocument>,
   ) {}
 
   async createAward(createAwardDto: CreateAwardDto): Promise<Award> {
