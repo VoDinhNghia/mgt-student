@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { CommonException } from 'src/exceptions/exeception.common-error';
+import { LookupCommon } from 'src/utils/lookup.query.aggregate-query';
 import { ValidateField } from 'src/validates/validate.field-id.dto';
 import { Course, CourseDocument } from '../courses/schemas/courses.schema';
 import {
@@ -21,7 +22,6 @@ import {
   Profile,
   ProfileDocument,
 } from '../users/schemas/users.profile.schema';
-import { Users, UsersDocument } from '../users/schemas/users.schema';
 import { CreateClassDto } from './dtos/class.create.dto';
 import { UpdateClassDto } from './dtos/class.update.dto';
 import { CreateSubjectDto } from './dtos/subject.create.dto';
@@ -48,8 +48,6 @@ export class ClassSubjectService {
     private readonly subjectSchema: Model<SubjectDocument>,
     @InjectModel(SubjectProcess.name)
     private readonly subjectProcessSchema: Model<SubjectProcessDocument>,
-    @InjectModel(Users.name)
-    private readonly userSchema: Model<UsersDocument>,
     @InjectModel(Profile.name)
     private readonly profileSchema: Model<ProfileDocument>,
     @InjectModel(Course.name)
@@ -182,54 +180,44 @@ export class ClassSubjectService {
   }
 
   lookupSubject(aggre = []) {
-    const aggregate = [
-      ...aggre,
+    const lookup: any = new LookupCommon([
       {
-        $lookup: {
-          from: 'courses',
-          localField: 'course',
-          foreignField: '_id',
-          as: 'course',
-        },
+        from: 'courses',
+        localField: 'course',
+        foreignField: '_id',
+        as: 'course',
+        unwind: true,
       },
-      { $unwind: '$course' },
       {
-        $lookup: {
-          from: 'semesters',
-          localField: 'semester',
-          foreignField: '_id',
-          as: 'semester',
-        },
+        from: 'semesters',
+        localField: 'semester',
+        foreignField: '_id',
+        as: 'semester',
+        unwind: true,
       },
-      { $unwind: '$semester' },
       {
-        $lookup: {
-          from: 'profiles',
-          localField: 'lecturer',
-          foreignField: '_id',
-          as: 'lecturer',
-        },
+        from: 'profiles',
+        localField: 'lecturer',
+        foreignField: '_id',
+        as: 'lecturer',
+        unwind: true,
       },
-      { $unwind: '$lecturer' },
       {
-        $lookup: {
-          from: 'majors',
-          localField: 'major',
-          foreignField: '_id',
-          as: 'major',
-        },
+        from: 'majors',
+        localField: 'major',
+        foreignField: '_id',
+        as: 'major',
+        unwind: true,
       },
-      { $unwind: '$lecturer' },
       {
-        $lookup: {
-          from: 'subjectprocesses',
-          localField: '_id',
-          foreignField: 'subject',
-          as: 'process',
-        },
+        from: 'subjectprocesses',
+        localField: '_id',
+        foreignField: 'subject',
+        as: 'process',
+        unwind: true,
       },
-      { $unwind: '$process' },
-    ];
+    ]);
+    const aggregate = [...aggre, ...lookup];
     return aggregate;
   }
 }

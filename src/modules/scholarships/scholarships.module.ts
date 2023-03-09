@@ -14,7 +14,7 @@ import { Scholarship, ScholarshipSchema } from './schemas/scholarships.schema';
 import {
   ScholarshipUser,
   ScholarshipUserSchema,
-} from './scholarships.user.schema';
+} from './schemas/scholarships.user.schema';
 import { ScholarshipController } from './scholarships.controller';
 import { ScholarshipService } from './scholarships.service';
 

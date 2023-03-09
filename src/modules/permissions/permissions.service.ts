@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { CommonException } from 'src/exceptions/exeception.common-error';
+import { LookupCommon } from 'src/utils/lookup.query.aggregate-query';
 import { Pagination } from 'src/utils/page.pagination';
 import { ValidateField } from 'src/validates/validate.field-id.dto';
 import {
@@ -65,17 +66,15 @@ export class PermissionsService {
       match.$match = { user: new Types.ObjectId(user) };
     }
     let agg = [match];
-    const lookup = [
+    const lookup: any = new LookupCommon([
       {
-        $lookup: {
-          from: 'profiles',
-          localField: 'user',
-          foreignField: '_id',
-          as: 'user',
-        },
+        from: 'profiles',
+        localField: 'user',
+        foreignField: '_id',
+        as: 'user',
+        unwind: true,
       },
-      { $unwind: '$user' },
-    ];
+    ]);
     agg = [...agg, ...lookup];
     if (searchKey) {
       const matchSearchKey = {

@@ -8,6 +8,7 @@ import {
 } from 'src/constants/constant';
 import { DbConnection } from 'src/constants/db.mongo.connection';
 import { CommonException } from 'src/exceptions/exeception.common-error';
+import { LookupCommon } from 'src/utils/lookup.query.aggregate-query';
 import { Pagination } from 'src/utils/page.pagination';
 import { SubjectUserRegister } from 'src/utils/user.register-subject.query';
 import {
@@ -27,11 +28,14 @@ import { CreateScholarshipDto } from './dtos/scholarship.create.dto';
 import { QueryScholarshipDto } from './dtos/scholarship.query.dto';
 import { UpdateScholarshipDto } from './dtos/scholarship.update.dto';
 import { QueryUserScholarshipDto } from './dtos/scholarship.user.query.dto';
-import { Scholarship, ScholarshipDocument } from './schemas/scholarships.schema';
+import {
+  Scholarship,
+  ScholarshipDocument,
+} from './schemas/scholarships.schema';
 import {
   ScholarshipUser,
   ScholarshipUserDocument,
-} from './scholarships.user.schema';
+} from './schemas/scholarships.user.schema';
 
 @Injectable()
 export class ScholarshipService {
@@ -143,26 +147,22 @@ export class ScholarshipService {
     if (user) {
       matchOne.$match.user = new Types.ObjectId(user);
     }
-    const lookup = [
+    const lookup: any = new LookupCommon([
       {
-        $lookup: {
-          from: 'scholarships',
-          localField: 'scholarship',
-          foreignField: '_id',
-          as: 'scholarship',
-        },
+        from: 'scholarships',
+        localField: 'scholarship',
+        foreignField: '_id',
+        as: 'scholarship',
+        unwind: true,
       },
-      { $unwind: '$scholarship' },
       {
-        $lookup: {
-          from: 'profiles',
-          localField: 'user',
-          foreignField: '_id',
-          as: 'user',
-        },
+        from: 'profiles',
+        localField: 'user',
+        foreignField: '_id',
+        as: 'user',
+        unwind: true,
       },
-      { $unwind: '$user' },
-    ];
+    ]);
     aggregate = [...aggregate, matchOne, ...lookup];
     if (semester) {
       aggregate = [
