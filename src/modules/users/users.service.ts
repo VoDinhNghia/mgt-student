@@ -44,6 +44,7 @@ import {
   StudyProcessDocument,
 } from './schemas/study-process.schema';
 import { CreateStudyProcessDto } from './dto/study-process.create.dto';
+import { InitSuperAdminDto } from '../auth/dtos/auth.init-super-admin.dto';
 
 @Injectable()
 export class UsersService {
@@ -355,25 +356,43 @@ export class UsersService {
     return result;
   }
 
-  async initAdmin() {
+  async initSupperAdmin(superAdminDto: InitSuperAdminDto): Promise<Users> {
+    const { email, passWord, firstName, lastName } = superAdminDto;
+    await this.validateUser(superAdminDto);
+    const checkSupperAdmin = await this.userSchema.findOne({
+      role: ErolesUser.SUPPER_ADMIN,
+    });
+    if (checkSupperAdmin) {
+      new CommonException(409, 'Supper Admin existed already.');
+    }
     const adminDto = {
-      email: 'admin.students@gmail.com',
-      passWord: cryptoPassWord('123Code#'),
+      email,
+      passWord: cryptoPassWord(passWord || '123Code#'),
       status: EstatusUser.ACTIVE,
       statusLogin: false,
-      role: ErolesUser.ADMIN,
+      role: ErolesUser.SUPPER_ADMIN,
     };
     const options = { email: adminDto.email };
     await this.validate.existed(this.userSchema, options, 'Admin');
     const admin = await new this.userSchema(adminDto).save();
     await this.createUserProfile({
-      firstName: 'Admin',
-      lastName: 'Student',
+      firstName,
+      lastName,
       user: admin._id,
-      code: '101_admin',
+      code: '101_sa_student',
     });
     const result = await this.findUserById(admin._id);
     return result;
+  }
+
+  async validateNumberAdmin(): Promise<boolean> {
+    const result = await this.userSchema.find({
+      role: ErolesUser.ADMIN,
+    });
+    if (result.length > 5) {
+      return false;
+    }
+    return true;
   }
 
   async createUserProfile(

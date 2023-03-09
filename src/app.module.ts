@@ -29,19 +29,16 @@ import { CenterModule } from './modules/centers/centers.module';
 
 @Module({
   imports: [
-    CountriesModule,
     MongooseModule.forRoot(mongoUrl),
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '../..', 'src/public'),
     }),
     AuthModule,
     UsersModule,
-    NewsModule,
     AttachmentsModule,
     BranchModule,
     ClassSubjectModule,
     FacultiesModule,
-    BlogsModule,
     AwardsModule,
     CoursesModule,
     RoomsModule,
@@ -54,6 +51,9 @@ import { CenterModule } from './modules/centers/centers.module';
     InstituteModule,
     DepartmentsModule,
     CenterModule,
+    CountriesModule,
+    NewsModule,
+    BlogsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

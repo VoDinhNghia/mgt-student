@@ -1,4 +1,5 @@
 export enum ErolesUser {
+  SUPPER_ADMIN = 'SUPPER_ADMIN',
   ADMIN = 'ADMIN',
   STUDENT = 'STUDENT',
   LECTURER = 'LECTURER',

@@ -45,7 +45,7 @@ export class Profile {
   degreeLevel?: mongoose.Types.ObjectId; // Formal university, College...
 
   @Prop({
-    maxlength: 10,
+    maxlength: 15,
     minlength: 6,
     default: getRandomCode(6),
     unique: true,
