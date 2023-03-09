@@ -26,6 +26,7 @@ import { PaymentsModule } from './modules/payments/payments.module';
 import { InstituteModule } from './modules/institute/institute.module';
 import { DepartmentsModule } from './modules/departments/departments.module';
 import { CenterModule } from './modules/centers/centers.module';
+import { PermissionsModule } from './modules/permissions/permissions.module';
 
 @Module({
   imports: [
@@ -35,6 +36,7 @@ import { CenterModule } from './modules/centers/centers.module';
     }),
     AuthModule,
     UsersModule,
+    PermissionsModule,
     AttachmentsModule,
     BranchModule,
     ClassSubjectModule,
