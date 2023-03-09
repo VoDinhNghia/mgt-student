@@ -100,3 +100,5 @@ export enum Epermission {
   DELETE = 'DELETE',
   ADD = 'ADD',
 }
+
+export const expiresInJwt = '7d';

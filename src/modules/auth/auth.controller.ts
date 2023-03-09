@@ -12,7 +12,7 @@ import { ResponseRequest } from 'src/utils/response-api';
 import { UsersService } from '../users/users.service';
 import { AuthService } from './auth.service';
 import { LoginDto } from './dtos/auth.login.dto';
-import { JwtAuthGuard } from './jwt-auth.guard';
+import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { Request } from 'express';
 import { InitSuperAdminDto } from './dtos/auth.init-super-admin.dto';
 
