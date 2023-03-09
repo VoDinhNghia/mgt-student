@@ -12,8 +12,8 @@ import {
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { ErolesUser } from 'src/constants/constant';
 import { ResponseRequest } from 'src/utils/response-api';
-import { JwtAuthGuard } from '../auth/jwt-auth.guard';
-import { RoleGuard } from '../auth/role-auth.guard';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { RoleGuard } from '../auth/guards/role-auth.guard';
 import { CenterService } from './centers.service';
 import { Response } from 'express';
 import { CreateCenterDto } from './dtos/centers.create.dto';

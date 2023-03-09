@@ -13,14 +13,14 @@ import { UpdateCountriesDto } from './dto/countries.update.dto';
 import { CountriesService } from './countries.service';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { prefixUrlFlag } from '../../configs/config';
-import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { Response } from 'express';
 import { join } from 'path';
 import { readFileSync } from 'fs';
 import { QueryPovinceDto } from './dto/countries.query-province.dto';
 import { QueryDistrictDto } from './dto/countries.query-district.dto';
 import { ResponseRequest } from 'src/utils/response-api';
-import { RoleGuard } from '../auth/role-auth.guard';
+import { RoleGuard } from '../auth/guards/role-auth.guard';
 import { ErolesUser } from 'src/constants/constant';
 
 @Controller('api/countries')
