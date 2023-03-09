@@ -4,7 +4,10 @@ import { Model } from 'mongoose';
 import { CommonException } from 'src/exceptions/exeception.common-error';
 import { CreateDegreeLevelDto } from './dtos/degreelevels.create.dto';
 import { UpdateDegreeLevelDto } from './dtos/degreeLevels.update.dto';
-import { DegreeLevel, DegreeLevelDocument } from './schemas/degreelevels.schema';
+import {
+  DegreeLevel,
+  DegreeLevelDocument,
+} from './schemas/degreelevels.schema';
 
 @Injectable()
 export class DegreelevelService {

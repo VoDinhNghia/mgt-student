@@ -13,7 +13,6 @@ import {
   SemesterSchema,
 } from '../semesters/schemas/semesters.schema';
 import { Profile, ProfileSchema } from '../users/schemas/users.profile.schema';
-import { Users, UsersSchema } from '../users/schemas/users.schema';
 import { ClassSubjectController } from './class-subject.controller';
 import { ClassSubjectService } from './class-subject.service';
 import {
@@ -35,7 +34,6 @@ import {
       { name: ClassInfos.name, schema: ClassInfoSchema },
       { name: Subjects.name, schema: SubjectSchema },
       { name: SubjectProcess.name, schema: SubjectProcessSchema },
-      { name: Users.name, schema: UsersSchema },
       { name: Majors.name, schema: MajorSchema },
       { name: Course.name, schema: CourseSchema },
       { name: DegreeLevel.name, schema: DegreeLevelSchema },

@@ -24,6 +24,7 @@ import { ErolesUser, EroomType } from 'src/constants/constant';
 import { UpdateDepartmentDto } from './dtos/department.update.dto';
 import { Users, UsersDocument } from '../users/schemas/users.schema';
 import { UpdateStaffDepartmentDto } from './dtos/department.staff.update.dto';
+import { LookupCommon } from 'src/utils/lookup.query.aggregate-query';
 
 @Injectable()
 export class DepartmentsService {
@@ -104,51 +105,44 @@ export class DepartmentsService {
   }
 
   async findAllDepartment(): Promise<Departments[]> {
-    const aggregate = [
+    const aggregateLookup: any = new LookupCommon([
       {
-        $lookup: {
-          from: 'profiles',
-          localField: 'manager',
-          foreignField: '_id',
-          as: 'manager',
-        },
-      },
-      { $unwind: '$manager' },
-      {
-        $lookup: {
-          from: 'attachments',
-          localField: 'attachment',
-          foreignField: '_id',
-          as: 'attachment',
-        },
+        from: 'profiles',
+        localField: 'manager',
+        foreignField: '_id',
+        as: 'manager',
+        unwind: true,
       },
       {
-        $lookup: {
-          from: 'rooms',
-          localField: 'contacts.office',
-          foreignField: '_id',
-          as: 'office',
-        },
-      },
-      { $unwind: '$office' },
-      {
-        $lookup: {
-          from: 'departmentstaffs',
-          localField: '_id',
-          foreignField: 'department',
-          as: 'department',
-        },
+        from: 'attachments',
+        localField: 'attachment',
+        foreignField: '_id',
+        as: 'attachment',
+        unwind: false,
       },
       {
-        $lookup: {
-          from: 'profiles',
-          localField: 'department.staff',
-          foreignField: '_id',
-          as: 'staffs',
-        },
+        from: 'rooms',
+        localField: 'contacts.office',
+        foreignField: '_id',
+        as: 'office',
+        unwind: true,
       },
-    ];
-    const results = await this.deparmentSchema.aggregate(aggregate);
+      {
+        from: 'departmentstaffs',
+        localField: '_id',
+        foreignField: 'department',
+        as: 'department',
+        unwind: false,
+      },
+      {
+        from: 'profiles',
+        localField: 'department.staff',
+        foreignField: '_id',
+        as: 'staffs',
+        unwind: false,
+      },
+    ]);
+    const results = await this.deparmentSchema.aggregate(aggregateLookup);
     return results;
   }
 

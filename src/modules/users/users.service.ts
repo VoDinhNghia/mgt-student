@@ -45,6 +45,7 @@ import {
 } from './schemas/study-process.schema';
 import { CreateStudyProcessDto } from './dto/study-process.create.dto';
 import { InitSuperAdminDto } from '../auth/dtos/auth.init-super-admin.dto';
+import { LookupCommon } from 'src/utils/lookup.query.aggregate-query';
 
 @Injectable()
 export class UsersService {
@@ -232,15 +233,16 @@ export class UsersService {
       match.$match.status = status;
     }
     let aggregate: any[] = [];
-    const lookup = {
-      $lookup: {
+    const lookup: any = new LookupCommon([
+      {
         from: 'profiles',
         localField: '_id',
         foreignField: 'user',
         as: 'profile',
+        unwind: true,
       },
-    };
-    aggregate = [...aggregate, match, lookup, { $unwind: '$profile' }];
+    ]);
+    aggregate = [...aggregate, match, ...lookup];
     if (searchKey) {
       aggregate = [
         ...aggregate,
