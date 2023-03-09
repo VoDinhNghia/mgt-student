@@ -14,9 +14,9 @@ import {
   CountriesSchema,
 } from '../countries/schemas/countries.schema';
 import { Wards, WardSchema } from '../countries/schemas/countries.ward.schemas';
-import { BranchController } from './branch.controller';
-import { BranchService } from './branch.service';
-import { Branch, BranchSchema } from './schemas/branch.schema';
+import { BranchController } from './branchs.controller';
+import { BranchService } from './branchs.service';
+import { Branch, BranchSchema } from './schemas/branchs.schema';
 
 @Module({
   imports: [

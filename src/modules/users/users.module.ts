@@ -19,7 +19,7 @@ import { Award, AwardSchema } from '../awards/schemas/awards.schema';
 import {
   DegreeLevel,
   DegreeLevelSchema,
-} from '../degreelevel/schemas/degreelevel.schema';
+} from '../degreelevels/schemas/degreelevels.schema';
 import { Majors, MajorSchema } from '../faculties/schemas/major.schema';
 import {
   StudyProcess,

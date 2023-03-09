@@ -19,10 +19,10 @@ import {
   WardDocument,
   Wards,
 } from '../countries/schemas/countries.ward.schemas';
-import { BranchCreateDto } from './dtos/branch.create.dto';
-import { BranchQueryDto } from './dtos/branch.query.dto';
-import { BranchUpdateDto } from './dtos/branch.update.dto';
-import { Branch, BranchDocument } from './schemas/branch.schema';
+import { BranchCreateDto } from './dtos/branchs.create.dto';
+import { BranchQueryDto } from './dtos/branchs.query.dto';
+import { BranchUpdateDto } from './dtos/branchs.update.dto';
+import { Branch, BranchDocument } from './schemas/branchs.schema';
 
 @Injectable()
 export class BranchService {

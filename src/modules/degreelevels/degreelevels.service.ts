@@ -2,9 +2,9 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { CommonException } from 'src/exceptions/exeception.common-error';
-import { CreateDegreeLevelDto } from './dtos/degreelevel.create.dto';
-import { UpdateDegreeLevelDto } from './dtos/degreeLevel.update.dto';
-import { DegreeLevel, DegreeLevelDocument } from './schemas/degreelevel.schema';
+import { CreateDegreeLevelDto } from './dtos/degreelevels.create.dto';
+import { UpdateDegreeLevelDto } from './dtos/degreeLevels.update.dto';
+import { DegreeLevel, DegreeLevelDocument } from './schemas/degreelevels.schema';
 
 @Injectable()
 export class DegreelevelService {

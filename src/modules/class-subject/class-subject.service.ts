@@ -7,7 +7,7 @@ import { Course, CourseDocument } from '../courses/schemas/courses.schema';
 import {
   DegreeLevel,
   DegreeLevelDocument,
-} from '../degreelevel/schemas/degreelevel.schema';
+} from '../degreelevels/schemas/degreelevels.schema';
 import {
   Faculty,
   FacultyDocument,

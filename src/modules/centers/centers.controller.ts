@@ -14,10 +14,10 @@ import { ErolesUser } from 'src/constants/constant';
 import { ResponseRequest } from 'src/utils/response-api';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { RoleGuard } from '../auth/role-auth.guard';
-import { CenterService } from './center.service';
+import { CenterService } from './centers.service';
 import { Response } from 'express';
-import { CreateCenterDto } from './dtos/center.create.dto';
-import { UpdateCenterDto } from './dtos/center.update.dto';
+import { CreateCenterDto } from './dtos/centers.create.dto';
+import { UpdateCenterDto } from './dtos/centers.update.dto';
 
 @Controller('api/centers')
 @ApiTags('centers')

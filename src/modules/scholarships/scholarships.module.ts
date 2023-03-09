@@ -10,13 +10,13 @@ import {
   SemesterSchema,
 } from '../semesters/schemas/semesters.schema';
 import { Profile, ProfileSchema } from '../users/schemas/users.profile.schema';
-import { Scholarship, ScholarshipSchema } from './schemas/scholarship.schema';
+import { Scholarship, ScholarshipSchema } from './schemas/scholarships.schema';
 import {
   ScholarshipUser,
   ScholarshipUserSchema,
-} from './schemas/scholarship.user.schema';
-import { ScholarshipController } from './scholarship.controller';
-import { ScholarshipService } from './scholarship.service';
+} from './scholarships.user.schema';
+import { ScholarshipController } from './scholarships.controller';
+import { ScholarshipService } from './scholarships.service';
 
 @Module({
   imports: [

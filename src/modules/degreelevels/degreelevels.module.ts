@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import { DegreelevelController } from './degreelevel.controller';
-import { DegreelevelService } from './degreelevel.service';
-import { DegreeLevel, DegreeLevelSchema } from './schemas/degreelevel.schema';
+import { DegreelevelController } from './degreelevels.controller';
+import { DegreelevelService } from './degreelevels.service';
+import { DegreeLevel, DegreeLevelSchema } from './schemas/degreelevels.schema';
 
 @Module({
   imports: [
