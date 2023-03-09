@@ -1,5 +1,6 @@
 import { HttpException } from '@nestjs/common';
 import { join } from 'path';
+import { GetCurrentDate } from 'src/utils/get.current-date';
 
 export const imageFileFilter = (
   req: Record<any, any>,
@@ -56,9 +57,6 @@ export const fileName = (
   file: Record<string, any>,
   cb: any,
 ) => {
-  const toDate = new Date();
-  const mm = toDate.getMonth() + 1;
-  const dd = toDate.getDate();
-  const yyyy = toDate.getFullYear();
-  cb(null, `${yyyy}-${mm}-${dd}-${file.originalname}`);
+  const getCurrentDate = new GetCurrentDate().getYearMonthDate();
+  cb(null, `${getCurrentDate}-${file.originalname}`);
 };

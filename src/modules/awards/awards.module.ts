@@ -1,9 +1,5 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import {
-  Attachment,
-  AttachmentlSchema,
-} from '../attachments/schemas/attachments.schema';
 import { AwardsController } from './awards.controller';
 import { AwardsService } from './awards.service';
 import { Award, AwardSchema } from './schemas/awards.schema';
@@ -14,10 +10,6 @@ import { Award, AwardSchema } from './schemas/awards.schema';
       {
         name: Award.name,
         schema: AwardSchema,
-      },
-      {
-        name: Attachment.name,
-        schema: AttachmentlSchema,
       },
     ]),
   ],
