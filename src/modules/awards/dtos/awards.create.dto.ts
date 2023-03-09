@@ -11,7 +11,7 @@ export class CreateAwardDto {
   @ApiProperty({ required: false, type: [String] })
   attachment?: [string];
 
-  @ApiProperty({ required: true, default: 'IUH - Cơ sở Hồ Chí Minh' })
+  @ApiProperty({ required: true, default: 'branch - location' })
   location?: string;
 
   @ApiProperty({

@@ -29,7 +29,7 @@ export class PaymentsController {
   @Post('/mgt-money-per-credit')
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
-  @UseGuards(RoleGuard([ErolesUser.ADMIN]))
+  @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
   async createMoneyPerCreditMgt(
     @Body() createCreditmgtDto: CreateMoneyPerCreditMgtDto,
     @Res() res: Response,
@@ -43,7 +43,7 @@ export class PaymentsController {
   @Put('/mgt-money-per-credit/:id')
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
-  @UseGuards(RoleGuard([ErolesUser.ADMIN]))
+  @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
   async updateMoneyPerCreditMgt(
     @Param('id') id: string,
     @Body() updateCreditmgtDto: UpdateMoneyPerCreditMgtDto,

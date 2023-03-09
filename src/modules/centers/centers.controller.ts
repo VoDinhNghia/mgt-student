@@ -27,7 +27,7 @@ export class CenterController {
   @Post()
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
-  @UseGuards(RoleGuard([ErolesUser.ADMIN]))
+  @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
   async createCenter(
     @Body() centerDto: CreateCenterDto,
     @Res() res: Response,
@@ -39,7 +39,7 @@ export class CenterController {
   @Put('/:id')
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
-  @UseGuards(RoleGuard([ErolesUser.ADMIN]))
+  @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
   async updateCenter(
     @Param('id') id: string,
     @Body() centerDto: UpdateCenterDto,
@@ -52,7 +52,7 @@ export class CenterController {
   @Delete('/:id')
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
-  @UseGuards(RoleGuard([ErolesUser.ADMIN]))
+  @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
   async deleteCenter(
     @Param('id') id: string,
     @Res() res: Response,

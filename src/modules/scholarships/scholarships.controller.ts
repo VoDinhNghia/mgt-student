@@ -28,7 +28,7 @@ export class ScholarshipController {
   @Post()
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
-  @UseGuards(RoleGuard([ErolesUser.ADMIN]))
+  @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
   async createScholarship(
     @Body() dto: CreateScholarshipDto,
     @Res() res: Response,
@@ -40,7 +40,7 @@ export class ScholarshipController {
   @Put('/:id')
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
-  @UseGuards(RoleGuard([ErolesUser.ADMIN]))
+  @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
   async updateScholarship(
     @Param('id') id: string,
     @Body() dto: CreateScholarshipDto,
@@ -62,7 +62,7 @@ export class ScholarshipController {
   @Post('/user')
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
-  @UseGuards(RoleGuard([ErolesUser.ADMIN]))
+  @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
   async createUserScholarshipInSemester(
     @Body() dto: CreateUserScholarshipInSemester,
     @Res() res: Response,
@@ -76,14 +76,6 @@ export class ScholarshipController {
   @Get('/user')
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
-  @UseGuards(
-    RoleGuard([
-      ErolesUser.ADMIN,
-      ErolesUser.ACCOUNTANT,
-      ErolesUser.LECTURER,
-      ErolesUser.STUDENT,
-    ]),
-  )
   async getUserScholarship(
     @Query() dto: QueryUserScholarshipDto,
     @Res() res: Response,

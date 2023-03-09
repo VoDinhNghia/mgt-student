@@ -39,8 +39,8 @@ export class UsersController {
 
   @Post()
   @ApiBearerAuth()
-  @UseGuards(JwtAuthGuard) // when need user info inside request then use
-  @UseGuards(RoleGuard([ErolesUser.ADMIN]))
+  @UseGuards(JwtAuthGuard)
+  @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
   async createUser(
     @Body() userDto: CreateUserDto,
     @Req() req: Request,
@@ -55,7 +55,7 @@ export class UsersController {
   @Post('import')
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
-  @UseGuards(RoleGuard([ErolesUser.ADMIN]))
+  @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
   @ApiConsumes('multipart/form-data')
   @UseInterceptors(
     FileInterceptor('file', {
@@ -80,7 +80,7 @@ export class UsersController {
   @Put('/:id')
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
-  @UseGuards(RoleGuard([ErolesUser.ADMIN]))
+  @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
   async updateUser(
     @Param('id') id: string,
     @Body() updateDto: UsersUpdateDto,
@@ -95,15 +95,6 @@ export class UsersController {
   @Put('/profile/:id')
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
-  @UseGuards(
-    RoleGuard([
-      ErolesUser.ADMIN,
-      ErolesUser.LECTURER,
-      ErolesUser.LIBRARIAN,
-      ErolesUser.STUDENT,
-      ErolesUser.ACCOUNTANT,
-    ]),
-  )
   async updateProfile(
     @Param('id') id: string,
     @Body() updateProfileDto: UpdateProfileDto,
@@ -117,7 +108,7 @@ export class UsersController {
   @Post('/leader-school')
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
-  @UseGuards(RoleGuard([ErolesUser.ADMIN]))
+  @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
   async createLeaderSchool(
     @Body() leaderSchoolDto: CreateLeaderSchoolDto,
     @Res() res: Response,
@@ -129,7 +120,7 @@ export class UsersController {
   @Put('/leader-school/:id')
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
-  @UseGuards(RoleGuard([ErolesUser.ADMIN]))
+  @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
   async updateLeaderSchool(
     @Param('id') id: string,
     @Body() updateLeaderDto: UpdateLeaderSchoolDto,
@@ -160,7 +151,7 @@ export class UsersController {
   @Delete('/leader-school/:id')
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
-  @UseGuards(RoleGuard([ErolesUser.ADMIN]))
+  @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
   async deleteLeaderSchoolById(
     @Param('id') id: string,
     @Res() res: Response,
@@ -172,7 +163,7 @@ export class UsersController {
   @Get()
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
-  @UseGuards(RoleGuard([ErolesUser.ADMIN]))
+  @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
   async getAllUsers(
     @Query() queryDto: UsersFillterDto,
     @Res() res: Response,
@@ -186,7 +177,7 @@ export class UsersController {
   @Delete('/:id')
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
-  @UseGuards(RoleGuard([ErolesUser.ADMIN]))
+  @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
   async deleteUser(
     @Param('id') id: string,
     @Req() req: Request,
@@ -204,7 +195,7 @@ export class UsersController {
   @Get('/:id')
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
-  @UseGuards(RoleGuard([ErolesUser.ADMIN]))
+  @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
   async getUserByid(
     @Param('id') id: string,
     @Res() res: Response,

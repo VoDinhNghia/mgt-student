@@ -26,7 +26,7 @@ export class DegreelevelController {
   @Post()
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
-  @UseGuards(RoleGuard([ErolesUser.ADMIN]))
+  @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
   async createDegreeLevel(
     @Body() degreeLevelDto: CreateDegreeLevelDto,
     @Res() res: Response,
@@ -40,7 +40,7 @@ export class DegreelevelController {
   @Put('/:id')
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
-  @UseGuards(RoleGuard([ErolesUser.ADMIN]))
+  @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
   async updateDegreeLevel(
     @Param('id') id: string,
     @Body() degreeLevelDto: UpdateDegreeLevelDto,

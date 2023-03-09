@@ -11,7 +11,7 @@ export class UpdateAwardDto {
   @ApiProperty({ required: false, type: [String] })
   attachment?: [string];
 
-  @ApiProperty({ required: false, default: 'IUH - Cơ sở Hồ Chí Minh' })
+  @ApiProperty({ required: false, default: 'award - location' })
   location?: string;
 
   @ApiProperty({

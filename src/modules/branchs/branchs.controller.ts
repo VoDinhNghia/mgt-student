@@ -28,7 +28,7 @@ export class BranchController {
   @Post()
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
-  @UseGuards(RoleGuard([ErolesUser.ADMIN]))
+  @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
   async createBranch(
     @Res() res: Response,
     @Body() branchCreateDto: BranchCreateDto,
@@ -49,7 +49,7 @@ export class BranchController {
   @Put('/:id')
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
-  @UseGuards(RoleGuard([ErolesUser.ADMIN]))
+  @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
   async updateBranch(
     @Param('id') id: string,
     @Body() updateBranchDto: BranchUpdateDto,

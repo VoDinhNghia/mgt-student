@@ -27,7 +27,7 @@ export class SemestersController {
   @Post()
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
-  @UseGuards(RoleGuard([ErolesUser.ADMIN]))
+  @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
   async createSemester(
     @Body() semesterDto: CreateSemesterDto,
     @Res() res: Response,
@@ -39,7 +39,7 @@ export class SemestersController {
   @Put('/:id')
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
-  @UseGuards(RoleGuard([ErolesUser.ADMIN]))
+  @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
   async updateSemester(
     @Param('id') id: string,
     @Body() updateDto: UpdateSemesterDto,
@@ -52,7 +52,7 @@ export class SemestersController {
   @Delete('/:id')
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
-  @UseGuards(RoleGuard([ErolesUser.ADMIN]))
+  @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
   async deleteSemester(
     @Param('id') id: string,
     @Res() res: Response,

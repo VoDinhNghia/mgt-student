@@ -26,7 +26,7 @@ export class CoursesController {
   @Post()
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
-  @UseGuards(RoleGuard([ErolesUser.ADMIN]))
+  @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
   async createCourse(
     @Res() res: Response,
     @Body() courseDto: CreateCourseDto,
@@ -38,7 +38,7 @@ export class CoursesController {
   @Put('/:id')
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
-  @UseGuards(RoleGuard([ErolesUser.ADMIN]))
+  @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
   async updateCourse(
     @Param('id') id: string,
     @Body() courseDto: UpdateCourseDto,
@@ -51,7 +51,7 @@ export class CoursesController {
   @Get('/:id')
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
-  @UseGuards(RoleGuard([ErolesUser.ADMIN]))
+  @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
   async getCourseById(
     @Param('id') id: string,
     @Res() res: Response,
@@ -64,7 +64,12 @@ export class CoursesController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @UseGuards(
-    RoleGuard([ErolesUser.ADMIN, ErolesUser.LECTURER, ErolesUser.STUDENT]),
+    RoleGuard([
+      ErolesUser.SUPPER_ADMIN,
+      ErolesUser.ADMIN,
+      ErolesUser.LECTURER,
+      ErolesUser.STUDENT,
+    ]),
   )
   async getListFaculties(@Res() res: Response): Promise<ResponseRequest> {
     const result = await this.courseService.findAllCourses();

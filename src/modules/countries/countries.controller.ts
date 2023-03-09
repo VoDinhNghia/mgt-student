@@ -73,7 +73,7 @@ export class CountriesController {
   @Post('/init-data')
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
-  @UseGuards(RoleGuard([ErolesUser.ADMIN]))
+  @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
   async initCountries(@Res() res: Response): Promise<ResponseRequest> {
     const data = this.readFileJson('countries.json');
     const result = await this.countryService.initCountries(data);
@@ -83,7 +83,7 @@ export class CountriesController {
   @Put('/:id')
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
-  @UseGuards(RoleGuard([ErolesUser.ADMIN]))
+  @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
   async update(
     @Param('id') id: string,
     @Body() updateCountriesDto: UpdateCountriesDto,
@@ -99,7 +99,7 @@ export class CountriesController {
   @Post('/province/init-data')
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
-  @UseGuards(RoleGuard([ErolesUser.ADMIN]))
+  @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
   async initProvince(@Res() res: Response): Promise<ResponseRequest> {
     const data = this.readFileJson('province.json');
     const result = await this.countryService.initProvinces(data);
@@ -109,7 +109,7 @@ export class CountriesController {
   @Post('/district/init-data')
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
-  @UseGuards(RoleGuard([ErolesUser.ADMIN]))
+  @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
   async initDistrict(@Res() res: Response): Promise<ResponseRequest> {
     const data = this.readFileJson('district.json');
     const result = await this.countryService.initDisTricts(data);
@@ -119,7 +119,7 @@ export class CountriesController {
   @Post('/ward/init-data')
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
-  @UseGuards(RoleGuard([ErolesUser.STUDENT, ErolesUser.ADMIN]))
+  @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
   async initWard(@Res() res: Response): Promise<ResponseRequest> {
     const data = this.readFileJson('ward.json');
     const result = await this.countryService.initWards(data);

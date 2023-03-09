@@ -22,12 +22,12 @@ import { ErolesUser } from 'src/constants/constant';
 export class SchoolController {
   constructor(private readonly schoolService: SchoolService) {
     const schoolDto: CreateSchoolDto = {
-      name: 'Dai Hoc Cong Nghiep TP. HCM',
-      schoolCode: 'IUH',
+      name: 'University Name', // ex: Industrial University of Ho Chi Minh City
+      schoolCode: 'University_Code',
       numberTotal: 40000,
       yearFound: '2023-02-25',
       contactInfo: {
-        email: 'iuh@gmail.com',
+        email: 'university@gmail.com',
         fax: '',
         mobile: '0393993939',
       },
@@ -38,7 +38,7 @@ export class SchoolController {
   @Put('/:id')
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
-  @UseGuards(RoleGuard([ErolesUser.ADMIN]))
+  @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
   async updateSchool(
     @Param('id') id: string,
     @Body() schoolDto: UpdateSchoolDto,
