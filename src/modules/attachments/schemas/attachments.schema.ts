@@ -2,7 +2,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { Document } from 'mongoose';
 
 export type AttachmentDocument = Attachment & Document;
-
+// posible save at difference server or amazon s3 service
 @Schema()
 export class Attachment {
   @Prop()

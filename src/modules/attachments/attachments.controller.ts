@@ -14,9 +14,7 @@ import {
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiBearerAuth, ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { diskStorage } from 'multer';
-import { ErolesUser } from 'src/constants/constant';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
-import { RoleGuard } from '../auth/guards/role-auth.guard';
 import { StorageObjectDto } from '../users/dto/user.file-upload.dto';
 import { AttachmentsService } from './attachments.service';
 import { Request, Response } from 'express';
@@ -34,16 +32,6 @@ export class AttachmentsController {
   @Post()
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
-  @UseGuards(
-    RoleGuard([
-      ErolesUser.ADMIN,
-      ErolesUser.ACCOUNTANT,
-      ErolesUser.LECTURER,
-      ErolesUser.STUDENT,
-      ErolesUser.LIBRARIAN,
-      ErolesUser.STAFF,
-    ]),
-  )
   @ApiConsumes('multipart/form-data')
   @UseInterceptors(
     FileInterceptor('file', {
@@ -61,10 +49,10 @@ export class AttachmentsController {
     @UploadedFile('file') file: Express.Multer.File,
   ): Promise<ResponseRequest> {
     const { user }: Request | Record<string, any> = req;
-    const uploadBy: string = user.profileId;
+    const { profileId } = user;
     const result = await this.attachmentService.createAttachment(
       file,
-      uploadBy,
+      profileId,
     );
     return new ResponseRequest(res, result, `Create attachment success.`);
   }
@@ -72,16 +60,6 @@ export class AttachmentsController {
   @Delete('/:id')
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
-  @UseGuards(
-    RoleGuard([
-      ErolesUser.ADMIN,
-      ErolesUser.ACCOUNTANT,
-      ErolesUser.LECTURER,
-      ErolesUser.STUDENT,
-      ErolesUser.LIBRARIAN,
-      ErolesUser.STAFF,
-    ]),
-  )
   async deleteAttachment(
     @Param('id') id: string,
     @Req() req: Request,
@@ -95,16 +73,6 @@ export class AttachmentsController {
   @Get('/:id')
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
-  @UseGuards(
-    RoleGuard([
-      ErolesUser.ADMIN,
-      ErolesUser.ACCOUNTANT,
-      ErolesUser.LECTURER,
-      ErolesUser.STUDENT,
-      ErolesUser.LIBRARIAN,
-      ErolesUser.STAFF,
-    ]),
-  )
   async getAttachmentById(
     @Param('id') id: string,
     @Res() res: Response,

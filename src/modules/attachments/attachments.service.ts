@@ -4,10 +4,8 @@ import { unlinkSync } from 'fs';
 import { Model, Types } from 'mongoose';
 import { urlAccessImageLocal } from 'src/constants/constant';
 import { CommonException } from 'src/exceptions/exeception.common-error';
-import {
-  Profile,
-  ProfileDocument,
-} from '../users/schemas/users.profile.schema';
+import { FileRequestDto } from 'src/utils/file-request.dto';
+import { CreateAttachmentDto } from './dtos/attachments.create.dto';
 import { Attachment, AttachmentDocument } from './schemas/attachments.schema';
 
 @Injectable()
@@ -15,17 +13,17 @@ export class AttachmentsService {
   constructor(
     @InjectModel(Attachment.name)
     private readonly attachmentSchema: Model<AttachmentDocument>,
-    @InjectModel(Profile.name)
-    private readonly profileSchema: Model<ProfileDocument>,
   ) {}
 
-  // posible save at difference server or amazon s3 service
-
-  async createAttachment(file: Record<string, any>, uploadBy: string) {
-    const attachment = await new this.attachmentSchema({
-      ...file,
+  async createAttachment(
+    fileDto: FileRequestDto,
+    uploadBy: string,
+  ): Promise<Attachment> {
+    const attachmentDto: CreateAttachmentDto = {
+      ...fileDto,
       uploadBy,
-    }).save();
+    };
+    const attachment = await new this.attachmentSchema(attachmentDto).save();
     return attachment;
   }
 
