@@ -14,8 +14,8 @@ export class Faculty {
   @Prop()
   introduction?: string;
 
-  @Prop()
-  foundYear?: string;
+  @Prop({ default: Date.now })
+  foundYear?: Date;
 
   @Prop({
     type: [mongoose.Schema.Types.ObjectId],

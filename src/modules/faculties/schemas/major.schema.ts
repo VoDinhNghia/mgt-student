@@ -20,7 +20,7 @@ export class Majors {
   @Prop()
   introduction?: string;
 
-  @Prop()
+  @Prop({ default: Date.now })
   foundYear?: Date;
 
   @Prop({
