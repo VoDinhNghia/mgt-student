@@ -1,16 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { CommonException } from 'src/exceptions/exeception.common-error';
-import {
-  Attachment,
-  AttachmentDocument,
-} from '../attachments/schemas/attachments.schema';
-import { Rooms, RoomsDocument } from '../rooms/schemas/rooms.schema';
-import {
-  Profile,
-  ProfileDocument,
-} from '../users/schemas/users.profile.schema';
+import { LookupCommon } from 'src/utils/lookup.query.aggregate-query';
+import { ValidateDto } from 'src/validates/validate.common.dto';
 import { CreateInstituteDto } from './dtos/institute.create.dto';
 import { UpdateInstituteDto } from './dtos/institute.update.dto';
 import { InstitudeDocument, Institudes } from './schemas/institute.schema';
@@ -20,81 +13,95 @@ export class InstituteService {
   constructor(
     @InjectModel(Institudes.name)
     private readonly institutiSchema: Model<InstitudeDocument>,
-    @InjectModel(Profile.name)
-    private readonly profileSchema: Model<ProfileDocument>,
-    @InjectModel(Attachment.name)
-    private readonly attachmentSchema: Model<AttachmentDocument>,
-    @InjectModel(Rooms.name)
-    private readonly roomSchema: Model<RoomsDocument>,
   ) {}
 
-  async validateProfile(profile: string): Promise<void> {
-    const profileInfo = await this.profileSchema.findById(profile);
-    if (!profileInfo) {
-      new CommonException(404, 'User profile not found.');
-    }
-  }
-
-  async validateInstitute(dto: CreateInstituteDto): Promise<void> {
-    const { parson, viceParson, contacts = {} } = dto;
-    if (parson) {
-      await this.validateProfile(parson);
-    }
-    if (viceParson) {
-      await this.validateProfile(viceParson);
-    }
-    if (contacts.office) {
-      const roomInfo = await this.roomSchema.findById(contacts?.office);
-      if (!roomInfo) {
-        new CommonException(404, 'Room office not found');
-      }
-    }
-  }
-
-  async createInstitute(dto: CreateInstituteDto): Promise<Institudes> {
-    await this.validateInstitute(dto);
-    const newDocument = await new this.institutiSchema(dto).save();
-    const result = await this.findInstituteById(newDocument._id);
+  async createInstitute(instituteDto: CreateInstituteDto): Promise<Institudes> {
+    await this.validateInstituteDto(instituteDto);
+    const newInstitute = await new this.institutiSchema(instituteDto).save();
+    const result = await this.findInstituteById(newInstitute._id);
     return result;
   }
 
   async updateInstitute(
     id: string,
-    dto: UpdateInstituteDto,
+    instituteDto: UpdateInstituteDto,
   ): Promise<Institudes> {
-    await this.validateInstitute(dto);
-    await this.institutiSchema.findByIdAndUpdate(id, dto);
+    await this.validateInstituteDto(instituteDto);
+    await this.institutiSchema.findByIdAndUpdate(id, instituteDto);
     const result = await this.findInstituteById(id);
     return result;
   }
 
   async findInstituteById(id: string): Promise<Institudes> {
-    const result = await this.institutiSchema
-      .findById(id)
-      .populate('parson', '', this.profileSchema)
-      .populate('viceParson', '', this.profileSchema)
-      .populate('contacts.office', '', this.roomSchema)
-      .populate('attachment', '', this.attachmentSchema)
-      .exec();
-    if (!result) {
+    const match: Record<string, any> = {
+      $match: { _id: new Types.ObjectId(id) },
+    };
+    const lookup = this.lookupInstitute();
+    const aggregate = [match, ...lookup];
+    const result = await this.institutiSchema.aggregate(aggregate);
+    if (!result[0]) {
       new CommonException(404, 'Institute not found.');
     }
-    return result;
+    return result[0];
   }
 
   async findAllInstitudes(): Promise<Institudes[]> {
-    const results = await this.institutiSchema
-      .find({})
-      .populate('parson', '', this.profileSchema)
-      .populate('viceParson', '', this.profileSchema)
-      .populate('contacts.office', '', this.roomSchema)
-      .populate('attachment', '', this.attachmentSchema)
-      .exec();
+    const lookup = this.lookupInstitute();
+    const results = await this.institutiSchema.aggregate(lookup);
     return results;
   }
 
   async deleteInstitude(id: string): Promise<void> {
     await this.findInstituteById(id);
     await this.institutiSchema.findByIdAndDelete(id);
+  }
+
+  async validateInstituteDto(dtos: CreateInstituteDto): Promise<void> {
+    const { parson, viceParson, contacts = {} } = dtos;
+    const { office } = contacts;
+    const validate = new ValidateDto();
+    if (parson) {
+      await validate.fieldId('profiles', parson);
+    }
+    if (viceParson) {
+      await validate.fieldId('profiles', viceParson);
+    }
+    if (office) {
+      await validate.fieldId('rooms', office);
+    }
+  }
+
+  private lookupInstitute() {
+    const lookup: any = new LookupCommon([
+      {
+        from: 'profiles',
+        localField: 'parson',
+        foreignField: '_id',
+        as: 'parson',
+        unwind: true,
+      },
+      {
+        from: 'profiles',
+        localField: 'viceParson',
+        foreignField: '_id',
+        as: 'viceParson',
+        unwind: true,
+      },
+      {
+        from: 'rooms',
+        localField: 'contacts.office',
+        foreignField: '_id',
+        as: 'office',
+        unwind: true,
+      },
+      {
+        from: 'attachments',
+        localField: 'attachment',
+        foreignField: '_id',
+        as: 'attachment',
+        unwind: false,
+      },
+    ]);
+    return lookup;
   }
 }

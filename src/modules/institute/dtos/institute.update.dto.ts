@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { GetCurrentDate } from 'src/utils/get.current-date';
 import { ContactInstituteDto } from './institute.contact.dto';
 import { FunctionAndTaskInstituteDto } from './institute.function-task.dto';
 
@@ -9,8 +10,11 @@ export class UpdateInstituteDto {
   @ApiProperty({ required: false })
   url?: string;
 
-  @ApiProperty({ required: false })
-  foundYear?: string;
+  @ApiProperty({
+    required: false,
+    default: new GetCurrentDate().getYearMonthDate(),
+  })
+  foundYear?: Date;
 
   @ApiProperty({ required: false })
   parson?: string;
