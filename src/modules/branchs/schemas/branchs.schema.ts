@@ -55,6 +55,9 @@ export class Branch {
     },
   ];
 
+  @Prop({ default: false }) // this is handle in task logs action, validate add field isDeleted: false
+  isDeleted?: boolean;
+
   @Prop({ default: Date.now })
   createdAt?: Date;
 

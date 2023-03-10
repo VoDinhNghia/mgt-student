@@ -4,7 +4,7 @@ import { Model, Types } from 'mongoose';
 import { CommonException } from 'src/exceptions/exeception.common-error';
 import { LookupCommon } from 'src/utils/lookup.query.aggregate-query';
 import { Pagination } from 'src/utils/page.pagination';
-import { ValidateAttachmentIds } from 'src/validates/validate.attachment-id-list.dto';
+import { ValidateDto } from 'src/validates/validate.common.dto';
 import { CreateAwardDto } from './dtos/awards.create.dto';
 import { QueryAwardDto } from './dtos/awards.query.dto';
 import { UpdateAwardDto } from './dtos/awards.update.dto';
@@ -19,9 +19,7 @@ export class AwardsService {
 
   async createAward(createAwardDto: CreateAwardDto): Promise<Award> {
     const { attachment = [] } = createAwardDto;
-    const attachmentIds = await new ValidateAttachmentIds().validate(
-      attachment,
-    );
+    const attachmentIds = await new ValidateDto().attachmentIds(attachment);
     createAwardDto.attachment = attachmentIds;
     const result = await new this.awardSchema(createAwardDto).save();
     return result;
