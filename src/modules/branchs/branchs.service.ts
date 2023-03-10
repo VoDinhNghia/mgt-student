@@ -1,24 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { CommonException } from 'src/exceptions/exeception.common-error';
-import { ValidateField } from 'src/validates/validate.field-id.dto';
-import {
-  DistrictDocument,
-  Districts,
-} from '../countries/schemas/countries.district.schema';
-import {
-  ProvinceDocument,
-  Provinces,
-} from '../countries/schemas/countries.province.schema';
-import {
-  Countries,
-  CountriesDocument,
-} from '../countries/schemas/countries.schema';
-import {
-  WardDocument,
-  Wards,
-} from '../countries/schemas/countries.ward.schemas';
+import { LookupCommon } from 'src/utils/lookup.query.aggregate-query';
+import { Pagination } from 'src/utils/page.pagination';
+import { ValidateDto } from 'src/validates/validate.common.dto';
 import { BranchCreateDto } from './dtos/branchs.create.dto';
 import { BranchQueryDto } from './dtos/branchs.query.dto';
 import { BranchUpdateDto } from './dtos/branchs.update.dto';
@@ -29,58 +15,48 @@ export class BranchService {
   constructor(
     @InjectModel(Branch.name)
     private readonly branchSchema: Model<BranchDocument>,
-    @InjectModel(Countries.name)
-    private readonly countrySchema: Model<CountriesDocument>,
-    @InjectModel(Provinces.name)
-    private readonly provinceSchema: Model<ProvinceDocument>,
-    @InjectModel(Districts.name)
-    private readonly districtSchema: Model<DistrictDocument>,
-    @InjectModel(Wards.name)
-    private readonly wardSchema: Model<WardDocument>,
-    private readonly validateField: ValidateField,
   ) {}
 
   async createBranchNew(branchCreateDto: BranchCreateDto): Promise<Branch> {
-    const { country, province, district } = branchCreateDto?.location;
-    await this.validateField.byId(this.countrySchema, country, 'Country');
-    await this.validateField.byId(this.provinceSchema, province, 'Province');
-    await this.validateField.byId(this.districtSchema, district, 'District');
+    const { country, province, district, ward } = branchCreateDto?.location;
+    const dto = new ValidateDto();
+    await dto.checkFieldId('countries', country);
+    await dto.checkFieldId('provinces', province);
+    await dto.checkFieldId('districts', district);
+    if (ward) {
+      await dto.checkFieldId('wards', ward);
+    }
     const options = { name: branchCreateDto?.name?.trim() };
-    await this.validateField.existed(this.branchSchema, options, 'Branch name');
+    await dto.checkExistedByOptions('branchs', options, 'Branch name');
     const result = await new this.branchSchema(branchCreateDto).save();
+
     return result;
   }
 
   async findById(id: string): Promise<Branch> {
-    const result = await this.branchSchema
-      .findById(id)
-      .populate('location.country', '', this.countrySchema)
-      .populate('location.province', '', this.provinceSchema)
-      .populate('location.district', '', this.districtSchema)
-      .populate('location.ward', '', this.wardSchema)
-      .exec();
-    if (!result) {
+    const match: Record<string, any> = {
+      $match: { id: new Types.ObjectId(id) },
+    };
+    const lookup = this.lookupCommon();
+    const aggregate = [match, ...lookup];
+    const result = await this.branchSchema.aggregate(aggregate);
+    if (!result[0]) {
       new CommonException(404, `Branch not found.`);
     }
 
-    return result;
+    return result[0];
   }
 
   async findAllBranchs(branchQueryDto: BranchQueryDto): Promise<Branch[]> {
     const { limit, page, searchKey } = branchQueryDto;
-    let query = {};
+    const match: Record<string, any> = { $match: {} };
     if (searchKey) {
-      query = { name: new RegExp(searchKey) };
+      match.$match.name = new RegExp(searchKey);
     }
-    const result = await this.branchSchema
-      .find(query)
-      .skip(Number(limit) * Number(page) - Number(limit))
-      .limit(Number(limit))
-      .populate('location.country', '', this.countrySchema)
-      .populate('location.province', '', this.provinceSchema)
-      .populate('location.district', '', this.districtSchema)
-      .populate('location.ward', '', this.wardSchema)
-      .exec();
+    const lookup = this.lookupCommon();
+    const aggregatePag: any = new Pagination(limit, page, [match]);
+    const aggregate = [...aggregatePag, ...lookup];
+    const result = await this.branchSchema.aggregate(aggregate);
 
     return result;
   }
@@ -91,5 +67,39 @@ export class BranchService {
   ): Promise<void> {
     await this.findById(id);
     await this.branchSchema.findByIdAndUpdate(id, branchUpdateDto);
+  }
+
+  lookupCommon() {
+    const lookup: any = new LookupCommon([
+      {
+        from: 'countries',
+        localField: 'location.country',
+        foreignField: '_id',
+        as: 'country',
+        unwind: true,
+      },
+      {
+        from: 'provinces',
+        localField: 'location.province',
+        foreignField: '_id',
+        as: 'province',
+        unwind: true,
+      },
+      {
+        from: 'districts',
+        localField: 'location.district',
+        foreignField: '_id',
+        as: 'district',
+        unwind: true,
+      },
+      {
+        from: 'wards',
+        localField: 'location.ward',
+        foreignField: '_id',
+        as: 'ward',
+        unwind: true,
+      },
+    ]);
+    return lookup;
   }
 }
