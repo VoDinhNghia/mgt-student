@@ -2,6 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { CommonException } from 'src/exceptions/exeception.common-error';
+import { Pagination } from 'src/utils/page.pagination';
+import { ValidateDto } from 'src/validates/validate.common.dto';
 import { CreateRoomDto } from './dtos/rooms.create.dto';
 import { QueryRoomDto } from './dtos/rooms.query.dto';
 import { UpdateRoomDto } from './dtos/rooms.update.dto';
@@ -14,8 +16,11 @@ export class RoomsService {
     private readonly roomSchema: Model<RoomsDocument>,
   ) {}
 
-  async createRoom(createRoomDto: CreateRoomDto): Promise<Rooms> {
-    const result = await new this.roomSchema(createRoomDto).save();
+  async createRoom(roomDto: CreateRoomDto): Promise<Rooms> {
+    const { name } = roomDto;
+    const option = { name: name?.trim() };
+    await new ValidateDto().existedByOptions('rooms', option, 'Room');
+    const result = await new this.roomSchema(roomDto).save();
     return result;
   }
 
@@ -31,28 +36,26 @@ export class RoomsService {
     queryRoomDto: QueryRoomDto,
   ): Promise<{ data: Rooms[]; countTotal: number }> {
     const { limit, page, searchKey, type } = queryRoomDto;
-    const query: Record<string, any> = {};
+    const match: Record<string, any> = { $match: {} };
     if (searchKey) {
-      query.name = RegExp(searchKey);
+      match.$match.name = RegExp(searchKey);
     }
     if (type) {
-      query.type = type;
+      match.$match.type = type;
     }
-    const result = await this.roomSchema
-      .find(query)
-      .skip(Number(limit) * Number(page) - Number(limit))
-      .limit(Number(limit))
-      .exec();
+    const aggregate: any = new Pagination(limit, page, [match]);
+    const rooms = await this.roomSchema.aggregate(aggregate);
     const countDocuments = await this.roomSchema.countDocuments();
-    return {
-      data: result,
+    const results = {
+      data: rooms,
       countTotal: countDocuments ?? 0,
     };
+    return results;
   }
 
-  async updateRoom(id: string, updateRoomDto: UpdateRoomDto): Promise<void> {
+  async updateRoom(id: string, updateDto: UpdateRoomDto): Promise<void> {
     await this.findRoomById(id);
-    await this.roomSchema.findByIdAndUpdate(id, updateRoomDto);
+    await this.roomSchema.findByIdAndUpdate(id, updateDto);
   }
 
   async deleteRoom(id: string): Promise<void> {
