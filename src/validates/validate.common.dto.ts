@@ -42,9 +42,9 @@ export class ValidateDto {
     const result = await this.db
       .collection(collection)
       .findOne({ _id: new Types.ObjectId(id) });
-    if (!result) {
+    if (result) {
       new CommonException(
-        404,
+        409,
         `${id} existed already in collection ${collection}.`,
       );
     }
@@ -56,9 +56,9 @@ export class ValidateDto {
     message: string,
   ): Promise<void> {
     const result = await this.db.collection(collection).findOne(options);
-    if (!result) {
+    if (result) {
       new CommonException(
-        404,
+        409,
         `${message} existed already in collection ${collection}.`,
       );
     }

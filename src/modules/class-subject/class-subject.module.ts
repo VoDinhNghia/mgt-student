@@ -1,18 +1,5 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import { ValidateField } from 'src/validates/validate.field-id.dto';
-import { Course, CourseSchema } from '../courses/schemas/courses.schema';
-import {
-  DegreeLevel,
-  DegreeLevelSchema,
-} from '../degreelevels/schemas/degreelevels.schema';
-import { Faculty, FacultySchema } from '../faculties/schemas/faculties.schema';
-import { Majors, MajorSchema } from '../faculties/schemas/major.schema';
-import {
-  Semester,
-  SemesterSchema,
-} from '../semesters/schemas/semesters.schema';
-import { Profile, ProfileSchema } from '../users/schemas/users.profile.schema';
 import { ClassSubjectController } from './class-subject.controller';
 import { ClassSubjectService } from './class-subject.service';
 import {
@@ -34,15 +21,9 @@ import {
       { name: ClassInfos.name, schema: ClassInfoSchema },
       { name: Subjects.name, schema: SubjectSchema },
       { name: SubjectProcess.name, schema: SubjectProcessSchema },
-      { name: Majors.name, schema: MajorSchema },
-      { name: Course.name, schema: CourseSchema },
-      { name: DegreeLevel.name, schema: DegreeLevelSchema },
-      { name: Profile.name, schema: ProfileSchema },
-      { name: Semester.name, schema: SemesterSchema },
-      { name: Faculty.name, schema: FacultySchema },
     ]),
   ],
-  providers: [ClassSubjectService, ValidateField],
+  providers: [ClassSubjectService],
   controllers: [ClassSubjectController],
 })
 export class ClassSubjectModule {}
