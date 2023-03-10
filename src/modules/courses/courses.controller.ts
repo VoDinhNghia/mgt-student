@@ -63,14 +63,6 @@ export class CoursesController {
   @Get()
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
-  @UseGuards(
-    RoleGuard([
-      ErolesUser.SUPPER_ADMIN,
-      ErolesUser.ADMIN,
-      ErolesUser.LECTURER,
-      ErolesUser.STUDENT,
-    ]),
-  )
   async getListFaculties(@Res() res: Response): Promise<ResponseRequest> {
     const result = await this.courseService.findAllCourses();
     return new ResponseRequest(res, result, 'Get course list success');

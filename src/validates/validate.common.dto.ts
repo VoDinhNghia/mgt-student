@@ -38,6 +38,17 @@ export class ValidateDto {
     }
   }
 
+  async fieldOptions(
+    collection: string,
+    options: Record<string, any>,
+    message: string,
+  ): Promise<void> {
+    const result = await this.db.collection(collection).findOne(options);
+    if (!result) {
+      new CommonException(404, `${message} not found.`);
+    }
+  }
+
   async existedId(collection: string, id: string): Promise<void> {
     const result = await this.db
       .collection(collection)

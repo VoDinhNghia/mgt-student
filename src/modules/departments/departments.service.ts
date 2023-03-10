@@ -3,10 +3,6 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { CommonException } from 'src/exceptions/exeception.common-error';
 import {
-  Attachment,
-  AttachmentDocument,
-} from '../attachments/schemas/attachments.schema';
-import {
   Profile,
   ProfileDocument,
 } from '../users/schemas/users.profile.schema';
@@ -19,12 +15,12 @@ import {
 } from './schemas/departments.staff.schema';
 import { unionBy } from 'lodash';
 import { CreateStaffDepartmentDto } from './dtos/department.staff.create.dto';
-import { Rooms, RoomsDocument } from '../rooms/schemas/rooms.schema';
 import { ErolesUser, EroomType } from 'src/constants/constant';
 import { UpdateDepartmentDto } from './dtos/department.update.dto';
 import { Users, UsersDocument } from '../users/schemas/users.schema';
 import { UpdateStaffDepartmentDto } from './dtos/department.staff.update.dto';
 import { LookupCommon } from 'src/utils/lookup.query.aggregate-query';
+import { ValidateDto } from 'src/validates/validate.common.dto';
 
 @Injectable()
 export class DepartmentsService {
@@ -35,47 +31,37 @@ export class DepartmentsService {
     private readonly staffSchema: Model<DepartmentStaffDocument>,
     @InjectModel(Profile.name)
     private readonly profileSchema: Model<ProfileDocument>,
-    @InjectModel(Attachment.name)
-    private readonly attachmentSchema: Model<AttachmentDocument>,
-    @InjectModel(Rooms.name)
-    private readonly roomSchema: Model<RoomsDocument>,
     @InjectModel(Users.name)
     private readonly userSchema: Model<UsersDocument>,
   ) {}
 
-  async validateDepartment(departmentDto: CreateDepartmentDto): Promise<void> {
-    const { manager, contacts, attachment = [] } = departmentDto;
-
-    if (contacts.office) {
-      const officeInfo = await this.roomSchema.findOne({
+  async validateDepartmentDto(
+    departmentDto: CreateDepartmentDto,
+  ): Promise<void> {
+    const { manager, contacts } = departmentDto;
+    const { office } = contacts;
+    const validate = new ValidateDto();
+    if (office) {
+      const options = {
         _id: new Types.ObjectId(contacts?.office),
         type: EroomType.OFFICE_DEPARTMENT,
-      });
-      if (!officeInfo) {
-        new CommonException(404, 'Office not found.');
-      }
+      };
+      await validate.fieldOptions('rooms', options, 'Room');
     }
     if (manager) {
-      const managerInfo = await this.profileSchema.findById(manager);
-      if (!managerInfo) {
-        new CommonException(404, 'Manager not found.');
-      }
-    }
-
-    if (attachment.length > 0) {
-      for (const item in attachment) {
-        const attachmentInfo = await this.attachmentSchema.findById(item);
-        if (!attachmentInfo) {
-          new CommonException(404, `Attachment ${item} not found.`);
-        }
-      }
+      await validate.fieldId('profiles', manager);
     }
   }
 
   async createDepartment(
     departmentDto: CreateDepartmentDto,
   ): Promise<Departments> {
-    await this.validateDepartment(departmentDto);
+    const { attachment } = departmentDto;
+    await this.validateDepartmentDto(departmentDto);
+    if (attachment.length > 0) {
+      const ids = await new ValidateDto().idLists('attachments', attachment);
+      departmentDto.attachment = ids;
+    }
     const newDocument = await new this.deparmentSchema(departmentDto).save();
     const result = await this.findDepartmentById(newDocument._id);
     return result;
@@ -85,63 +71,32 @@ export class DepartmentsService {
     id: string,
     departmentDto: UpdateDepartmentDto,
   ): Promise<Departments> {
-    await this.validateDepartment(departmentDto);
+    const { attachment } = departmentDto;
+    await this.validateDepartmentDto(departmentDto);
+    if (attachment.length > 0) {
+      const ids = await new ValidateDto().idLists('attachments', attachment);
+      departmentDto.attachment = ids;
+    }
     await this.deparmentSchema.findByIdAndUpdate(id, departmentDto);
     const result = await this.findDepartmentById(id);
     return result;
   }
 
   async findDepartmentById(id: string): Promise<Departments> {
-    const result = await this.deparmentSchema
-      .findById(id)
-      .populate('manager', '', this.profileSchema)
-      .populate('attachment', '', this.attachmentSchema)
-      .populate('contacts.office', '', this.roomSchema)
-      .exec();
-    if (!result) {
+    const match: Record<string, any> = {
+      $match: { _id: new Types.ObjectId(id) },
+    };
+    const lookup = this.lookupDepartment();
+    const aggregate = [match, ...lookup];
+    const result = await this.deparmentSchema.aggregate(aggregate);
+    if (!result[0]) {
       new CommonException(404, 'Department not found.');
     }
-    return result;
+    return result[0];
   }
 
   async findAllDepartment(): Promise<Departments[]> {
-    const aggregateLookup: any = new LookupCommon([
-      {
-        from: 'profiles',
-        localField: 'manager',
-        foreignField: '_id',
-        as: 'manager',
-        unwind: true,
-      },
-      {
-        from: 'attachments',
-        localField: 'attachment',
-        foreignField: '_id',
-        as: 'attachment',
-        unwind: false,
-      },
-      {
-        from: 'rooms',
-        localField: 'contacts.office',
-        foreignField: '_id',
-        as: 'office',
-        unwind: true,
-      },
-      {
-        from: 'departmentstaffs',
-        localField: '_id',
-        foreignField: 'department',
-        as: 'department',
-        unwind: false,
-      },
-      {
-        from: 'profiles',
-        localField: 'department.staff',
-        foreignField: '_id',
-        as: 'staffs',
-        unwind: false,
-      },
-    ]);
+    const aggregateLookup = this.lookupDepartment();
     const results = await this.deparmentSchema.aggregate(aggregateLookup);
     return results;
   }
@@ -222,5 +177,46 @@ export class DepartmentsService {
       .populate('user', '', this.userSchema)
       .exec();
     return staffInfo;
+  }
+
+  private lookupDepartment() {
+    const lookup: any = new LookupCommon([
+      {
+        from: 'profiles',
+        localField: 'manager',
+        foreignField: '_id',
+        as: 'manager',
+        unwind: true,
+      },
+      {
+        from: 'attachments',
+        localField: 'attachment',
+        foreignField: '_id',
+        as: 'attachment',
+        unwind: false,
+      },
+      {
+        from: 'rooms',
+        localField: 'contacts.office',
+        foreignField: '_id',
+        as: 'office',
+        unwind: true,
+      },
+      {
+        from: 'departmentstaffs',
+        localField: '_id',
+        foreignField: 'department',
+        as: 'departmentStaff',
+        unwind: true,
+      },
+      {
+        from: 'profiles',
+        localField: 'departmentStaff.staff',
+        foreignField: '_id',
+        as: 'staffLists',
+        unwind: true,
+      },
+    ]);
+    return lookup;
   }
 }
