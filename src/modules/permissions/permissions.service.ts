@@ -4,11 +4,7 @@ import { Model, Types } from 'mongoose';
 import { CommonException } from 'src/exceptions/exeception.common-error';
 import { LookupCommon } from 'src/utils/lookup.query.aggregate-query';
 import { Pagination } from 'src/utils/page.pagination';
-import { ValidateField } from 'src/validates/validate.field-id.dto';
-import {
-  Profile,
-  ProfileDocument,
-} from '../users/schemas/users.profile.schema';
+import { ValidateDto } from 'src/validates/validate.common.dto';
 import { CreatePermissionDto } from './dtos/permissions.create.dto';
 import { QueryPermissionDto } from './dtos/permissions.query.dto';
 import { UpdatePermissionDto } from './dtos/permissions.update.dto';
@@ -22,18 +18,15 @@ export class PermissionsService {
   constructor(
     @InjectModel(AdminPermission.name)
     private readonly permissionSchema: Model<AdminPermissionDocument>,
-    @InjectModel(Profile.name)
-    private readonly profileSchema: Model<ProfileDocument>,
-    private readonly validate: ValidateField,
   ) {}
 
   async createAdminPermission(
     permissionDto: CreatePermissionDto,
   ): Promise<AdminPermission> {
     const { user } = permissionDto;
-    await this.validate.byId(this.profileSchema, user, 'User profile');
-    const newDoc = await new this.permissionSchema(permissionDto).save();
-    const result = await this.findAdminPermissionById(newDoc._id);
+    await new ValidateDto().fieldId('profiles', user);
+    const permission = await new this.permissionSchema(permissionDto).save();
+    const result = await this.findAdminPermissionById(permission._id);
     return result;
   }
 
@@ -47,17 +40,17 @@ export class PermissionsService {
   }
 
   async findAdminPermissionById(id: string): Promise<AdminPermission> {
-    const result = await this.permissionSchema
-      .findById(id)
-      .populate('user', '', this.profileSchema)
-      .exec();
-    if (!result) {
+    const match = [{ $match: { _id: new Types.ObjectId(id) } }];
+    const lookup = this.lookupPermission();
+    const aggregate = [match, ...lookup];
+    const result = await this.permissionSchema.aggregate(aggregate);
+    if (!result[0]) {
       new CommonException(404, 'Permission not found.');
     }
-    return result;
+    return result[0];
   }
 
-  async findAllAdminPermission(
+  async findAllAdminPermissions(
     queryDto: QueryPermissionDto,
   ): Promise<AdminPermission[]> {
     const { limit, page, user, searchKey } = queryDto;
@@ -66,15 +59,7 @@ export class PermissionsService {
       match.$match = { user: new Types.ObjectId(user) };
     }
     let agg = [match];
-    const lookup: any = new LookupCommon([
-      {
-        from: 'profiles',
-        localField: 'user',
-        foreignField: '_id',
-        as: 'user',
-        unwind: true,
-      },
-    ]);
+    const lookup: any = this.lookupPermission();
     agg = [...agg, ...lookup];
     if (searchKey) {
       const matchSearchKey = {
@@ -96,5 +81,18 @@ export class PermissionsService {
   async deleteAdminPermission(id: string): Promise<void> {
     await this.findAdminPermissionById(id);
     await this.permissionSchema.findByIdAndDelete(id);
+  }
+
+  private lookupPermission() {
+    const lookup: any = new LookupCommon([
+      {
+        from: 'profiles',
+        localField: 'user',
+        foreignField: '_id',
+        as: 'user',
+        unwind: true,
+      },
+    ]);
+    return lookup;
   }
 }

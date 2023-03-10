@@ -68,7 +68,7 @@ export class PermissionsController {
     @Query() queryDto: QueryPermissionDto,
     @Res() res: Response,
   ) {
-    const results = await this.service.findAllAdminPermission(queryDto);
+    const results = await this.service.findAllAdminPermissions(queryDto);
     return new ResponseRequest(res, results, `Get admin permission success.`);
   }
 
