@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { GetCurrentDate } from 'src/utils/get.current-date';
 
 export class UpdateMajorDto {
   @ApiProperty({ required: false })
@@ -10,8 +11,11 @@ export class UpdateMajorDto {
   @ApiProperty()
   introduction?: string;
 
-  @ApiProperty({ required: false, default: '02-2023' })
-  foundYear?: string;
+  @ApiProperty({
+    required: false,
+    default: new GetCurrentDate().getYearMonthDate(),
+  })
+  foundYear?: Date;
 
   @ApiProperty({ required: false, type: [String] })
   award?: [string];
