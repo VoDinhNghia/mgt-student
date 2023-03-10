@@ -10,4 +10,7 @@ export class UpdateNewDto {
     default: EtypeNews.UNIVERSITY,
   })
   type?: string;
+
+  @ApiProperty({ type: [String], required: false })
+  attachment?: string[];
 }

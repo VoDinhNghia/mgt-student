@@ -46,7 +46,7 @@ export class NewsController {
     @Param('id') id: string,
     @Res() res: Response,
   ): Promise<ResponseRequest> {
-    const result = await this.newService.findNewById(id);
+    const result = await this.newService.findNewsById(id);
     return new ResponseRequest(res, result, 'Get news by id success');
   }
 
@@ -71,7 +71,7 @@ export class NewsController {
     @Query() queryNewDto: QueryNewDto,
     @Res() res: Response,
   ): Promise<ResponseRequest> {
-    const result = await this.newService.getLists(queryNewDto);
+    const result = await this.newService.findAllNews(queryNewDto);
     return new ResponseRequest(res, result, 'Get news list success');
   }
 
