@@ -24,7 +24,7 @@ export class Blog {
     type: [
       {
         user: {
-          type: mongoose.Types.ObjectId,
+          type: mongoose.Schema.Types.ObjectId,
           ref: 'profiles',
         },
       },
@@ -41,7 +41,7 @@ export class Blog {
     type: [
       {
         user: {
-          type: mongoose.Types.ObjectId,
+          type: mongoose.Schema.Types.ObjectId,
           ref: 'profiles',
         },
       },

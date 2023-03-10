@@ -19,15 +19,15 @@ export class BranchService {
 
   async createBranchNew(branchCreateDto: BranchCreateDto): Promise<Branch> {
     const { country, province, district, ward } = branchCreateDto?.location;
-    const dto = new ValidateDto();
-    await dto.checkFieldId('countries', country);
-    await dto.checkFieldId('provinces', province);
-    await dto.checkFieldId('districts', district);
+    const validate = new ValidateDto();
+    await validate.fieldId('countries', country);
+    await validate.fieldId('provinces', province);
+    await validate.fieldId('districts', district);
     if (ward) {
-      await dto.checkFieldId('wards', ward);
+      await validate.fieldId('wards', ward);
     }
     const options = { name: branchCreateDto?.name?.trim() };
-    await dto.checkExistedByOptions('branchs', options, 'Branch name');
+    await validate.existedByOptions('branchs', options, 'Branch name');
     const result = await new this.branchSchema(branchCreateDto).save();
 
     return result;

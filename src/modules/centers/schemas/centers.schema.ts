@@ -12,17 +12,17 @@ export class Center {
   introduction?: string;
 
   @Prop({
-    type: mongoose.Types.ObjectId,
+    type: mongoose.Schema.Types.ObjectId,
     ref: 'profiles',
   })
   director?: mongoose.Types.ObjectId;
 
   @Prop()
-  foundYear?: string;
+  foundYear?: Date;
 
   @Prop([
     {
-      type: mongoose.Types.ObjectId,
+      type: mongoose.Schema.Types.ObjectId,
       ref: 'awards',
     },
   ])
@@ -45,6 +45,9 @@ export class Center {
     phone?: string;
     fax?: string;
   };
+
+  @Prop({ default: false })
+  isDeleted?: boolean;
 
   @Prop({ default: Date.now })
   createdAt?: Date;
