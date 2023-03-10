@@ -278,12 +278,9 @@ export class ScholarshipService {
     semester: string,
     profileId: string,
   ): Promise<{ totalAccumalated: number; totalNumberCredits: number }> {
-    const subjectService = new SubjectUserRegister(this.db);
-    const subjectIds = await subjectService.getSubjectLists(semester);
-    const result = await subjectService.getSubjectUserInSemester(
-      profileId,
-      subjectIds,
-    );
+    const service = new SubjectUserRegister();
+    const subjectIds = await service.getSubjectIds(semester);
+    const result = await service.getUserSubjects(profileId, subjectIds);
     let totalAccumalated = 0;
     let totalNumberCredits = 0;
     if (result.length <= 0) {

@@ -3,9 +3,9 @@ import { DbConnection } from 'src/constants/db.mongo.connection';
 import { CommonException } from 'src/exceptions/exeception.common-error';
 
 export class SubjectUserRegister {
-  constructor(private readonly db: DbConnection) {}
+  db = new DbConnection();
 
-  async getSubjectUserInSemester(
+  async getUserSubjects(
     profile: string,
     subjectIds: ObjectId[],
   ): Promise<Record<string, any>[]> {
@@ -40,7 +40,7 @@ export class SubjectUserRegister {
     return result ?? [];
   }
 
-  async getSubjectLists(semester: string): Promise<ObjectId[]> {
+  async getSubjectIds(semester: string): Promise<ObjectId[]> {
     const cursorQuery = await this.db
       .collection('subjects')
       .find({ semester: new Types.ObjectId(semester), status: true });
