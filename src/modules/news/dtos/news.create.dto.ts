@@ -17,6 +17,6 @@ export class CreateNewDto {
   @ApiProperty()
   url?: string;
 
-  @ApiProperty({ type: Array })
-  attachment?: [string];
+  @ApiProperty({ type: [String], required: false })
+  attachment?: string[];
 }
