@@ -3,25 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { CommonException } from 'src/exceptions/exeception.common-error';
 import { LookupCommon } from 'src/utils/lookup.query.aggregate-query';
-import { ValidateField } from 'src/validates/validate.field-id.dto';
-import { Course, CourseDocument } from '../courses/schemas/courses.schema';
-import {
-  DegreeLevel,
-  DegreeLevelDocument,
-} from '../degreelevels/schemas/degreelevels.schema';
-import {
-  Faculty,
-  FacultyDocument,
-} from '../faculties/schemas/faculties.schema';
-import { Majors, MajorsDocument } from '../faculties/schemas/major.schema';
-import {
-  Semester,
-  SemesterDocument,
-} from '../semesters/schemas/semesters.schema';
-import {
-  Profile,
-  ProfileDocument,
-} from '../users/schemas/users.profile.schema';
+import { ValidateDto } from 'src/validates/validate.common.dto';
 import { CreateClassDto } from './dtos/class.create.dto';
 import { UpdateClassDto } from './dtos/class.update.dto';
 import { CreateSubjectDto } from './dtos/subject.create.dto';
@@ -48,61 +30,15 @@ export class ClassSubjectService {
     private readonly subjectSchema: Model<SubjectDocument>,
     @InjectModel(SubjectProcess.name)
     private readonly subjectProcessSchema: Model<SubjectProcessDocument>,
-    @InjectModel(Profile.name)
-    private readonly profileSchema: Model<ProfileDocument>,
-    @InjectModel(Course.name)
-    private readonly courseSchema: Model<CourseDocument>,
-    @InjectModel(Majors.name)
-    private readonly majorSchema: Model<MajorsDocument>,
-    @InjectModel(DegreeLevel.name)
-    private readonly degreeLevelSchema: Model<DegreeLevelDocument>,
-    @InjectModel(Semester.name)
-    private readonly semesterSchema: Model<SemesterDocument>,
-    @InjectModel(Faculty.name)
-    private readonly facultySchema: Model<FacultyDocument>,
-    private readonly validate: ValidateField,
   ) {}
-
-  // When create subject => create subject project
-
-  async validateCommon(validateDto: Record<string, any>): Promise<void> {
-    const {
-      course,
-      degreeLevel,
-      major,
-      homeroomteacher,
-      semester,
-      faculty,
-      lecturer,
-    } = validateDto;
-    await this.validate.byId(this.courseSchema, course, 'Course');
-    if (homeroomteacher) {
-      await this.validate.byId(
-        this.profileSchema,
-        homeroomteacher,
-        'User Profile',
-      );
-    }
-    if (lecturer) {
-      await this.validate.byId(this.profileSchema, lecturer, 'User Profile');
-    }
-    if (semester) {
-      await this.validate.byId(this.semesterSchema, semester, 'Semester');
-    }
-    if (faculty) {
-      await this.validate.byId(this.facultySchema, faculty, 'Faculty');
-    }
-    await this.validate.byId(this.majorSchema, major, 'Major');
-    await this.validate.byId(
-      this.degreeLevelSchema,
-      degreeLevel,
-      'DegreeLevel',
-    );
-  }
 
   async createClass(createClassDto: CreateClassDto): Promise<ClassInfos> {
     const options = { name: createClassDto?.name?.trim() };
-    await this.validate.existed(this.classSchema, options, 'Class name');
+    await new ValidateDto().existedByOptions(
+      'classinfos',
+      options,
+      'Class name',
+    );
     await this.validateCommon(createClassDto);
     const newClass = await new this.classSchema(createClassDto).save();
     const result = await this.findClassById(newClass._id);
@@ -110,17 +46,16 @@ export class ClassSubjectService {
   }
 
   async findClassById(id: string): Promise<ClassInfos> {
-    const result = await this.classSchema
-      .findById(id)
-      .populate('course', '', this.courseSchema)
-      .populate('degreelevel', '', this.degreeLevelSchema)
-      .populate('major', '', this.majorSchema)
-      .populate('homeroomteacher', '', this.profileSchema)
-      .exec();
-    if (!result) {
+    const match: Record<string, any> = {
+      $match: { _id: new Types.ObjectId(id) },
+    };
+    const lookup = this.lookupClass();
+    const aggregate = [match, ...lookup];
+    const result = await this.classSchema.aggregate(aggregate);
+    if (!result[0]) {
       new CommonException(404, `Class not found`);
     }
-    return result;
+    return result[0];
   }
 
   async updateClass(id: string, classDto: UpdateClassDto): Promise<ClassInfos> {
@@ -156,8 +91,11 @@ export class ClassSubjectService {
   }
 
   async findSubjectById(id: string): Promise<Subjects> {
-    const aggre = [{ $match: { _id: new Types.ObjectId(id) } }];
-    const aggregate = this.lookupSubject(aggre);
+    const match: Record<string, any> = {
+      $match: { _id: new Types.ObjectId(id) },
+    };
+    const lookup = this.lookupSubject();
+    const aggregate = [match, ...lookup];
     const result = await this.subjectSchema.aggregate(aggregate);
     if (!result[0]) {
       new CommonException(404, 'Subject not found.');
@@ -179,15 +117,62 @@ export class ClassSubjectService {
     return result;
   }
 
-  lookupSubject(aggre = []) {
+  async validateCommon(validateDto: Record<string, any>): Promise<void> {
+    const {
+      course,
+      degreeLevel,
+      major,
+      homeroomteacher,
+      semester,
+      faculty,
+      lecturer,
+    } = validateDto;
+    const validate = new ValidateDto();
+    if (course) {
+      await validate.fieldId('courses', course);
+    }
+    if (homeroomteacher) {
+      await validate.fieldId('profiles', homeroomteacher);
+    }
+    if (lecturer) {
+      await validate.fieldId('profiles', lecturer);
+    }
+    if (semester) {
+      await validate.fieldId('semesters', semester);
+    }
+    if (faculty) {
+      await validate.fieldId('faculties', faculty);
+    }
+    if (major) {
+      await validate.fieldId('majors', major);
+    }
+    if (degreeLevel) {
+      await validate.fieldId('degreelevels', degreeLevel);
+    }
+  }
+
+  lookupClass() {
     const lookup: any = new LookupCommon([
       {
-        from: 'courses',
-        localField: 'course',
+        from: 'degreelevels',
+        localField: 'degreeLevel',
         foreignField: '_id',
-        as: 'course',
+        as: 'degreeLevel',
         unwind: true,
       },
+      {
+        from: 'profiles',
+        localField: 'homeroomteacher',
+        foreignField: '_id',
+        as: 'homeroomteacher',
+        unwind: true,
+      },
+    ]);
+    return [...this.lookupCommon(), ...lookup];
+  }
+
+  lookupSubject() {
+    const lookup: any = new LookupCommon([
       {
         from: 'semesters',
         localField: 'semester',
@@ -203,13 +188,6 @@ export class ClassSubjectService {
         unwind: true,
       },
       {
-        from: 'majors',
-        localField: 'major',
-        foreignField: '_id',
-        as: 'major',
-        unwind: true,
-      },
-      {
         from: 'subjectprocesses',
         localField: '_id',
         foreignField: 'subject',
@@ -217,7 +195,26 @@ export class ClassSubjectService {
         unwind: true,
       },
     ]);
-    const aggregate = [...aggre, ...lookup];
-    return aggregate;
+    return [...this.lookupCommon(), ...lookup];
+  }
+
+  lookupCommon() {
+    const lookup: any = new LookupCommon([
+      {
+        from: 'courses',
+        localField: 'course',
+        foreignField: '_id',
+        as: 'course',
+        unwind: true,
+      },
+      {
+        from: 'majors',
+        localField: 'major',
+        foreignField: '_id',
+        as: 'major',
+        unwind: true,
+      },
+    ]);
+    return lookup;
   }
 }
