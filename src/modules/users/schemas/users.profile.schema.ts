@@ -93,7 +93,7 @@ export class Profile {
   @Prop({
     type: {
       country: {
-        type: mongoose.Types.ObjectId,
+        type: mongoose.Schema.Types.ObjectId,
         ref: 'countries',
       },
       province: String,

@@ -19,7 +19,10 @@ export class AwardsService {
 
   async createAward(createAwardDto: CreateAwardDto): Promise<Award> {
     const { attachment = [] } = createAwardDto;
-    const attachmentIds = await new ValidateDto().attachmentIds(attachment);
+    const attachmentIds = await new ValidateDto().idLists(
+      'attachments',
+      attachment,
+    );
     createAwardDto.attachment = attachmentIds;
     const result = await new this.awardSchema(createAwardDto).save();
     return result;

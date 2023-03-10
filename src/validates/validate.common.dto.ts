@@ -1,16 +1,18 @@
 import { Types } from 'mongoose';
 import { DbConnection } from 'src/constants/db.mongo.connection';
 import { CommonException } from 'src/exceptions/exeception.common-error';
+import { uniq } from 'lodash';
 
 export class ValidateDto {
   db = new DbConnection();
 
-  async attachmentIds(ids = []): Promise<string[]> {
+  async idLists(collection: string, ids = []): Promise<string[]> {
     if (ids.length === 0) {
       return ids;
     }
+    const idsUniq = uniq(ids);
     const listIds = [];
-    for (const id of ids) {
+    for (const id of idsUniq) {
       try {
         listIds.push(new Types.ObjectId(id));
       } catch {
@@ -18,18 +20,16 @@ export class ValidateDto {
       }
     }
     const cursorFind = await this.db
-      .collection('attachments')
+      .collection(collection)
       .find({ _id: { $in: listIds } });
-    const findAttachments = await cursorFind.toArray();
-    const attachmentIds = findAttachments.map(
-      (attachment: Record<string, any>) => {
-        return attachment._id;
-      },
-    );
-    return attachmentIds;
+    const documentLists = await cursorFind.toArray();
+    const documentIds = documentLists.map((document: Record<string, any>) => {
+      return document._id;
+    });
+    return documentIds;
   }
 
-  async checkFieldId(collection: string, id: string): Promise<void> {
+  async fieldId(collection: string, id: string): Promise<void> {
     const result = await this.db
       .collection(collection)
       .findOne({ _id: new Types.ObjectId(id) });
@@ -38,7 +38,7 @@ export class ValidateDto {
     }
   }
 
-  async checkExistedId(collection: string, id: string): Promise<void> {
+  async existedId(collection: string, id: string): Promise<void> {
     const result = await this.db
       .collection(collection)
       .findOne({ _id: new Types.ObjectId(id) });
@@ -50,7 +50,7 @@ export class ValidateDto {
     }
   }
 
-  async checkExistedByOptions(
+  async existedByOptions(
     collection: string,
     options: Record<string, any>,
     message: string,

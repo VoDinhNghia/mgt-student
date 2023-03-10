@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { GetCurrentDate } from 'src/utils/get.current-date';
 import { CenterContacts } from './centers.contacts.dto';
 
 export class CreateCenterDto {
@@ -11,8 +12,11 @@ export class CreateCenterDto {
   @ApiProperty({ required: true })
   director?: string;
 
-  @ApiProperty({ required: true })
-  foundYear?: string;
+  @ApiProperty({
+    required: true,
+    default: new GetCurrentDate().getYearMonthDate(),
+  })
+  foundYear?: Date;
 
   @ApiProperty({ required: false, type: [String] })
   award?: string[];
