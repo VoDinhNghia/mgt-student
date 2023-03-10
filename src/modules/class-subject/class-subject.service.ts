@@ -33,13 +33,13 @@ export class ClassSubjectService {
   ) {}
 
   async createClass(createClassDto: CreateClassDto): Promise<ClassInfos> {
-    const options = { name: createClassDto?.name?.trim() };
+    const options = { name: createClassDto.name?.trim() };
     await new ValidateDto().existedByOptions(
       'classinfos',
       options,
       'Class name',
     );
-    await this.validateCommon(createClassDto);
+    await this.validateDto(createClassDto);
     const newClass = await new this.classSchema(createClassDto).save();
     const result = await this.findClassById(newClass._id);
     return result;
@@ -59,14 +59,14 @@ export class ClassSubjectService {
   }
 
   async updateClass(id: string, classDto: UpdateClassDto): Promise<ClassInfos> {
-    await this.validateCommon(classDto);
+    await this.validateDto(classDto);
     await this.classSchema.findByIdAndUpdate(id, classDto);
     const result = await this.findClassById(id);
     return result;
   }
 
   async createSubject(subjectDto: CreateSubjectDto): Promise<Subjects> {
-    await this.validateCommon(subjectDto);
+    await this.validateDto(subjectDto);
     const subject = await new this.subjectSchema(subjectDto).save();
     await this.createSubjectProcess(subject._id, subjectDto);
     const result = await this.findSubjectById(subject._id);
@@ -107,7 +107,7 @@ export class ClassSubjectService {
     id: string,
     subjectDto: UpdateSubjectDto,
   ): Promise<Subjects> {
-    await this.validateCommon(subjectDto);
+    await this.validateDto(subjectDto);
     await this.subjectSchema.findByIdAndUpdate(id, subjectDto);
     await this.subjectProcessSchema.findOneAndUpdate(
       { subject: new Types.ObjectId(id) },
@@ -117,7 +117,7 @@ export class ClassSubjectService {
     return result;
   }
 
-  async validateCommon(validateDto: Record<string, any>): Promise<void> {
+  async validateDto(dtos: Record<string, any>): Promise<void> {
     const {
       course,
       degreeLevel,
@@ -126,7 +126,7 @@ export class ClassSubjectService {
       semester,
       faculty,
       lecturer,
-    } = validateDto;
+    } = dtos;
     const validate = new ValidateDto();
     if (course) {
       await validate.fieldId('courses', course);
@@ -151,7 +151,7 @@ export class ClassSubjectService {
     }
   }
 
-  lookupClass() {
+  private lookupClass() {
     const lookup: any = new LookupCommon([
       {
         from: 'degreelevels',
@@ -171,7 +171,7 @@ export class ClassSubjectService {
     return [...this.lookupCommon(), ...lookup];
   }
 
-  lookupSubject() {
+  private lookupSubject() {
     const lookup: any = new LookupCommon([
       {
         from: 'semesters',
@@ -198,7 +198,7 @@ export class ClassSubjectService {
     return [...this.lookupCommon(), ...lookup];
   }
 
-  lookupCommon() {
+  private lookupCommon() {
     const lookup: any = new LookupCommon([
       {
         from: 'courses',

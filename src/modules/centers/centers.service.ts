@@ -54,7 +54,7 @@ export class CenterService {
 
   async findCenterById(id: string): Promise<Center> {
     const match = { $match: { _id: new Types.ObjectId(id) } };
-    const lookup = this.lookupCommon();
+    const lookup = this.lookupCenter();
     const aggregate = [match, ...lookup];
     const result = await this.centerSchema.aggregate(aggregate);
     if (!result[0]) {
@@ -64,7 +64,7 @@ export class CenterService {
   }
 
   async findAllCenter(): Promise<Center[]> {
-    const lookup = this.lookupCommon();
+    const lookup = this.lookupCenter();
     const results = await this.centerSchema.aggregate(lookup);
     return results;
   }
@@ -74,7 +74,7 @@ export class CenterService {
     await this.centerSchema.findByIdAndDelete(id);
   }
 
-  lookupCommon() {
+  private lookupCenter() {
     const lookup: any = new LookupCommon([
       {
         from: 'profiles',

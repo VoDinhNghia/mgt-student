@@ -80,7 +80,7 @@ export class AwardsService {
     };
   }
 
-  lookupAward() {
+  private lookupAward() {
     const lookup: any = new LookupCommon([
       {
         from: 'attachments',

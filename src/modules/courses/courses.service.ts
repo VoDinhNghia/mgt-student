@@ -2,11 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { CommonException } from 'src/exceptions/exeception.common-error';
-import { ValidateField } from 'src/validates/validate.field-id.dto';
-import {
-  Faculty,
-  FacultyDocument,
-} from '../faculties/schemas/faculties.schema';
+import { ValidateDto } from 'src/validates/validate.common.dto';
 import { CreateCourseDto } from './dtos/courses.create.dto';
 import { UpdateCourseDto } from './dtos/courses.update.dto';
 import { Course, CourseDocument } from './schemas/courses.schema';
@@ -16,30 +12,28 @@ export class CoursesService {
   constructor(
     @InjectModel(Course.name)
     private readonly courseSchema: Model<CourseDocument>,
-    @InjectModel(Faculty.name)
-    private readonly facultySchema: Model<FacultyDocument>,
-    private readonly validate: ValidateField,
   ) {}
 
-  async validateCourse(courseDto: CreateCourseDto): Promise<void> {
+  async validateCourseName(courseDto: CreateCourseDto): Promise<void> {
     const { name } = courseDto;
     if (name) {
-      await this.validate.existed(this.facultySchema, { name }, 'Course name');
+      const options = { name: name.trim() };
+      await new ValidateDto().existedByOptions(
+        'courses',
+        options,
+        'Course name',
+      );
     }
   }
 
   async createCourse(courseDto: CreateCourseDto): Promise<Course> {
-    await this.validateCourse(courseDto);
+    await this.validateCourseName(courseDto);
     const course = await new this.courseSchema(courseDto).save();
-    const result = await this.findCourseById(course._id);
-    return result;
+    return course;
   }
 
   async findCourseById(id: string): Promise<Course> {
-    const result = await this.courseSchema
-      .findById(id)
-      .populate('faculty', '', this.facultySchema)
-      .exec();
+    const result = await this.courseSchema.findById(id);
     if (!result) {
       new CommonException(404, 'Course not found.');
     }
@@ -47,17 +41,14 @@ export class CoursesService {
   }
 
   async updateCourse(id: string, courseDto: UpdateCourseDto): Promise<Course> {
-    await this.validateCourse(courseDto);
+    await this.validateCourseName(courseDto);
     await this.courseSchema.findByIdAndUpdate(id, courseDto);
     const result = await this.findCourseById(id);
     return result;
   }
 
   async findAllCourses(): Promise<Course[]> {
-    const results = await this.courseSchema
-      .find({})
-      .populate('faculty', '', this.facultySchema)
-      .exec();
+    const results = await this.courseSchema.find({});
     return results;
   }
 }

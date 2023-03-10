@@ -37,7 +37,7 @@ export class BranchService {
     const match: Record<string, any> = {
       $match: { id: new Types.ObjectId(id) },
     };
-    const lookup = this.lookupCommon();
+    const lookup = this.lookupBranch();
     const aggregate = [match, ...lookup];
     const result = await this.branchSchema.aggregate(aggregate);
     if (!result[0]) {
@@ -53,7 +53,7 @@ export class BranchService {
     if (searchKey) {
       match.$match.name = new RegExp(searchKey);
     }
-    const lookup = this.lookupCommon();
+    const lookup = this.lookupBranch();
     const aggregatePag: any = new Pagination(limit, page, [match]);
     const aggregate = [...aggregatePag, ...lookup];
     const result = await this.branchSchema.aggregate(aggregate);
@@ -69,7 +69,7 @@ export class BranchService {
     await this.branchSchema.findByIdAndUpdate(id, branchUpdateDto);
   }
 
-  lookupCommon() {
+  private lookupBranch() {
     const lookup: any = new LookupCommon([
       {
         from: 'countries',

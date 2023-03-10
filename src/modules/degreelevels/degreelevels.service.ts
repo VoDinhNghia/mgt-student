@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { CommonException } from 'src/exceptions/exeception.common-error';
+import { ValidateDto } from 'src/validates/validate.common.dto';
 import { CreateDegreeLevelDto } from './dtos/degreelevels.create.dto';
 import { UpdateDegreeLevelDto } from './dtos/degreeLevels.update.dto';
 import {
@@ -16,22 +17,24 @@ export class DegreelevelService {
     private readonly degreeLevelSchema: Model<DegreeLevelDocument>,
   ) {}
 
-  async validateDegreeLevel(
+  async validateDegreeLevelName(
     degreeLevelDto: Record<string, any>,
   ): Promise<void> {
-    const { name = '' } = degreeLevelDto;
-    const result = await this.degreeLevelSchema.findOne({
-      name: name.trim(),
-    });
-    if (result) {
-      new CommonException(409, 'DegreeLevel existed already.');
+    const { name } = degreeLevelDto;
+    if (name) {
+      const options = { name: name.trim() };
+      await new ValidateDto().existedByOptions(
+        'degreelevels',
+        options,
+        'DegreeLevel name',
+      );
     }
   }
 
   async createDegreeLevel(
     degreelevelDto: CreateDegreeLevelDto,
   ): Promise<DegreeLevel> {
-    await this.validateDegreeLevel(degreelevelDto);
+    await this.validateDegreeLevelName(degreelevelDto);
     const result = await new this.degreeLevelSchema(degreelevelDto).save();
     return result;
   }
@@ -48,18 +51,13 @@ export class DegreelevelService {
     id: string,
     updateDto: UpdateDegreeLevelDto,
   ): Promise<DegreeLevel> {
-    const result = await this.degreeLevelSchema.findById(id);
-    if (!result) {
-      new CommonException(404, 'DegreeLevel not found.');
-    }
-    await this.validateDegreeLevel(updateDto);
-    result.name = updateDto.name || result.name;
-    result.description = updateDto.description || result.description;
-    await result.save();
+    await this.validateDegreeLevelName(updateDto);
+    await this.degreeLevelSchema.findByIdAndUpdate(id, updateDto);
+    const result = await this.findDegreeLevelById(id);
     return result;
   }
 
-  async findAllDegreeLevel(): Promise<DegreeLevel[]> {
+  async findAllDegreeLevels(): Promise<DegreeLevel[]> {
     const results = await this.degreeLevelSchema.find({});
     return results;
   }

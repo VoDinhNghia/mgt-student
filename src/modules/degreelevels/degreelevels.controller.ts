@@ -55,7 +55,7 @@ export class DegreelevelController {
 
   @Get()
   async getAllDegreeLevel(@Res() res: Response): Promise<ResponseRequest> {
-    const result = await this.degreeLevelService.findAllDegreeLevel();
+    const result = await this.degreeLevelService.findAllDegreeLevels();
     return new ResponseRequest(res, result, 'Get all degreeLevel success.');
   }
 
