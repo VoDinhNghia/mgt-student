@@ -6,23 +6,12 @@ import {
   EstatusUserProfile,
   trainningPointDefault,
 } from 'src/constants/constant';
-import { DbConnection } from 'src/constants/db.mongo.connection';
 import { CommonException } from 'src/exceptions/exeception.common-error';
 import { LookupCommon } from 'src/utils/lookup.query.aggregate-query';
 import { Pagination } from 'src/utils/page.pagination';
+import { QueryService } from 'src/utils/query.service';
 import { SubjectUserRegister } from 'src/utils/user.register-subject.query';
-import {
-  Attachment,
-  AttachmentDocument,
-} from '../attachments/schemas/attachments.schema';
-import {
-  Semester,
-  SemesterDocument,
-} from '../semesters/schemas/semesters.schema';
-import {
-  Profile,
-  ProfileDocument,
-} from '../users/schemas/users.profile.schema';
+import { ValidateDto } from 'src/validates/validate.common.dto';
 import { CreateScholarshipUser } from './dtos/scholarship-user.create.dto';
 import { CreateScholarshipDto } from './dtos/scholarship.create.dto';
 import { QueryScholarshipDto } from './dtos/scholarship.query.dto';
@@ -44,41 +33,30 @@ export class ScholarshipService {
     private readonly scholarshipSchema: Model<ScholarshipDocument>,
     @InjectModel(ScholarshipUser.name)
     private readonly scholarshipUserSchema: Model<ScholarshipUserDocument>,
-    @InjectModel(Semester.name)
-    private readonly semesterSchema: Model<SemesterDocument>,
-    @InjectModel(Attachment.name)
-    private readonly attachmentSchema: Model<AttachmentDocument>,
-    @InjectModel(Profile.name)
-    private readonly profileSchema: Model<ProfileDocument>,
-    private readonly db: DbConnection,
   ) {}
   // export list user scholarship => file excel
 
-  async validateScholarShip(
+  async validateScholarShipDto(
     scholarshipDto: CreateScholarshipDto,
   ): Promise<void> {
     const { semester, name } = scholarshipDto;
+    const validate = new ValidateDto();
     if (semester) {
-      const semesterInfo = await this.semesterSchema.findById(semester);
-      if (!semesterInfo) {
-        new CommonException(404, 'Semester not found.');
-      }
+      await validate.fieldId('semesters', semester);
     }
     if (name) {
-      const scholarship = await this.scholarshipSchema.findOne({
+      const options = {
         semester: new Types.ObjectId(semester),
         name: name.trim(),
-      });
-      if (scholarship) {
-        new CommonException(409, 'Scholarship name existed already.');
-      }
+      };
+      await validate.existedByOptions('scholarships', options, 'Scholarship');
     }
   }
 
   async createScholarship(
     scholarshipDto: CreateScholarshipDto,
   ): Promise<Scholarship> {
-    await this.validateScholarShip(scholarshipDto);
+    await this.validateScholarShipDto(scholarshipDto);
     const result = await new this.scholarshipSchema(scholarshipDto).save();
     return result;
   }
@@ -87,21 +65,23 @@ export class ScholarshipService {
     id: string,
     scholarshipDto: UpdateScholarshipDto,
   ): Promise<Scholarship> {
-    await this.validateScholarShip(scholarshipDto);
+    await this.validateScholarShipDto(scholarshipDto);
     await this.scholarshipSchema.findByIdAndUpdate(id, scholarshipDto);
     const result = await this.findScholarshipById(id);
     return result;
   }
 
   async findScholarshipById(id: string): Promise<Scholarship> {
-    const result = await this.scholarshipSchema
-      .findById(id)
-      .populate('semester', '', this.semesterSchema)
-      .exec();
-    if (!result) {
+    const match: Record<string, any> = {
+      $match: { _id: new Types.ObjectId(id) },
+    };
+    const lookup = this.lookupSemesterScholarship();
+    const aggregate = [match, ...lookup];
+    const results = await this.scholarshipSchema.aggregate(aggregate);
+    if (!results[0]) {
       new CommonException(404, 'Scholarship not found.');
     }
-    return result;
+    return results[0];
   }
 
   async findAllScholarship(
@@ -118,18 +98,8 @@ export class ScholarshipService {
     if (searchKey) {
       match.$match.$or = [{ name: new RegExp(searchKey) }];
     }
-    const agg = [
-      match,
-      {
-        $lookup: {
-          from: 'semesters',
-          localField: 'semester',
-          foreignField: '_id',
-          as: 'semester',
-        },
-      },
-      { $unwind: '$semester' },
-    ];
+    const lookup = this.lookupSemesterScholarship();
+    const agg = [match, ...lookup];
     const aggregate: any = new Pagination(limit, page, agg);
     const results = await this.scholarshipSchema.aggregate(aggregate);
     return results;
@@ -191,26 +161,34 @@ export class ScholarshipService {
     semester: string,
     profile: string,
   ): Promise<Record<string, any>> {
-    const result = await this.db.collection('paymentstudyfees').findOne({
+    const options = {
       semester: new Types.ObjectId(semester),
       user: new Types.ObjectId(profile),
-    });
+    };
+    const result = await new QueryService().findOneByOptions(
+      'paymentstudyfees',
+      options,
+    );
     return result;
   }
 
   async createUserScholarshipInSemester(
     semester: string,
   ): Promise<Record<string, any>[]> {
-    const semesterInfo = await this.db
-      .collection('semesters')
-      .findOne({ _id: new Types.ObjectId(semester) });
+    const queryService = new QueryService();
+    const optionFindOne = { _id: new Types.ObjectId(semester) };
+    const semesterInfo = await queryService.findOneByOptions(
+      'semesters',
+      optionFindOne,
+    );
     if (!semesterInfo) {
       new CommonException(404, 'Semester not found.');
     }
-    const cursorFind = await this.db
-      .collection('studyprocesses')
-      .find({ status: EstatusUserProfile.STUDYING });
-    const studyProcessLists = await cursorFind.toArray();
+    const optionFind = { status: EstatusUserProfile.STUDYING };
+    const studyProcessLists = await queryService.findByOptions(
+      'studyprocesses',
+      optionFind,
+    );
     const data = [];
     for (const item of studyProcessLists) {
       try {
@@ -300,7 +278,16 @@ export class ScholarshipService {
     profileId: string,
     semesterId: string,
   ): Promise<number> {
-    const cursorAgg = await this.db.collection('tranningpoints').aggregate([
+    const lookup: any = new LookupCommon([
+      {
+        from: 'volunteeprograms',
+        localField: 'program',
+        foreignField: '_id',
+        as: 'program',
+        unwind: true,
+      },
+    ]);
+    const aggregate = [
       {
         $match: {
           user: new Types.ObjectId(profileId),
@@ -308,22 +295,30 @@ export class ScholarshipService {
           status: true,
         },
       },
-      {
-        $lookup: {
-          from: 'volunteeprograms',
-          localField: 'program',
-          foreignField: '_id',
-          as: 'program',
-        },
-      },
-      { $unwind: '$program' },
-    ]);
-    const result = await cursorAgg?.toArray();
-    const totalTrainningPoint = result.reduce(
+      ...lookup,
+    ];
+    const results = await new QueryService().findByAggregate(
+      'tranningpoints',
+      aggregate,
+    );
+    const totalTrainningPoint = results.reduce(
       (x: any, y: any) => (x.program?.point ?? 0) + (y.program?.point ?? 0),
       0,
     );
     const point = totalTrainningPoint + trainningPointDefault;
     return point > 100 ? 100 : point;
+  }
+
+  private lookupSemesterScholarship() {
+    const lookup: any = new LookupCommon([
+      {
+        from: 'semesters',
+        localField: 'semester',
+        foreignField: '_id',
+        as: 'semester',
+        unwind: true,
+      },
+    ]);
+    return lookup;
   }
 }
