@@ -16,7 +16,7 @@ export class SchoolService {
     private readonly schoolSchema: Model<SchoolInfoDocument>,
   ) {}
 
-  async validateFieldSchoolDto(schoolDto: Record<string, any>): Promise<void> {
+  async validateSchoolDto(schoolDto: Record<string, any>): Promise<void> {
     const { location = {} } = schoolDto;
     const { country, province, district, ward } = location;
     const validate = new ValidateDto();
@@ -65,7 +65,7 @@ export class SchoolService {
       const awardIds = await new ValidateDto().idLists('awards', award);
       schoolDto.award = awardIds;
     }
-    await this.validateFieldSchoolDto(schoolDto);
+    await this.validateSchoolDto(schoolDto);
     await this.schoolSchema.findByIdAndUpdate(id, schoolDto);
     const result = await this.findSchoolById(id);
     return result;

@@ -1,11 +1,5 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import { ValidateField } from 'src/validates/validate.field-id.dto';
-import {
-  Attachment,
-  AttachmentlSchema,
-} from '../attachments/schemas/attachments.schema';
-import { Profile, ProfileSchema } from '../users/schemas/users.profile.schema';
 import { Union, UnionSchema } from './schemas/unions.schema';
 import { UnionsController } from './unions.controller';
 import { UnionsService } from './unions.service';
@@ -17,17 +11,9 @@ import { UnionsService } from './unions.service';
         name: Union.name,
         schema: UnionSchema,
       },
-      {
-        name: Profile.name,
-        schema: ProfileSchema,
-      },
-      {
-        name: Attachment.name,
-        schema: AttachmentlSchema,
-      },
     ]),
   ],
-  providers: [UnionsService, ValidateField],
+  providers: [UnionsService],
   controllers: [UnionsController],
 })
 export class UnionsModule {}
