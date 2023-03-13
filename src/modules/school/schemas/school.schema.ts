@@ -1,11 +1,13 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { Document } from 'mongoose';
 import { schoolId } from 'src/constants/constant';
+import { FieldsCommonSchema } from 'src/utils/fields-common.schema';
 
-export type SchoolInfoDocument = SchoolInfo & Document;
+export type SchoolInfoDocument = School_Info & Document;
 
 @Schema()
-export class SchoolInfo {
+export class School_Info extends FieldsCommonSchema {
   @Prop({
     type: String,
     required: true,
@@ -102,12 +104,6 @@ export class SchoolInfo {
 
   @Prop()
   generalInfo?: string;
-
-  @Prop({ default: Date.now })
-  createdAt?: Date;
-
-  @Prop({ default: Date.now })
-  updateAt?: Date;
 }
 
-export const SchoolSchema = SchemaFactory.createForClass(SchoolInfo);
+export const SchoolSchema = SchemaFactory.createForClass(School_Info);

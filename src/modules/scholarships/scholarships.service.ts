@@ -186,7 +186,7 @@ export class ScholarshipService {
     }
     const optionFind = { status: EstatusUserProfile.STUDYING };
     const studyProcessLists = await queryService.findByOptions(
-      'studyprocesses',
+      'study_processes',
       optionFind,
     );
     const data = [];

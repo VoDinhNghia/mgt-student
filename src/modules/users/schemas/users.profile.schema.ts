@@ -1,12 +1,13 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { Document } from 'mongoose';
 import { EuserGender } from 'src/constants/constant';
+import { FieldsCommonSchema } from 'src/utils/fields-common.schema';
 import { getRandomCode } from 'src/utils/generate.code-profile';
 
 export type ProfileDocument = Profile & Document;
 
 @Schema()
-export class Profile {
+export class Profile extends FieldsCommonSchema {
   @Prop({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'users',
@@ -137,12 +138,6 @@ export class Profile {
 
   @Prop()
   religion?: string;
-
-  @Prop({ default: Date.now })
-  createdAt?: Date;
-
-  @Prop({ default: Date.now })
-  updateAt?: Date;
 }
 
 export const ProfileSchema = SchemaFactory.createForClass(Profile);

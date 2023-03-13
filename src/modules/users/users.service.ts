@@ -16,7 +16,7 @@ import { CommonException } from 'src/exceptions/exeception.common-error';
 import { Pagination } from 'src/utils/page.pagination';
 import { UpdateProfileDto } from './dto/user.update-profile.dto';
 import {
-  LeaderSchool,
+  Leader_Schools,
   LeaderSchoolDocument,
 } from './schemas/users.leader-school.schema';
 import { CreateLeaderSchoolDto } from './dto/user.create.leader-school.dto';
@@ -24,7 +24,7 @@ import { QueryLeaderSchoolDto } from './dto/user.query.leader-school.dto';
 import { UpdateLeaderSchoolDto } from './dto/user.update.leader-school.dto';
 import { getRandomCode } from 'src/utils/generate.code-profile';
 import {
-  StudyProcess,
+  Study_Processes,
   StudyProcessDocument,
 } from './schemas/study-process.schema';
 import { CreateStudyProcessDto } from './dto/study-process.create.dto';
@@ -38,9 +38,9 @@ export class UsersService {
     @InjectModel(Users.name) private readonly userSchema: Model<UsersDocument>,
     @InjectModel(Profile.name)
     private readonly profileSchema: Model<ProfileDocument>,
-    @InjectModel(LeaderSchool.name)
+    @InjectModel(Leader_Schools.name)
     private readonly leaderSchoolSchema: Model<LeaderSchoolDocument>,
-    @InjectModel(StudyProcess.name)
+    @InjectModel(Study_Processes.name)
     private readonly studyProcessSchema: Model<StudyProcessDocument>,
   ) {}
 
@@ -279,7 +279,9 @@ export class UsersService {
     }
   }
 
-  async createLeaderSchool(dto: CreateLeaderSchoolDto): Promise<LeaderSchool> {
+  async createLeaderSchool(
+    dto: CreateLeaderSchoolDto,
+  ): Promise<Leader_Schools> {
     const { profile } = dto;
     const validate = new ValidateDto();
     await validate.fieldId('profiles', profile);
@@ -290,7 +292,7 @@ export class UsersService {
     return result;
   }
 
-  async findLeaderSchoolById(id: string): Promise<LeaderSchool> {
+  async findLeaderSchoolById(id: string): Promise<Leader_Schools> {
     const match = { $match: { _id: new Types.ObjectId(id) } };
     const lookup = this.lookupProfile();
     const aggregate = [match, ...lookup];
@@ -304,7 +306,7 @@ export class UsersService {
   async updateLeaderSchool(
     id: string,
     updateLeaderDto: UpdateLeaderSchoolDto,
-  ): Promise<LeaderSchool> {
+  ): Promise<Leader_Schools> {
     await this.leaderSchoolSchema.findByIdAndUpdate(id, updateLeaderDto);
     const result = await this.findLeaderSchoolById(id);
     return result;
@@ -312,7 +314,7 @@ export class UsersService {
 
   async findAllLeaderSchool(
     queryDto: QueryLeaderSchoolDto,
-  ): Promise<LeaderSchool[]> {
+  ): Promise<Leader_Schools[]> {
     const { type } = queryDto;
     const match = { $match: {} };
     if (type) {
