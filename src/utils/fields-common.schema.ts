@@ -27,5 +27,8 @@ export class FieldsCommonSchema {
   createdAt?: Date;
 
   @Prop({ default: Date.now })
-  updateAt?: Date;
+  updatedAt?: Date;
+
+  @Prop({ required: false })
+  deletedAt?: Date;
 }

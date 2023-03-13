@@ -56,7 +56,7 @@ export class DepartmentsService {
   async createDepartment(
     departmentDto: CreateDepartmentDto,
   ): Promise<Departments> {
-    const { attachment } = departmentDto;
+    const { attachment = [] } = departmentDto;
     await this.validateDepartmentDto(departmentDto);
     if (attachment.length > 0) {
       const ids = await new ValidateDto().idLists('attachments', attachment);
@@ -71,7 +71,7 @@ export class DepartmentsService {
     id: string,
     departmentDto: UpdateDepartmentDto,
   ): Promise<Departments> {
-    const { attachment } = departmentDto;
+    const { attachment = [] } = departmentDto;
     await this.validateDepartmentDto(departmentDto);
     if (attachment.length > 0) {
       const ids = await new ValidateDto().idLists('attachments', attachment);
