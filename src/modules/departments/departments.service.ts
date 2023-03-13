@@ -10,7 +10,7 @@ import { CreateMultiStaffDepartmentDto } from './dtos/department.staff.create-mu
 import { CreateDepartmentDto } from './dtos/departments.create.dto';
 import { Departments, DepartmentsDocument } from './schemas/departments.schema';
 import {
-  DepartmentStaff,
+  Department_Staff,
   DepartmentStaffDocument,
 } from './schemas/departments.staff.schema';
 import { unionBy } from 'lodash';
@@ -27,7 +27,7 @@ export class DepartmentsService {
   constructor(
     @InjectModel(Departments.name)
     private readonly deparmentSchema: Model<DepartmentsDocument>,
-    @InjectModel(DepartmentStaff.name)
+    @InjectModel(Department_Staff.name)
     private readonly staffSchema: Model<DepartmentStaffDocument>,
     @InjectModel(Profile.name)
     private readonly profileSchema: Model<ProfileDocument>,
@@ -103,7 +103,7 @@ export class DepartmentsService {
 
   async createMultiStaffDepartment(
     staffDto: CreateMultiStaffDepartmentDto,
-  ): Promise<DepartmentStaff[]> {
+  ): Promise<Department_Staff[]> {
     const { department, staffs = [] } = staffDto;
     await this.findDepartmentById(department);
     const staffLists = unionBy(staffs, 'staff');
@@ -134,7 +134,7 @@ export class DepartmentsService {
 
   async createDepartmentStaff(
     staffDto: CreateStaffDepartmentDto,
-  ): Promise<DepartmentStaff> {
+  ): Promise<Department_Staff> {
     const { department, staff } = staffDto;
     await this.findDepartmentById(department);
     const staffInfo = await this.findUserProfile(staff);
@@ -148,7 +148,7 @@ export class DepartmentsService {
   async updateDepartmentStaff(
     id: string,
     staffDto: UpdateStaffDepartmentDto,
-  ): Promise<DepartmentStaff> {
+  ): Promise<Department_Staff> {
     const { department, joinDate } = staffDto;
     if (department) {
       await this.findDepartmentById(department);
@@ -203,7 +203,7 @@ export class DepartmentsService {
         unwind: true,
       },
       {
-        from: 'departmentstaffs',
+        from: 'department_staffs',
         localField: '_id',
         foreignField: 'department',
         as: 'departmentStaff',

@@ -6,7 +6,7 @@ import { DepartmentsController } from './departments.controller';
 import { DepartmentsService } from './departments.service';
 import { Departments, DepartmentSchema } from './schemas/departments.schema';
 import {
-  DepartmentStaff,
+  Department_Staff,
   DepartmentStaffSchema,
 } from './schemas/departments.staff.schema';
 
@@ -17,7 +17,7 @@ import {
         name: Departments.name,
         schema: DepartmentSchema,
       },
-      { name: DepartmentStaff.name, schema: DepartmentStaffSchema },
+      { name: Department_Staff.name, schema: DepartmentStaffSchema },
       { name: Profile.name, schema: ProfileSchema },
       { name: Users.name, schema: UsersSchema },
     ]),
