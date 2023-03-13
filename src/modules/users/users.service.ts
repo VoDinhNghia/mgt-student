@@ -13,7 +13,6 @@ import {
 import { UsersFillterDto } from './dto/user.filter.dto';
 import { validateEmail } from 'src/validates/validate.email';
 import { CommonException } from 'src/exceptions/exeception.common-error';
-import { ValidateField } from 'src/validates/validate.field-id.dto';
 import { Pagination } from 'src/utils/page.pagination';
 import { UpdateProfileDto } from './dto/user.update-profile.dto';
 import {
@@ -23,21 +22,6 @@ import {
 import { CreateLeaderSchoolDto } from './dto/user.create.leader-school.dto';
 import { QueryLeaderSchoolDto } from './dto/user.query.leader-school.dto';
 import { UpdateLeaderSchoolDto } from './dto/user.update.leader-school.dto';
-import { Majors, MajorsDocument } from '../faculties/schemas/major.schema';
-import { Course, CourseDocument } from '../courses/schemas/courses.schema';
-import {
-  ClassInfos,
-  ClassInfosDocument,
-} from '../class-subject/schemas/class-subject.class.schema';
-import {
-  Faculty,
-  FacultyDocument,
-} from '../faculties/schemas/faculties.schema';
-import { Award, AwardDocument } from '../awards/schemas/awards.schema';
-import {
-  DegreeLevel,
-  DegreeLevelDocument,
-} from '../degreelevels/schemas/degreelevels.schema';
 import { getRandomCode } from 'src/utils/generate.code-profile';
 import {
   StudyProcess,
@@ -46,6 +30,7 @@ import {
 import { CreateStudyProcessDto } from './dto/study-process.create.dto';
 import { InitSuperAdminDto } from '../auth/dtos/auth.init-super-admin.dto';
 import { LookupCommon } from 'src/utils/lookup.query.aggregate-query';
+import { ValidateDto } from 'src/validates/validate.common.dto';
 
 @Injectable()
 export class UsersService {
@@ -55,77 +40,29 @@ export class UsersService {
     private readonly profileSchema: Model<ProfileDocument>,
     @InjectModel(LeaderSchool.name)
     private readonly leaderSchoolSchema: Model<LeaderSchoolDocument>,
-    @InjectModel(Majors.name)
-    private readonly majorSchema: Model<MajorsDocument>,
-    @InjectModel(Course.name)
-    private readonly courseSchema: Model<CourseDocument>,
-    @InjectModel(ClassInfos.name)
-    private readonly classSchema: Model<ClassInfosDocument>,
-    @InjectModel(Faculty.name)
-    private readonly facultySchema: Model<FacultyDocument>,
-    @InjectModel(Award.name)
-    private readonly awardSchema: Model<AwardDocument>,
-    @InjectModel(DegreeLevel.name)
-    private readonly degreeLevelSchema: Model<DegreeLevelDocument>,
     @InjectModel(StudyProcess.name)
     private readonly studyProcessSchema: Model<StudyProcessDocument>,
-    private readonly validate: ValidateField,
   ) {}
 
-  async validateUser(usersValidateDto: Record<string, any>): Promise<void> {
-    if (!validateEmail(usersValidateDto.email)) {
-      new CommonException(400, `Email not correct format.`);
-    }
-    const options = { email: usersValidateDto.email };
-    await this.validate.existed(this.userSchema, options, 'Email');
-  }
-
-  async validateProfile(fields: Record<string, any>): Promise<void> {
-    const { major, faculty, course, degreeLevel, classId, award = [] } = fields;
-    if (major) {
-      await this.validate.byId(this.majorSchema, major, 'Major');
-    }
-    if (faculty) {
-      await this.validate.byId(this.facultySchema, faculty, 'Faculty');
-    }
-    if (course) {
-      await this.validate.byId(this.courseSchema, course, 'Course');
-    }
-    if (degreeLevel) {
-      await this.validate.byId(
-        this.degreeLevelSchema,
-        degreeLevel,
-        'DegreeLevel',
-      );
-    }
-    if (classId) {
-      await this.validate.byId(this.classSchema, classId, 'Class');
-    }
-    if (award.length > 0) {
-      for (const item of award) {
-        await this.validate.byId(this.awardSchema, item, `Award ${item}`);
-      }
-    }
-  }
-
-  // Ask students or lecturers ... to provide their personal email before joining the school
-  // => so that they can notify users via email later
   async createUser(
     usersDto: CreateUserDto,
     createBy: string,
   ): Promise<Users | any> {
-    await this.validateUser(usersDto);
-    await this.validateProfile(usersDto);
+    const { email } = usersDto;
+    await this.validateEmailUser(email);
+    await this.validateProfileDto(usersDto);
     usersDto.passWord = cryptoPassWord(usersDto.passWord);
-    const user = await new this.userSchema({
+    const newDto = {
       ...usersDto,
       createdBy: createBy,
-    }).save();
-    const profile = await this.createUserProfile({
+    };
+    const user = await new this.userSchema(newDto).save();
+    const profileDto = {
       ...usersDto,
       user: user._id,
       code: getRandomCode(6),
-    });
+    };
+    const profile = await this.createUserProfile(profileDto);
     if (user.role === ErolesUser.STUDENT) {
       const isCreate = await this.createStudyProcess(user._id, profile._id);
       if (!isCreate) {
@@ -144,22 +81,8 @@ export class UsersService {
       const studyProcessDto: CreateStudyProcessDto = {
         user: profileId,
         status: EstatusUserProfile.STUDYING,
-        toeicCertificate: {
-          attachment: null,
-          scores: null,
-          expirationDate: null,
-        },
-        itCertificate: {
-          attachment: null,
-          scores: null,
-        },
       };
-      const result = await new this.studyProcessSchema(studyProcessDto).save();
-      if (!result) {
-        await this.userSchema.findByIdAndDelete(userId);
-        await this.profileSchema.findByIdAndDelete(profileId);
-        return false;
-      }
+      await new this.studyProcessSchema(studyProcessDto).save();
       return true;
     } catch (error) {
       console.log(error);
@@ -170,18 +93,10 @@ export class UsersService {
   }
 
   async findUserById(id: string | any): Promise<Users | any> {
-    const result = await this.userSchema.aggregate([
-      { $match: { _id: new Types.ObjectId(id) } },
-      {
-        $lookup: {
-          from: 'profiles',
-          localField: '_id',
-          foreignField: 'user',
-          as: 'profile',
-        },
-      },
-      { $unwind: '$profile' },
-    ]);
+    const match = { $match: { _id: new Types.ObjectId(id) } };
+    const lookup = this.lookupUser();
+    const aggregate = [match, ...lookup];
+    const result = await this.userSchema.aggregate(aggregate);
     if (!result[0]) {
       new CommonException(404, 'User not found.');
     }
@@ -199,17 +114,8 @@ export class UsersService {
     if (status) {
       match.$match.status = status;
     }
-    let aggregate: any[] = [];
-    const lookup: any = new LookupCommon([
-      {
-        from: 'profiles',
-        localField: '_id',
-        foreignField: 'user',
-        as: 'profile',
-        unwind: true,
-      },
-    ]);
-    aggregate = [...aggregate, match, ...lookup];
+    const lookup = this.lookupUser();
+    let aggregate = [match, ...lookup];
     if (searchKey) {
       aggregate = [
         ...aggregate,
@@ -235,11 +141,12 @@ export class UsersService {
     payload: Record<string, any>,
     updatedBy: string,
   ): Promise<Users> {
-    if (payload.email) {
-      await this.validateUser(payload);
+    const { email, passWord } = payload;
+    if (email) {
+      await this.validateEmailUser(email);
     }
-    if (payload.passWord) {
-      payload.passWord = cryptoPassWord(payload.passWord);
+    if (passWord) {
+      payload.passWord = cryptoPassWord(passWord);
     }
     const updateInfo = {
       ...payload,
@@ -255,36 +162,39 @@ export class UsersService {
     id: string,
     profileDto: UpdateProfileDto,
   ): Promise<Profile | any> {
-    await this.validateProfile(profileDto);
+    const { award } = profileDto;
+    await this.validateProfileDto(profileDto);
+    if (award.length > 0) {
+      const awardIds = await new ValidateDto().idLists('awards', award);
+      profileDto.award = awardIds;
+    }
     const profile = await this.profileSchema.findByIdAndUpdate(id, profileDto);
     const result = await this.findUserById(profile.user);
     return result;
   }
 
-  async importUser(createdBy: string, data: Record<string, any>[]) {
-    const result: Record<string, any>[] = [];
+  async importUser(createdBy: string, data = []) {
     for (const item of data) {
+      let user = null;
+      let profile = null;
       if (!validateEmail(item.email)) {
         item.status = 'Email incorect format.';
         continue;
       }
       const existedEmail = await this.userSchema.findOne({ email: item.email });
-      let user: UsersDocument = null;
-      let profile: Record<string, any> = null;
       if (existedEmail) {
         item.status = 'Email existed already.';
-        result.push(item);
         continue;
       }
       try {
-        user = await new this.userSchema({
+        const userDto = {
           ...item,
           passWord: cryptoPassWord('123Code#'),
           createdBy,
-        }).save();
+        };
+        user = await new this.userSchema(userDto).save();
       } catch {
         item.status = 'Can not create user.';
-        result.push(item);
         continue;
       }
       const existedProfile = await this.profileSchema.findOne({
@@ -292,65 +202,54 @@ export class UsersService {
       });
       if (existedProfile || !user) {
         item.status = 'Can not create profile.';
-        result.push(item);
         continue;
       }
       try {
-        profile = await new this.profileSchema({
+        const profileDto = {
           ...item,
           user: user._id,
           code: getRandomCode(6),
           createdBy,
-        }).save();
+        };
+        profile = await new this.profileSchema(profileDto).save();
       } catch {
         item.status = 'Can not create profile.';
         await this.userSchema.findByIdAndDelete(user._id);
-        result.push(item);
         continue;
       }
       if (user.role === ErolesUser.STUDENT) {
-        const isCreateStudyProcess = await this.createStudyProcess(
-          user._id,
-          profile._id,
-        );
-        if (!isCreateStudyProcess) {
+        const isCreate = await this.createStudyProcess(user._id, profile._id);
+        if (!isCreate) {
           item.status = 'Can not create study process.';
-          result.push(item);
           continue;
         }
       }
       item.status = 'Import user success.';
-      result.push(item);
     }
-    return result;
+    return data;
   }
 
   async initSupperAdmin(superAdminDto: InitSuperAdminDto): Promise<Users> {
     const { email, passWord, firstName, lastName } = superAdminDto;
-    await this.validateUser(superAdminDto);
-    const checkSupperAdmin = await this.userSchema.findOne({
-      role: ErolesUser.SUPPER_ADMIN,
-    });
-    if (checkSupperAdmin) {
-      new CommonException(409, 'Supper Admin existed already.');
-    }
-    const adminDto = {
+    await this.validateEmailUser(email);
+    const option = { role: ErolesUser.SUPPER_ADMIN };
+    await new ValidateDto().existedByOptions('users', option, 'Supper Admin');
+    const supperAdminDto = {
       email,
       passWord: cryptoPassWord(passWord || '123Code#'),
       status: EstatusUser.ACTIVE,
       statusLogin: false,
       role: ErolesUser.SUPPER_ADMIN,
     };
-    const options = { email: adminDto.email };
-    await this.validate.existed(this.userSchema, options, 'Admin');
-    const admin = await new this.userSchema(adminDto).save();
-    await this.createUserProfile({
+    const supperAdmin = await new this.userSchema(supperAdminDto).save();
+    const profileSuperAdmin = {
       firstName,
       lastName,
-      user: admin._id,
-      code: '101_sa_student',
-    });
-    const result = await this.findUserById(admin._id);
+      user: supperAdmin._id,
+      code: `SA_${getRandomCode(5)}`,
+    };
+    await this.createUserProfile(profileSuperAdmin);
+    const result = await this.findUserById(supperAdmin._id);
     return result;
   }
 
@@ -368,46 +267,38 @@ export class UsersService {
     profileDto: Record<string, any>,
   ): Promise<Profile | any> {
     try {
-      const options = { user: profileDto.user };
-      await this.validate.existed(this.profileSchema, options, 'Profile');
+      const validate = new ValidateDto();
+      const option = { user: profileDto.user };
+      await validate.existedByOptions('profiles', option, 'User profile');
       const result = await new this.profileSchema(profileDto).save();
       return result;
     } catch (error) {
       await this.userSchema.findByIdAndDelete(profileDto.user);
-      console.log('eeee', error);
+      console.log(error);
       new CommonException(500, `Server interval.`);
     }
   }
 
-  async createLeaderSchool(
-    leaderSchoolDto: CreateLeaderSchoolDto,
-  ): Promise<LeaderSchool> {
-    const profile = await this.profileSchema.findById(leaderSchoolDto.profile);
-    if (!profile) {
-      new CommonException(404, 'User profile not found.');
-    }
-    const leaderSchool = await this.leaderSchoolSchema.findOne({
-      profile: new Types.ObjectId(leaderSchoolDto.profile),
-    });
-    if (leaderSchool) {
-      new CommonException(409, 'User profile existed already.');
-    }
-    const createLeaderSchool = await new this.leaderSchoolSchema(
-      leaderSchoolDto,
-    ).save();
+  async createLeaderSchool(dto: CreateLeaderSchoolDto): Promise<LeaderSchool> {
+    const { profile } = dto;
+    const validate = new ValidateDto();
+    await validate.fieldId('profiles', profile);
+    const option = { profile: new Types.ObjectId(profile) };
+    await validate.existedByOptions('leaderschools', option, 'Leader school');
+    const createLeaderSchool = await new this.leaderSchoolSchema(dto).save();
     const result = await this.findLeaderSchoolById(createLeaderSchool._id);
     return result;
   }
 
   async findLeaderSchoolById(id: string): Promise<LeaderSchool> {
-    const result = await this.leaderSchoolSchema
-      .findById(id)
-      .populate('profile', '', this.profileSchema)
-      .exec();
-    if (!result) {
+    const match = { $match: { _id: new Types.ObjectId(id) } };
+    const lookup = this.lookupProfile();
+    const aggregate = [match, ...lookup];
+    const result = await this.leaderSchoolSchema.aggregate(aggregate);
+    if (!result[0]) {
       new CommonException(404, 'Leader school not found.');
     }
-    return result;
+    return result[0];
   }
 
   async updateLeaderSchool(
@@ -429,14 +320,66 @@ export class UsersService {
         'title.type': type,
       };
     }
-    const results = await this.leaderSchoolSchema
-      .find(match)
-      .populate('profile', '', this.profileSchema)
-      .exec();
+    const lookup = this.lookupProfile();
+    const aggregate = [match, ...lookup];
+    const results = await this.leaderSchoolSchema.aggregate(aggregate);
     return results;
   }
 
   async deleteLeaderSchool(id: string): Promise<void> {
     await this.leaderSchoolSchema.findByIdAndDelete(id);
+  }
+
+  async validateEmailUser(email: string): Promise<void> {
+    if (!validateEmail(email)) {
+      new CommonException(400, `Email not correct format.`);
+    }
+    await new ValidateDto().existedByOptions('users', { email }, 'Email');
+  }
+
+  async validateProfileDto(fields: Record<string, any>): Promise<void> {
+    const validate = new ValidateDto();
+    const { major, faculty, course, degreeLevel, classId } = fields;
+    if (major) {
+      await validate.fieldId('majors', major);
+    }
+    if (faculty) {
+      await validate.fieldId('faculties', faculty);
+    }
+    if (course) {
+      await validate.fieldId('courses', course);
+    }
+    if (degreeLevel) {
+      await validate.fieldId('degreelevels', degreeLevel);
+    }
+    if (classId) {
+      await validate.fieldId('classinfos', classId);
+    }
+  }
+
+  private lookupUser() {
+    const lookup: any = new LookupCommon([
+      {
+        from: 'profiles',
+        localField: '_id',
+        foreignField: 'user',
+        as: 'profile',
+        unwind: true,
+      },
+    ]);
+    return lookup;
+  }
+
+  private lookupProfile() {
+    const lookup: any = new LookupCommon([
+      {
+        from: 'profiles',
+        localField: 'profile',
+        foreignField: '_id',
+        as: 'profile',
+        unwind: true,
+      },
+    ]);
+    return lookup;
   }
 }
