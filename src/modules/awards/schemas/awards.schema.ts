@@ -1,11 +1,12 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { Document } from 'mongoose';
 import { EtypeAward } from 'src/constants/constant';
+import { FieldsCommonSchema } from 'src/utils/fields-common.schema';
 
 export type AwardDocument = Award & Document;
 
 @Schema()
-export class Award {
+export class Award extends FieldsCommonSchema {
   @Prop({ required: true })
   name?: string;
 
@@ -26,12 +27,6 @@ export class Award {
 
   @Prop()
   description?: string;
-
-  @Prop({ default: Date.now })
-  createdAt?: Date;
-
-  @Prop({ default: Date.now })
-  updateAt?: Date;
 }
 
 export const AwardSchema = SchemaFactory.createForClass(Award);

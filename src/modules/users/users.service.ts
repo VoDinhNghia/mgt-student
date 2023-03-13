@@ -355,7 +355,7 @@ export class UsersService {
       await validate.fieldId('degreelevels', degreeLevel);
     }
     if (classId) {
-      await validate.fieldId('classinfos', classId);
+      await validate.fieldId('class_infos', classId);
     }
   }
 

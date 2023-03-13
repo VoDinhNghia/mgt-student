@@ -3,11 +3,11 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { PaymentsController } from './payments.controller';
 import { PaymentsService } from './payments.service';
 import {
-  MoneyPerCreditManagement,
+  Money_Per_Credit_Mgt,
   MoneyPerCreditManagementSchema,
 } from './schemas/mgt-money-per-credit.schema';
 import {
-  PaymentStudyFee,
+  Payment_Study_Fee,
   PaymentStudyFeeSchema,
 } from './schemas/payments.schema';
 
@@ -15,10 +15,10 @@ import {
   imports: [
     MongooseModule.forFeature([
       {
-        name: MoneyPerCreditManagement.name,
+        name: Money_Per_Credit_Mgt.name,
         schema: MoneyPerCreditManagementSchema,
       },
-      { name: PaymentStudyFee.name, schema: PaymentStudyFeeSchema },
+      { name: Payment_Study_Fee.name, schema: PaymentStudyFeeSchema },
     ]),
   ],
   providers: [PaymentsService],

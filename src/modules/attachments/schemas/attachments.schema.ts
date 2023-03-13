@@ -1,10 +1,11 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { Document } from 'mongoose';
+import { FieldsCommonSchema } from 'src/utils/fields-common.schema';
 
 export type AttachmentDocument = Attachment & Document;
 // posible save at difference server or amazon s3 service
 @Schema()
-export class Attachment {
+export class Attachment extends FieldsCommonSchema {
   @Prop()
   originalname?: string;
 
@@ -28,12 +29,6 @@ export class Attachment {
     ref: 'profiles',
   })
   uploadBy?: mongoose.Types.ObjectId;
-
-  @Prop({ default: Date.now })
-  createdAt?: Date;
-
-  @Prop({ default: Date.now })
-  updateAt?: Date;
 }
 
 export const AttachmentlSchema = SchemaFactory.createForClass(Attachment);

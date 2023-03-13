@@ -9,7 +9,7 @@ import { UpdateClassDto } from './dtos/class.update.dto';
 import { CreateSubjectDto } from './dtos/subject.create.dto';
 import { UpdateSubjectDto } from './dtos/subject.update.dto';
 import {
-  ClassInfos,
+  Class_Infos,
   ClassInfosDocument,
 } from './schemas/class-subject.class.schema';
 import {
@@ -17,25 +17,25 @@ import {
   Subjects,
 } from './schemas/class-subject.subject.schema';
 import {
-  SubjectProcess,
+  Subject_Process,
   SubjectProcessDocument,
 } from './schemas/class-subject.subjectProcess';
 
 @Injectable()
 export class ClassSubjectService {
   constructor(
-    @InjectModel(ClassInfos.name)
+    @InjectModel(Class_Infos.name)
     private readonly classSchema: Model<ClassInfosDocument>,
     @InjectModel(Subjects.name)
     private readonly subjectSchema: Model<SubjectDocument>,
-    @InjectModel(SubjectProcess.name)
+    @InjectModel(Subject_Process.name)
     private readonly subjectProcessSchema: Model<SubjectProcessDocument>,
   ) {}
 
-  async createClass(createClassDto: CreateClassDto): Promise<ClassInfos> {
+  async createClass(createClassDto: CreateClassDto): Promise<Class_Infos> {
     const options = { name: createClassDto.name?.trim() };
     await new ValidateDto().existedByOptions(
-      'classinfos',
+      'class_infos',
       options,
       'Class name',
     );
@@ -45,7 +45,7 @@ export class ClassSubjectService {
     return result;
   }
 
-  async findClassById(id: string): Promise<ClassInfos> {
+  async findClassById(id: string): Promise<Class_Infos> {
     const match: Record<string, any> = {
       $match: { _id: new Types.ObjectId(id) },
     };
@@ -58,7 +58,10 @@ export class ClassSubjectService {
     return result[0];
   }
 
-  async updateClass(id: string, classDto: UpdateClassDto): Promise<ClassInfos> {
+  async updateClass(
+    id: string,
+    classDto: UpdateClassDto,
+  ): Promise<Class_Infos> {
     await this.validateDto(classDto);
     await this.classSchema.findByIdAndUpdate(id, classDto);
     const result = await this.findClassById(id);
@@ -76,7 +79,7 @@ export class ClassSubjectService {
   async createSubjectProcess(
     subjectId: string,
     processDto: CreateSubjectDto,
-  ): Promise<SubjectProcess> {
+  ): Promise<Subject_Process> {
     try {
       const result = await new this.subjectProcessSchema({
         subject: subjectId,
@@ -188,7 +191,7 @@ export class ClassSubjectService {
         unwind: true,
       },
       {
-        from: 'subjectprocesses',
+        from: 'subject_processes',
         localField: '_id',
         foreignField: 'subject',
         as: 'process',

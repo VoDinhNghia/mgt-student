@@ -3,7 +3,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { ClassSubjectController } from './class-subject.controller';
 import { ClassSubjectService } from './class-subject.service';
 import {
-  ClassInfos,
+  Class_Infos,
   ClassInfoSchema,
 } from './schemas/class-subject.class.schema';
 import {
@@ -11,16 +11,16 @@ import {
   SubjectSchema,
 } from './schemas/class-subject.subject.schema';
 import {
-  SubjectProcess,
+  Subject_Process,
   SubjectProcessSchema,
 } from './schemas/class-subject.subjectProcess';
 
 @Module({
   imports: [
     MongooseModule.forFeature([
-      { name: ClassInfos.name, schema: ClassInfoSchema },
+      { name: Class_Infos.name, schema: ClassInfoSchema },
       { name: Subjects.name, schema: SubjectSchema },
-      { name: SubjectProcess.name, schema: SubjectProcessSchema },
+      { name: Subject_Process.name, schema: SubjectProcessSchema },
     ]),
   ],
   providers: [ClassSubjectService],

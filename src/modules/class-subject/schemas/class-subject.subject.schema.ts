@@ -1,10 +1,11 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { Document } from 'mongoose';
+import { FieldsCommonSchema } from 'src/utils/fields-common.schema';
 
 export type SubjectDocument = Subjects & Document;
 
 @Schema()
-export class Subjects {
+export class Subjects extends FieldsCommonSchema {
   @Prop({ required: true })
   name?: string;
 
@@ -67,12 +68,6 @@ export class Subjects {
 
   @Prop({ default: true })
   status?: boolean; // open: true, close: false
-
-  @Prop({ default: Date.now })
-  createdAt?: Date;
-
-  @Prop({ default: Date.now })
-  updateAt?: Date;
 }
 
 export const SubjectSchema = SchemaFactory.createForClass(Subjects);

@@ -1,10 +1,12 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { Document } from 'mongoose';
+import { FieldsCommonSchema } from 'src/utils/fields-common.schema';
 
-export type SubjectProcessDocument = SubjectProcess & Document;
+export type SubjectProcessDocument = Subject_Process & Document;
 
 @Schema()
-export class SubjectProcess {
+export class Subject_Process extends FieldsCommonSchema {
   @Prop({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'subjects',
@@ -73,13 +75,7 @@ export class SubjectProcess {
     percent?: number; // 20%
     examDate?: Date;
   };
-
-  @Prop({ default: Date.now })
-  createdAt?: Date;
-
-  @Prop({ default: Date.now })
-  updateAt?: Date;
 }
 
 export const SubjectProcessSchema =
-  SchemaFactory.createForClass(SubjectProcess);
+  SchemaFactory.createForClass(Subject_Process);

@@ -1,10 +1,11 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { Document } from 'mongoose';
+import { FieldsCommonSchema } from 'src/utils/fields-common.schema';
 
 export type DistrictDocument = Districts & Document;
 
 @Schema()
-export class Districts {
+export class Districts extends FieldsCommonSchema {
   @Prop({ required: true })
   name: string;
 
@@ -30,12 +31,6 @@ export class Districts {
 
   @Prop()
   code?: string;
-
-  @Prop({ default: Date.now })
-  createdAt?: Date;
-
-  @Prop({ default: Date.now })
-  updateAt?: Date;
 }
 
 export const DistrictSchema = SchemaFactory.createForClass(Districts);

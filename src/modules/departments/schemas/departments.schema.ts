@@ -1,10 +1,11 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { Document } from 'mongoose';
+import { FieldsCommonSchema } from 'src/utils/fields-common.schema';
 
 export type DepartmentsDocument = Departments & Document;
 
 @Schema()
-export class Departments {
+export class Departments extends FieldsCommonSchema {
   @Prop()
   name?: string;
 
@@ -73,12 +74,6 @@ export class Departments {
     ref: 'attachments',
   })
   attachment?: [mongoose.Types.ObjectId];
-
-  @Prop({ default: Date.now })
-  createdAt?: Date;
-
-  @Prop({ default: Date.now })
-  updateAt?: Date;
 }
 
 export const DepartmentSchema = SchemaFactory.createForClass(Departments);

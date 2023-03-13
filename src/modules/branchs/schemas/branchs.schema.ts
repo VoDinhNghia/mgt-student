@@ -1,10 +1,11 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { Document } from 'mongoose';
+import { FieldsCommonSchema } from 'src/utils/fields-common.schema';
 
 export type BranchDocument = Branch & Document;
 
 @Schema()
-export class Branch {
+export class Branch extends FieldsCommonSchema {
   @Prop({ required: true })
   title?: string;
 
@@ -54,15 +55,6 @@ export class Branch {
       mobile?: string;
     },
   ];
-
-  @Prop({ default: false }) // this is handle in task logs action, validate add field isDeleted: false
-  isDeleted?: boolean;
-
-  @Prop({ default: Date.now })
-  createdAt?: Date;
-
-  @Prop({ default: Date.now })
-  updateAt?: Date;
 }
 
 export const BranchSchema = SchemaFactory.createForClass(Branch);
