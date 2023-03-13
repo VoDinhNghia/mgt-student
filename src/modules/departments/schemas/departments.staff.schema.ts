@@ -1,10 +1,12 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { Document } from 'mongoose';
+import { FieldsCommonSchema } from 'src/utils/fields-common.schema';
 
-export type DepartmentStaffDocument = DepartmentStaff & Document;
+export type DepartmentStaffDocument = Department_Staff & Document;
 
 @Schema()
-export class DepartmentStaff {
+export class Department_Staff extends FieldsCommonSchema {
   @Prop({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'departments',
@@ -19,13 +21,7 @@ export class DepartmentStaff {
 
   @Prop({ default: Date.now })
   joinDate?: Date;
-
-  @Prop({ default: Date.now })
-  createdAt?: Date;
-
-  @Prop({ default: Date.now })
-  updateAt?: Date;
 }
 
 export const DepartmentStaffSchema =
-  SchemaFactory.createForClass(DepartmentStaff);
+  SchemaFactory.createForClass(Department_Staff);
