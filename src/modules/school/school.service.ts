@@ -56,7 +56,7 @@ export class SchoolService {
     id: string,
     schoolDto: UpdateSchoolDto,
   ): Promise<School_Info> {
-    const { image, award } = schoolDto;
+    const { image = [], award = [] } = schoolDto;
     if (image.length > 0) {
       const imageIds = await new ValidateDto().idLists('attachments', image);
       schoolDto.image = imageIds;

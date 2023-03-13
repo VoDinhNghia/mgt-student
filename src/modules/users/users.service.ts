@@ -31,6 +31,7 @@ import { CreateStudyProcessDto } from './dto/study-process.create.dto';
 import { InitSuperAdminDto } from '../auth/dtos/auth.init-super-admin.dto';
 import { LookupCommon } from 'src/utils/lookup.query.aggregate-query';
 import { ValidateDto } from 'src/validates/validate.common.dto';
+import { UsersUpdateDto } from './dto/user.update.dto';
 
 @Injectable()
 export class UsersService {
@@ -113,7 +114,7 @@ export class UsersService {
   async findAllUsers(query: UsersFillterDto, userId: string): Promise<Users[]> {
     const { searchKey, limit, page, role, status } = query;
     const match: Record<string, any> = {
-      $match: { _id: { $ne: new Types.ObjectId(userId) } },
+      $match: { _id: { $ne: new Types.ObjectId(userId) }, isDeleted: false },
     };
     if (role) {
       match.$match.role = role;
@@ -145,7 +146,7 @@ export class UsersService {
 
   async updateUser(
     id: string,
-    payload: Record<string, any>,
+    payload: UsersUpdateDto,
     updatedBy: string,
   ): Promise<Users> {
     const { email, passWord } = payload;
@@ -158,7 +159,7 @@ export class UsersService {
     const updateInfo = {
       ...payload,
       updatedBy,
-      updateAt: Date.now(),
+      updatedAt: Date.now(),
     };
     await this.userSchema.findByIdAndUpdate(id, updateInfo);
     const result = await this.findUserById(id);
@@ -168,14 +169,23 @@ export class UsersService {
   async updateUserProfile(
     id: string,
     profileDto: UpdateProfileDto,
+    updatedBy: string,
   ): Promise<Profile | any> {
-    const { award } = profileDto;
+    const { award = [] } = profileDto;
     await this.validateProfileDto(profileDto);
     if (award.length > 0) {
       const awardIds = await new ValidateDto().idLists('awards', award);
       profileDto.award = awardIds;
     }
-    const profile = await this.profileSchema.findByIdAndUpdate(id, profileDto);
+    const updateProfileDto = {
+      ...profileDto,
+      updatedBy,
+      updatedAt: Date.now(),
+    };
+    const profile = await this.profileSchema.findByIdAndUpdate(
+      id,
+      updateProfileDto,
+    );
     const result = await this.findUserById(profile.user);
     return result;
   }
@@ -297,13 +307,18 @@ export class UsersService {
   }
 
   async createLeaderSchool(
-    dto: CreateLeaderSchoolDto,
+    leaderDto: CreateLeaderSchoolDto,
+    createdBy: string,
   ): Promise<Leader_Schools> {
-    const { profile } = dto;
+    const { user } = leaderDto;
     const validate = new ValidateDto();
-    await validate.fieldId('profiles', profile);
-    const option = { profile: new Types.ObjectId(profile) };
+    await validate.fieldId('profiles', user);
+    const option = { user: new Types.ObjectId(user) };
     await validate.existedByOptions('leaderschools', option, 'Leader school');
+    const dto = {
+      ...leaderDto,
+      createdBy,
+    };
     const createLeaderSchool = await new this.leaderSchoolSchema(dto).save();
     const result = await this.findLeaderSchoolById(createLeaderSchool._id);
     return result;
@@ -323,8 +338,14 @@ export class UsersService {
   async updateLeaderSchool(
     id: string,
     updateLeaderDto: UpdateLeaderSchoolDto,
+    updatedBy: string,
   ): Promise<Leader_Schools> {
-    await this.leaderSchoolSchema.findByIdAndUpdate(id, updateLeaderDto);
+    const dto = {
+      ...updateLeaderDto,
+      updatedBy,
+      updatedAt: Date.now(),
+    };
+    await this.leaderSchoolSchema.findByIdAndUpdate(id, dto);
     const result = await this.findLeaderSchoolById(id);
     return result;
   }
@@ -332,12 +353,10 @@ export class UsersService {
   async findAllLeaderSchool(
     queryDto: QueryLeaderSchoolDto,
   ): Promise<Leader_Schools[]> {
-    const { type } = queryDto;
-    const match = { $match: {} };
-    if (type) {
-      match.$match = {
-        'title.type': type,
-      };
+    const { user } = queryDto;
+    const match: Record<string, any> = { $match: { isDeleted: false } };
+    if (user) {
+      match.$match.user = new Types.ObjectId(user);
     }
     const lookup = this.lookupProfile();
     const aggregate = [match, ...lookup];
@@ -345,8 +364,27 @@ export class UsersService {
     return results;
   }
 
-  async deleteLeaderSchool(id: string): Promise<void> {
-    await this.leaderSchoolSchema.findByIdAndDelete(id);
+  async deleteLeaderSchool(id: string, deletedBy: string): Promise<void> {
+    const dto = {
+      deletedBy,
+      isDeleted: true,
+      deletedAt: Date.now(),
+    };
+    await this.leaderSchoolSchema.findByIdAndUpdate(id, dto);
+  }
+
+  async deleteUser(id: string, deletedBy: string): Promise<void> {
+    const dto = {
+      deletedBy,
+      status: EstatusUser.INACTIVE,
+      isDeleted: true,
+      deletedAt: Date.now(),
+    };
+    await this.userSchema.findByIdAndUpdate(id, dto);
+    await this.profileSchema.findOneAndUpdate(
+      { user: new Types.ObjectId(id) },
+      dto,
+    );
   }
 
   async validateEmailUser(email: string): Promise<void> {
@@ -393,7 +431,7 @@ export class UsersService {
     const lookup: any = new LookupCommon([
       {
         from: 'profiles',
-        localField: 'profile',
+        localField: 'user',
         foreignField: '_id',
         as: 'profile',
         unwind: true,

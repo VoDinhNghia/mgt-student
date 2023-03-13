@@ -3,7 +3,7 @@ import { TitleLeaDerSchoolDto } from './user.create.leader-school.title.dto';
 
 export class CreateLeaderSchoolDto {
   @ApiProperty({ required: true })
-  profile?: string;
+  user?: string;
 
   @ApiProperty({ required: true, type: [TitleLeaDerSchoolDto] })
   title?: TitleLeaDerSchoolDto[];

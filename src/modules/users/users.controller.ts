@@ -16,7 +16,7 @@ import {
 import { CreateUserDto } from './dto/users.create.dto';
 import { UsersService } from './users.service';
 import { ApiBearerAuth, ApiConsumes, ApiTags } from '@nestjs/swagger';
-import { ErolesUser, EstatusUser } from 'src/constants/constant';
+import { ErolesUser } from 'src/constants/constant';
 import { UsersUpdateDto } from './dto/user.update.dto';
 import { RoleGuard } from '../auth/guards/role-auth.guard';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
@@ -53,8 +53,8 @@ export class UsersController {
     @Res() res: Response,
   ): Promise<ResponseRequest> {
     const { user }: Request | Record<string, any> = req;
-    const profileId: string = user.profileId;
-    const result = await this.service.createUser(userDto, profileId);
+    const createdBy: string = user.profileId;
+    const result = await this.service.createUser(userDto, createdBy);
     return new ResponseRequest(res, result, 'Create user success');
   }
 
@@ -97,7 +97,8 @@ export class UsersController {
     @Res() res: Response,
   ): Promise<ResponseRequest> {
     const { user }: Request | Record<string, any> = req;
-    const result = await this.service.updateUser(id, updateDto, user.userId);
+    const updatedBy: string = user.profile;
+    const result = await this.service.updateUser(id, updateDto, updatedBy);
     return new ResponseRequest(res, result, 'Update user success');
   }
 
@@ -110,7 +111,13 @@ export class UsersController {
     @Req() req: Request,
     @Res() res: Response,
   ): Promise<ResponseRequest> {
-    const result = await this.service.updateUserProfile(id, updateProfileDto);
+    const { user }: Request | Record<string, any> = req;
+    const updatedBy: string = user.profile;
+    const result = await this.service.updateUserProfile(
+      id,
+      updateProfileDto,
+      updatedBy,
+    );
     return new ResponseRequest(res, result, 'Update profile user success');
   }
 
@@ -121,8 +128,14 @@ export class UsersController {
   async createLeaderSchool(
     @Body() leaderSchoolDto: CreateLeaderSchoolDto,
     @Res() res: Response,
+    @Req() req: Request,
   ): Promise<ResponseRequest> {
-    const result = await this.service.createLeaderSchool(leaderSchoolDto);
+    const { user }: Request | Record<string, any> = req;
+    const createdBy: string = user.profile;
+    const result = await this.service.createLeaderSchool(
+      leaderSchoolDto,
+      createdBy,
+    );
     return new ResponseRequest(res, result, 'Create leader school success.');
   }
 
@@ -134,8 +147,15 @@ export class UsersController {
     @Param('id') id: string,
     @Body() updateLeaderDto: UpdateLeaderSchoolDto,
     @Res() res: Response,
+    @Req() req: Request,
   ): Promise<ResponseRequest> {
-    const result = await this.service.updateLeaderSchool(id, updateLeaderDto);
+    const { user }: Request | Record<string, any> = req;
+    const updatedBy: string = user.profile;
+    const result = await this.service.updateLeaderSchool(
+      id,
+      updateLeaderDto,
+      updatedBy,
+    );
     return new ResponseRequest(res, result, 'Update leader school success.');
   }
 
@@ -164,8 +184,11 @@ export class UsersController {
   async deleteLeaderSchoolById(
     @Param('id') id: string,
     @Res() res: Response,
+    @Req() req: Request,
   ): Promise<ResponseRequest> {
-    await this.service.deleteLeaderSchool(id);
+    const { user }: Request | Record<string, any> = req;
+    const deletedBy: string = user.profile;
+    await this.service.deleteLeaderSchool(id, deletedBy);
     return new ResponseRequest(res, true, 'Delete leader school succees.');
   }
 
@@ -193,11 +216,8 @@ export class UsersController {
     @Res() res: Response,
   ): Promise<ResponseRequest> {
     const { user }: Request | Record<string, any> = req;
-    const result = await this.service.updateUser(
-      id,
-      { status: EstatusUser.INACTIVE },
-      user.userId,
-    );
+    const deletedBy: string = user.profileId;
+    const result = await this.service.deleteUser(id, deletedBy);
     return new ResponseRequest(res, result, 'Delete user success');
   }
 

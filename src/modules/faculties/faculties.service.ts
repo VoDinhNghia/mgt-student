@@ -37,7 +37,7 @@ export class FacultiesService {
   }
 
   async createFaculty(createFacultyDto: CreateFacultyDto): Promise<Faculty> {
-    const { name, award } = createFacultyDto;
+    const { name, award = [] } = createFacultyDto;
     const validate = new ValidateDto();
     const option = { name: name?.trim() };
     await this.validateDto(createFacultyDto);

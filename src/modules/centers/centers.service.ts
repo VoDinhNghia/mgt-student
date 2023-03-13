@@ -28,7 +28,7 @@ export class CenterService {
   }
 
   async createCenter(centerDto: CreateCenterDto): Promise<Center> {
-    const { award } = centerDto;
+    const { award = [] } = centerDto;
     await this.validateCenterDto(centerDto);
     const validate = new ValidateDto();
     if (award.length > 0) {
@@ -40,7 +40,7 @@ export class CenterService {
   }
 
   async updateCenter(id: string, centerDto: UpdateCenterDto): Promise<Center> {
-    const { award } = centerDto;
+    const { award = [] } = centerDto;
     await this.validateCenterDto(centerDto);
     const validate = new ValidateDto();
     if (award.length > 0) {

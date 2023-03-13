@@ -19,7 +19,10 @@ export class Leader_Schools extends FieldsCommonSchema {
       {
         name: String,
         acceptDate: Date,
-        status: Boolean,
+        status: {
+          type: String,
+          default: EtypeLeaderSchool.PARTYCOMMITTEE,
+        },
       },
     ],
   })
@@ -27,7 +30,7 @@ export class Leader_Schools extends FieldsCommonSchema {
     {
       name: string; // ex: Secretary, Principal
       acceptDate: Date; // date of appointment to that position
-      type: EtypeLeaderSchool;
+      type: string;
     },
   ];
 }
