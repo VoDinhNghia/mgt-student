@@ -1,82 +1,36 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { CommonException } from 'src/exceptions/exeception.common-error';
-import { ValidateField } from 'src/validates/validate.field-id.dto';
 import { schoolId } from 'src/constants/constant';
-import {
-  Attachment,
-  AttachmentDocument,
-} from '../attachments/schemas/attachments.schema';
-import { Award, AwardDocument } from '../awards/schemas/awards.schema';
-import {
-  DistrictDocument,
-  Districts,
-} from '../countries/schemas/countries.district.schema';
-import {
-  ProvinceDocument,
-  Provinces,
-} from '../countries/schemas/countries.province.schema';
-import {
-  Countries,
-  CountriesDocument,
-} from '../countries/schemas/countries.schema';
-import {
-  WardDocument,
-  Wards,
-} from '../countries/schemas/countries.ward.schemas';
 import { CreateSchoolDto } from './dtos/school.create.dto';
 import { UpdateSchoolDto } from './dtos/school.update.dto';
 import { SchoolInfo, SchoolInfoDocument } from './schemas/school.schema';
+import { ValidateDto } from 'src/validates/validate.common.dto';
+import { LookupCommon } from 'src/utils/lookup.query.aggregate-query';
 
 @Injectable()
 export class SchoolService {
   constructor(
     @InjectModel(SchoolInfo.name)
     private readonly schoolSchema: Model<SchoolInfoDocument>,
-    @InjectModel(Wards.name)
-    private readonly wardSchema: Model<WardDocument>,
-    @InjectModel(Award.name)
-    private readonly awardSchema: Model<AwardDocument>,
-    @InjectModel(Attachment.name)
-    private readonly attachmentSchema: Model<AttachmentDocument>,
-    @InjectModel(Countries.name)
-    private readonly countrySchema: Model<CountriesDocument>,
-    @InjectModel(Districts.name)
-    private readonly districtSchema: Model<DistrictDocument>,
-    @InjectModel(Provinces.name)
-    private readonly provinceSchema: Model<ProvinceDocument>,
-    private readonly validate: ValidateField,
   ) {}
 
   async validateFieldSchoolDto(schoolDto: Record<string, any>): Promise<void> {
-    const { image = [], award = [], location = {} } = schoolDto;
+    const { location = {} } = schoolDto;
     const { country, province, district, ward } = location;
-    if (image.length > 0) {
-      for (const item of image) {
-        await this.validate.byId(
-          this.attachmentSchema,
-          item,
-          `Attachment ${item}`,
-        );
-      }
-    }
-    if (award.length > 0) {
-      for (const item of award) {
-        await this.validate.byId(this.awardSchema, item, `Award ${item}`);
-      }
-    }
+    const validate = new ValidateDto();
     if (country) {
-      await this.validate.byId(this.countrySchema, country, `Country`);
+      await validate.fieldId('countries', country);
     }
     if (province) {
-      await this.validate.byId(this.provinceSchema, province, `Province`);
+      await validate.fieldId('province', province);
     }
     if (district) {
-      await this.validate.byId(this.districtSchema, district, `District`);
+      await validate.fieldId('districts', district);
     }
     if (ward) {
-      await this.validate.byId(this.wardSchema, ward, `Ward`);
+      await validate.fieldId('wards', ward);
     }
   }
 
@@ -88,25 +42,29 @@ export class SchoolService {
   }
 
   async findSchoolById(id: string): Promise<SchoolInfo> {
-    const result = await this.schoolSchema
-      .findById(id)
-      .populate('image', '', this.attachmentSchema)
-      .populate('award', '', this.awardSchema)
-      .populate('location.country', '', this.countrySchema)
-      .populate('location.province', '', this.provinceSchema)
-      .populate('location.district', '', this.districtSchema)
-      .populate('location.ward', '', this.wardSchema)
-      .exec();
-    if (!result) {
+    const match = { $match: { _id: new Types.ObjectId(id) } };
+    const lookup = this.lookupSchool();
+    const aggregate = [match, ...lookup];
+    const results = await this.schoolSchema.aggregate(aggregate);
+    if (!results[0]) {
       new CommonException(404, 'School not found');
     }
-    return result;
+    return results[0];
   }
 
   async updateSchool(
     id: string,
     schoolDto: UpdateSchoolDto,
   ): Promise<SchoolInfo> {
+    const { image, award } = schoolDto;
+    if (image.length > 0) {
+      const imageIds = await new ValidateDto().idLists('attachments', image);
+      schoolDto.image = imageIds;
+    }
+    if (award.length > 0) {
+      const awardIds = await new ValidateDto().idLists('awards', award);
+      schoolDto.award = awardIds;
+    }
     await this.validateFieldSchoolDto(schoolDto);
     await this.schoolSchema.findByIdAndUpdate(id, schoolDto);
     const result = await this.findSchoolById(id);
@@ -114,15 +72,63 @@ export class SchoolService {
   }
 
   async findAllSchool(): Promise<SchoolInfo[]> {
-    const result = await this.schoolSchema
-      .find()
-      .populate('image', '', this.attachmentSchema)
-      .populate('award', '', this.awardSchema)
-      .populate('location.country', '', this.countrySchema)
-      .populate('location.province', '', this.provinceSchema)
-      .populate('location.district', '', this.districtSchema)
-      .populate('location.ward', '', this.wardSchema)
-      .exec();
+    const lookup = this.lookupSchool();
+    const result = await this.schoolSchema.aggregate(lookup);
     return result;
+  }
+
+  private lookupSchool() {
+    const lookup: any = new LookupCommon([
+      {
+        from: 'attachments',
+        localField: 'image',
+        foreignField: '_id',
+        as: 'image',
+        unwind: false,
+      },
+      {
+        from: 'awards',
+        localField: 'award',
+        foreignField: '_id',
+        as: 'award',
+        unwind: false,
+      },
+      {
+        from: 'attachments',
+        localField: 'policy.attachment',
+        foreignField: '_id',
+        as: 'attachmentPolicy',
+        unwind: false,
+      },
+      {
+        from: 'countries',
+        localField: 'location.country',
+        foreignField: '_id',
+        as: 'country',
+        unwind: false,
+      },
+      {
+        from: 'provinces',
+        localField: 'location.province',
+        foreignField: '_id',
+        as: 'province',
+        unwind: false,
+      },
+      {
+        from: 'districts',
+        localField: 'location.district',
+        foreignField: '_id',
+        as: 'district',
+        unwind: false,
+      },
+      {
+        from: 'wards',
+        localField: 'location.ward',
+        foreignField: '_id',
+        as: 'ward',
+        unwind: false,
+      },
+    ]);
+    return lookup;
   }
 }
