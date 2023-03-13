@@ -46,7 +46,7 @@ export class UsersService {
 
   async createUser(
     usersDto: CreateUserDto,
-    createBy: string,
+    createdBy: string,
   ): Promise<Users | any> {
     const { email } = usersDto;
     await this.validateEmailUser(email);
@@ -54,17 +54,22 @@ export class UsersService {
     usersDto.passWord = cryptoPassWord(usersDto.passWord);
     const newDto = {
       ...usersDto,
-      createdBy: createBy,
+      createdBy,
     };
     const user = await new this.userSchema(newDto).save();
     const profileDto = {
       ...usersDto,
       user: user._id,
       code: getRandomCode(6),
+      createdBy,
     };
     const profile = await this.createUserProfile(profileDto);
     if (user.role === ErolesUser.STUDENT) {
-      const isCreate = await this.createStudyProcess(user._id, profile._id);
+      const isCreate = await this.createStudyProcess(
+        user._id,
+        profile._id,
+        createdBy,
+      );
       if (!isCreate) {
         new CommonException(500, 'Can not create study process');
       }
@@ -76,11 +81,13 @@ export class UsersService {
   async createStudyProcess(
     userId: string,
     profileId: string,
+    createdBy: string,
   ): Promise<boolean> {
     try {
-      const studyProcessDto: CreateStudyProcessDto = {
+      const studyProcessDto: CreateStudyProcessDto & { createdBy: string } = {
         user: profileId,
         status: EstatusUserProfile.STUDYING,
+        createdBy,
       };
       await new this.studyProcessSchema(studyProcessDto).save();
       return true;
@@ -175,33 +182,39 @@ export class UsersService {
 
   async importUser(createdBy: string, data = []) {
     for (const item of data) {
-      let user = null;
-      let profile = null;
-      if (!validateEmail(item.email)) {
-        item.status = 'Email incorect format.';
+      const { email, passWord, role, firstName, lastName } = item;
+      if (!email || !passWord || !role || !firstName || !lastName) {
+        item.statusImport =
+          'email || passWord || role || firstName || lastName must provided.';
         continue;
       }
-      const existedEmail = await this.userSchema.findOne({ email: item.email });
+      let user = null;
+      let profile = null;
+      if (!validateEmail(email)) {
+        item.statusImport = 'Email incorect format.';
+        continue;
+      }
+      const existedEmail = await this.userSchema.findOne({ email });
       if (existedEmail) {
-        item.status = 'Email existed already.';
+        item.statusImport = 'Email existed already.';
         continue;
       }
       try {
         const userDto = {
           ...item,
-          passWord: cryptoPassWord('123Code#'),
+          passWord: cryptoPassWord(passWord || '123Code#'),
           createdBy,
         };
         user = await new this.userSchema(userDto).save();
       } catch {
-        item.status = 'Can not create user.';
+        item.statusImport = 'Can not create user.';
         continue;
       }
       const existedProfile = await this.profileSchema.findOne({
         user: user._id,
       });
       if (existedProfile || !user) {
-        item.status = 'Can not create profile.';
+        item.statusImport = 'Can not create profile.';
         continue;
       }
       try {
@@ -213,18 +226,22 @@ export class UsersService {
         };
         profile = await new this.profileSchema(profileDto).save();
       } catch {
-        item.status = 'Can not create profile.';
+        item.statusImport = 'Can not create profile.';
         await this.userSchema.findByIdAndDelete(user._id);
         continue;
       }
       if (user.role === ErolesUser.STUDENT) {
-        const isCreate = await this.createStudyProcess(user._id, profile._id);
+        const isCreate = await this.createStudyProcess(
+          user._id,
+          profile._id,
+          createdBy,
+        );
         if (!isCreate) {
-          item.status = 'Can not create study process.';
+          item.statusImport = 'Can not create study process.';
           continue;
         }
       }
-      item.status = 'Import user success.';
+      item.statusImport = 'Import user success.';
     }
     return data;
   }

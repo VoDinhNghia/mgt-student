@@ -31,6 +31,12 @@ import { ResponseRequest } from 'src/utils/response-api';
 import { CreateLeaderSchoolDto } from './dto/user.create.leader-school.dto';
 import { UpdateLeaderSchoolDto } from './dto/user.update.leader-school.dto';
 import { QueryLeaderSchoolDto } from './dto/user.query.leader-school.dto';
+import {
+  csvFileFilter,
+  destinationImportUser,
+  fileName,
+} from 'src/validates/validate.attachment.upload-file';
+import { getDataFromCsvFileUpload } from 'src/utils/getDataFromCsvUpload';
 
 @Controller('api/users')
 @ApiTags('users')
@@ -47,8 +53,8 @@ export class UsersController {
     @Res() res: Response,
   ): Promise<ResponseRequest> {
     const { user }: Request | Record<string, any> = req;
-    const userId: string = user._id;
-    const result = await this.service.createUser(userDto, userId);
+    const profileId: string = user.profileId;
+    const result = await this.service.createUser(userDto, profileId);
     return new ResponseRequest(res, result, 'Create user success');
   }
 
@@ -59,8 +65,10 @@ export class UsersController {
   @ApiConsumes('multipart/form-data')
   @UseInterceptors(
     FileInterceptor('file', {
+      fileFilter: csvFileFilter,
       storage: diskStorage({
-        destination: './src/files/import-user',
+        destination: destinationImportUser,
+        filename: fileName,
       }),
     }),
   )
@@ -71,9 +79,10 @@ export class UsersController {
     @UploadedFile('file') file: Express.Multer.File,
   ): Promise<ResponseRequest> {
     const { user }: Request | Record<string, any> = req;
-    const userBy: string = user.userId;
-    const data: any = readFileSync(file.path, 'utf8');
-    const result = await this.service.importUser(userBy, JSON.parse(data));
+    const createdBy: string = user.profile;
+    const rawData = readFileSync(file.path, 'utf8');
+    const csvData = getDataFromCsvFileUpload(rawData);
+    const result = await this.service.importUser(createdBy, csvData);
     return new ResponseRequest(res, result, 'Import multi user success');
   }
 

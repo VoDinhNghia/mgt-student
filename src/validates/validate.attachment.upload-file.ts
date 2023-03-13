@@ -49,7 +49,7 @@ export const destinationImportUser = (
   file: Record<string, any>,
   cb: any,
 ) => {
-  cb(null, join(__dirname, '../..', './src/files/import-user'));
+  cb(null, join(__dirname, '../../..', './src/files/import-user'));
 };
 
 export const fileName = (
