@@ -5,14 +5,14 @@ import { CommonException } from 'src/exceptions/exeception.common-error';
 import { schoolId } from 'src/constants/constant';
 import { CreateSchoolDto } from './dtos/school.create.dto';
 import { UpdateSchoolDto } from './dtos/school.update.dto';
-import { SchoolInfo, SchoolInfoDocument } from './schemas/school.schema';
+import { School_Info, SchoolInfoDocument } from './schemas/school.schema';
 import { ValidateDto } from 'src/validates/validate.common.dto';
 import { LookupCommon } from 'src/utils/lookup.query.aggregate-query';
 
 @Injectable()
 export class SchoolService {
   constructor(
-    @InjectModel(SchoolInfo.name)
+    @InjectModel(School_Info.name)
     private readonly schoolSchema: Model<SchoolInfoDocument>,
   ) {}
 
@@ -41,7 +41,7 @@ export class SchoolService {
     }
   }
 
-  async findSchoolById(id: string): Promise<SchoolInfo> {
+  async findSchoolById(id: string): Promise<School_Info> {
     const match = { $match: { _id: new Types.ObjectId(id) } };
     const lookup = this.lookupSchool();
     const aggregate = [match, ...lookup];
@@ -55,7 +55,7 @@ export class SchoolService {
   async updateSchool(
     id: string,
     schoolDto: UpdateSchoolDto,
-  ): Promise<SchoolInfo> {
+  ): Promise<School_Info> {
     const { image, award } = schoolDto;
     if (image.length > 0) {
       const imageIds = await new ValidateDto().idLists('attachments', image);
@@ -71,9 +71,10 @@ export class SchoolService {
     return result;
   }
 
-  async findAllSchool(): Promise<SchoolInfo[]> {
+  async findAllSchool(): Promise<School_Info[]> {
+    const match = { $match: { isDeleted: false } };
     const lookup = this.lookupSchool();
-    const result = await this.schoolSchema.aggregate(lookup);
+    const result = await this.schoolSchema.aggregate([match, ...lookup]);
     return result;
   }
 

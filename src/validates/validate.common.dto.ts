@@ -21,7 +21,7 @@ export class ValidateDto {
     }
     const cursorFind = await this.db
       .collection(collection)
-      .find({ _id: { $in: listIds } });
+      .find({ _id: { $in: listIds }, isDeleted: false });
     const documentLists = await cursorFind.toArray();
     const documentIds = documentLists.map((document: Record<string, any>) => {
       return document._id;
@@ -32,7 +32,7 @@ export class ValidateDto {
   async fieldId(collection: string, id: string): Promise<void> {
     const result = await this.db
       .collection(collection)
-      .findOne({ _id: new Types.ObjectId(id) });
+      .findOne({ _id: new Types.ObjectId(id), isDeleted: false });
     if (!result) {
       new CommonException(404, `Not found ${id} in collection ${collection}.`);
     }
@@ -43,7 +43,9 @@ export class ValidateDto {
     options: Record<string, any>,
     message: string,
   ): Promise<void> {
-    const result = await this.db.collection(collection).findOne(options);
+    const result = await this.db
+      .collection(collection)
+      .findOne({ ...options, isDeleted: false });
     if (!result) {
       new CommonException(404, `${message} not found.`);
     }

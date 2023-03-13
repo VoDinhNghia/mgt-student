@@ -5,20 +5,25 @@ import { CommonException } from 'src/exceptions/exeception.common-error';
 export class SubjectUserRegister {
   db = new DbConnection();
 
+  async findOneStudyProcess(profile: string) {
+    const query = { user: new Types.ObjectId(profile), isDeleted: false };
+    const result = await this.db.collection('study_processes').findOne(query);
+    if (!result) {
+      new CommonException(404, 'user study processes not found.');
+    }
+    return result;
+  }
+
   async getUserSubjects(
     profile: string,
     subjectIds: ObjectId[],
   ): Promise<Record<string, any>[]> {
-    const studyprocess = await this.db
-      .collection('studyprocesses')
-      .findOne({ user: new Types.ObjectId(profile) });
-    if (!studyprocess) {
-      new CommonException(404, 'user study processes not found.');
-    }
+    const studyprocess = await this.findOneStudyProcess(profile);
     const match = {
       $match: {
         subject: { $in: subjectIds },
         studyprocess: studyprocess._id,
+        isDeleted: false,
       },
     };
     const aggregate = [
@@ -41,9 +46,12 @@ export class SubjectUserRegister {
   }
 
   async getSubjectIds(semester: string): Promise<ObjectId[]> {
-    const cursorQuery = await this.db
-      .collection('subjects')
-      .find({ semester: new Types.ObjectId(semester), status: true });
+    const query = {
+      semester: new Types.ObjectId(semester),
+      status: true,
+      isDeleted: false,
+    };
+    const cursorQuery = await this.db.collection('subjects').find(query);
     const subjectList = await cursorQuery.toArray();
     const subjectIds = subjectList.map((subject: any) => {
       return subject._id;
