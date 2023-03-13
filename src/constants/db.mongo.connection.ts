@@ -15,6 +15,7 @@ export class DbConnection {
     client
       .connect()
       .then((connection) => {
+        console.log('test connection');
         dbInstance = connection.db();
       })
       .catch((err) => {
@@ -23,6 +24,7 @@ export class DbConnection {
   }
 
   collection(name: string) {
+    console.log('test call connection');
     if (dbInstance) return dbInstance.collection(name);
   }
 }
