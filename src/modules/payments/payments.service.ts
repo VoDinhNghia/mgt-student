@@ -13,31 +13,31 @@ import { QueryTuitionUser } from './dtos/query.tuition-user.dto';
 import { CreateUserPaymentDto } from './dtos/user.payments.create.dto';
 import { UpdateUserPaymentDto } from './dtos/user.payments.update.dto';
 import {
-  MoneyPerCreditManagement,
+  Money_Per_Credit_Mgt,
   MoneyPerCreditManagementDocument,
 } from './schemas/mgt-money-per-credit.schema';
 import {
-  PaymentStudyFee,
+  Payment_Study_Fee,
   PaymentStudyFeeDocument,
 } from './schemas/payments.schema';
 
 @Injectable()
 export class PaymentsService {
   constructor(
-    @InjectModel(MoneyPerCreditManagement.name)
+    @InjectModel(Money_Per_Credit_Mgt.name)
     private readonly moneyCreditSchema: Model<MoneyPerCreditManagementDocument>,
-    @InjectModel(PaymentStudyFee.name)
+    @InjectModel(Payment_Study_Fee.name)
     private readonly paymentSchema: Model<PaymentStudyFeeDocument>,
   ) {}
 
   async createMoneyPerCreditMgt(
     creditMgtDto: CreateMoneyPerCreditMgtDto,
-  ): Promise<MoneyPerCreditManagement> {
+  ): Promise<Money_Per_Credit_Mgt> {
     const { semester } = creditMgtDto;
     await this.validateSemesterDto(semester);
     const option = { semester: new Types.ObjectId(semester) };
     await new ValidateDto().existedByOptions(
-      'moneypercreditmanagements',
+      'money_per_credit_mgts',
       option,
       'Money per credit',
     );
@@ -48,7 +48,7 @@ export class PaymentsService {
   async updateMoneyPerCreditMgt(
     id: string,
     creditMgtDto: UpdateMoneyPerCreditMgtDto,
-  ): Promise<MoneyPerCreditManagement> {
+  ): Promise<Money_Per_Credit_Mgt> {
     const { semester } = creditMgtDto;
     await this.validateSemesterDto(semester);
     await this.moneyCreditSchema.findByIdAndUpdate(id, creditMgtDto);
@@ -56,9 +56,7 @@ export class PaymentsService {
     return result;
   }
 
-  async findByIdMoneyPerCreditMgt(
-    id: string,
-  ): Promise<MoneyPerCreditManagement> {
+  async findByIdMoneyPerCreditMgt(id: string): Promise<Money_Per_Credit_Mgt> {
     let aggregate = [{ $match: { _id: new Types.ObjectId(id) } }];
     const lookup = this.lookupPayment();
     aggregate = [...aggregate, ...lookup];
@@ -69,7 +67,7 @@ export class PaymentsService {
     return result[0];
   }
 
-  async findAllMoneyPerCreditMgt(): Promise<MoneyPerCreditManagement[]> {
+  async findAllMoneyPerCreditMgt(): Promise<Money_Per_Credit_Mgt[]> {
     const lookup = this.lookupPayment();
     const results = await this.moneyCreditSchema.aggregate(lookup);
     return results;
@@ -77,7 +75,7 @@ export class PaymentsService {
 
   async createUserPayment(
     paymentDto: CreateUserPaymentDto,
-  ): Promise<PaymentStudyFee> {
+  ): Promise<Payment_Study_Fee> {
     const { user, semester } = paymentDto;
     await new ValidateDto().fieldId('profiles', user);
     await this.validateSemesterDto(semester);
@@ -93,7 +91,7 @@ export class PaymentsService {
   async updateUserPayment(
     id: string,
     paymentDto: UpdateUserPaymentDto,
-  ): Promise<PaymentStudyFee> {
+  ): Promise<Payment_Study_Fee> {
     const { semester } = paymentDto;
     await this.validateSemesterDto(semester);
     await this.paymentSchema.findByIdAndUpdate(id, paymentDto);
@@ -101,7 +99,7 @@ export class PaymentsService {
     return result;
   }
 
-  async findUserPaymentById(id: string): Promise<PaymentStudyFee> {
+  async findUserPaymentById(id: string): Promise<Payment_Study_Fee> {
     const match = { $match: { _id: new Types.ObjectId(id) } };
     const lookup = this.lookupUserPayment();
     const aggregate = [match, ...this.lookupPayment(), ...lookup];

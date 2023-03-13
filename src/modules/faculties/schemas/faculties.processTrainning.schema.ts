@@ -1,11 +1,13 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { Document } from 'mongoose';
+import { FieldsCommonSchema } from 'src/utils/fields-common.schema';
 
-export type FacultyTrainningProcessDocument = FacultyTrainningProcess &
+export type FacultyTrainningProcessDocument = Faculty_Trainning_Process &
   Document;
 
 @Schema()
-export class FacultyTrainningProcess {
+export class Faculty_Trainning_Process extends FieldsCommonSchema {
   @Prop({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'faculties',
@@ -44,14 +46,8 @@ export class FacultyTrainningProcess {
     it?: boolean;
     conditionDiff?: string; // GDTC, GDQP ...
   };
-
-  @Prop({ default: Date.now })
-  createdAt?: Date;
-
-  @Prop({ default: Date.now })
-  updateAt?: Date;
 }
 
 export const FacultyTrainningProcessSchema = SchemaFactory.createForClass(
-  FacultyTrainningProcess,
+  Faculty_Trainning_Process,
 );

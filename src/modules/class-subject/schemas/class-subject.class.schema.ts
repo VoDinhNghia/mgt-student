@@ -1,10 +1,12 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { Document } from 'mongoose';
+import { FieldsCommonSchema } from 'src/utils/fields-common.schema';
 
-export type ClassInfosDocument = ClassInfos & Document;
+export type ClassInfosDocument = Class_Infos & Document;
 
 @Schema()
-export class ClassInfos {
+export class Class_Infos extends FieldsCommonSchema {
   @Prop({ required: true })
   name?: string; // DHKHMT12A
 
@@ -34,12 +36,6 @@ export class ClassInfos {
 
   @Prop()
   classSize?: number;
-
-  @Prop({ default: Date.now })
-  createdAt?: Date;
-
-  @Prop({ default: Date.now })
-  updateAt?: Date;
 }
 
-export const ClassInfoSchema = SchemaFactory.createForClass(ClassInfos);
+export const ClassInfoSchema = SchemaFactory.createForClass(Class_Infos);

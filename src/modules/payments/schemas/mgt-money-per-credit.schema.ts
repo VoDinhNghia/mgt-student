@@ -1,11 +1,12 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { Document } from 'mongoose';
+import { FieldsCommonSchema } from 'src/utils/fields-common.schema';
 
-export type MoneyPerCreditManagementDocument = MoneyPerCreditManagement &
-  Document;
+export type MoneyPerCreditManagementDocument = Money_Per_Credit_Mgt & Document;
 
 @Schema()
-export class MoneyPerCreditManagement {
+export class Money_Per_Credit_Mgt extends FieldsCommonSchema {
   @Prop({
     type: String,
     required: true,
@@ -23,14 +24,7 @@ export class MoneyPerCreditManagement {
     ref: 'semesters',
   })
   semester?: mongoose.Types.ObjectId;
-
-  @Prop({ default: Date.now })
-  createdAt?: Date;
-
-  @Prop({ default: Date.now })
-  updateAt?: Date;
 }
 
-export const MoneyPerCreditManagementSchema = SchemaFactory.createForClass(
-  MoneyPerCreditManagement,
-);
+export const MoneyPerCreditManagementSchema =
+  SchemaFactory.createForClass(Money_Per_Credit_Mgt);

@@ -1,10 +1,11 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { Document } from 'mongoose';
+import { FieldsCommonSchema } from 'src/utils/fields-common.schema';
 
 export type BlogDocument = Blog & Document;
 
 @Schema()
-export class Blog {
+export class Blog extends FieldsCommonSchema {
   @Prop({ required: true })
   title?: string;
 
@@ -54,12 +55,6 @@ export class Blog {
       emotion: string; // link path in folder public to get url
     },
   ];
-
-  @Prop({ default: Date.now })
-  createdAt?: Date;
-
-  @Prop({ default: Date.now })
-  updateAt?: Date;
 }
 
 export const BlogSchema = SchemaFactory.createForClass(Blog);

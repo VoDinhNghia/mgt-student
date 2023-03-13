@@ -1,10 +1,11 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
+import { FieldsCommonSchema } from 'src/utils/fields-common.schema';
 
 export type CourseDocument = Course & Document;
 
 @Schema()
-export class Course {
+export class Course extends FieldsCommonSchema {
   @Prop({
     // k12
     type: String,
@@ -17,12 +18,6 @@ export class Course {
 
   @Prop()
   total?: number;
-
-  @Prop({ default: Date.now })
-  createdAt?: Date;
-
-  @Prop({ default: Date.now })
-  updateAt?: Date;
 }
 
 export const CourseSchema = SchemaFactory.createForClass(Course);

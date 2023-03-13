@@ -1,10 +1,11 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
+import { FieldsCommonSchema } from 'src/utils/fields-common.schema';
 
 export type SemesterDocument = Semester & Document;
 
 @Schema()
-export class Semester {
+export class Semester extends FieldsCommonSchema {
   @Prop({
     type: String,
     required: true,
@@ -16,12 +17,6 @@ export class Semester {
     required: true,
   })
   year?: string; // 2016 - 2017
-
-  @Prop({ default: Date.now })
-  createdAt?: Date;
-
-  @Prop({ default: Date.now })
-  updateAt?: Date;
 }
 
 export const SemesterSchema = SchemaFactory.createForClass(Semester);

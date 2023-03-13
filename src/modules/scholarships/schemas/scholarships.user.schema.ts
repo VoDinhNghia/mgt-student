@@ -1,10 +1,12 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { Document } from 'mongoose';
+import { FieldsCommonSchema } from 'src/utils/fields-common.schema';
 
-export type ScholarshipUserDocument = ScholarshipUser & Document;
+export type ScholarshipUserDocument = Scholarship_User & Document;
 
 @Schema()
-export class ScholarshipUser {
+export class Scholarship_User extends FieldsCommonSchema {
   @Prop({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'scholarships',
@@ -22,15 +24,7 @@ export class ScholarshipUser {
 
   @Prop()
   trainningPoint?: number;
-  // totalMoney (collection paymentstudyfees) * percentTuition (collection scholarships)
-  // rewardMoney will calculate when call api get scholarship
-
-  @Prop({ default: Date.now })
-  createdAt?: Date;
-
-  @Prop({ default: Date.now })
-  updateAt?: Date;
 }
 
 export const ScholarshipUserSchema =
-  SchemaFactory.createForClass(ScholarshipUser);
+  SchemaFactory.createForClass(Scholarship_User);

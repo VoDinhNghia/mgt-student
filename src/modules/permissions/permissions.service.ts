@@ -9,20 +9,20 @@ import { CreatePermissionDto } from './dtos/permissions.create.dto';
 import { QueryPermissionDto } from './dtos/permissions.query.dto';
 import { UpdatePermissionDto } from './dtos/permissions.update.dto';
 import {
-  AdminPermission,
+  Admin_Permission,
   AdminPermissionDocument,
 } from './schemas/permission.admin.acction-frontend.schema';
 
 @Injectable()
 export class PermissionsService {
   constructor(
-    @InjectModel(AdminPermission.name)
+    @InjectModel(Admin_Permission.name)
     private readonly permissionSchema: Model<AdminPermissionDocument>,
   ) {}
 
   async createAdminPermission(
     permissionDto: CreatePermissionDto,
-  ): Promise<AdminPermission> {
+  ): Promise<Admin_Permission> {
     const { user } = permissionDto;
     await new ValidateDto().fieldId('profiles', user);
     const permission = await new this.permissionSchema(permissionDto).save();
@@ -33,13 +33,13 @@ export class PermissionsService {
   async updateAdminPermission(
     id: string,
     permissionDto: UpdatePermissionDto,
-  ): Promise<AdminPermission> {
+  ): Promise<Admin_Permission> {
     await this.permissionSchema.findByIdAndUpdate(id, permissionDto);
     const result = await this.findAdminPermissionById(id);
     return result;
   }
 
-  async findAdminPermissionById(id: string): Promise<AdminPermission> {
+  async findAdminPermissionById(id: string): Promise<Admin_Permission> {
     const match = [{ $match: { _id: new Types.ObjectId(id) } }];
     const lookup = this.lookupPermission();
     const aggregate = [match, ...lookup];
@@ -52,7 +52,7 @@ export class PermissionsService {
 
   async findAllAdminPermissions(
     queryDto: QueryPermissionDto,
-  ): Promise<AdminPermission[]> {
+  ): Promise<Admin_Permission[]> {
     const { limit, page, user, searchKey } = queryDto;
     const match: Record<string, any> = { $match: {} };
     if (user) {

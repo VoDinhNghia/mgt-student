@@ -22,7 +22,7 @@ import {
   ScholarshipDocument,
 } from './schemas/scholarships.schema';
 import {
-  ScholarshipUser,
+  Scholarship_User,
   ScholarshipUserDocument,
 } from './schemas/scholarships.user.schema';
 
@@ -31,10 +31,9 @@ export class ScholarshipService {
   constructor(
     @InjectModel(Scholarship.name)
     private readonly scholarshipSchema: Model<ScholarshipDocument>,
-    @InjectModel(ScholarshipUser.name)
+    @InjectModel(Scholarship_User.name)
     private readonly scholarshipUserSchema: Model<ScholarshipUserDocument>,
   ) {}
-  // export list user scholarship => file excel
 
   async validateScholarShipDto(
     scholarshipDto: CreateScholarshipDto,
@@ -166,7 +165,7 @@ export class ScholarshipService {
       user: new Types.ObjectId(profile),
     };
     const result = await new QueryService().findOneByOptions(
-      'paymentstudyfees',
+      'payment_study_fees',
       options,
     );
     return result;

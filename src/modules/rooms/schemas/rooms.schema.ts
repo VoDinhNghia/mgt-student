@@ -1,11 +1,12 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 import { EroomType } from 'src/constants/constant';
+import { FieldsCommonSchema } from 'src/utils/fields-common.schema';
 
 export type RoomsDocument = Rooms & Document;
 
 @Schema()
-export class Rooms {
+export class Rooms extends FieldsCommonSchema {
   @Prop({
     type: String,
     required: true,
@@ -36,12 +37,6 @@ export class Rooms {
 
   @Prop({ default: false })
   status?: boolean; // false is empty, use for group study room
-
-  @Prop({ default: Date.now })
-  createdAt?: Date;
-
-  @Prop({ default: Date.now })
-  updateAt?: Date;
 }
 
 export const RoomSchema = SchemaFactory.createForClass(Rooms);

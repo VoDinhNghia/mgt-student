@@ -1,10 +1,11 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { Document } from 'mongoose';
+import { FieldsCommonSchema } from 'src/utils/fields-common.schema';
 
 export type UnionDocument = Union & Document;
 
 @Schema()
-export class Union {
+export class Union extends FieldsCommonSchema {
   @Prop()
   url?: string;
 
@@ -61,12 +62,6 @@ export class Union {
       position?: string;
     },
   ];
-
-  @Prop({ default: Date.now })
-  createdAt?: Date;
-
-  @Prop({ default: Date.now })
-  updateAt?: Date;
 }
 
 export const UnionSchema = SchemaFactory.createForClass(Union);

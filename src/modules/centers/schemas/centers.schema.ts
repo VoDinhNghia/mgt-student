@@ -1,10 +1,11 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { Document } from 'mongoose';
+import { FieldsCommonSchema } from 'src/utils/fields-common.schema';
 
 export type CenterDocument = Center & Document;
 
 @Schema()
-export class Center {
+export class Center extends FieldsCommonSchema {
   @Prop({ required: true })
   name?: string;
 
@@ -45,15 +46,6 @@ export class Center {
     phone?: string;
     fax?: string;
   };
-
-  @Prop({ default: false })
-  isDeleted?: boolean;
-
-  @Prop({ default: Date.now })
-  createdAt?: Date;
-
-  @Prop({ default: Date.now })
-  updateAt?: Date;
 }
 
 export const CenterSchema = SchemaFactory.createForClass(Center);

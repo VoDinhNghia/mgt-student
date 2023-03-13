@@ -3,14 +3,14 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { PermissionsController } from './permissions.controller';
 import { PermissionsService } from './permissions.service';
 import {
-  AdminPermission,
+  Admin_Permission,
   AdminPermissionSchema,
 } from './schemas/permission.admin.acction-frontend.schema';
 
 @Module({
   imports: [
     MongooseModule.forFeature([
-      { name: AdminPermission.name, schema: AdminPermissionSchema },
+      { name: Admin_Permission.name, schema: AdminPermissionSchema },
     ]),
   ],
   controllers: [PermissionsController],

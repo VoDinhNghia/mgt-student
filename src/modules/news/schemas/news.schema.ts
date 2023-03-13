@@ -1,11 +1,12 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { Document } from 'mongoose';
 import { EtypeNews } from 'src/constants/constant';
+import { FieldsCommonSchema } from 'src/utils/fields-common.schema';
 
 export type NewsDocument = News & Document;
 
 @Schema()
-export class News {
+export class News extends FieldsCommonSchema {
   @Prop({ required: true })
   title?: string;
 
@@ -23,12 +24,6 @@ export class News {
     ref: 'attachments',
   })
   attachment?: [mongoose.Types.ObjectId];
-
-  @Prop({ default: Date.now })
-  createdAt?: Date;
-
-  @Prop({ default: Date.now })
-  updateAt?: Date;
 }
 
 export const NewsSchema = SchemaFactory.createForClass(News);

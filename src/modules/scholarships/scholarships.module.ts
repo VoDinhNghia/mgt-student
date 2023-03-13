@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Scholarship, ScholarshipSchema } from './schemas/scholarships.schema';
 import {
-  ScholarshipUser,
+  Scholarship_User,
   ScholarshipUserSchema,
 } from './schemas/scholarships.user.schema';
 import { ScholarshipController } from './scholarships.controller';
@@ -16,7 +16,7 @@ import { ScholarshipService } from './scholarships.service';
         schema: ScholarshipSchema,
       },
       {
-        name: ScholarshipUser.name,
+        name: Scholarship_User.name,
         schema: ScholarshipUserSchema,
       },
     ]),
