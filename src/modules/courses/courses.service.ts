@@ -26,9 +26,15 @@ export class CoursesService {
     }
   }
 
-  async createCourse(courseDto: CreateCourseDto): Promise<Course> {
+  async createCourse(
+    courseDto: CreateCourseDto,
+    createdBy: string,
+  ): Promise<Course> {
     await this.validateCourseName(courseDto);
-    const course = await new this.courseSchema(courseDto).save();
+    const course = await new this.courseSchema({
+      ...courseDto,
+      createdBy,
+    }).save();
     return course;
   }
 
@@ -40,15 +46,24 @@ export class CoursesService {
     return result;
   }
 
-  async updateCourse(id: string, courseDto: UpdateCourseDto): Promise<Course> {
+  async updateCourse(
+    id: string,
+    courseDto: UpdateCourseDto,
+    updatedBy: string,
+  ): Promise<Course> {
     await this.validateCourseName(courseDto);
-    await this.courseSchema.findByIdAndUpdate(id, courseDto);
+    const dto = {
+      ...courseDto,
+      updatedBy,
+      updatedAt: Date.now(),
+    };
+    await this.courseSchema.findByIdAndUpdate(id, dto);
     const result = await this.findCourseById(id);
     return result;
   }
 
   async findAllCourses(): Promise<Course[]> {
-    const results = await this.courseSchema.find({});
+    const results = await this.courseSchema.find({ isDeleted: false });
     return results;
   }
 }

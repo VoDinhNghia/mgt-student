@@ -7,6 +7,7 @@ import {
   Put,
   Query,
   Res,
+  Req,
   UseGuards,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
@@ -15,7 +16,7 @@ import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RoleGuard } from '../auth/guards/role-auth.guard';
 import { CreateFacultyDto } from './dtos/faculties.create.dto';
 import { FacultiesService } from './faculties.service';
-import { Response } from 'express';
+import { Response, Request } from 'express';
 import { ResponseRequest } from 'src/utils/response-api';
 import { FacultyQueryDto } from './dtos/faculties.query.dto';
 import { UpdateFacultyDto } from './dtos/faculties.update.dto';
@@ -35,8 +36,14 @@ export class FacultiesController {
   async createFaculty(
     @Res() res: Response,
     @Body() createFacultyDto: CreateFacultyDto,
+    @Req() req: Request,
   ): Promise<ResponseRequest> {
-    const result = await this.facultyService.createFaculty(createFacultyDto);
+    const { user }: Request | Record<string, any> = req;
+    const createdBy: string = user.profileId;
+    const result = await this.facultyService.createFaculty(
+      createFacultyDto,
+      createdBy,
+    );
     return new ResponseRequest(res, result, 'Create faculty success');
   }
 
@@ -48,10 +55,14 @@ export class FacultiesController {
     @Param('id') id: string,
     @Body() updateFacultyDto: UpdateFacultyDto,
     @Res() res: Response,
+    @Req() req: Request,
   ): Promise<ResponseRequest> {
+    const { user }: Request | Record<string, any> = req;
+    const updatedBy: string = user.profileId;
     const result = await this.facultyService.updateFaculty(
       id,
       updateFacultyDto,
+      updatedBy,
     );
     return new ResponseRequest(res, result, 'Update faculty success.');
   }
@@ -75,8 +86,14 @@ export class FacultiesController {
   async createMajor(
     @Res() res: Response,
     @Body() createMajorDto: CreateMajorDto,
+    @Req() req: Request,
   ): Promise<ResponseRequest> {
-    const result = await this.facultyService.createMajor(createMajorDto);
+    const { user }: Request | Record<string, any> = req;
+    const createdBy: string = user.profileId;
+    const result = await this.facultyService.createMajor(
+      createMajorDto,
+      createdBy,
+    );
     return new ResponseRequest(res, result, 'Create major success');
   }
 
@@ -88,8 +105,15 @@ export class FacultiesController {
     @Param('id') id: string,
     @Body() updateMajorDto: UpdateMajorDto,
     @Res() res: Response,
+    @Req() req: Request,
   ): Promise<ResponseRequest> {
-    const result = await this.facultyService.updateMajor(id, updateMajorDto);
+    const { user }: Request | Record<string, any> = req;
+    const updatedBy: string = user.profileId;
+    const result = await this.facultyService.updateMajor(
+      id,
+      updateMajorDto,
+      updatedBy,
+    );
     return new ResponseRequest(res, result, 'Update major success.');
   }
 

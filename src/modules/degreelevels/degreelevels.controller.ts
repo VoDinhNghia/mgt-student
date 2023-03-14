@@ -5,6 +5,7 @@ import {
   Param,
   Post,
   Put,
+  Req,
   Res,
   UseGuards,
 } from '@nestjs/common';
@@ -15,7 +16,7 @@ import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RoleGuard } from '../auth/guards/role-auth.guard';
 import { DegreelevelService } from './degreelevels.service';
 import { CreateDegreeLevelDto } from './dtos/degreelevels.create.dto';
-import { Response } from 'express';
+import { Response, Request } from 'express';
 import { UpdateDegreeLevelDto } from './dtos/degreeLevels.update.dto';
 
 @Controller('api/degreelevels')
@@ -30,9 +31,13 @@ export class DegreelevelController {
   async createDegreeLevel(
     @Body() degreeLevelDto: CreateDegreeLevelDto,
     @Res() res: Response,
+    @Req() req: Request,
   ): Promise<ResponseRequest> {
+    const { user }: Request | Record<string, any> = req;
+    const createdBy: string = user.profileId;
     const result = await this.degreeLevelService.createDegreeLevel(
       degreeLevelDto,
+      createdBy,
     );
     return new ResponseRequest(res, result, 'Create degreeLevel success.');
   }
@@ -45,10 +50,14 @@ export class DegreelevelController {
     @Param('id') id: string,
     @Body() degreeLevelDto: UpdateDegreeLevelDto,
     @Res() res: Response,
+    @Req() req: Request,
   ): Promise<ResponseRequest> {
+    const { user }: Request | Record<string, any> = req;
+    const updatedBy: string = user.profileId;
     const result = await this.degreeLevelService.updateDegreeLevel(
       id,
       degreeLevelDto,
+      updatedBy,
     );
     return new ResponseRequest(res, result, 'Create degreeLevel success.');
   }

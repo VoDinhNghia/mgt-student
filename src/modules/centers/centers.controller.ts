@@ -7,6 +7,7 @@ import {
   Post,
   Put,
   Res,
+  Req,
   UseGuards,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
@@ -15,7 +16,7 @@ import { ResponseRequest } from 'src/utils/response-api';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RoleGuard } from '../auth/guards/role-auth.guard';
 import { CenterService } from './centers.service';
-import { Response } from 'express';
+import { Response, Request } from 'express';
 import { CreateCenterDto } from './dtos/centers.create.dto';
 import { UpdateCenterDto } from './dtos/centers.update.dto';
 
@@ -31,8 +32,11 @@ export class CenterController {
   async createCenter(
     @Body() centerDto: CreateCenterDto,
     @Res() res: Response,
+    @Req() req: Request,
   ): Promise<ResponseRequest> {
-    const result = await this.service.createCenter(centerDto);
+    const { user }: Request | Record<string, any> = req;
+    const createdBy: string = user.profileId;
+    const result = await this.service.createCenter(centerDto, createdBy);
     return new ResponseRequest(res, result, 'Create center success.');
   }
 
@@ -44,8 +48,11 @@ export class CenterController {
     @Param('id') id: string,
     @Body() centerDto: UpdateCenterDto,
     @Res() res: Response,
+    @Req() req: Request,
   ): Promise<ResponseRequest> {
-    const result = await this.service.updateCenter(id, centerDto);
+    const { user }: Request | Record<string, any> = req;
+    const updatedBy: string = user.profileId;
+    const result = await this.service.updateCenter(id, centerDto, updatedBy);
     return new ResponseRequest(res, result, 'Update center success.');
   }
 
@@ -56,8 +63,11 @@ export class CenterController {
   async deleteCenter(
     @Param('id') id: string,
     @Res() res: Response,
+    @Req() req: Request,
   ): Promise<ResponseRequest> {
-    await this.service.deleteCenter(id);
+    const { user }: Request | Record<string, any> = req;
+    const deletedBy: string = user.profileId;
+    await this.service.deleteCenter(id, deletedBy);
     return new ResponseRequest(res, true, 'Delete center success.');
   }
 

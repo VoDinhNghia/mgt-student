@@ -54,18 +54,29 @@ export class ScholarshipService {
 
   async createScholarship(
     scholarshipDto: CreateScholarshipDto,
+    createdBy: string,
   ): Promise<Scholarship> {
     await this.validateScholarShipDto(scholarshipDto);
-    const result = await new this.scholarshipSchema(scholarshipDto).save();
+    const dto = {
+      ...scholarshipDto,
+      createdBy,
+    };
+    const result = await new this.scholarshipSchema(dto).save();
     return result;
   }
 
   async updateScholarship(
     id: string,
     scholarshipDto: UpdateScholarshipDto,
+    updatedBy: string,
   ): Promise<Scholarship> {
     await this.validateScholarShipDto(scholarshipDto);
-    await this.scholarshipSchema.findByIdAndUpdate(id, scholarshipDto);
+    const dto = {
+      ...scholarshipDto,
+      updatedBy,
+      updatedAt: Date.now(),
+    };
+    await this.scholarshipSchema.findByIdAndUpdate(id, dto);
     const result = await this.findScholarshipById(id);
     return result;
   }
@@ -87,7 +98,7 @@ export class ScholarshipService {
     queryDto: QueryScholarshipDto,
   ): Promise<Scholarship[]> {
     const { semester, type, limit, page, searchKey } = queryDto;
-    const match: Record<string, any> = { $match: {} };
+    const match: Record<string, any> = { $match: { isDeleted: false } };
     if (semester) {
       match.$match.semester = new Types.ObjectId(semester);
     }
@@ -109,7 +120,7 @@ export class ScholarshipService {
   ): Promise<Record<string, any>[]> {
     const { scholarship, user, semester } = queryDto;
     let aggregate = [];
-    const matchOne: Record<string, any> = { $match: {} };
+    const matchOne: Record<string, any> = { $match: { isDeleted: false } };
     if (scholarship) {
       matchOne.$match.scholarship = new Types.ObjectId(scholarship);
     }
@@ -173,6 +184,7 @@ export class ScholarshipService {
 
   async createUserScholarshipInSemester(
     semester: string,
+    createdBy: string,
   ): Promise<Record<string, any>[]> {
     const queryService = new QueryService();
     const optionFindOne = { _id: new Types.ObjectId(semester) };
@@ -211,11 +223,14 @@ export class ScholarshipService {
         if (!getCondition) {
           continue;
         }
-        const userscholarshipDto: CreateScholarshipUser = {
+        const userscholarshipDto: CreateScholarshipUser & {
+          createdBy: string;
+        } = {
           scholarship: getCondition._id,
           user: item.user,
           accumalatedPoint: accumalatedPoint,
           trainningPoint: tranningpoint,
+          createdBy,
         };
         const existed = await this.scholarshipUserSchema.findOne({
           scholarship: getCondition._id,
@@ -247,6 +262,7 @@ export class ScholarshipService {
       maximunPoints: { $gt: accumalatedPoint },
       trainningPoints: { $lt: tranningpoint },
       numberCredit: { $lt: numberCredit },
+      isDeleted: false,
     });
     return result;
   }
@@ -279,7 +295,7 @@ export class ScholarshipService {
   ): Promise<number> {
     const lookup: any = new LookupCommon([
       {
-        from: 'volunteeprograms',
+        from: 'voluntee_programs',
         localField: 'program',
         foreignField: '_id',
         as: 'program',
@@ -297,7 +313,7 @@ export class ScholarshipService {
       ...lookup,
     ];
     const results = await new QueryService().findByAggregate(
-      'tranningpoints',
+      'trainning_points',
       aggregate,
     );
     const totalTrainningPoint = results.reduce(

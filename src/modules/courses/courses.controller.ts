@@ -6,6 +6,7 @@ import {
   Post,
   Put,
   Res,
+  Req,
   UseGuards,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
@@ -13,7 +14,7 @@ import { ResponseRequest } from 'src/utils/response-api';
 import { ErolesUser } from 'src/constants/constant';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RoleGuard } from '../auth/guards/role-auth.guard';
-import { Response } from 'express';
+import { Response, Request } from 'express';
 import { CoursesService } from './courses.service';
 import { CreateCourseDto } from './dtos/courses.create.dto';
 import { UpdateCourseDto } from './dtos/courses.update.dto';
@@ -30,8 +31,11 @@ export class CoursesController {
   async createCourse(
     @Res() res: Response,
     @Body() courseDto: CreateCourseDto,
+    @Req() req: Request,
   ): Promise<ResponseRequest> {
-    const result = await this.courseService.createCourse(courseDto);
+    const { user }: Request | Record<string, any> = req;
+    const createdBy: string = user.profileId;
+    const result = await this.courseService.createCourse(courseDto, createdBy);
     return new ResponseRequest(res, result, 'Create cource success');
   }
 
@@ -43,8 +47,15 @@ export class CoursesController {
     @Param('id') id: string,
     @Body() courseDto: UpdateCourseDto,
     @Res() res: Response,
+    @Req() req: Request,
   ): Promise<ResponseRequest> {
-    const result = await this.courseService.updateCourse(id, courseDto);
+    const { user }: Request | Record<string, any> = req;
+    const updatedBy: string = user.profileId;
+    const result = await this.courseService.updateCourse(
+      id,
+      courseDto,
+      updatedBy,
+    );
     return new ResponseRequest(res, result, 'Update course success.');
   }
 

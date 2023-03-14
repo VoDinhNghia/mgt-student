@@ -33,9 +33,13 @@ export class DegreelevelService {
 
   async createDegreeLevel(
     degreelevelDto: CreateDegreeLevelDto,
+    createdBy: string,
   ): Promise<DegreeLevel> {
     await this.validateDegreeLevelName(degreelevelDto);
-    const result = await new this.degreeLevelSchema(degreelevelDto).save();
+    const result = await new this.degreeLevelSchema({
+      ...degreelevelDto,
+      createdBy,
+    }).save();
     return result;
   }
 
@@ -50,9 +54,15 @@ export class DegreelevelService {
   async updateDegreeLevel(
     id: string,
     updateDto: UpdateDegreeLevelDto,
+    updatedBy: string,
   ): Promise<DegreeLevel> {
     await this.validateDegreeLevelName(updateDto);
-    await this.degreeLevelSchema.findByIdAndUpdate(id, updateDto);
+    const dto = {
+      ...updateDto,
+      updatedBy,
+      updatedAt: Date.now(),
+    };
+    await this.degreeLevelSchema.findByIdAndUpdate(id, dto);
     const result = await this.findDegreeLevelById(id);
     return result;
   }

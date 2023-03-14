@@ -8,6 +8,7 @@ import {
   Query,
   Param,
   Put,
+  Req,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { ErolesUser } from 'src/constants/constant';
@@ -19,6 +20,7 @@ import { CreateScholarshipDto } from './dtos/scholarship.create.dto';
 import { QueryScholarshipDto } from './dtos/scholarship.query.dto';
 import { QueryUserScholarshipDto } from './dtos/scholarship.user.query.dto';
 import { ScholarshipService } from './scholarships.service';
+import { Response, Request } from 'express';
 
 @Controller('api/scholarships')
 @ApiTags('scholarships')
@@ -30,10 +32,16 @@ export class ScholarshipController {
   @UseGuards(JwtAuthGuard)
   @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
   async createScholarship(
-    @Body() dto: CreateScholarshipDto,
+    @Body() scholarshipDto: CreateScholarshipDto,
     @Res() res: Response,
+    @Req() req: Request,
   ): Promise<ResponseRequest> {
-    const result = await this.service.createScholarship(dto);
+    const { user }: Request | Record<string, any> = req;
+    const createdBy: string = user.profileId;
+    const result = await this.service.createScholarship(
+      scholarshipDto,
+      createdBy,
+    );
     return new ResponseRequest(res, result, 'Create scholarship success.');
   }
 
@@ -45,8 +53,11 @@ export class ScholarshipController {
     @Param('id') id: string,
     @Body() dto: CreateScholarshipDto,
     @Res() res: Response,
+    @Req() req: Request,
   ): Promise<ResponseRequest> {
-    const result = await this.service.updateScholarship(id, dto);
+    const { user }: Request | Record<string, any> = req;
+    const updatedBy: string = user.profileId;
+    const result = await this.service.updateScholarship(id, dto, updatedBy);
     return new ResponseRequest(res, result, 'Update scholarship success.');
   }
 
@@ -66,9 +77,13 @@ export class ScholarshipController {
   async createUserScholarshipInSemester(
     @Body() dto: CreateUserScholarshipInSemester,
     @Res() res: Response,
+    @Req() req: Request,
   ): Promise<ResponseRequest> {
+    const { user }: Request | Record<string, any> = req;
+    const createdBy: string = user.profileId;
     const result = await this.service.createUserScholarshipInSemester(
       dto.semester,
+      createdBy,
     );
     return new ResponseRequest(res, result, 'Create user scholarship success.');
   }

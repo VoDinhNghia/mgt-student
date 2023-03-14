@@ -7,6 +7,7 @@ import {
   Post,
   Put,
   Query,
+  Req,
   Res,
   UseGuards,
 } from '@nestjs/common';
@@ -16,7 +17,7 @@ import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RoleGuard } from '../auth/guards/role-auth.guard';
 import { CreateNewDto } from './dtos/news.create.dto';
 import { NewsService } from './news.service';
-import { Response } from 'express';
+import { Response, Request } from 'express';
 import { UpdateNewDto } from './dtos/news.update.dto';
 import { QueryNewDto } from './dtos/news.query.dto';
 import { ResponseRequest } from 'src/utils/response-api';
@@ -33,8 +34,11 @@ export class NewsController {
   async createNews(
     @Body() createNewDto: CreateNewDto,
     @Res() res: Response,
+    @Req() req: Request,
   ): Promise<ResponseRequest> {
-    const result = await this.newService.createNews(createNewDto);
+    const { user }: Request | Record<string, any> = req;
+    const createdBy: string = user.profileId;
+    const result = await this.newService.createNews(createNewDto, createdBy);
     return new ResponseRequest(res, result, 'Create news success');
   }
 
@@ -58,8 +62,15 @@ export class NewsController {
     @Param('id') id: string,
     @Body() updateNewDto: UpdateNewDto,
     @Res() res: Response,
+    @Req() req: Request,
   ): Promise<ResponseRequest> {
-    const result = await this.newService.updateNews(id, updateNewDto);
+    const { user }: Request | Record<string, any> = req;
+    const updatedBy: string = user.profileId;
+    const result = await this.newService.updateNews(
+      id,
+      updateNewDto,
+      updatedBy,
+    );
     return new ResponseRequest(res, result, 'Update news success');
   }
 
@@ -82,8 +93,11 @@ export class NewsController {
   async deleteNews(
     @Param('id') id: string,
     @Res() res: Response,
+    @Req() req: Request,
   ): Promise<ResponseRequest> {
-    await this.newService.deleteNews(id);
+    const { user }: Request | Record<string, any> = req;
+    const deletedBy: string = user.profileId;
+    await this.newService.deleteNews(id, deletedBy);
     return new ResponseRequest(res, true, 'Delete news success');
   }
 }

@@ -27,7 +27,10 @@ export class CenterService {
     }
   }
 
-  async createCenter(centerDto: CreateCenterDto): Promise<Center> {
+  async createCenter(
+    centerDto: CreateCenterDto,
+    createdBy: string,
+  ): Promise<Center> {
     const { award = [] } = centerDto;
     await this.validateCenterDto(centerDto);
     const validate = new ValidateDto();
@@ -35,11 +38,18 @@ export class CenterService {
       const awards = await validate.idLists('awards', award);
       centerDto.award = awards;
     }
-    const results = await new this.centerSchema(centerDto).save();
+    const results = await new this.centerSchema({
+      ...centerDto,
+      createdBy,
+    }).save();
     return results;
   }
 
-  async updateCenter(id: string, centerDto: UpdateCenterDto): Promise<Center> {
+  async updateCenter(
+    id: string,
+    centerDto: UpdateCenterDto,
+    updatedBy: string,
+  ): Promise<Center> {
     const { award = [] } = centerDto;
     await this.validateCenterDto(centerDto);
     const validate = new ValidateDto();
@@ -47,7 +57,12 @@ export class CenterService {
       const awards = await validate.idLists('awards', award);
       centerDto.award = awards;
     }
-    await this.centerSchema.findByIdAndUpdate(id);
+    const dto = {
+      ...centerDto,
+      updatedBy,
+      updatedAt: Date.now(),
+    };
+    await this.centerSchema.findByIdAndUpdate(id, dto);
     const results = await this.findCenterById(id);
     return results;
   }
@@ -64,14 +79,21 @@ export class CenterService {
   }
 
   async findAllCenter(): Promise<Center[]> {
+    const match = { $match: { isDeleted: false } };
     const lookup = this.lookupCenter();
-    const results = await this.centerSchema.aggregate(lookup);
+    const aggregate = [match, ...lookup];
+    const results = await this.centerSchema.aggregate(aggregate);
     return results;
   }
 
-  async deleteCenter(id: string): Promise<void> {
+  async deleteCenter(id: string, deletedBy: string): Promise<void> {
     await this.findCenterById(id);
-    await this.centerSchema.findByIdAndDelete(id);
+    const dto = {
+      isDeleted: true,
+      deletedBy,
+      deletedAt: Date.now(),
+    };
+    await this.centerSchema.findByIdAndUpdate(id, dto);
   }
 
   private lookupCenter() {

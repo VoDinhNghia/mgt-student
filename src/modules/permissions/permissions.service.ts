@@ -22,10 +22,15 @@ export class PermissionsService {
 
   async createAdminPermission(
     permissionDto: CreatePermissionDto,
+    createdBy: string,
   ): Promise<Admin_Permission> {
     const { user } = permissionDto;
     await new ValidateDto().fieldId('profiles', user);
-    const permission = await new this.permissionSchema(permissionDto).save();
+    const dto = {
+      ...permissionDto,
+      createdBy,
+    };
+    const permission = await new this.permissionSchema(dto).save();
     const result = await this.findAdminPermissionById(permission._id);
     return result;
   }
@@ -33,8 +38,14 @@ export class PermissionsService {
   async updateAdminPermission(
     id: string,
     permissionDto: UpdatePermissionDto,
+    updatedBy: string,
   ): Promise<Admin_Permission> {
-    await this.permissionSchema.findByIdAndUpdate(id, permissionDto);
+    const dto = {
+      ...permissionDto,
+      updatedBy,
+      updatedAt: Date.now(),
+    };
+    await this.permissionSchema.findByIdAndUpdate(id, dto);
     const result = await this.findAdminPermissionById(id);
     return result;
   }
@@ -54,7 +65,7 @@ export class PermissionsService {
     queryDto: QueryPermissionDto,
   ): Promise<Admin_Permission[]> {
     const { limit, page, user, searchKey } = queryDto;
-    const match: Record<string, any> = { $match: {} };
+    const match: Record<string, any> = { $match: { isDeleted: false } };
     if (user) {
       match.$match = { user: new Types.ObjectId(user) };
     }
@@ -78,9 +89,14 @@ export class PermissionsService {
     return results;
   }
 
-  async deleteAdminPermission(id: string): Promise<void> {
+  async deleteAdminPermission(id: string, deletedBy: string): Promise<void> {
     await this.findAdminPermissionById(id);
-    await this.permissionSchema.findByIdAndDelete(id);
+    const dto = {
+      isDeleted: true,
+      deletedBy,
+      deletedAt: Date.now(),
+    };
+    await this.permissionSchema.findByIdAndUpdate(id, dto);
   }
 
   private lookupPermission() {

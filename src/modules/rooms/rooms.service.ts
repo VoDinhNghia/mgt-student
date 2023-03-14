@@ -16,11 +16,15 @@ export class RoomsService {
     private readonly roomSchema: Model<RoomsDocument>,
   ) {}
 
-  async createRoom(roomDto: CreateRoomDto): Promise<Rooms> {
+  async createRoom(roomDto: CreateRoomDto, createdBy: string): Promise<Rooms> {
     const { name } = roomDto;
     const option = { name: name?.trim() };
     await new ValidateDto().existedByOptions('rooms', option, 'Room');
-    const result = await new this.roomSchema(roomDto).save();
+    const dto = {
+      ...roomDto,
+      createdBy,
+    };
+    const result = await new this.roomSchema(dto).save();
     return result;
   }
 
@@ -36,7 +40,7 @@ export class RoomsService {
     queryRoomDto: QueryRoomDto,
   ): Promise<{ data: Rooms[]; countTotal: number }> {
     const { limit, page, searchKey, type } = queryRoomDto;
-    const match: Record<string, any> = { $match: {} };
+    const match: Record<string, any> = { $match: { isDeleted: false } };
     if (searchKey) {
       match.$match.name = RegExp(searchKey);
     }
@@ -53,13 +57,27 @@ export class RoomsService {
     return results;
   }
 
-  async updateRoom(id: string, updateDto: UpdateRoomDto): Promise<void> {
+  async updateRoom(
+    id: string,
+    updateDto: UpdateRoomDto,
+    updatedBy,
+  ): Promise<void> {
     await this.findRoomById(id);
-    await this.roomSchema.findByIdAndUpdate(id, updateDto);
+    const dto = {
+      ...updateDto,
+      updatedBy,
+      updatedAt: Date.now(),
+    };
+    await this.roomSchema.findByIdAndUpdate(id, dto);
   }
 
-  async deleteRoom(id: string): Promise<void> {
+  async deleteRoom(id: string, deletedBy: string): Promise<void> {
     await this.findRoomById(id);
-    await this.roomSchema.findByIdAndDelete(id);
+    const dto = {
+      isDeleted: true,
+      deletedBy,
+      deletedAt: Date.now(),
+    };
+    await this.roomSchema.findByIdAndUpdate(id, dto);
   }
 }

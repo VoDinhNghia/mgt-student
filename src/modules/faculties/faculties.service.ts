@@ -36,7 +36,10 @@ export class FacultiesService {
     }
   }
 
-  async createFaculty(createFacultyDto: CreateFacultyDto): Promise<Faculty> {
+  async createFaculty(
+    createFacultyDto: CreateFacultyDto,
+    createdBy: string,
+  ): Promise<Faculty> {
     const { name, award = [] } = createFacultyDto;
     const validate = new ValidateDto();
     const option = { name: name?.trim() };
@@ -46,7 +49,10 @@ export class FacultiesService {
       createFacultyDto.award = awardIds;
     }
     await validate.existedByOptions('faculties', option, 'Faculty');
-    const faculty = await new this.facultySchema(createFacultyDto).save();
+    const faculty = await new this.facultySchema({
+      ...createFacultyDto,
+      createdBy,
+    }).save();
     const result = await this.findFacultyById(faculty._id);
     return result;
   }
@@ -67,16 +73,22 @@ export class FacultiesService {
   async updateFaculty(
     id: string,
     facultyDto: UpdateFacultyDto,
+    updatedBy,
   ): Promise<Faculty> {
     await this.validateDto(facultyDto);
-    await this.facultySchema.findByIdAndUpdate(id, facultyDto);
+    const dto = {
+      ...facultyDto,
+      updatedBy,
+      updatedAt: Date.now(),
+    };
+    await this.facultySchema.findByIdAndUpdate(id, dto);
     const result = await this.findFacultyById(id);
     return result;
   }
 
   async findAllFaculties(facultyQueryDto: FacultyQueryDto): Promise<Faculty[]> {
     const { searchKey } = facultyQueryDto;
-    const match: Record<string, any> = { $match: {} };
+    const match: Record<string, any> = { $match: { isDeleted: false } };
     if (searchKey) {
       match.$match.name = new RegExp(searchKey);
     }
@@ -86,9 +98,12 @@ export class FacultiesService {
     return results;
   }
 
-  async createMajor(majorDto: CreateMajorDto): Promise<Majors> {
+  async createMajor(
+    majorDto: CreateMajorDto,
+    createdBy: string,
+  ): Promise<Majors> {
     await this.validateDto(majorDto);
-    const major = await new this.majorSchema(majorDto).save();
+    const major = await new this.majorSchema({ ...majorDto, createdBy }).save();
     const result = await this.findMajorById(major._id);
     return result;
   }
@@ -106,16 +121,25 @@ export class FacultiesService {
     return result[0];
   }
 
-  async updateMajor(id: string, majorDto: UpdateMajorDto): Promise<Majors> {
+  async updateMajor(
+    id: string,
+    majorDto: UpdateMajorDto,
+    updatedBy: string,
+  ): Promise<Majors> {
     await this.validateDto(majorDto);
-    await this.majorSchema.findByIdAndUpdate(id, majorDto);
+    const dto = {
+      ...majorDto,
+      updatedBy,
+      updatedAt: Date.now(),
+    };
+    await this.majorSchema.findByIdAndUpdate(id, dto);
     const result = await this.findMajorById(id);
     return result;
   }
 
   async findAllMajors(queryDto: MajorQueryDto): Promise<Majors[]> {
     const { faculty } = queryDto;
-    const match: Record<string, any> = { $match: {} };
+    const match: Record<string, any> = { $match: { isDeleted: false } };
     if (faculty) {
       match.$match.faculty = new Types.ObjectId(faculty);
     }
