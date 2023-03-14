@@ -4,6 +4,7 @@ import {
   Get,
   Param,
   Put,
+  Req,
   Res,
   UseGuards,
 } from '@nestjs/common';
@@ -13,9 +14,10 @@ import { RoleGuard } from '../auth/guards/role-auth.guard';
 import { CreateSchoolDto } from './dtos/school.create.dto';
 import { UpdateSchoolDto } from './dtos/school.update.dto';
 import { SchoolService } from './school.service';
-import { Response } from 'express';
+import { Response, Request } from 'express';
 import { ResponseRequest } from 'src/utils/response-api';
 import { ErolesUser } from 'src/constants/constant';
+import { GetCurrentDate } from 'src/utils/get.current-date';
 
 @Controller('api/school')
 @ApiTags('school')
@@ -25,7 +27,7 @@ export class SchoolController {
       name: 'University Name', // ex: Industrial University of Ho Chi Minh City
       schoolCode: 'University_Code',
       numberTotal: 40000,
-      yearFound: '2023-02-25',
+      yearFound: new Date(new GetCurrentDate().getYearMonthDate()),
       contactInfo: {
         email: 'university@gmail.com',
         fax: '',
@@ -43,8 +45,15 @@ export class SchoolController {
     @Param('id') id: string,
     @Body() schoolDto: UpdateSchoolDto,
     @Res() res: Response,
+    @Req() req: Request,
   ): Promise<ResponseRequest> {
-    const result = await this.schoolService.updateSchool(id, schoolDto);
+    const { user }: Request | Record<string, any> = req;
+    const updatedBy: string = user.profileId;
+    const result = await this.schoolService.updateSchool(
+      id,
+      schoolDto,
+      updatedBy,
+    );
     return new ResponseRequest(res, result, 'Update school success.');
   }
 
