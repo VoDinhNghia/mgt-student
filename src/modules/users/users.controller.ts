@@ -79,7 +79,7 @@ export class UsersController {
     @UploadedFile('file') file: Express.Multer.File,
   ): Promise<ResponseRequest> {
     const { user }: Request | Record<string, any> = req;
-    const createdBy: string = user.profile;
+    const createdBy: string = user.profileId;
     const rawData = readFileSync(file.path, 'utf8');
     const csvData = getDataFromCsvFileUpload(rawData);
     const result = await this.service.importUser(createdBy, csvData);
@@ -97,7 +97,7 @@ export class UsersController {
     @Res() res: Response,
   ): Promise<ResponseRequest> {
     const { user }: Request | Record<string, any> = req;
-    const updatedBy: string = user.profile;
+    const updatedBy: string = user.profileId;
     const result = await this.service.updateUser(id, updateDto, updatedBy);
     return new ResponseRequest(res, result, 'Update user success');
   }
@@ -112,7 +112,7 @@ export class UsersController {
     @Res() res: Response,
   ): Promise<ResponseRequest> {
     const { user }: Request | Record<string, any> = req;
-    const updatedBy: string = user.profile;
+    const updatedBy: string = user.profileId;
     const result = await this.service.updateUserProfile(
       id,
       updateProfileDto,
@@ -131,7 +131,7 @@ export class UsersController {
     @Req() req: Request,
   ): Promise<ResponseRequest> {
     const { user }: Request | Record<string, any> = req;
-    const createdBy: string = user.profile;
+    const createdBy: string = user.profileId;
     const result = await this.service.createLeaderSchool(
       leaderSchoolDto,
       createdBy,
@@ -150,7 +150,7 @@ export class UsersController {
     @Req() req: Request,
   ): Promise<ResponseRequest> {
     const { user }: Request | Record<string, any> = req;
-    const updatedBy: string = user.profile;
+    const updatedBy: string = user.profileId;
     const result = await this.service.updateLeaderSchool(
       id,
       updateLeaderDto,
@@ -187,7 +187,7 @@ export class UsersController {
     @Req() req: Request,
   ): Promise<ResponseRequest> {
     const { user }: Request | Record<string, any> = req;
-    const deletedBy: string = user.profile;
+    const deletedBy: string = user.profileId;
     await this.service.deleteLeaderSchool(id, deletedBy);
     return new ResponseRequest(res, true, 'Delete leader school succees.');
   }

@@ -13,8 +13,15 @@ export class SemestersService {
     private readonly semesterSchema: Model<SemesterDocument>,
   ) {}
 
-  async createSemester(semesterDto: CreateSemesterDto): Promise<Semester> {
-    const result = await new this.semesterSchema(semesterDto).save();
+  async createSemester(
+    semesterDto: CreateSemesterDto,
+    createdBy: string,
+  ): Promise<Semester> {
+    const dto = {
+      ...semesterDto,
+      createdBy,
+    };
+    const result = await new this.semesterSchema(dto).save();
     return result;
   }
 
@@ -29,19 +36,30 @@ export class SemestersService {
   async updateSemester(
     id: string,
     updateDto: UpdateSemesterDto,
+    updatedBy: string,
   ): Promise<Semester> {
-    await this.semesterSchema.findByIdAndUpdate(id, updateDto);
+    const dto = {
+      ...updateDto,
+      updatedBy,
+      updatedAt: Date.now(),
+    };
+    await this.semesterSchema.findByIdAndUpdate(id, dto);
     const result = this.findSemesterById(id);
     return result;
   }
 
   async findAllSemesters(): Promise<Semester[]> {
-    const results = await this.semesterSchema.find({});
+    const results = await this.semesterSchema.find({ isDeleted: false });
     return results;
   }
 
-  async deleteSemester(id: string): Promise<void> {
+  async deleteSemester(id: string, deletedBy: string): Promise<void> {
     await this.findSemesterById(id);
-    await this.semesterSchema.findByIdAndDelete(id);
+    const dto = {
+      deletedBy,
+      isDeleted: true,
+      deletedAt: Date.now(),
+    };
+    await this.semesterSchema.findByIdAndUpdate(id, dto);
   }
 }
