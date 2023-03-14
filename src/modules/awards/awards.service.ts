@@ -17,14 +17,20 @@ export class AwardsService {
     private readonly awardSchema: Model<AwardDocument>,
   ) {}
 
-  async createAward(createAwardDto: CreateAwardDto): Promise<Award> {
+  async createAward(
+    createAwardDto: CreateAwardDto,
+    createdBy: string,
+  ): Promise<Award> {
     const { attachment = [] } = createAwardDto;
     const attachmentIds = await new ValidateDto().idLists(
       'attachments',
       attachment,
     );
     createAwardDto.attachment = attachmentIds;
-    const result = await new this.awardSchema(createAwardDto).save();
+    const result = await new this.awardSchema({
+      ...createAwardDto,
+      createdBy,
+    }).save();
     return result;
   }
 
@@ -39,9 +45,18 @@ export class AwardsService {
     return result[0];
   }
 
-  async updateAward(id: string, updateAwardDto: UpdateAwardDto): Promise<void> {
+  async updateAward(
+    id: string,
+    updateAwardDto: UpdateAwardDto,
+    updatedBy: string,
+  ): Promise<void> {
     await this.findAwardById(id);
-    await this.awardSchema.findByIdAndUpdate(id, updateAwardDto);
+    const dto = {
+      ...updateAwardDto,
+      updatedBy,
+      updatedAt: Date.now(),
+    };
+    await this.awardSchema.findByIdAndUpdate(id, dto);
   }
 
   async deleteAward(id: string): Promise<void> {
@@ -53,7 +68,7 @@ export class AwardsService {
     queryAwardDto: QueryAwardDto,
   ): Promise<{ data: Award[]; countTotal: number | any }> {
     const { limit, page, searchKey, type, fromDate, toDate } = queryAwardDto;
-    const match: Record<string, any> = { $match: {} };
+    const match: Record<string, any> = { $match: { isDeleted: false } };
     if (searchKey) {
       match.$match.name = new RegExp(searchKey);
     }

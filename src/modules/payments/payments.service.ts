@@ -32,32 +32,45 @@ export class PaymentsService {
 
   async createMoneyPerCreditMgt(
     creditMgtDto: CreateMoneyPerCreditMgtDto,
+    createdBy: string,
   ): Promise<Money_Per_Credit_Mgt> {
     const { semester } = creditMgtDto;
     await this.validateSemesterDto(semester);
-    const option = { semester: new Types.ObjectId(semester) };
+    const option = { semester: new Types.ObjectId(semester), isDeleted: false };
     await new ValidateDto().existedByOptions(
       'money_per_credit_mgts',
       option,
       'Money per credit',
     );
-    const result = await new this.moneyCreditSchema(creditMgtDto).save();
+    const dto = {
+      creditMgtDto,
+      createdBy,
+    };
+    const result = await new this.moneyCreditSchema(dto).save();
     return result;
   }
 
   async updateMoneyPerCreditMgt(
     id: string,
     creditMgtDto: UpdateMoneyPerCreditMgtDto,
+    updatedBy: string,
   ): Promise<Money_Per_Credit_Mgt> {
     const { semester } = creditMgtDto;
     await this.validateSemesterDto(semester);
-    await this.moneyCreditSchema.findByIdAndUpdate(id, creditMgtDto);
+    const dto = {
+      ...creditMgtDto,
+      updatedBy,
+      updatedAt: Date.now(),
+    };
+    await this.moneyCreditSchema.findByIdAndUpdate(id, dto);
     const result = await this.findByIdMoneyPerCreditMgt(id);
     return result;
   }
 
   async findByIdMoneyPerCreditMgt(id: string): Promise<Money_Per_Credit_Mgt> {
-    let aggregate = [{ $match: { _id: new Types.ObjectId(id) } }];
+    let aggregate = [
+      { $match: { _id: new Types.ObjectId(id), isDeleted: false } },
+    ];
     const lookup = this.lookupPayment();
     aggregate = [...aggregate, ...lookup];
     const result = await this.moneyCreditSchema.aggregate(aggregate);
@@ -68,20 +81,27 @@ export class PaymentsService {
   }
 
   async findAllMoneyPerCreditMgt(): Promise<Money_Per_Credit_Mgt[]> {
+    const match = { $match: { isDeleted: false } };
     const lookup = this.lookupPayment();
-    const results = await this.moneyCreditSchema.aggregate(lookup);
+    const aggregate = [match, ...lookup];
+    const results = await this.moneyCreditSchema.aggregate(aggregate);
     return results;
   }
 
   async createUserPayment(
     paymentDto: CreateUserPaymentDto,
+    createdBy: string,
   ): Promise<Payment_Study_Fee> {
     const { user, semester } = paymentDto;
     await new ValidateDto().fieldId('profiles', user);
     await this.validateSemesterDto(semester);
-    const newPaymentDto: CreateUserPaymentDto & { receiptId: string } = {
+    const newPaymentDto: CreateUserPaymentDto & {
+      receiptId: string;
+      createdBy: string;
+    } = {
       ...paymentDto,
       receiptId: getRandomCodeReceiptId(4),
+      createdBy,
     };
     const userPayment = await new this.paymentSchema(newPaymentDto).save();
     const result = await this.findUserPaymentById(userPayment._id);
@@ -91,10 +111,16 @@ export class PaymentsService {
   async updateUserPayment(
     id: string,
     paymentDto: UpdateUserPaymentDto,
+    updatedBy: string,
   ): Promise<Payment_Study_Fee> {
     const { semester } = paymentDto;
     await this.validateSemesterDto(semester);
-    await this.paymentSchema.findByIdAndUpdate(id, paymentDto);
+    const dto = {
+      ...paymentDto,
+      updatedBy,
+      updatedAt: Date.now(),
+    };
+    await this.paymentSchema.findByIdAndUpdate(id, dto);
     const result = await this.findUserPaymentById(id);
     return result;
   }
@@ -118,6 +144,7 @@ export class PaymentsService {
     const options = {
       user: new Types.ObjectId(profile),
       semester: new Types.ObjectId(semester),
+      isDeleted: false,
     };
     const service = new SubjectUserRegister();
     const subjectIds = await service.getSubjectIds(semester);
@@ -135,7 +162,7 @@ export class PaymentsService {
     subjectList = [],
     semester: string,
   ): Promise<Record<string, any>[]> {
-    const option = { semester: new Types.ObjectId(semester) };
+    const option = { semester: new Types.ObjectId(semester), isDeleted: false };
     const creditMgt = await this.moneyCreditSchema.findOne(option);
     if (!creditMgt) {
       new CommonException(404, 'Money per credit not found.');

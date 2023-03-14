@@ -17,14 +17,21 @@ export class NewsService {
     private readonly newsSchema: Model<NewsDocument>,
   ) {}
 
-  async createNews(createNewDto: CreateNewDto): Promise<News> {
+  async createNews(
+    createNewDto: CreateNewDto,
+    createdBy: string,
+  ): Promise<News> {
     const { attachment = [] } = createNewDto;
     const attachmentIds = await new ValidateDto().idLists(
       'attachments',
       attachment,
     );
-    createNewDto.attachment = attachmentIds;
-    const news = await new this.newsSchema(createNewDto).save();
+    const dto = {
+      ...createNewDto,
+      attachment: attachmentIds,
+      createdBy,
+    };
+    const news = await new this.newsSchema(dto).save();
     const result = await this.findNewsById(news._id);
     return result;
   }
@@ -44,7 +51,7 @@ export class NewsService {
 
   async findAllNews(query: QueryNewDto): Promise<News[]> {
     const { limit, page, type } = query;
-    const match: Record<string, any> = { $match: {} };
+    const match: Record<string, any> = { $match: { isDeleted: false } };
     if (type) {
       match.$match.type = type;
     }
@@ -56,7 +63,11 @@ export class NewsService {
     return results;
   }
 
-  async updateNews(id: string, updateDto: UpdateNewDto): Promise<News> {
+  async updateNews(
+    id: string,
+    updateDto: UpdateNewDto,
+    updatedBy: string,
+  ): Promise<News> {
     const { attachment = [] } = updateDto;
     if (attachment.length > 0) {
       const attachmentIds = await new ValidateDto().idLists(
@@ -65,15 +76,25 @@ export class NewsService {
       );
       updateDto.attachment = attachmentIds;
     }
-    await this.newsSchema.findByIdAndUpdate(id, updateDto);
+    const dto = {
+      ...updateDto,
+      updatedBy,
+      updatedAt: Date.now(),
+    };
+    await this.newsSchema.findByIdAndUpdate(id, dto);
     const getNew = await this.findNewsById(id);
 
     return getNew;
   }
 
-  async deleteNews(id: string): Promise<void> {
+  async deleteNews(id: string, deletedBy: string): Promise<void> {
     await this.findNewsById(id);
-    await this.newsSchema.findByIdAndDelete(id);
+    const dto = {
+      isDeleted: true,
+      deletedBy,
+      deletedAt: Date.now(),
+    };
+    await this.newsSchema.findByIdAndUpdate(id, dto);
   }
 
   private lookupNews() {

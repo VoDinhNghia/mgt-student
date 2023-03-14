@@ -6,6 +6,7 @@ import {
   Post,
   Put,
   Query,
+  Req,
   Res,
   UseGuards,
 } from '@nestjs/common';
@@ -13,7 +14,7 @@ import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { ResponseRequest } from 'src/utils/response-api';
 import { CreateMoneyPerCreditMgtDto } from './dtos/mgt-money-per-credit.create.dto';
 import { PaymentsService } from './payments.service';
-import { Response } from 'express';
+import { Response, Request } from 'express';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RoleGuard } from '../auth/guards/role-auth.guard';
 import { ErolesUser } from 'src/constants/constant';
@@ -33,9 +34,13 @@ export class PaymentsController {
   async createMoneyPerCreditMgt(
     @Body() createCreditmgtDto: CreateMoneyPerCreditMgtDto,
     @Res() res: Response,
+    @Req() req: Request,
   ): Promise<ResponseRequest> {
+    const { user }: Request | Record<string, any> = req;
+    const createdBy: string = user.profileId;
     const result = await this.paymentService.createMoneyPerCreditMgt(
       createCreditmgtDto,
+      createdBy,
     );
     return new ResponseRequest(res, result, 'Create amount credit success.');
   }
@@ -48,10 +53,14 @@ export class PaymentsController {
     @Param('id') id: string,
     @Body() updateCreditmgtDto: UpdateMoneyPerCreditMgtDto,
     @Res() res: Response,
+    @Req() req: Request,
   ): Promise<ResponseRequest> {
+    const { user }: Request | Record<string, any> = req;
+    const updatedBy: string = user.profileId;
     const result = await this.paymentService.updateMoneyPerCreditMgt(
       id,
       updateCreditmgtDto,
+      updatedBy,
     );
     return new ResponseRequest(res, result, 'Update mgt money credit success.');
   }
@@ -94,8 +103,14 @@ export class PaymentsController {
   async createUserPayment(
     @Body() userPaymentDto: CreateUserPaymentDto,
     @Res() res: Response,
+    @Req() req: Request,
   ): Promise<ResponseRequest> {
-    const result = await this.paymentService.createUserPayment(userPaymentDto);
+    const { user }: Request | Record<string, any> = req;
+    const createdBy: string = user.profileId;
+    const result = await this.paymentService.createUserPayment(
+      userPaymentDto,
+      createdBy,
+    );
     return new ResponseRequest(res, result, 'Create user payment success.');
   }
 }

@@ -7,13 +7,14 @@ import {
   Post,
   Put,
   Query,
+  Req,
   Res,
   UseGuards,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { ResponseRequest } from 'src/utils/response-api';
 import { PermissionsService } from './permissions.service';
-import { Response } from 'express';
+import { Response, Request } from 'express';
 import { CreatePermissionDto } from './dtos/permissions.create.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RoleGuard } from '../auth/guards/role-auth.guard';
@@ -33,8 +34,14 @@ export class PermissionsController {
   async createAdminPermission(
     @Body() permissionDto: CreatePermissionDto,
     @Res() res: Response,
+    @Req() req: Request,
   ) {
-    const result = await this.service.createAdminPermission(permissionDto);
+    const { user }: Request | Record<string, any> = req;
+    const createdBy: string = user.profileId;
+    const result = await this.service.createAdminPermission(
+      permissionDto,
+      createdBy,
+    );
     return new ResponseRequest(res, result, `Create admin permission success.`);
   }
 
@@ -46,8 +53,15 @@ export class PermissionsController {
     @Param('id') id: string,
     @Body() permissionDto: UpdatePermissionDto,
     @Res() res: Response,
+    @Req() req: Request,
   ) {
-    const result = await this.service.updateAdminPermission(id, permissionDto);
+    const { user }: Request | Record<string, any> = req;
+    const updatedBy: string = user.profileId;
+    const result = await this.service.updateAdminPermission(
+      id,
+      permissionDto,
+      updatedBy,
+    );
     return new ResponseRequest(res, result, `Update admin permission success.`);
   }
 
@@ -55,8 +69,14 @@ export class PermissionsController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN]))
-  async deleteAdminPermission(@Param('id') id: string, @Res() res: Response) {
-    await this.service.deleteAdminPermission(id);
+  async deleteAdminPermission(
+    @Param('id') id: string,
+    @Res() res: Response,
+    @Req() req: Request,
+  ): Promise<ResponseRequest> {
+    const { user }: Request | Record<string, any> = req;
+    const deletedBy: string = user.profileId;
+    await this.service.deleteAdminPermission(id, deletedBy);
     return new ResponseRequest(res, true, `Delete admin permission success.`);
   }
 

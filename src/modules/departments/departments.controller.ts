@@ -6,6 +6,7 @@ import {
   Param,
   Post,
   Put,
+  Req,
   Res,
   UseGuards,
 } from '@nestjs/common';
@@ -20,6 +21,7 @@ import { CreateStaffDepartmentDto } from './dtos/department.staff.create.dto';
 import { UpdateStaffDepartmentDto } from './dtos/department.staff.update.dto';
 import { UpdateDepartmentDto } from './dtos/department.update.dto';
 import { CreateDepartmentDto } from './dtos/departments.create.dto';
+import { Response, Request } from 'express';
 
 @Controller('api/departments')
 @ApiTags('departments')
@@ -33,8 +35,14 @@ export class DepartmentsController {
   async createDepartment(
     @Body() departmentDto: CreateDepartmentDto,
     @Res() res: Response,
+    @Req() req: Request,
   ): Promise<ResponseRequest> {
-    const result = await this.service.createDepartment(departmentDto);
+    const { user }: Request | Record<string, any> = req;
+    const createdBy: string = user.profileId;
+    const result = await this.service.createDepartment(
+      departmentDto,
+      createdBy,
+    );
     return new ResponseRequest(res, result, 'Create department success.');
   }
 
@@ -46,8 +54,15 @@ export class DepartmentsController {
     @Param('id') id: string,
     @Body() departmentDto: UpdateDepartmentDto,
     @Res() res: Response,
+    @Req() req: Request,
   ): Promise<ResponseRequest> {
-    const result = await this.service.updateDepartment(id, departmentDto);
+    const { user }: Request | Record<string, any> = req;
+    const updatedBy: string = user.profileId;
+    const result = await this.service.updateDepartment(
+      id,
+      departmentDto,
+      updatedBy,
+    );
     return new ResponseRequest(res, result, 'Update department success.');
   }
 
@@ -58,8 +73,14 @@ export class DepartmentsController {
   async createDepartmentMultiStaff(
     @Body() staffDto: CreateMultiStaffDepartmentDto,
     @Res() res: Response,
+    @Req() req: Request,
   ): Promise<ResponseRequest> {
-    const result = await this.service.createMultiStaffDepartment(staffDto);
+    const { user }: Request | Record<string, any> = req;
+    const createdBy: string = user.profileId;
+    const result = await this.service.createMultiStaffDepartment(
+      staffDto,
+      createdBy,
+    );
     return new ResponseRequest(res, result, 'Create multi staff success.');
   }
 
@@ -70,8 +91,14 @@ export class DepartmentsController {
   async createDepartmentStaff(
     @Body() staffDto: CreateStaffDepartmentDto,
     @Res() res: Response,
+    @Req() req: Request,
   ): Promise<ResponseRequest> {
-    const result = await this.service.createDepartmentStaff(staffDto);
+    const { user }: Request | Record<string, any> = req;
+    const createdBy: string = user.profileId;
+    const result = await this.service.createDepartmentStaff(
+      staffDto,
+      createdBy,
+    );
     return new ResponseRequest(res, result, 'Create staff success.');
   }
 
@@ -83,8 +110,15 @@ export class DepartmentsController {
     @Param('id') id: string,
     @Body() staffDto: UpdateStaffDepartmentDto,
     @Res() res: Response,
+    @Req() req: Request,
   ): Promise<ResponseRequest> {
-    const result = await this.service.updateDepartmentStaff(id, staffDto);
+    const { user }: Request | Record<string, any> = req;
+    const updatedBy: string = user.profileId;
+    const result = await this.service.updateDepartmentStaff(
+      id,
+      staffDto,
+      updatedBy,
+    );
     return new ResponseRequest(res, result, 'Update staff success.');
   }
 
@@ -95,8 +129,11 @@ export class DepartmentsController {
   async deleteDepartmentStaff(
     @Param('id') id: string,
     @Res() res: Response,
+    @Req() req: Request,
   ): Promise<ResponseRequest> {
-    await this.service.deleteDepartmentStaff(id);
+    const { user }: Request | Record<string, any> = req;
+    const deletedBy: string = user.profileId;
+    await this.service.deleteDepartmentStaff(id, deletedBy);
     return new ResponseRequest(res, true, 'Delete staff success.');
   }
 

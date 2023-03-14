@@ -7,6 +7,7 @@ import {
   Put,
   Query,
   Res,
+  Req,
   UseGuards,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
@@ -14,7 +15,7 @@ import { ErolesUser } from 'src/constants/constant';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RoleGuard } from '../auth/guards/role-auth.guard';
 import { AwardsService } from './awards.service';
-import { Response } from 'express';
+import { Response, Request } from 'express';
 import { ResponseRequest } from 'src/utils/response-api';
 import { CreateAwardDto } from './dtos/awards.create.dto';
 import { UpdateAwardDto } from './dtos/awards.update.dto';
@@ -32,8 +33,14 @@ export class AwardsController {
   async createAward(
     @Res() res: Response,
     @Body() createAwardDto: CreateAwardDto,
+    @Req() req: Request,
   ): Promise<ResponseRequest> {
-    const result = await this.awardService.createAward(createAwardDto);
+    const { user }: Request | Record<string, any> = req;
+    const createdBy: string = user.profileId;
+    const result = await this.awardService.createAward(
+      createAwardDto,
+      createdBy,
+    );
     return new ResponseRequest(res, result, `Create award success.`);
   }
 
@@ -63,8 +70,11 @@ export class AwardsController {
     @Res() res: Response,
     @Param('id') id: string,
     @Body() updateAwardDto: UpdateAwardDto,
+    @Req() req: Request,
   ): Promise<ResponseRequest> {
-    await this.awardService.updateAward(id, updateAwardDto);
+    const { user }: Request | Record<string, any> = req;
+    const updatedBy: string = user.profileId;
+    await this.awardService.updateAward(id, updateAwardDto, updatedBy);
     return new ResponseRequest(res, true, `Update award success.`);
   }
 }

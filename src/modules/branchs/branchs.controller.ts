@@ -7,6 +7,7 @@ import {
   Put,
   Query,
   Res,
+  Req,
   UseGuards,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
@@ -14,7 +15,7 @@ import { ErolesUser } from 'src/constants/constant';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RoleGuard } from '../auth/guards/role-auth.guard';
 import { BranchService } from './branchs.service';
-import { Response } from 'express';
+import { Response, Request } from 'express';
 import { BranchCreateDto } from './dtos/branchs.create.dto';
 import { BranchQueryDto } from './dtos/branchs.query.dto';
 import { BranchUpdateDto } from './dtos/branchs.update.dto';
@@ -32,8 +33,14 @@ export class BranchController {
   async createBranch(
     @Res() res: Response,
     @Body() branchCreateDto: BranchCreateDto,
+    @Req() req: Request,
   ): Promise<ResponseRequest> {
-    const result = await this.branchService.createBranchNew(branchCreateDto);
+    const { user }: Request | Record<string, any> = req;
+    const createdBy: string = user.profileId;
+    const result = await this.branchService.createBranchNew(
+      branchCreateDto,
+      createdBy,
+    );
     return new ResponseRequest(res, result, `Create branch success.`);
   }
 
@@ -54,8 +61,11 @@ export class BranchController {
     @Param('id') id: string,
     @Body() updateBranchDto: BranchUpdateDto,
     @Res() res: Response,
+    @Req() req: Request,
   ): Promise<ResponseRequest> {
-    await this.branchService.updateBranch(id, updateBranchDto);
+    const { user }: Request | Record<string, any> = req;
+    const updatedBy: string = user.profileId;
+    await this.branchService.updateBranch(id, updateBranchDto, updatedBy);
     return new ResponseRequest(res, true, `Update branch success.`);
   }
 

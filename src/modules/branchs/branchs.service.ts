@@ -17,7 +17,10 @@ export class BranchService {
     private readonly branchSchema: Model<BranchDocument>,
   ) {}
 
-  async createBranchNew(branchCreateDto: BranchCreateDto): Promise<Branch> {
+  async createBranchNew(
+    branchCreateDto: BranchCreateDto,
+    createdBy: string,
+  ): Promise<Branch> {
     const { country, province, district, ward } = branchCreateDto?.location;
     const validate = new ValidateDto();
     await validate.fieldId('countries', country);
@@ -28,7 +31,10 @@ export class BranchService {
     }
     const options = { name: branchCreateDto?.name?.trim() };
     await validate.existedByOptions('branchs', options, 'Branch name');
-    const result = await new this.branchSchema(branchCreateDto).save();
+    const result = await new this.branchSchema({
+      ...branchCreateDto,
+      createdBy,
+    }).save();
 
     return result;
   }
@@ -49,7 +55,7 @@ export class BranchService {
 
   async findAllBranchs(branchQueryDto: BranchQueryDto): Promise<Branch[]> {
     const { limit, page, searchKey } = branchQueryDto;
-    const match: Record<string, any> = { $match: {} };
+    const match: Record<string, any> = { $match: { isDeleted: false } };
     if (searchKey) {
       match.$match.name = new RegExp(searchKey);
     }
@@ -64,9 +70,15 @@ export class BranchService {
   async updateBranch(
     id: string,
     branchUpdateDto: BranchUpdateDto,
+    updatedBy: string,
   ): Promise<void> {
     await this.findById(id);
-    await this.branchSchema.findByIdAndUpdate(id, branchUpdateDto);
+    const dto = {
+      ...branchUpdateDto,
+      updatedBy,
+      updatedAt: Date.now(),
+    };
+    await this.branchSchema.findByIdAndUpdate(id, dto);
   }
 
   private lookupBranch() {

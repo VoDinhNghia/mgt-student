@@ -39,7 +39,7 @@ export class SubjectUserRegister {
       { $unwind: '$subject' },
     ];
     const cursorAgg = await this.db
-      .collection('subjectregisters')
+      .collection('subject_registers')
       .aggregate(aggregate);
     const result = await cursorAgg.toArray();
     return result ?? [];

@@ -6,6 +6,7 @@ import {
   Post,
   Put,
   Query,
+  Req,
   Res,
   UseGuards,
 } from '@nestjs/common';
@@ -16,9 +17,10 @@ import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RoleGuard } from '../auth/guards/role-auth.guard';
 import { CreateRoomDto } from './dtos/rooms.create.dto';
 import { RoomsService } from './rooms.service';
-import { Response } from 'express';
+import { Response, Request } from 'express';
 import { QueryRoomDto } from './dtos/rooms.query.dto';
 import { UpdateRoomDto } from './dtos/rooms.update.dto';
+import { Delete } from '@nestjs/common/decorators';
 
 @Controller('api/rooms')
 @ApiTags('rooms')
@@ -32,8 +34,11 @@ export class RoomsController {
   async createRoom(
     @Body() createRoomDto: CreateRoomDto,
     @Res() res: Response,
+    @Req() req: Request,
   ): Promise<ResponseRequest> {
-    const result = await this.roomService.createRoom(createRoomDto);
+    const { user }: Request | Record<string, any> = req;
+    const createdBy: string = user.profileId;
+    const result = await this.roomService.createRoom(createRoomDto, createdBy);
     return new ResponseRequest(res, result, 'Create room success');
   }
 
@@ -48,6 +53,41 @@ export class RoomsController {
     return new ResponseRequest(res, result, 'Get all room success');
   }
 
+  @Put('/:id')
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @UseGuards(RoleGuard([ErolesUser.ADMIN]))
+  async updateRoom(
+    @Param('id') id: string,
+    @Body() updateRoomDto: UpdateRoomDto,
+    @Res() res: Response,
+    @Req() req: Request,
+  ): Promise<ResponseRequest> {
+    const { user }: Request | Record<string, any> = req;
+    const updatedBy: string = user.profileId;
+    const result = await this.roomService.updateRoom(
+      id,
+      updateRoomDto,
+      updatedBy,
+    );
+    return new ResponseRequest(res, result, 'Update room success');
+  }
+
+  @Delete('/:id')
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @UseGuards(RoleGuard([ErolesUser.ADMIN]))
+  async deleteRoom(
+    @Param('id') id: string,
+    @Res() res: Response,
+    @Req() req: Request,
+  ): Promise<ResponseRequest> {
+    const { user }: Request | Record<string, any> = req;
+    const deletedBy: string = user.profileId;
+    const result = await this.roomService.deleteRoom(id, deletedBy);
+    return new ResponseRequest(res, result, 'Delete room success');
+  }
+
   @Get('/:id')
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
@@ -57,18 +97,5 @@ export class RoomsController {
   ): Promise<ResponseRequest> {
     const result = await this.roomService.findRoomById(id);
     return new ResponseRequest(res, result, 'Get room success');
-  }
-
-  @Put('/:id')
-  @ApiBearerAuth()
-  @UseGuards(JwtAuthGuard)
-  @UseGuards(RoleGuard([ErolesUser.ADMIN]))
-  async updateRoom(
-    @Param('id') id: string,
-    @Body() updateRoomDto: UpdateRoomDto,
-    @Res() res: Response,
-  ): Promise<ResponseRequest> {
-    const result = await this.roomService.updateRoom(id, updateRoomDto);
-    return new ResponseRequest(res, result, 'Update room success');
   }
 }

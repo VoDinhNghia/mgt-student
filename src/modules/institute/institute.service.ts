@@ -15,9 +15,16 @@ export class InstituteService {
     private readonly institutiSchema: Model<InstitudeDocument>,
   ) {}
 
-  async createInstitute(instituteDto: CreateInstituteDto): Promise<Institudes> {
+  async createInstitute(
+    instituteDto: CreateInstituteDto,
+    createdBy: string,
+  ): Promise<Institudes> {
     await this.validateInstituteDto(instituteDto);
-    const newInstitute = await new this.institutiSchema(instituteDto).save();
+    const dto = {
+      ...instituteDto,
+      createdBy,
+    };
+    const newInstitute = await new this.institutiSchema(dto).save();
     const result = await this.findInstituteById(newInstitute._id);
     return result;
   }
@@ -25,9 +32,15 @@ export class InstituteService {
   async updateInstitute(
     id: string,
     instituteDto: UpdateInstituteDto,
+    updatedBy: string,
   ): Promise<Institudes> {
     await this.validateInstituteDto(instituteDto);
-    await this.institutiSchema.findByIdAndUpdate(id, instituteDto);
+    const dto = {
+      ...instituteDto,
+      updatedBy,
+      updatedAt: Date.now(),
+    };
+    await this.institutiSchema.findByIdAndUpdate(id, dto);
     const result = await this.findInstituteById(id);
     return result;
   }
@@ -46,14 +59,21 @@ export class InstituteService {
   }
 
   async findAllInstitudes(): Promise<Institudes[]> {
+    const match = { $match: { isDeleted: false } };
     const lookup = this.lookupInstitute();
-    const results = await this.institutiSchema.aggregate(lookup);
+    const aggregate = [match, ...lookup];
+    const results = await this.institutiSchema.aggregate(aggregate);
     return results;
   }
 
-  async deleteInstitude(id: string): Promise<void> {
+  async deleteInstitude(id: string, deletedBy: string): Promise<void> {
     await this.findInstituteById(id);
-    await this.institutiSchema.findByIdAndDelete(id);
+    const dto = {
+      isDeleted: true,
+      deletedBy,
+      deletedAt: Date.now(),
+    };
+    await this.institutiSchema.findByIdAndUpdate(id, dto);
   }
 
   async validateInstituteDto(dtos: CreateInstituteDto): Promise<void> {

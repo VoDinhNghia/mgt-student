@@ -32,7 +32,10 @@ export class ClassSubjectService {
     private readonly subjectProcessSchema: Model<SubjectProcessDocument>,
   ) {}
 
-  async createClass(createClassDto: CreateClassDto): Promise<Class_Infos> {
+  async createClass(
+    createClassDto: CreateClassDto,
+    createdBy: string,
+  ): Promise<Class_Infos> {
     const options = { name: createClassDto.name?.trim() };
     await new ValidateDto().existedByOptions(
       'class_infos',
@@ -40,7 +43,10 @@ export class ClassSubjectService {
       'Class name',
     );
     await this.validateDto(createClassDto);
-    const newClass = await new this.classSchema(createClassDto).save();
+    const newClass = await new this.classSchema({
+      ...createClassDto,
+      createdBy,
+    }).save();
     const result = await this.findClassById(newClass._id);
     return result;
   }
@@ -61,17 +67,30 @@ export class ClassSubjectService {
   async updateClass(
     id: string,
     classDto: UpdateClassDto,
+    updatedBy: string,
   ): Promise<Class_Infos> {
     await this.validateDto(classDto);
-    await this.classSchema.findByIdAndUpdate(id, classDto);
+    const dto = {
+      ...classDto,
+      updatedBy,
+      updatedAt: Date.now(),
+    };
+    await this.classSchema.findByIdAndUpdate(id, dto);
     const result = await this.findClassById(id);
     return result;
   }
 
-  async createSubject(subjectDto: CreateSubjectDto): Promise<Subjects> {
+  async createSubject(
+    subjectDto: CreateSubjectDto,
+    createdBy: string,
+  ): Promise<Subjects> {
     await this.validateDto(subjectDto);
-    const subject = await new this.subjectSchema(subjectDto).save();
-    await this.createSubjectProcess(subject._id, subjectDto);
+    const dto = {
+      ...subjectDto,
+      createdBy,
+    };
+    const subject = await new this.subjectSchema(dto).save();
+    await this.createSubjectProcess(subject._id, dto);
     const result = await this.findSubjectById(subject._id);
     return result;
   }
@@ -109,12 +128,18 @@ export class ClassSubjectService {
   async updateSubject(
     id: string,
     subjectDto: UpdateSubjectDto,
+    updatedBy: string,
   ): Promise<Subjects> {
     await this.validateDto(subjectDto);
-    await this.subjectSchema.findByIdAndUpdate(id, subjectDto);
+    const dto = {
+      ...subjectDto,
+      updatedBy,
+      updatedAt: Date.now(),
+    };
+    await this.subjectSchema.findByIdAndUpdate(id, dto);
     await this.subjectProcessSchema.findOneAndUpdate(
       { subject: new Types.ObjectId(id) },
-      subjectDto,
+      dto,
     );
     const result = await this.findSubjectById(id);
     return result;

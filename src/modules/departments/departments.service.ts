@@ -55,6 +55,7 @@ export class DepartmentsService {
 
   async createDepartment(
     departmentDto: CreateDepartmentDto,
+    createdBy: string,
   ): Promise<Departments> {
     const { attachment = [] } = departmentDto;
     await this.validateDepartmentDto(departmentDto);
@@ -62,7 +63,10 @@ export class DepartmentsService {
       const ids = await new ValidateDto().idLists('attachments', attachment);
       departmentDto.attachment = ids;
     }
-    const newDocument = await new this.deparmentSchema(departmentDto).save();
+    const newDocument = await new this.deparmentSchema({
+      ...departmentDto,
+      createdBy,
+    }).save();
     const result = await this.findDepartmentById(newDocument._id);
     return result;
   }
@@ -70,6 +74,7 @@ export class DepartmentsService {
   async updateDepartment(
     id: string,
     departmentDto: UpdateDepartmentDto,
+    updatedBy: string,
   ): Promise<Departments> {
     const { attachment = [] } = departmentDto;
     await this.validateDepartmentDto(departmentDto);
@@ -77,7 +82,12 @@ export class DepartmentsService {
       const ids = await new ValidateDto().idLists('attachments', attachment);
       departmentDto.attachment = ids;
     }
-    await this.deparmentSchema.findByIdAndUpdate(id, departmentDto);
+    const dto = {
+      ...departmentDto,
+      updatedBy,
+      updatedAt: Date.now(),
+    };
+    await this.deparmentSchema.findByIdAndUpdate(id, dto);
     const result = await this.findDepartmentById(id);
     return result;
   }
@@ -96,13 +106,16 @@ export class DepartmentsService {
   }
 
   async findAllDepartment(): Promise<Departments[]> {
+    const match = { $match: { isDeleted: false } };
     const aggregateLookup = this.lookupDepartment();
-    const results = await this.deparmentSchema.aggregate(aggregateLookup);
+    const aggregate = [match, ...aggregateLookup];
+    const results = await this.deparmentSchema.aggregate(aggregate);
     return results;
   }
 
   async createMultiStaffDepartment(
     staffDto: CreateMultiStaffDepartmentDto,
+    createdBy: string,
   ): Promise<Department_Staff[]> {
     const { department, staffs = [] } = staffDto;
     await this.findDepartmentById(department);
@@ -121,6 +134,7 @@ export class DepartmentsService {
           department,
           staff: item?.staff,
           joinDate: item?.joinDate || Date.now(),
+          createdBy,
         };
         const result = await new this.staffSchema(dto).save();
         results.push(result);
@@ -134,6 +148,7 @@ export class DepartmentsService {
 
   async createDepartmentStaff(
     staffDto: CreateStaffDepartmentDto,
+    createdBy: string,
   ): Promise<Department_Staff> {
     const { department, staff } = staffDto;
     await this.findDepartmentById(department);
@@ -141,13 +156,17 @@ export class DepartmentsService {
     if (!staffInfo) {
       new CommonException(404, 'Staff not found.');
     }
-    const result = await new this.staffSchema(staffDto).save();
+    const result = await new this.staffSchema({
+      ...staffDto,
+      createdBy,
+    }).save();
     return result;
   }
 
   async updateDepartmentStaff(
     id: string,
     staffDto: UpdateStaffDepartmentDto,
+    updatedBy: string,
   ): Promise<Department_Staff> {
     const { department, joinDate } = staffDto;
     if (department) {
@@ -159,21 +178,31 @@ export class DepartmentsService {
     }
     staff.department = department || staff.department;
     staff.joinDate = joinDate || staff.joinDate;
+    staff.updatedBy = updatedBy;
+    staff.updatedAt = Date.now();
     await staff.save();
     return staff;
   }
 
-  async deleteDepartmentStaff(id: string): Promise<void> {
+  async deleteDepartmentStaff(id: string, deletedBy: string): Promise<void> {
     const staff: Record<string, any> = await this.staffSchema.findById(id);
     if (!staff) {
       new CommonException(404, 'Staff not found.');
     }
-    await this.staffSchema.findByIdAndDelete(id);
+    const dto = {
+      isDeleted: true,
+      deletedBy,
+      deletedAt: Date.now(),
+    };
+    await this.staffSchema.findByIdAndUpdate(id, dto);
   }
 
   async findUserProfile(profile: string): Promise<Record<string, any>> {
     const staffInfo: Record<string, any> = await this.profileSchema
-      .findById(profile)
+      .findOne({
+        _id: new Types.ObjectId(profile),
+        isDeleted: false,
+      })
       .populate('user', '', this.userSchema)
       .exec();
     return staffInfo;

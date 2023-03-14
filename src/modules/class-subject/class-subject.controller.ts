@@ -6,6 +6,7 @@ import {
   Post,
   Put,
   Res,
+  Req,
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
@@ -14,7 +15,7 @@ import { ErolesUser } from 'src/constants/constant';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RoleGuard } from '../auth/guards/role-auth.guard';
 import { ClassSubjectService } from './class-subject.service';
-import { Response } from 'express';
+import { Response, Request } from 'express';
 import { CreateClassDto } from './dtos/class.create.dto';
 import { ResponseRequest } from 'src/utils/response-api';
 import { CreateSubjectDto } from './dtos/subject.create.dto';
@@ -34,8 +35,14 @@ export class ClassSubjectController {
   async createClass(
     @Res() res: Response,
     @Body() createClassDto: CreateClassDto,
+    @Req() req: Request,
   ): Promise<ResponseRequest> {
-    const result = await this.classSubjectService.createClass(createClassDto);
+    const { user }: Request | Record<string, any> = req;
+    const createdBy: string = user.profileId;
+    const result = await this.classSubjectService.createClass(
+      createClassDto,
+      createdBy,
+    );
     return new ResponseRequest(res, result, `Create class success.`);
   }
 
@@ -47,8 +54,14 @@ export class ClassSubjectController {
   async createSubject(
     @Res() res: Response,
     @Body() subjectDto: CreateSubjectDto,
+    @Req() req: Request,
   ): Promise<ResponseRequest> {
-    const result = await this.classSubjectService.createSubject(subjectDto);
+    const { user }: Request | Record<string, any> = req;
+    const createdBy: string = user.profileId;
+    const result = await this.classSubjectService.createSubject(
+      subjectDto,
+      createdBy,
+    );
     return new ResponseRequest(res, result, `Create subject success.`);
   }
 
@@ -60,8 +73,15 @@ export class ClassSubjectController {
     @Param('id') id: string,
     @Res() res: Response,
     @Body() subjectDto: UpdateSubjectDto,
+    @Req() req: Request,
   ): Promise<ResponseRequest> {
-    const result = await this.classSubjectService.updateSubject(id, subjectDto);
+    const { user }: Request | Record<string, any> = req;
+    const updatedBy: string = user.profileId;
+    const result = await this.classSubjectService.updateSubject(
+      id,
+      subjectDto,
+      updatedBy,
+    );
     return new ResponseRequest(res, result, `Update subject success.`);
   }
 
@@ -73,8 +93,15 @@ export class ClassSubjectController {
     @Param('id') id: string,
     @Res() res: Response,
     @Body() classDto: UpdateClassDto,
+    @Req() req: Request,
   ): Promise<ResponseRequest> {
-    const result = await this.classSubjectService.updateClass(id, classDto);
+    const { user }: Request | Record<string, any> = req;
+    const updatedBy: string = user.profileId;
+    const result = await this.classSubjectService.updateClass(
+      id,
+      classDto,
+      updatedBy,
+    );
     return new ResponseRequest(res, result, `Update class success.`);
   }
 
