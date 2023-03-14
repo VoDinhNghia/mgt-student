@@ -55,6 +55,7 @@ export class SchoolService {
   async updateSchool(
     id: string,
     schoolDto: UpdateSchoolDto,
+    updatedBy: string,
   ): Promise<School_Info> {
     const { image = [], award = [] } = schoolDto;
     if (image.length > 0) {
@@ -66,7 +67,12 @@ export class SchoolService {
       schoolDto.award = awardIds;
     }
     await this.validateSchoolDto(schoolDto);
-    await this.schoolSchema.findByIdAndUpdate(id, schoolDto);
+    const dto = {
+      ...schoolDto,
+      updatedBy,
+      updatedAt: Date.now(),
+    };
+    await this.schoolSchema.findByIdAndUpdate(id, dto);
     const result = await this.findSchoolById(id);
     return result;
   }
