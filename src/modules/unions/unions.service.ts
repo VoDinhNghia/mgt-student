@@ -47,9 +47,12 @@ export class UnionsService {
     return unionDto;
   }
 
-  async createUnion(unionDto: CreateUnionDto): Promise<Union> {
+  async createUnion(
+    unionDto: CreateUnionDto,
+    createdBy: string,
+  ): Promise<Union> {
     const newDto = await this.validateUnionDto(unionDto);
-    const union = await new this.unionSchema(newDto).save();
+    const union = await new this.unionSchema({ ...newDto, createdBy }).save();
     const result = await this.findUnionById(union._id);
     return result;
   }
@@ -65,16 +68,37 @@ export class UnionsService {
     return result[0];
   }
 
-  async updateUnion(id: string, unionDto: UpdateUnionDto): Promise<Union> {
-    const newDto = await this.validateUnionDto(unionDto);
-    await this.unionSchema.findByIdAndUpdate(id, newDto);
+  async updateUnion(
+    id: string,
+    unionDto: UpdateUnionDto,
+    updatedBy: string,
+  ): Promise<Union> {
+    const validateDto = await this.validateUnionDto(unionDto);
+    const updateDto = {
+      ...validateDto,
+      updatedBy,
+      updatedAt: Date.now(),
+    };
+    await this.unionSchema.findByIdAndUpdate(id, updateDto);
     const result = await this.findUnionById(id);
     return result;
   }
 
+  async deleteUnion(id: string, deletedBy: string): Promise<void> {
+    const deleteDto = {
+      deletedBy,
+      isDeleted: true,
+      deletedAt: Date.now(),
+    };
+    await this.findUnionById(id);
+    await this.unionSchema.findByIdAndUpdate(id, deleteDto);
+  }
+
   async findAllUnions(): Promise<Union[]> {
+    const match = { $match: { isDeleted: false } };
     const lookup = this.lookupUnion();
-    const results = await this.unionSchema.aggregate(lookup);
+    const aggregate = [match, ...lookup];
+    const results = await this.unionSchema.aggregate(aggregate);
     return results;
   }
 
