@@ -28,6 +28,7 @@ import { DepartmentsModule } from './modules/departments/departments.module';
 import { CenterModule } from './modules/centers/centers.module';
 import { PermissionsModule } from './modules/permissions/permissions.module';
 import { DbConnection } from './constants/db.mongo.connection';
+import { SyncServiceModule } from './modules/sync-service/sync-service.module';
 
 @Module({
   imports: [
@@ -57,6 +58,7 @@ import { DbConnection } from './constants/db.mongo.connection';
     CountriesModule,
     NewsModule,
     BlogsModule,
+    SyncServiceModule,
   ],
   controllers: [AppController],
   providers: [AppService, DbConnection],
