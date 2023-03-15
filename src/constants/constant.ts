@@ -57,9 +57,9 @@ export enum EstatusPayments {
   OWED = 'OWED',
 }
 
-export const keyAccessLibraryService = 'libraries-access-key-secrect';
+export const keyAccessLibraryService = 'Key_library_service_backend_private';
 
-export const keyAccessCourseService = 'course-access-key-secrect';
+export const keyAccessStudyProcessService = 'course-access-key-secrect';
 
 export enum EtypeLeaderSchool {
   PARTYCOMMITTEE = 'PARTY_COMMITTEE',
