@@ -1,3 +1,4 @@
+import { HttpModule } from '@nestjs/axios';
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Users, UsersSchema } from '../users/schemas/users.schema';
@@ -12,6 +13,7 @@ import { SyncServiceService } from './sync-service.service';
         schema: UsersSchema,
       },
     ]),
+    HttpModule,
   ],
   controllers: [SyncServiceController],
   providers: [SyncServiceService],
