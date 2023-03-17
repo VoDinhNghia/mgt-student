@@ -186,6 +186,10 @@ export class UsersService {
       id,
       updateProfileDto,
     );
+    await this.userSchema.findByIdAndUpdate(profile.user, {
+      updatedAt: Date.now(),
+      updatedBy,
+    });
     const result = await this.findUserById(profile.user);
     return result;
   }
