@@ -3,7 +3,6 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { CountriesModule } from './modules/countries/countries.module';
 import { MongooseModule } from '@nestjs/mongoose';
-import { mongoUrl } from './configs/config';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { AuthModule } from './modules/auth/auth.module';
@@ -28,11 +27,24 @@ import { DepartmentsModule } from './modules/departments/departments.module';
 import { CenterModule } from './modules/centers/centers.module';
 import { PermissionsModule } from './modules/permissions/permissions.module';
 import { DbConnection } from './constants/db.mongo.connection';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { SyncServiceModule } from './modules/sync-service/sync-service.module';
 
 @Module({
   imports: [
-    MongooseModule.forRoot(mongoUrl),
+    ConfigModule.forRoot({
+      isGlobal: true,
+      envFilePath: `.env`,
+    }),
+    MongooseModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: async (config: ConfigService) => ({
+        uri: config.get('MONGO_URL'),
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+      }),
+    }),
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '../..', 'src/public'),
     }),
