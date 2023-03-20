@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import { MongoClient } from 'mongodb';
-import { mongoUrl } from '../configs/config';
 
 let dbInstance: any;
 
@@ -11,7 +10,7 @@ export class DbConnection {
   }
 
   connect() {
-    const client = new MongoClient(mongoUrl);
+    const client = new MongoClient(process.env.MONGO_URL);
     client
       .connect()
       .then((connection) => {
