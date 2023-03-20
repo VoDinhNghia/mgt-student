@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { InjectModel } from '@nestjs/mongoose';
 import { unlinkSync } from 'fs';
 import { Model, Types } from 'mongoose';
-import { urlAccessImageLocal } from 'src/constants/constant';
 import { CommonException } from 'src/exceptions/exeception.common-error';
 import { FileRequestDto } from 'src/utils/file-request.dto';
 import { CreateAttachmentDto } from './dtos/attachments.create.dto';
@@ -13,6 +13,7 @@ export class AttachmentsService {
   constructor(
     @InjectModel(Attachment.name)
     private readonly attachmentSchema: Model<AttachmentDocument>,
+    private readonly configService: ConfigService,
   ) {}
 
   async createAttachment(
@@ -21,7 +22,7 @@ export class AttachmentsService {
   ): Promise<Attachment> {
     const attachmentDto: CreateAttachmentDto = {
       ...fileDto,
-      url: `${urlAccessImageLocal}/${fileDto.filename}`,
+      url: `${this.configService.get('VIEW_IMAGE_URL')}/${fileDto.filename}`,
       uploadBy,
     };
     const attachment = await new this.attachmentSchema(attachmentDto).save();

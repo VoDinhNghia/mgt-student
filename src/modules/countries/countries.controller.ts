@@ -12,7 +12,6 @@ import {
 import { UpdateCountriesDto } from './dto/countries.update.dto';
 import { CountriesService } from './countries.service';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { prefixUrlFlag } from '../../configs/config';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { Response } from 'express';
 import { join } from 'path';
@@ -22,17 +21,21 @@ import { QueryDistrictDto } from './dto/countries.query-district.dto';
 import { ResponseRequest } from 'src/utils/response-api';
 import { RoleGuard } from '../auth/guards/role-auth.guard';
 import { ErolesUser } from 'src/constants/constant';
+import { ConfigService } from '@nestjs/config';
 
 @Controller('api/countries')
 @ApiTags('countries')
 export class CountriesController {
-  constructor(private readonly countryService: CountriesService) {}
+  constructor(
+    private readonly countryService: CountriesService,
+    private readonly configService: ConfigService,
+  ) {}
 
   @Get()
   async getAlls(@Res() res: Response): Promise<ResponseRequest> {
     const data = await this.countryService.findAllCountry();
     for (const obj of data) {
-      obj.flag = `${prefixUrlFlag}${obj.flag}`;
+      obj.flag = `${this.configService.get('PREFIX_URL_FLAG')}${obj.flag}`;
     }
     return new ResponseRequest(res, data, `Get all countries success.`);
   }

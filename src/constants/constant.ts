@@ -92,8 +92,6 @@ export const trainningPointDefault = 60;
 
 export const considerConditionScholarshipPoint = 6.5;
 
-export const urlAccessImageLocal = 'http://localhost:3000/attachments';
-
 export enum Epermission {
   ONLY_VIEW = 'ONLY_VIEW',
   EDIT = 'EDIT',
