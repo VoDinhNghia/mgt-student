@@ -29,6 +29,7 @@ import { PermissionsModule } from './modules/permissions/permissions.module';
 import { DbConnection } from './constants/db.mongo.connection';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { SyncServiceModule } from './modules/sync-service/sync-service.module';
+import { ChatModule } from './modules/chat/chat.module';
 
 @Module({
   imports: [
@@ -71,6 +72,7 @@ import { SyncServiceModule } from './modules/sync-service/sync-service.module';
     NewsModule,
     BlogsModule,
     SyncServiceModule,
+    ChatModule,
   ],
   controllers: [AppController],
   providers: [AppService, DbConnection],
