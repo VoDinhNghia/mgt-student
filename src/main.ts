@@ -5,7 +5,7 @@ import { linkAccessService } from './constants/constant';
 import { ConfigService } from '@nestjs/config';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, { cors: true });
   const config = new DocumentBuilder()
     .addBearerAuth()
     .setTitle('Students Management')
