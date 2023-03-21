@@ -1,7 +1,6 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
-import { linkAccessService } from './constants/constant';
 import { ConfigService } from '@nestjs/config';
 
 async function bootstrap() {
@@ -18,12 +17,12 @@ async function bootstrap() {
   const port = configService.get<number>('PORT');
   app.enableCors({
     origin: [
-      linkAccessService.ADMIN_FRONTEND,
-      linkAccessService.FRONTEND,
-      linkAccessService.LIBRARY_FRONTEND,
-      linkAccessService.COURSE,
-      linkAccessService.LIBRARY,
-      linkAccessService.ATTENDANCE,
+      configService.get<string>('ADMIN_FRONTEND'),
+      configService.get<string>('FRONTEND'),
+      configService.get<string>('LIBRARY_FRONTEND'),
+      configService.get<string>('COURSE'),
+      configService.get<string>('LIBRARY'),
+      configService.get<string>('ATTENDANCE'),
     ],
     methods: ['GET', 'POST', 'DELETE', 'PUT'],
     credentials: true,
