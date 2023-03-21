@@ -2,10 +2,12 @@ import { ExtractJwt, Strategy } from 'passport-jwt';
 import { PassportStrategy } from '@nestjs/passport';
 import { Injectable } from '@nestjs/common';
 import { jwtConstants } from './constants';
+import { JwtService } from '@nestjs/jwt';
+import { UserLoginResponseDto } from '../dtos/response.login.dto';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
-  constructor() {
+  constructor(private readonly jwtService: JwtService) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreExpiration: false,
@@ -13,7 +15,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     });
   }
 
-  async validate(payload: Record<string, any>) {
+  async validate(payload: UserLoginResponseDto) {
     return {
       userId: payload._id,
       email: payload.email,
@@ -23,5 +25,16 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       profileId: payload.profile._id,
       profile: payload.profile,
     };
+  }
+
+  verifyToken(token: string) {
+    try {
+      const payload: UserLoginResponseDto = this.jwtService.verify(token, {
+        secret: jwtConstants.secret,
+      });
+      return payload;
+    } catch (error) {
+      console.log('verify token socket error');
+    }
   }
 }

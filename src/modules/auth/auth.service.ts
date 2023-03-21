@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { UsersDto } from '../users/dto/users.dto';
 import { JwtService } from '@nestjs/jwt';
 import { CommonException } from 'src/exceptions/exeception.common-error';
 import { Users, UsersDocument } from '../users/schemas/users.schema';
@@ -7,8 +6,9 @@ import { cryptoPassWord } from 'src/constants/crypto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { EstatusUser } from 'src/constants/constant';
-import { LookupCommon } from 'src/utils/lookup.query.aggregate-query';
-import { collections } from 'src/constants/collections.name';
+import { LookupService } from 'src/utils/lookup.query.service';
+import { LoginDto } from './dtos/auth.login.dto';
+import { UserLoginResponseDto } from './dtos/response.login.dto';
 
 @Injectable()
 export class AuthService {
@@ -18,21 +18,18 @@ export class AuthService {
     private readonly userSchema: Model<UsersDocument>,
   ) {}
 
-  async login(userDto: UsersDto): Promise<Users | any> {
-    const { email, passWord } = userDto;
+  async login(loginDto: LoginDto): Promise<UserLoginResponseDto> {
+    const { email, passWord } = loginDto;
     const user = await this.findUserAuth(email, passWord);
     if (!user) {
       new CommonException(401, `User or password incorrect.`);
     }
-    await this.updateUserAuth(user._id);
-    const payload: Record<string, any> = {
+    await this.userSchema.findByIdAndUpdate(user._id, { statusLogin: true });
+    const result: Record<string, any> = {
       ...user,
       statusLogin: true,
-    };
-    const result: Record<string, any> = {
-      ...payload,
       historyLogin: user.historyLogin,
-      accessToken: this.jwtService.sign(payload),
+      accessToken: this.jwtService.sign({ ...user }),
     };
     return result;
   }
@@ -42,16 +39,8 @@ export class AuthService {
     const match: Record<string, any> = {
       $match: { email, passWord: password, status: EstatusUser.ACTIVE },
     };
-    const lookup: any = new LookupCommon([
-      {
-        from: collections.profiles,
-        localField: '_id',
-        foreignField: 'user',
-        as: 'profile',
-        unwind: true,
-      },
-    ]);
-    const project: Record<string, any>[] = [
+    const lookup = new LookupService().user();
+    const project = [
       {
         $project: {
           _id: 1,
@@ -68,9 +57,5 @@ export class AuthService {
     const aggregate = [match, ...lookup, ...project];
     const result = await this.userSchema.aggregate(aggregate);
     return result[0] ?? null;
-  }
-
-  async updateUserAuth(id: string): Promise<void> {
-    await this.userSchema.findByIdAndUpdate(id, { statusLogin: true });
   }
 }
