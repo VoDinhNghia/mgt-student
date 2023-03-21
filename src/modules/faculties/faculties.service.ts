@@ -3,7 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { collections } from 'src/constants/collections.name';
 import { CommonException } from 'src/exceptions/exeception.common-error';
-import { LookupCommon } from 'src/utils/lookup.query.aggregate-query';
+import { LookupService } from 'src/utils/lookup.query.service';
 import { ValidateDto } from 'src/validates/validate.common.dto';
 import { CreateFacultyDto } from './dtos/faculties.create.dto';
 import { FacultyQueryDto } from './dtos/faculties.query.dto';
@@ -62,7 +62,7 @@ export class FacultiesService {
     const match: Record<string, any> = {
       $match: { _id: new Types.ObjectId(id) },
     };
-    const lookup = this.lookupFaculty();
+    const lookup = new LookupService().faculty();
     const aggregate = [match, ...lookup];
     const result = await this.facultySchema.aggregate(aggregate);
     if (!result[0]) {
@@ -93,7 +93,7 @@ export class FacultiesService {
     if (searchKey) {
       match.$match.name = new RegExp(searchKey);
     }
-    const lookup = this.lookupFaculty();
+    const lookup = new LookupService().faculty();
     const aggregate = [match, ...lookup];
     const results = await this.facultySchema.aggregate(aggregate);
     return results;
@@ -113,7 +113,7 @@ export class FacultiesService {
     const match: Record<string, any> = {
       $match: { _id: new Types.ObjectId(id) },
     };
-    const lookup = this.lookupMajor();
+    const lookup = new LookupService().major();
     const aggregate = [match, ...lookup];
     const result = await this.majorSchema.aggregate(aggregate);
     if (!result[0]) {
@@ -144,49 +144,9 @@ export class FacultiesService {
     if (faculty) {
       match.$match.faculty = new Types.ObjectId(faculty);
     }
-    const lookup = this.lookupMajor();
+    const lookup = new LookupService().major();
     const aggregate = [match, ...lookup];
     const results = await this.majorSchema.aggregate(aggregate);
     return results;
-  }
-
-  private lookupFaculty() {
-    const lookup: any = new LookupCommon([
-      {
-        from: collections.awards,
-        localField: 'award',
-        foreignField: '_id',
-        as: 'award',
-        unwind: false,
-      },
-      {
-        from: collections.profiles,
-        localField: 'headOfSection',
-        foreignField: '_id',
-        as: 'headOfSection',
-        unwind: true,
-      },
-      {
-        from: collections.profiles,
-        localField: 'eputeHead',
-        foreignField: '_id',
-        as: 'eputeHead',
-        unwind: true,
-      },
-    ]);
-    return lookup;
-  }
-
-  private lookupMajor() {
-    const lookup: any = new LookupCommon([
-      {
-        from: collections.faculties,
-        localField: 'faculty',
-        foreignField: '_id',
-        as: 'faculty',
-        unwind: true,
-      },
-    ]);
-    return [...this.lookupFaculty(), ...lookup];
   }
 }

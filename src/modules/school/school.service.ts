@@ -7,8 +7,8 @@ import { CreateSchoolDto } from './dtos/school.create.dto';
 import { UpdateSchoolDto } from './dtos/school.update.dto';
 import { School_Info, SchoolInfoDocument } from './schemas/school.schema';
 import { ValidateDto } from 'src/validates/validate.common.dto';
-import { LookupCommon } from 'src/utils/lookup.query.aggregate-query';
 import { collections } from 'src/constants/collections.name';
+import { LookupService } from 'src/utils/lookup.query.service';
 
 @Injectable()
 export class SchoolService {
@@ -44,7 +44,7 @@ export class SchoolService {
 
   async findSchoolById(id: string): Promise<School_Info> {
     const match = { $match: { _id: new Types.ObjectId(id) } };
-    const lookup = this.lookupSchool();
+    const lookup = new LookupService().school();
     const aggregate = [match, ...lookup];
     const results = await this.schoolSchema.aggregate(aggregate);
     if (!results[0]) {
@@ -86,63 +86,8 @@ export class SchoolService {
 
   async findAllSchool(): Promise<School_Info[]> {
     const match = { $match: { isDeleted: false } };
-    const lookup = this.lookupSchool();
+    const lookup = new LookupService().school();
     const result = await this.schoolSchema.aggregate([match, ...lookup]);
     return result;
-  }
-
-  private lookupSchool() {
-    const lookup: any = new LookupCommon([
-      {
-        from: collections.attachments,
-        localField: 'image',
-        foreignField: '_id',
-        as: 'image',
-        unwind: false,
-      },
-      {
-        from: collections.awards,
-        localField: 'award',
-        foreignField: '_id',
-        as: 'award',
-        unwind: false,
-      },
-      {
-        from: collections.attachments,
-        localField: 'policy.attachment',
-        foreignField: '_id',
-        as: 'attachmentPolicy',
-        unwind: false,
-      },
-      {
-        from: collections.countries,
-        localField: 'location.country',
-        foreignField: '_id',
-        as: 'country',
-        unwind: false,
-      },
-      {
-        from: collections.provinces,
-        localField: 'location.province',
-        foreignField: '_id',
-        as: 'province',
-        unwind: false,
-      },
-      {
-        from: collections.districts,
-        localField: 'location.district',
-        foreignField: '_id',
-        as: 'district',
-        unwind: false,
-      },
-      {
-        from: collections.wards,
-        localField: 'location.ward',
-        foreignField: '_id',
-        as: 'ward',
-        unwind: false,
-      },
-    ]);
-    return lookup;
   }
 }

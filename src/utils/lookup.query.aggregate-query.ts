@@ -1,13 +1,13 @@
+export class IlookupInterface {
+  from: string;
+  localField: string;
+  foreignField: string;
+  as: string;
+  unwind: boolean;
+}
+
 export class LookupCommon {
-  constructor(
-    listFields: {
-      from: string;
-      localField: string;
-      foreignField: string;
-      as: string;
-      unwind: boolean;
-    }[],
-  ) {
+  constructor(listFields: IlookupInterface[]) {
     const results = [];
     for (const obj of listFields) {
       const lookup = {

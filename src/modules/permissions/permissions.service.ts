@@ -3,7 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { collections } from 'src/constants/collections.name';
 import { CommonException } from 'src/exceptions/exeception.common-error';
-import { LookupCommon } from 'src/utils/lookup.query.aggregate-query';
+import { LookupService } from 'src/utils/lookup.query.service';
 import { Pagination } from 'src/utils/page.pagination';
 import { ValidateDto } from 'src/validates/validate.common.dto';
 import { CreatePermissionDto } from './dtos/permissions.create.dto';
@@ -53,7 +53,7 @@ export class PermissionsService {
 
   async findAdminPermissionById(id: string): Promise<Admin_Permission> {
     const match = [{ $match: { _id: new Types.ObjectId(id) } }];
-    const lookup = this.lookupPermission();
+    const lookup = new LookupService().permission();
     const aggregate = [match, ...lookup];
     const result = await this.permissionSchema.aggregate(aggregate);
     if (!result[0]) {
@@ -71,7 +71,7 @@ export class PermissionsService {
       match.$match = { user: new Types.ObjectId(user) };
     }
     let agg = [match];
-    const lookup: any = this.lookupPermission();
+    const lookup = new LookupService().permission();
     agg = [...agg, ...lookup];
     if (searchKey) {
       const matchSearchKey = {
@@ -98,18 +98,5 @@ export class PermissionsService {
       deletedAt: Date.now(),
     };
     await this.permissionSchema.findByIdAndUpdate(id, dto);
-  }
-
-  private lookupPermission() {
-    const lookup: any = new LookupCommon([
-      {
-        from: collections.profiles,
-        localField: 'user',
-        foreignField: '_id',
-        as: 'user',
-        unwind: true,
-      },
-    ]);
-    return lookup;
   }
 }

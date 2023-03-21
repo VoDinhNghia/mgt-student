@@ -3,7 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { collections } from 'src/constants/collections.name';
 import { CommonException } from 'src/exceptions/exeception.common-error';
-import { LookupCommon } from 'src/utils/lookup.query.aggregate-query';
+import { LookupService } from 'src/utils/lookup.query.service';
 import { Pagination } from 'src/utils/page.pagination';
 import { ValidateDto } from 'src/validates/validate.common.dto';
 import { CreateAwardDto } from './dtos/awards.create.dto';
@@ -37,7 +37,7 @@ export class AwardsService {
 
   async findAwardById(id: string): Promise<Award> {
     const match = { $match: { _id: new Types.ObjectId(id) } };
-    const lookup = this.lookupAward();
+    const lookup = new LookupService().award();
     const aggregate = [match, ...lookup];
     const result = await this.awardSchema.aggregate(aggregate);
     if (!result[0]) {
@@ -85,7 +85,7 @@ export class AwardsService {
     if (fromDate && !toDate) {
       match.$match.time = { $gte: fromDate, $lt: toDate };
     }
-    const lookup = this.lookupAward();
+    const lookup = new LookupService().award();
     const aggregatePagi: any = new Pagination(limit, page, [match]);
     const aggregate = [...aggregatePagi, ...lookup];
     const result = await this.awardSchema.aggregate(aggregate);
@@ -94,18 +94,5 @@ export class AwardsService {
       data: result,
       countTotal: countDocument,
     };
-  }
-
-  private lookupAward() {
-    const lookup: any = new LookupCommon([
-      {
-        from: collections.attachments,
-        localField: 'attachment',
-        foreignField: '_id',
-        as: 'attachment',
-        unwind: false,
-      },
-    ]);
-    return lookup;
   }
 }

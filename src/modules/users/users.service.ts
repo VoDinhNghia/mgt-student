@@ -29,10 +29,10 @@ import {
 } from './schemas/study-process.schema';
 import { CreateStudyProcessDto } from './dto/study-process.create.dto';
 import { InitSuperAdminDto } from '../auth/dtos/auth.init-super-admin.dto';
-import { LookupCommon } from 'src/utils/lookup.query.aggregate-query';
 import { ValidateDto } from 'src/validates/validate.common.dto';
 import { UsersUpdateDto } from './dto/user.update.dto';
 import { collections } from 'src/constants/collections.name';
+import { LookupService } from 'src/utils/lookup.query.service';
 
 @Injectable()
 export class UsersService {
@@ -103,7 +103,7 @@ export class UsersService {
 
   async findUserById(id: string | any): Promise<Users | any> {
     const match = { $match: { _id: new Types.ObjectId(id) } };
-    const lookup = this.lookupUser();
+    const lookup = new LookupService().user();
     const aggregate = [match, ...lookup];
     const result = await this.userSchema.aggregate(aggregate);
     if (!result[0]) {
@@ -123,7 +123,7 @@ export class UsersService {
     if (status) {
       match.$match.status = status;
     }
-    const lookup = this.lookupUser();
+    const lookup = new LookupService().user();
     let aggregate = [match, ...lookup];
     if (searchKey) {
       aggregate = [
@@ -342,7 +342,7 @@ export class UsersService {
 
   async findLeaderSchoolById(id: string): Promise<Leader_Schools> {
     const match = { $match: { _id: new Types.ObjectId(id) } };
-    const lookup = this.lookupProfile();
+    const lookup = new LookupService().profile();
     const aggregate = [match, ...lookup];
     const result = await this.leaderSchoolSchema.aggregate(aggregate);
     if (!result[0]) {
@@ -374,7 +374,7 @@ export class UsersService {
     if (user) {
       match.$match.user = new Types.ObjectId(user);
     }
-    const lookup = this.lookupProfile();
+    const lookup = new LookupService().profile();
     const aggregate = [match, ...lookup];
     const results = await this.leaderSchoolSchema.aggregate(aggregate);
     return results;
@@ -428,31 +428,5 @@ export class UsersService {
     if (classId) {
       await validate.fieldId(collections.class_infos, classId);
     }
-  }
-
-  private lookupUser() {
-    const lookup: any = new LookupCommon([
-      {
-        from: collections.profiles,
-        localField: '_id',
-        foreignField: 'user',
-        as: 'profile',
-        unwind: true,
-      },
-    ]);
-    return lookup;
-  }
-
-  private lookupProfile() {
-    const lookup: any = new LookupCommon([
-      {
-        from: collections.profiles,
-        localField: 'user',
-        foreignField: '_id',
-        as: 'profile',
-        unwind: true,
-      },
-    ]);
-    return lookup;
   }
 }

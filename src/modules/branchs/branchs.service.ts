@@ -3,7 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { collections } from 'src/constants/collections.name';
 import { CommonException } from 'src/exceptions/exeception.common-error';
-import { LookupCommon } from 'src/utils/lookup.query.aggregate-query';
+import { LookupService } from 'src/utils/lookup.query.service';
 import { Pagination } from 'src/utils/page.pagination';
 import { ValidateDto } from 'src/validates/validate.common.dto';
 import { BranchCreateDto } from './dtos/branchs.create.dto';
@@ -44,7 +44,7 @@ export class BranchService {
     const match: Record<string, any> = {
       $match: { id: new Types.ObjectId(id) },
     };
-    const lookup = this.lookupBranch();
+    const lookup = new LookupService().branch();
     const aggregate = [match, ...lookup];
     const result = await this.branchSchema.aggregate(aggregate);
     if (!result[0]) {
@@ -60,7 +60,7 @@ export class BranchService {
     if (searchKey) {
       match.$match.name = new RegExp(searchKey);
     }
-    const lookup = this.lookupBranch();
+    const lookup = new LookupService().branch();
     const aggregatePag: any = new Pagination(limit, page, [match]);
     const aggregate = [...aggregatePag, ...lookup];
     const result = await this.branchSchema.aggregate(aggregate);
@@ -80,39 +80,5 @@ export class BranchService {
       updatedAt: Date.now(),
     };
     await this.branchSchema.findByIdAndUpdate(id, dto);
-  }
-
-  private lookupBranch() {
-    const lookup: any = new LookupCommon([
-      {
-        from: collections.countries,
-        localField: 'location.country',
-        foreignField: '_id',
-        as: 'country',
-        unwind: true,
-      },
-      {
-        from: collections.provinces,
-        localField: 'location.province',
-        foreignField: '_id',
-        as: 'province',
-        unwind: true,
-      },
-      {
-        from: collections.districts,
-        localField: 'location.district',
-        foreignField: '_id',
-        as: 'district',
-        unwind: true,
-      },
-      {
-        from: collections.wards,
-        localField: 'location.ward',
-        foreignField: '_id',
-        as: 'ward',
-        unwind: true,
-      },
-    ]);
-    return lookup;
   }
 }

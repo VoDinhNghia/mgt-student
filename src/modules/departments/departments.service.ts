@@ -19,9 +19,9 @@ import { ErolesUser, EroomType } from 'src/constants/constant';
 import { UpdateDepartmentDto } from './dtos/department.update.dto';
 import { Users, UsersDocument } from '../users/schemas/users.schema';
 import { UpdateStaffDepartmentDto } from './dtos/department.staff.update.dto';
-import { LookupCommon } from 'src/utils/lookup.query.aggregate-query';
 import { ValidateDto } from 'src/validates/validate.common.dto';
 import { collections } from 'src/constants/collections.name';
+import { LookupService } from 'src/utils/lookup.query.service';
 
 @Injectable()
 export class DepartmentsService {
@@ -103,7 +103,7 @@ export class DepartmentsService {
     const match: Record<string, any> = {
       $match: { _id: new Types.ObjectId(id) },
     };
-    const lookup = this.lookupDepartment();
+    const lookup = new LookupService().department();
     const aggregate = [match, ...lookup];
     const result = await this.deparmentSchema.aggregate(aggregate);
     if (!result[0]) {
@@ -114,7 +114,7 @@ export class DepartmentsService {
 
   async findAllDepartment(): Promise<Departments[]> {
     const match = { $match: { isDeleted: false } };
-    const aggregateLookup = this.lookupDepartment();
+    const aggregateLookup = new LookupService().department();
     const aggregate = [match, ...aggregateLookup];
     const results = await this.deparmentSchema.aggregate(aggregate);
     return results;
@@ -213,46 +213,5 @@ export class DepartmentsService {
       .populate('user', '', this.userSchema)
       .exec();
     return staffInfo;
-  }
-
-  private lookupDepartment() {
-    const lookup: any = new LookupCommon([
-      {
-        from: collections.profiles,
-        localField: 'manager',
-        foreignField: '_id',
-        as: 'manager',
-        unwind: true,
-      },
-      {
-        from: collections.attachments,
-        localField: 'attachment',
-        foreignField: '_id',
-        as: 'attachment',
-        unwind: false,
-      },
-      {
-        from: collections.rooms,
-        localField: 'contacts.office',
-        foreignField: '_id',
-        as: 'office',
-        unwind: true,
-      },
-      {
-        from: collections.department_staffs,
-        localField: '_id',
-        foreignField: 'department',
-        as: 'departmentStaff',
-        unwind: true,
-      },
-      {
-        from: collections.profiles,
-        localField: 'departmentStaff.staff',
-        foreignField: '_id',
-        as: 'staffLists',
-        unwind: true,
-      },
-    ]);
-    return lookup;
   }
 }
