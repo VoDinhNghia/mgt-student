@@ -1,7 +1,8 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { Document } from 'mongoose';
-import { collectionNames, schoolId } from 'src/constants/constant';
+import { collections } from 'src/constants/collections.name';
+import { schoolId } from 'src/constants/constant';
 import { FieldsCommonSchema } from 'src/utils/fields-common.schema';
 
 export type SchoolInfoDocument = School_Info & Document;
@@ -25,13 +26,13 @@ export class School_Info extends FieldsCommonSchema {
 
   @Prop({
     type: [mongoose.Schema.Types.ObjectId],
-    ref: collectionNames.attachments,
+    ref: collections.attachments,
   })
   image?: [mongoose.Types.ObjectId];
 
   @Prop({
     type: [mongoose.Schema.Types.ObjectId],
-    ref: collectionNames.awards,
+    ref: collections.awards,
   })
   award?: [mongoose.Types.ObjectId];
 
@@ -39,19 +40,19 @@ export class School_Info extends FieldsCommonSchema {
     type: {
       country: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: collectionNames.countries,
+        ref: collections.countries,
       },
       province: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: collectionNames.provinces,
+        ref: collections.provinces,
       },
       district: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: collectionNames.districts,
+        ref: collections.districts,
       },
       ward: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: collectionNames.wards,
+        ref: collections.wards,
       },
       address: String,
     },
@@ -82,7 +83,7 @@ export class School_Info extends FieldsCommonSchema {
       {
         attachment: {
           type: mongoose.Schema.Types.ObjectId,
-          ref: collectionNames.attachments,
+          ref: collections.attachments,
         },
         name: String,
         effectiveDate: Date,

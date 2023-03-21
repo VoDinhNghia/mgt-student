@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { Document } from 'mongoose';
-import { collectionNames } from 'src/constants/constant';
+import { collections } from 'src/constants/collections.name';
 import { FieldsCommonSchema } from 'src/utils/fields-common.schema';
 
 export type ClassInfosDocument = Class_Infos & Document;
@@ -13,25 +13,25 @@ export class Class_Infos extends FieldsCommonSchema {
 
   @Prop({
     type: mongoose.Schema.Types.ObjectId,
-    ref: collectionNames.courses,
+    ref: collections.courses,
   })
   course?: mongoose.Types.ObjectId;
 
   @Prop({
     type: mongoose.Schema.Types.ObjectId,
-    ref: collectionNames.degreelevels,
+    ref: collections.degreelevels,
   })
   degreeLevel?: mongoose.Types.ObjectId;
 
   @Prop({
     type: mongoose.Schema.Types.ObjectId,
-    ref: collectionNames.majors,
+    ref: collections.majors,
   })
   major?: mongoose.Types.ObjectId;
 
   @Prop({
     type: mongoose.Schema.Types.ObjectId,
-    ref: collectionNames.profiles,
+    ref: collections.profiles,
   })
   homeroomteacher?: mongoose.Types.ObjectId;
 

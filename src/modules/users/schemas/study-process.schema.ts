@@ -1,7 +1,8 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { Document } from 'mongoose';
-import { collectionNames, EstatusUserProfile } from 'src/constants/constant';
+import { collections } from 'src/constants/collections.name';
+import { EstatusUserProfile } from 'src/constants/constant';
 import { FieldsCommonSchema } from 'src/utils/fields-common.schema';
 
 export type StudyProcessDocument = Study_Processes & Document;
@@ -10,7 +11,7 @@ export type StudyProcessDocument = Study_Processes & Document;
 export class Study_Processes extends FieldsCommonSchema {
   @Prop({
     type: mongoose.Schema.Types.ObjectId,
-    ref: collectionNames.profiles,
+    ref: collections.profiles,
     required: true,
   })
   user?: mongoose.Types.ObjectId;

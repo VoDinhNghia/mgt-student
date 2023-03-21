@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { Document } from 'mongoose';
-import { collectionNames } from 'src/constants/constant';
+import { collections } from 'src/constants/collections.name';
 import { FieldsCommonSchema } from 'src/utils/fields-common.schema';
 
 export type DistrictDocument = Districts & Document;
@@ -12,14 +12,14 @@ export class Districts extends FieldsCommonSchema {
 
   @Prop({
     type: mongoose.Schema.Types.ObjectId,
-    ref: collectionNames.countries,
+    ref: collections.countries,
     required: true,
   })
   countryId: mongoose.Types.ObjectId;
 
   @Prop({
     type: mongoose.Schema.Types.ObjectId,
-    ref: collectionNames.provinces,
+    ref: collections.provinces,
     required: true,
   })
   provinceId: mongoose.Types.ObjectId;

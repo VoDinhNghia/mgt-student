@@ -4,12 +4,10 @@ import { Model } from 'mongoose';
 import { LookupCommon } from 'src/utils/lookup.query.aggregate-query';
 import { Users, UsersDocument } from '../users/schemas/users.schema';
 import { Http } from 'src/utils/http.sync-service';
-import {
-  collectionNames,
-  keyAccessLibraryService,
-} from 'src/constants/constant';
+import { keyAccessLibraryService } from 'src/constants/constant';
 import { GetCurrentDate } from 'src/utils/get.current-date';
 import { ConfigService } from '@nestjs/config';
+import { collections } from 'src/constants/collections.name';
 
 @Injectable()
 export class SyncServiceService {
@@ -57,7 +55,7 @@ export class SyncServiceService {
   private lookupUser() {
     const lookup: any = new LookupCommon([
       {
-        from: collectionNames.profiles,
+        from: collections.profiles,
         localField: '_id',
         foreignField: 'user',
         as: 'profile',

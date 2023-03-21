@@ -9,7 +9,6 @@ import {
   EstatusUserProfile,
   ErolesUser,
   EstatusUser,
-  collectionNames,
 } from 'src/constants/constant';
 import { UsersFillterDto } from './dto/user.filter.dto';
 import { validateEmail } from 'src/validates/validate.email';
@@ -33,6 +32,7 @@ import { InitSuperAdminDto } from '../auth/dtos/auth.init-super-admin.dto';
 import { LookupCommon } from 'src/utils/lookup.query.aggregate-query';
 import { ValidateDto } from 'src/validates/validate.common.dto';
 import { UsersUpdateDto } from './dto/user.update.dto';
+import { collections } from 'src/constants/collections.name';
 
 @Injectable()
 export class UsersService {
@@ -176,7 +176,7 @@ export class UsersService {
     await this.validateProfileDto(profileDto);
     if (award.length > 0) {
       const awardIds = await new ValidateDto().idLists(
-        collectionNames.awards,
+        collections.awards,
         award,
       );
       profileDto.award = awardIds;
@@ -269,7 +269,7 @@ export class UsersService {
     await this.validateEmailUser(email);
     const option = { role: ErolesUser.SUPPER_ADMIN };
     await new ValidateDto().existedByOptions(
-      collectionNames.users,
+      collections.users,
       option,
       'Supper Admin',
     );
@@ -309,7 +309,7 @@ export class UsersService {
       const validate = new ValidateDto();
       const option = { user: profileDto.user };
       await validate.existedByOptions(
-        collectionNames.profiles,
+        collections.profiles,
         option,
         'User profile',
       );
@@ -328,7 +328,7 @@ export class UsersService {
   ): Promise<Leader_Schools> {
     const { user } = leaderDto;
     const validate = new ValidateDto();
-    await validate.fieldId(collectionNames.profiles, user);
+    await validate.fieldId(collections.profiles, user);
     const option = { user: new Types.ObjectId(user) };
     await validate.existedByOptions('leaderschools', option, 'Leader school');
     const dto = {
@@ -414,26 +414,26 @@ export class UsersService {
     const validate = new ValidateDto();
     const { major, faculty, course, degreeLevel, classId } = fields;
     if (major) {
-      await validate.fieldId(collectionNames.majors, major);
+      await validate.fieldId(collections.majors, major);
     }
     if (faculty) {
-      await validate.fieldId(collectionNames.faculties, faculty);
+      await validate.fieldId(collections.faculties, faculty);
     }
     if (course) {
-      await validate.fieldId(collectionNames.courses, course);
+      await validate.fieldId(collections.courses, course);
     }
     if (degreeLevel) {
-      await validate.fieldId(collectionNames.degreelevels, degreeLevel);
+      await validate.fieldId(collections.degreelevels, degreeLevel);
     }
     if (classId) {
-      await validate.fieldId(collectionNames.class_infos, classId);
+      await validate.fieldId(collections.class_infos, classId);
     }
   }
 
   private lookupUser() {
     const lookup: any = new LookupCommon([
       {
-        from: collectionNames.profiles,
+        from: collections.profiles,
         localField: '_id',
         foreignField: 'user',
         as: 'profile',
@@ -446,7 +446,7 @@ export class UsersService {
   private lookupProfile() {
     const lookup: any = new LookupCommon([
       {
-        from: collectionNames.profiles,
+        from: collections.profiles,
         localField: 'user',
         foreignField: '_id',
         as: 'profile',

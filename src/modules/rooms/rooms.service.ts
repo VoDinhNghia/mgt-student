@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { collectionNames } from 'src/constants/constant';
+import { collections } from 'src/constants/collections.name';
 import { CommonException } from 'src/exceptions/exeception.common-error';
 import { Pagination } from 'src/utils/page.pagination';
 import { ValidateDto } from 'src/validates/validate.common.dto';
@@ -20,11 +20,7 @@ export class RoomsService {
   async createRoom(roomDto: CreateRoomDto, createdBy: string): Promise<Rooms> {
     const { name } = roomDto;
     const option = { name: name?.trim() };
-    await new ValidateDto().existedByOptions(
-      collectionNames.rooms,
-      option,
-      'Room',
-    );
+    await new ValidateDto().existedByOptions(collections.rooms, option, 'Room');
     const dto = {
       ...roomDto,
       createdBy,

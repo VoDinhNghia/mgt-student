@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
-import { collectionNames } from 'src/constants/constant';
+import { collections } from 'src/constants/collections.name';
 import { CommonException } from 'src/exceptions/exeception.common-error';
 import { LookupCommon } from 'src/utils/lookup.query.aggregate-query';
 import { ValidateDto } from 'src/validates/validate.common.dto';
@@ -39,7 +39,7 @@ export class ClassSubjectService {
   ): Promise<Class_Infos> {
     const options = { name: createClassDto.name?.trim() };
     await new ValidateDto().existedByOptions(
-      collectionNames.class_infos,
+      collections.class_infos,
       options,
       'Class name',
     );
@@ -158,39 +158,39 @@ export class ClassSubjectService {
     } = dtos;
     const validate = new ValidateDto();
     if (course) {
-      await validate.fieldId(collectionNames.courses, course);
+      await validate.fieldId(collections.courses, course);
     }
     if (homeroomteacher) {
-      await validate.fieldId(collectionNames.profiles, homeroomteacher);
+      await validate.fieldId(collections.profiles, homeroomteacher);
     }
     if (lecturer) {
-      await validate.fieldId(collectionNames.profiles, lecturer);
+      await validate.fieldId(collections.profiles, lecturer);
     }
     if (semester) {
-      await validate.fieldId(collectionNames.semesters, semester);
+      await validate.fieldId(collections.semesters, semester);
     }
     if (faculty) {
-      await validate.fieldId(collectionNames.faculties, faculty);
+      await validate.fieldId(collections.faculties, faculty);
     }
     if (major) {
-      await validate.fieldId(collectionNames.majors, major);
+      await validate.fieldId(collections.majors, major);
     }
     if (degreeLevel) {
-      await validate.fieldId(collectionNames.degreelevels, degreeLevel);
+      await validate.fieldId(collections.degreelevels, degreeLevel);
     }
   }
 
   private lookupClass() {
     const lookup: any = new LookupCommon([
       {
-        from: collectionNames.degreelevels,
+        from: collections.degreelevels,
         localField: 'degreeLevel',
         foreignField: '_id',
         as: 'degreeLevel',
         unwind: true,
       },
       {
-        from: collectionNames.profiles,
+        from: collections.profiles,
         localField: 'homeroomteacher',
         foreignField: '_id',
         as: 'homeroomteacher',
@@ -203,21 +203,21 @@ export class ClassSubjectService {
   private lookupSubject() {
     const lookup: any = new LookupCommon([
       {
-        from: collectionNames.semesters,
+        from: collections.semesters,
         localField: 'semester',
         foreignField: '_id',
         as: 'semester',
         unwind: true,
       },
       {
-        from: collectionNames.profiles,
+        from: collections.profiles,
         localField: 'lecturer',
         foreignField: '_id',
         as: 'lecturer',
         unwind: true,
       },
       {
-        from: collectionNames.subject_processes,
+        from: collections.subject_processes,
         localField: '_id',
         foreignField: 'subject',
         as: 'process',
@@ -230,14 +230,14 @@ export class ClassSubjectService {
   private lookupCommon() {
     const lookup: any = new LookupCommon([
       {
-        from: collectionNames.courses,
+        from: collections.courses,
         localField: 'course',
         foreignField: '_id',
         as: 'course',
         unwind: true,
       },
       {
-        from: collectionNames.majors,
+        from: collections.majors,
         localField: 'major',
         foreignField: '_id',
         as: 'major',

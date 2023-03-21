@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
-import { collectionNames } from 'src/constants/constant';
+import { collections } from 'src/constants/collections.name';
 import { CommonException } from 'src/exceptions/exeception.common-error';
 import { LookupCommon } from 'src/utils/lookup.query.aggregate-query';
 import { QueryService } from 'src/utils/query.service';
@@ -25,7 +25,7 @@ export class UnionsService {
       for (const item of images) {
         const options = { _id: new Types.ObjectId(item.attachment) };
         const result = await queryService.findOneByOptions(
-          collectionNames.attachments,
+          collections.attachments,
           options,
         );
         if (result) {
@@ -39,7 +39,7 @@ export class UnionsService {
       for (const item of members) {
         const options = { _id: new Types.ObjectId(item.user) };
         const result = await queryService.findOneByOptions(
-          collectionNames.profiles,
+          collections.profiles,
           options,
         );
         if (result) {
@@ -109,14 +109,14 @@ export class UnionsService {
   private lookupUnion() {
     const lookup: any = new LookupCommon([
       {
-        from: collectionNames.profiles,
+        from: collections.profiles,
         localField: 'members.user',
         foreignField: '_id',
         as: 'user',
         unwind: true,
       },
       {
-        from: collectionNames.attachments,
+        from: collections.attachments,
         localField: 'images.attachment',
         foreignField: '_id',
         as: 'attachment',
