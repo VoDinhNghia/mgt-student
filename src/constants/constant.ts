@@ -79,15 +79,6 @@ export enum EuserGender {
   FEMALE = 'Female',
 }
 
-export const linkAccessService = {
-  COURSE: 'http://localhost:3003',
-  LIBRARY: 'http://localhost:3002',
-  ATTENDANCE: 'http://localhost:3001',
-  ADMIN_FRONTEND: 'http://localhost:8000',
-  FRONTEND: 'http://localhost:8001',
-  LIBRARY_FRONTEND: 'http://localhost:8002',
-};
-
 export const trainningPointDefault = 60;
 
 export const considerConditionScholarshipPoint = 6.5;
@@ -100,3 +91,8 @@ export enum Epermission {
 }
 
 export const expiresInJwt = '7d';
+
+export const nameCollectionsMongo = {
+  users: 'users',
+  profiles: 'profiles',
+};

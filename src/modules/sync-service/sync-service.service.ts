@@ -4,21 +4,20 @@ import { Model } from 'mongoose';
 import { LookupCommon } from 'src/utils/lookup.query.aggregate-query';
 import { Users, UsersDocument } from '../users/schemas/users.schema';
 import { Http } from 'src/utils/http.sync-service';
-import {
-  keyAccessLibraryService,
-  linkAccessService,
-} from 'src/constants/constant';
+import { keyAccessLibraryService } from 'src/constants/constant';
 import { GetCurrentDate } from 'src/utils/get.current-date';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class SyncServiceService {
   constructor(
     @InjectModel(Users.name)
     private readonly userSchema: Model<UsersDocument>,
+    private readonly configService: ConfigService,
   ) {}
 
   async migrateUser() {
-    const url = `${linkAccessService.LIBRARY}/api/users/migrate`;
+    const url = `${this.configService.get('LIBRARY')}/api/users/migrate`;
     const body = await this.getAllUsers();
     const result = await new Http().post(url, keyAccessLibraryService, body);
     if (!result) {
