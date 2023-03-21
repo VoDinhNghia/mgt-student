@@ -1,14 +1,12 @@
 import { Injectable } from '@nestjs/common';
-import { AuthenChatService } from './chat.auth-user';
+import { JwtStrategy } from '../auth/guards/jwt.strategy';
 
 @Injectable()
 export class ChatService {
-  constructor(private readonly authentchatService: AuthenChatService) {}
+  constructor(private readonly jwtStrategy: JwtStrategy) {}
 
   async getUserFromSocket(token: string) {
-    const user = await this.authentchatService.getUserFromAuthenticationToken(
-      token,
-    );
+    const user = await this.jwtStrategy.verifyToken(token);
     console.log('userr', user);
     return user;
   }
