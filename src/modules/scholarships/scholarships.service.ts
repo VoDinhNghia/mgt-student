@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
+import { collections } from 'src/constants/collections.name';
 import {
   considerConditionScholarshipPoint,
   EstatusUserProfile,
@@ -41,14 +42,18 @@ export class ScholarshipService {
     const { semester, name } = scholarshipDto;
     const validate = new ValidateDto();
     if (semester) {
-      await validate.fieldId('semesters', semester);
+      await validate.fieldId(collections.semesters, semester);
     }
     if (name) {
       const options = {
         semester: new Types.ObjectId(semester),
         name: name.trim(),
       };
-      await validate.existedByOptions('scholarships', options, 'Scholarship');
+      await validate.existedByOptions(
+        collections.scholarships,
+        options,
+        'Scholarship',
+      );
     }
   }
 
@@ -129,14 +134,14 @@ export class ScholarshipService {
     }
     const lookup: any = new LookupCommon([
       {
-        from: 'scholarships',
+        from: collections.scholarships,
         localField: 'scholarship',
         foreignField: '_id',
         as: 'scholarship',
         unwind: true,
       },
       {
-        from: 'profiles',
+        from: collections.profiles,
         localField: 'user',
         foreignField: '_id',
         as: 'user',
@@ -176,7 +181,7 @@ export class ScholarshipService {
       user: new Types.ObjectId(profile),
     };
     const result = await new QueryService().findOneByOptions(
-      'payment_study_fees',
+      collections.payment_study_fees,
       options,
     );
     return result;
@@ -189,7 +194,7 @@ export class ScholarshipService {
     const queryService = new QueryService();
     const optionFindOne = { _id: new Types.ObjectId(semester) };
     const semesterInfo = await queryService.findOneByOptions(
-      'semesters',
+      collections.semesters,
       optionFindOne,
     );
     if (!semesterInfo) {
@@ -197,7 +202,7 @@ export class ScholarshipService {
     }
     const optionFind = { status: EstatusUserProfile.STUDYING };
     const studyProcessLists = await queryService.findByOptions(
-      'study_processes',
+      collections.study_processes,
       optionFind,
     );
     const data = [];
@@ -295,7 +300,7 @@ export class ScholarshipService {
   ): Promise<number> {
     const lookup: any = new LookupCommon([
       {
-        from: 'voluntee_programs',
+        from: collections.voluntee_programs,
         localField: 'program',
         foreignField: '_id',
         as: 'program',
@@ -313,7 +318,7 @@ export class ScholarshipService {
       ...lookup,
     ];
     const results = await new QueryService().findByAggregate(
-      'trainning_points',
+      collections.trainning_points,
       aggregate,
     );
     const totalTrainningPoint = results.reduce(
@@ -327,7 +332,7 @@ export class ScholarshipService {
   private lookupSemesterScholarship() {
     const lookup: any = new LookupCommon([
       {
-        from: 'semesters',
+        from: collections.semesters,
         localField: 'semester',
         foreignField: '_id',
         as: 'semester',

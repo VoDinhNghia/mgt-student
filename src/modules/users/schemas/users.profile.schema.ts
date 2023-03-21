@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { Document } from 'mongoose';
+import { collections } from 'src/constants/collections.name';
 import { EuserGender } from 'src/constants/constant';
 import { FieldsCommonSchema } from 'src/utils/fields-common.schema';
 import { getRandomCode } from 'src/utils/generate.code-profile';
@@ -10,7 +11,7 @@ export type ProfileDocument = Profile & Document;
 export class Profile extends FieldsCommonSchema {
   @Prop({
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'users',
+    ref: collections.users,
     required: true,
   })
   user: mongoose.Types.ObjectId;
@@ -23,25 +24,25 @@ export class Profile extends FieldsCommonSchema {
 
   @Prop({
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'faculties',
+    ref: collections.faculties,
   })
   faculty?: mongoose.Types.ObjectId;
 
   @Prop({
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'majors',
+    ref: collections.majors,
   })
   major?: mongoose.Types.ObjectId;
 
   @Prop({
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'courses',
+    ref: collections.courses,
   })
   course?: mongoose.Types.ObjectId;
 
   @Prop({
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'degreelevels',
+    ref: collections.degreelevels,
   })
   degreeLevel?: mongoose.Types.ObjectId; // Formal university, College...
 
@@ -87,7 +88,7 @@ export class Profile extends FieldsCommonSchema {
 
   @Prop({
     type: [mongoose.Types.ObjectId],
-    ref: 'awards',
+    ref: collections.awards,
   })
   award?: [mongoose.Types.ObjectId];
 
@@ -95,7 +96,7 @@ export class Profile extends FieldsCommonSchema {
     type: {
       country: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'countries',
+        ref: collections.countries,
       },
       province: String,
       state: String,

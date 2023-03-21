@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
+import { collections } from 'src/constants/collections.name';
 import { CommonException } from 'src/exceptions/exeception.common-error';
 import { ValidateDto } from 'src/validates/validate.common.dto';
 import { CreateCourseDto } from './dtos/courses.create.dto';
@@ -19,7 +20,7 @@ export class CoursesService {
     if (name) {
       const options = { name: name.trim() };
       await new ValidateDto().existedByOptions(
-        'courses',
+        collections.courses,
         options,
         'Course name',
       );

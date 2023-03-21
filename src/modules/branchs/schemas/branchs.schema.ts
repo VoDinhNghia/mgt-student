@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { Document } from 'mongoose';
+import { collections } from 'src/constants/collections.name';
 import { FieldsCommonSchema } from 'src/utils/fields-common.schema';
 
 export type BranchDocument = Branch & Document;
@@ -22,19 +23,19 @@ export class Branch extends FieldsCommonSchema {
     type: {
       country: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'countries',
+        ref: collections.countries,
       },
       province: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'provinces',
+        ref: collections.provinces,
       },
       district: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'districts',
+        ref: collections.districts,
       },
       ward: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'wards',
+        ref: collections.wards,
       },
       address: String,
     },

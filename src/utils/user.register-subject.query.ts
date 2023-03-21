@@ -1,4 +1,5 @@
 import { ObjectId, Types } from 'mongoose';
+import { collections } from 'src/constants/collections.name';
 import { DbConnection } from 'src/constants/db.mongo.connection';
 import { CommonException } from 'src/exceptions/exeception.common-error';
 
@@ -7,7 +8,9 @@ export class SubjectUserRegister {
 
   async findOneStudyProcess(profile: string) {
     const query = { user: new Types.ObjectId(profile), isDeleted: false };
-    const result = await this.db.collection('study_processes').findOne(query);
+    const result = await this.db
+      .collection(collections.study_processes)
+      .findOne(query);
     if (!result) {
       new CommonException(404, 'user study processes not found.');
     }
@@ -30,7 +33,7 @@ export class SubjectUserRegister {
       match,
       {
         $lookup: {
-          from: 'subjects',
+          from: collections.subjects,
           localField: 'subject',
           foreignField: '_id',
           as: 'subject',
@@ -39,7 +42,7 @@ export class SubjectUserRegister {
       { $unwind: '$subject' },
     ];
     const cursorAgg = await this.db
-      .collection('subject_registers')
+      .collection(collections.subject_registers)
       .aggregate(aggregate);
     const result = await cursorAgg.toArray();
     return result ?? [];
@@ -51,7 +54,9 @@ export class SubjectUserRegister {
       status: true,
       isDeleted: false,
     };
-    const cursorQuery = await this.db.collection('subjects').find(query);
+    const cursorQuery = await this.db
+      .collection(collections.subjects)
+      .find(query);
     const subjectList = await cursorQuery.toArray();
     const subjectIds = subjectList.map((subject: any) => {
       return subject._id;

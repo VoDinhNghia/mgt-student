@@ -21,6 +21,7 @@ import { Users, UsersDocument } from '../users/schemas/users.schema';
 import { UpdateStaffDepartmentDto } from './dtos/department.staff.update.dto';
 import { LookupCommon } from 'src/utils/lookup.query.aggregate-query';
 import { ValidateDto } from 'src/validates/validate.common.dto';
+import { collections } from 'src/constants/collections.name';
 
 @Injectable()
 export class DepartmentsService {
@@ -46,10 +47,10 @@ export class DepartmentsService {
         _id: new Types.ObjectId(contacts?.office),
         type: EroomType.OFFICE_DEPARTMENT,
       };
-      await validate.fieldOptions('rooms', options, 'Room');
+      await validate.fieldOptions(collections.rooms, options, 'Room');
     }
     if (manager) {
-      await validate.fieldId('profiles', manager);
+      await validate.fieldId(collections.profiles, manager);
     }
   }
 
@@ -60,7 +61,10 @@ export class DepartmentsService {
     const { attachment = [] } = departmentDto;
     await this.validateDepartmentDto(departmentDto);
     if (attachment.length > 0) {
-      const ids = await new ValidateDto().idLists('attachments', attachment);
+      const ids = await new ValidateDto().idLists(
+        collections.attachments,
+        attachment,
+      );
       departmentDto.attachment = ids;
     }
     const newDocument = await new this.deparmentSchema({
@@ -79,7 +83,10 @@ export class DepartmentsService {
     const { attachment = [] } = departmentDto;
     await this.validateDepartmentDto(departmentDto);
     if (attachment.length > 0) {
-      const ids = await new ValidateDto().idLists('attachments', attachment);
+      const ids = await new ValidateDto().idLists(
+        collections.attachments,
+        attachment,
+      );
       departmentDto.attachment = ids;
     }
     const dto = {
@@ -211,35 +218,35 @@ export class DepartmentsService {
   private lookupDepartment() {
     const lookup: any = new LookupCommon([
       {
-        from: 'profiles',
+        from: collections.profiles,
         localField: 'manager',
         foreignField: '_id',
         as: 'manager',
         unwind: true,
       },
       {
-        from: 'attachments',
+        from: collections.attachments,
         localField: 'attachment',
         foreignField: '_id',
         as: 'attachment',
         unwind: false,
       },
       {
-        from: 'rooms',
+        from: collections.rooms,
         localField: 'contacts.office',
         foreignField: '_id',
         as: 'office',
         unwind: true,
       },
       {
-        from: 'department_staffs',
+        from: collections.department_staffs,
         localField: '_id',
         foreignField: 'department',
         as: 'departmentStaff',
         unwind: true,
       },
       {
-        from: 'profiles',
+        from: collections.profiles,
         localField: 'departmentStaff.staff',
         foreignField: '_id',
         as: 'staffLists',

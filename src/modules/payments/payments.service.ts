@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
+import { collections } from 'src/constants/collections.name';
 import { EstatusPayments } from 'src/constants/constant';
 import { CommonException } from 'src/exceptions/exeception.common-error';
 import { getRandomCodeReceiptId } from 'src/utils/generate.code-payment';
@@ -38,7 +39,7 @@ export class PaymentsService {
     await this.validateSemesterDto(semester);
     const option = { semester: new Types.ObjectId(semester), isDeleted: false };
     await new ValidateDto().existedByOptions(
-      'money_per_credit_mgts',
+      collections.money_per_credit_mgts,
       option,
       'Money per credit',
     );
@@ -93,7 +94,7 @@ export class PaymentsService {
     createdBy: string,
   ): Promise<Payment_Study_Fee> {
     const { user, semester } = paymentDto;
-    await new ValidateDto().fieldId('profiles', user);
+    await new ValidateDto().fieldId(collections.profiles, user);
     await this.validateSemesterDto(semester);
     const newPaymentDto: CreateUserPaymentDto & {
       receiptId: string;
@@ -177,14 +178,14 @@ export class PaymentsService {
 
   async validateSemesterDto(semester: string): Promise<void> {
     if (semester) {
-      await new ValidateDto().fieldId('semesters', semester);
+      await new ValidateDto().fieldId(collections.semesters, semester);
     }
   }
 
   private lookupUserPayment() {
     const lookup: any = new LookupCommon([
       {
-        from: 'profiles',
+        from: collections.profiles,
         localField: 'user',
         foreignField: '_id',
         as: 'user',

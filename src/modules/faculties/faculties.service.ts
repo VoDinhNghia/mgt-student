@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
+import { collections } from 'src/constants/collections.name';
 import { CommonException } from 'src/exceptions/exeception.common-error';
 import { LookupCommon } from 'src/utils/lookup.query.aggregate-query';
 import { ValidateDto } from 'src/validates/validate.common.dto';
@@ -26,13 +27,13 @@ export class FacultiesService {
     const { headOfSection, eputeHead, faculty } = dtos;
     const validate = new ValidateDto();
     if (headOfSection) {
-      await validate.fieldId('profiles', headOfSection);
+      await validate.fieldId(collections.profiles, headOfSection);
     }
     if (eputeHead) {
-      await validate.fieldId('profiles', eputeHead);
+      await validate.fieldId(collections.profiles, eputeHead);
     }
     if (faculty) {
-      await validate.fieldId('faculties', faculty);
+      await validate.fieldId(collections.faculties, faculty);
     }
   }
 
@@ -45,10 +46,10 @@ export class FacultiesService {
     const option = { name: name?.trim() };
     await this.validateDto(createFacultyDto);
     if (award.length > 0) {
-      const awardIds = await validate.idLists('awards', award);
+      const awardIds = await validate.idLists(collections.awards, award);
       createFacultyDto.award = awardIds;
     }
-    await validate.existedByOptions('faculties', option, 'Faculty');
+    await validate.existedByOptions(collections.faculties, option, 'Faculty');
     const faculty = await new this.facultySchema({
       ...createFacultyDto,
       createdBy,
@@ -152,21 +153,21 @@ export class FacultiesService {
   private lookupFaculty() {
     const lookup: any = new LookupCommon([
       {
-        from: 'awards',
+        from: collections.awards,
         localField: 'award',
         foreignField: '_id',
         as: 'award',
         unwind: false,
       },
       {
-        from: 'profiles',
+        from: collections.profiles,
         localField: 'headOfSection',
         foreignField: '_id',
         as: 'headOfSection',
         unwind: true,
       },
       {
-        from: 'profiles',
+        from: collections.profiles,
         localField: 'eputeHead',
         foreignField: '_id',
         as: 'eputeHead',
@@ -179,7 +180,7 @@ export class FacultiesService {
   private lookupMajor() {
     const lookup: any = new LookupCommon([
       {
-        from: 'faculties',
+        from: collections.faculties,
         localField: 'faculty',
         foreignField: '_id',
         as: 'faculty',

@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
+import { collections } from 'src/constants/collections.name';
 import { CommonException } from 'src/exceptions/exeception.common-error';
 import { LookupCommon } from 'src/utils/lookup.query.aggregate-query';
 import { Pagination } from 'src/utils/page.pagination';
@@ -23,7 +24,7 @@ export class NewsService {
   ): Promise<News> {
     const { attachment = [] } = createNewDto;
     const attachmentIds = await new ValidateDto().idLists(
-      'attachments',
+      collections.attachments,
       attachment,
     );
     const dto = {
@@ -71,7 +72,7 @@ export class NewsService {
     const { attachment = [] } = updateDto;
     if (attachment.length > 0) {
       const attachmentIds = await new ValidateDto().idLists(
-        'attachments',
+        collections.attachments,
         attachment,
       );
       updateDto.attachment = attachmentIds;
@@ -100,7 +101,7 @@ export class NewsService {
   private lookupNews() {
     const lookup: any = new LookupCommon([
       {
-        from: 'attachments',
+        from: collections.attachments,
         localField: 'attachment',
         foreignField: '_id',
         as: 'attachment',

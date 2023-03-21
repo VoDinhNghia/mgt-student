@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { Document } from 'mongoose';
+import { collections } from 'src/constants/collections.name';
 import { FieldsCommonSchema } from 'src/utils/fields-common.schema';
 
 export type WardDocument = Wards & Document;
@@ -11,21 +12,21 @@ export class Wards extends FieldsCommonSchema {
 
   @Prop({
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'countries',
+    ref: collections.countries,
     required: true,
   })
   countryId: mongoose.Types.ObjectId;
 
   @Prop({
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'provinces',
+    ref: collections.provinces,
     required: true,
   })
   provinceId: mongoose.Types.ObjectId;
 
   @Prop({
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'districts',
+    ref: collections.districts,
     required: true,
   })
   districtId: mongoose.Types.ObjectId;

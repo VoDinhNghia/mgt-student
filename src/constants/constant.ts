@@ -91,8 +91,3 @@ export enum Epermission {
 }
 
 export const expiresInJwt = '7d';
-
-export const nameCollectionsMongo = {
-  users: 'users',
-  profiles: 'profiles',
-};

@@ -8,6 +8,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { EstatusUser } from 'src/constants/constant';
 import { LookupCommon } from 'src/utils/lookup.query.aggregate-query';
+import { collections } from 'src/constants/collections.name';
 
 @Injectable()
 export class AuthService {
@@ -43,7 +44,7 @@ export class AuthService {
     };
     const lookup: any = new LookupCommon([
       {
-        from: 'profiles',
+        from: collections.profiles,
         localField: '_id',
         foreignField: 'user',
         as: 'profile',

@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
+import { collections } from 'src/constants/collections.name';
 import { CommonException } from 'src/exceptions/exeception.common-error';
 import { LookupCommon } from 'src/utils/lookup.query.aggregate-query';
 import { ValidateDto } from 'src/validates/validate.common.dto';
@@ -81,41 +82,41 @@ export class InstituteService {
     const { office } = contacts;
     const validate = new ValidateDto();
     if (parson) {
-      await validate.fieldId('profiles', parson);
+      await validate.fieldId(collections.profiles, parson);
     }
     if (viceParson) {
-      await validate.fieldId('profiles', viceParson);
+      await validate.fieldId(collections.profiles, viceParson);
     }
     if (office) {
-      await validate.fieldId('rooms', office);
+      await validate.fieldId(collections.rooms, office);
     }
   }
 
   private lookupInstitute() {
     const lookup: any = new LookupCommon([
       {
-        from: 'profiles',
+        from: collections.profiles,
         localField: 'parson',
         foreignField: '_id',
         as: 'parson',
         unwind: true,
       },
       {
-        from: 'profiles',
+        from: collections.profiles,
         localField: 'viceParson',
         foreignField: '_id',
         as: 'viceParson',
         unwind: true,
       },
       {
-        from: 'rooms',
+        from: collections.rooms,
         localField: 'contacts.office',
         foreignField: '_id',
         as: 'office',
         unwind: true,
       },
       {
-        from: 'attachments',
+        from: collections.attachments,
         localField: 'attachment',
         foreignField: '_id',
         as: 'attachment',
