@@ -21,16 +21,22 @@ export class ChatGateway implements OnGatewayConnection {
     @MessageBody() content: string,
     @ConnectedSocket() socket: Socket,
   ) {
-    const author = await this.chatService.getUserFromSocket(socket);
-    console.log('author', author);
-    this.server.sockets.emit('receive_message', {
-      content,
-      author,
-    });
+    const authorization = socket?.handshake?.headers?.authorization || '';
+    if (authorization) {
+      const author = await this.chatService.getUserFromSocket(authorization);
+      console.log('author', author);
+      this.server.sockets.emit('receive_message', {
+        content,
+        author,
+      });
+    }
   }
 
   async handleConnection(socket: Socket) {
-    console.log('socket', socket?.handshake);
-    // await this.chatService.getUserFromSocket(socket);
+    const authorization = socket?.handshake?.headers?.authorization || '';
+    console.log('token', authorization);
+    if (authorization) {
+      await this.chatService.getUserFromSocket(authorization);
+    }
   }
 }
