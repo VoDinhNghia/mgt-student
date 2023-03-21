@@ -8,7 +8,7 @@ import {
   trainningPointDefault,
 } from 'src/constants/constant';
 import { CommonException } from 'src/exceptions/exeception.common-error';
-import { LookupCommon } from 'src/utils/lookup.query.aggregate-query';
+import { LookupService } from 'src/utils/lookup.query.service';
 import { Pagination } from 'src/utils/page.pagination';
 import { QueryService } from 'src/utils/query.service';
 import { SubjectUserRegister } from 'src/utils/user.register-subject.query';
@@ -90,7 +90,7 @@ export class ScholarshipService {
     const match: Record<string, any> = {
       $match: { _id: new Types.ObjectId(id) },
     };
-    const lookup = this.lookupSemesterScholarship();
+    const lookup = new LookupService().semesterScholarship();
     const aggregate = [match, ...lookup];
     const results = await this.scholarshipSchema.aggregate(aggregate);
     if (!results[0]) {
@@ -113,7 +113,7 @@ export class ScholarshipService {
     if (searchKey) {
       match.$match.$or = [{ name: new RegExp(searchKey) }];
     }
-    const lookup = this.lookupSemesterScholarship();
+    const lookup = new LookupService().semesterScholarship();
     const agg = [match, ...lookup];
     const aggregate: any = new Pagination(limit, page, agg);
     const results = await this.scholarshipSchema.aggregate(aggregate);
@@ -132,22 +132,7 @@ export class ScholarshipService {
     if (user) {
       matchOne.$match.user = new Types.ObjectId(user);
     }
-    const lookup: any = new LookupCommon([
-      {
-        from: collections.scholarships,
-        localField: 'scholarship',
-        foreignField: '_id',
-        as: 'scholarship',
-        unwind: true,
-      },
-      {
-        from: collections.profiles,
-        localField: 'user',
-        foreignField: '_id',
-        as: 'user',
-        unwind: true,
-      },
-    ]);
+    const lookup = new LookupService().userScholarship();
     aggregate = [...aggregate, matchOne, ...lookup];
     if (semester) {
       aggregate = [
@@ -298,15 +283,7 @@ export class ScholarshipService {
     profileId: string,
     semesterId: string,
   ): Promise<number> {
-    const lookup: any = new LookupCommon([
-      {
-        from: collections.voluntee_programs,
-        localField: 'program',
-        foreignField: '_id',
-        as: 'program',
-        unwind: true,
-      },
-    ]);
+    const lookup = new LookupService().trainningPointScholarship();
     const aggregate = [
       {
         $match: {
@@ -327,18 +304,5 @@ export class ScholarshipService {
     );
     const point = totalTrainningPoint + trainningPointDefault;
     return point > 100 ? 100 : point;
-  }
-
-  private lookupSemesterScholarship() {
-    const lookup: any = new LookupCommon([
-      {
-        from: collections.semesters,
-        localField: 'semester',
-        foreignField: '_id',
-        as: 'semester',
-        unwind: true,
-      },
-    ]);
-    return lookup;
   }
 }

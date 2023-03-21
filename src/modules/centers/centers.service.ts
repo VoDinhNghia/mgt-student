@@ -6,8 +6,8 @@ import { CreateCenterDto } from './dtos/centers.create.dto';
 import { Center, CenterDocument } from './schemas/centers.schema';
 import { UpdateCenterDto } from './dtos/centers.update.dto';
 import { ValidateDto } from 'src/validates/validate.common.dto';
-import { LookupCommon } from 'src/utils/lookup.query.aggregate-query';
 import { collections } from 'src/constants/collections.name';
+import { LookupService } from 'src/utils/lookup.query.service';
 
 @Injectable()
 export class CenterService {
@@ -70,7 +70,7 @@ export class CenterService {
 
   async findCenterById(id: string): Promise<Center> {
     const match = { $match: { _id: new Types.ObjectId(id) } };
-    const lookup = this.lookupCenter();
+    const lookup = new LookupService().center();
     const aggregate = [match, ...lookup];
     const result = await this.centerSchema.aggregate(aggregate);
     if (!result[0]) {
@@ -81,7 +81,7 @@ export class CenterService {
 
   async findAllCenter(): Promise<Center[]> {
     const match = { $match: { isDeleted: false } };
-    const lookup = this.lookupCenter();
+    const lookup = new LookupService().center();
     const aggregate = [match, ...lookup];
     const results = await this.centerSchema.aggregate(aggregate);
     return results;
@@ -95,32 +95,5 @@ export class CenterService {
       deletedAt: Date.now(),
     };
     await this.centerSchema.findByIdAndUpdate(id, dto);
-  }
-
-  private lookupCenter() {
-    const lookup: any = new LookupCommon([
-      {
-        from: collections.profiles,
-        localField: 'director',
-        foreignField: '_id',
-        as: 'director',
-        unwind: true,
-      },
-      {
-        from: collections.awards,
-        localField: 'award',
-        foreignField: '_id',
-        as: 'award',
-        unwind: false,
-      },
-      {
-        from: collections.rooms,
-        localField: 'contacts.office',
-        foreignField: '_id',
-        as: 'office',
-        unwind: true,
-      },
-    ]);
-    return lookup;
   }
 }

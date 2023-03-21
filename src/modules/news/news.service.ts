@@ -3,7 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { collections } from 'src/constants/collections.name';
 import { CommonException } from 'src/exceptions/exeception.common-error';
-import { LookupCommon } from 'src/utils/lookup.query.aggregate-query';
+import { LookupService } from 'src/utils/lookup.query.service';
 import { Pagination } from 'src/utils/page.pagination';
 import { ValidateDto } from 'src/validates/validate.common.dto';
 import { CreateNewDto } from './dtos/news.create.dto';
@@ -41,7 +41,7 @@ export class NewsService {
     const match: Record<string, any> = {
       $match: { _id: new Types.ObjectId(id) },
     };
-    const lookup = this.lookupNews();
+    const lookup = new LookupService().news();
     const aggregate = [match, ...lookup];
     const result = await this.newsSchema.aggregate(aggregate);
     if (!result[0]) {
@@ -58,7 +58,7 @@ export class NewsService {
     }
     const agg = [match];
     const aggPagination: any = new Pagination(limit, page, agg);
-    const lookup = this.lookupNews();
+    const lookup = new LookupService().news();
     const aggregate = [...aggPagination, ...lookup];
     const results = await this.newsSchema.aggregate(aggregate);
     return results;
@@ -96,18 +96,5 @@ export class NewsService {
       deletedAt: Date.now(),
     };
     await this.newsSchema.findByIdAndUpdate(id, dto);
-  }
-
-  private lookupNews() {
-    const lookup: any = new LookupCommon([
-      {
-        from: collections.attachments,
-        localField: 'attachment',
-        foreignField: '_id',
-        as: 'attachment',
-        unwind: false,
-      },
-    ]);
-    return lookup;
   }
 }

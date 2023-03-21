@@ -5,7 +5,7 @@ import { collections } from 'src/constants/collections.name';
 import { EstatusPayments } from 'src/constants/constant';
 import { CommonException } from 'src/exceptions/exeception.common-error';
 import { getRandomCodeReceiptId } from 'src/utils/generate.code-payment';
-import { LookupCommon } from 'src/utils/lookup.query.aggregate-query';
+import { LookupService } from 'src/utils/lookup.query.service';
 import { SubjectUserRegister } from 'src/utils/user.register-subject.query';
 import { ValidateDto } from 'src/validates/validate.common.dto';
 import { CreateMoneyPerCreditMgtDto } from './dtos/mgt-money-per-credit.create.dto';
@@ -72,7 +72,7 @@ export class PaymentsService {
     let aggregate = [
       { $match: { _id: new Types.ObjectId(id), isDeleted: false } },
     ];
-    const lookup = this.lookupPayment();
+    const lookup = new LookupService().payment();
     aggregate = [...aggregate, ...lookup];
     const result = await this.moneyCreditSchema.aggregate(aggregate);
     if (!result[0]) {
@@ -83,7 +83,7 @@ export class PaymentsService {
 
   async findAllMoneyPerCreditMgt(): Promise<Money_Per_Credit_Mgt[]> {
     const match = { $match: { isDeleted: false } };
-    const lookup = this.lookupPayment();
+    const lookup = new LookupService().payment();
     const aggregate = [match, ...lookup];
     const results = await this.moneyCreditSchema.aggregate(aggregate);
     return results;
@@ -128,8 +128,9 @@ export class PaymentsService {
 
   async findUserPaymentById(id: string): Promise<Payment_Study_Fee> {
     const match = { $match: { _id: new Types.ObjectId(id) } };
-    const lookup = this.lookupUserPayment();
-    const aggregate = [match, ...this.lookupPayment(), ...lookup];
+    const lookupUserPayment = new LookupService().userPayment();
+    const lookupPayment = new LookupService().payment();
+    const aggregate = [match, ...lookupPayment, ...lookupUserPayment];
     const result = await this.paymentSchema.aggregate(aggregate);
     if (!result[0]) {
       new CommonException(404, 'Payment user not found.');
@@ -180,31 +181,5 @@ export class PaymentsService {
     if (semester) {
       await new ValidateDto().fieldId(collections.semesters, semester);
     }
-  }
-
-  private lookupUserPayment() {
-    const lookup: any = new LookupCommon([
-      {
-        from: collections.profiles,
-        localField: 'user',
-        foreignField: '_id',
-        as: 'user',
-        unwind: true,
-      },
-    ]);
-    return [...this.lookupPayment(), ...lookup];
-  }
-
-  private lookupPayment() {
-    const lookup: any = new LookupCommon([
-      {
-        from: 'semester',
-        localField: 'semester',
-        foreignField: '_id',
-        as: 'semester',
-        unwind: true,
-      },
-    ]);
-    return lookup;
   }
 }

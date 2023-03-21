@@ -1,13 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { LookupCommon } from 'src/utils/lookup.query.aggregate-query';
 import { Users, UsersDocument } from '../users/schemas/users.schema';
 import { Http } from 'src/utils/http.sync-service';
 import { keyAccessLibraryService } from 'src/constants/constant';
 import { GetCurrentDate } from 'src/utils/get.current-date';
 import { ConfigService } from '@nestjs/config';
-import { collections } from 'src/constants/collections.name';
+import { LookupService } from 'src/utils/lookup.query.service';
 
 @Injectable()
 export class SyncServiceService {
@@ -28,7 +27,7 @@ export class SyncServiceService {
   }
 
   async getAllUsers(): Promise<Users[]> {
-    const lookup = this.lookupUser();
+    const lookup = new LookupService().syncUser();
     const results = await this.userSchema.aggregate(lookup);
     return results;
   }
@@ -46,22 +45,9 @@ export class SyncServiceService {
         ],
       },
     };
-    const lookup = this.lookupUser();
+    const lookup = new LookupService().syncUser();
     const aggregate = [match, ...lookup];
     const results = await this.userSchema.aggregate(aggregate);
     return results;
-  }
-
-  private lookupUser() {
-    const lookup: any = new LookupCommon([
-      {
-        from: collections.profiles,
-        localField: '_id',
-        foreignField: 'user',
-        as: 'profile',
-        unwind: true,
-      },
-    ]);
-    return lookup;
   }
 }

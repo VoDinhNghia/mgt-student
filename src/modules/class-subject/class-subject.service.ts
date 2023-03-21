@@ -3,7 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { collections } from 'src/constants/collections.name';
 import { CommonException } from 'src/exceptions/exeception.common-error';
-import { LookupCommon } from 'src/utils/lookup.query.aggregate-query';
+import { LookupService } from 'src/utils/lookup.query.service';
 import { ValidateDto } from 'src/validates/validate.common.dto';
 import { CreateClassDto } from './dtos/class.create.dto';
 import { UpdateClassDto } from './dtos/class.update.dto';
@@ -56,7 +56,7 @@ export class ClassSubjectService {
     const match: Record<string, any> = {
       $match: { _id: new Types.ObjectId(id) },
     };
-    const lookup = this.lookupClass();
+    const lookup = new LookupService().classInfo();
     const aggregate = [match, ...lookup];
     const result = await this.classSchema.aggregate(aggregate);
     if (!result[0]) {
@@ -117,7 +117,7 @@ export class ClassSubjectService {
     const match: Record<string, any> = {
       $match: { _id: new Types.ObjectId(id) },
     };
-    const lookup = this.lookupSubject();
+    const lookup = new LookupService().subject();
     const aggregate = [match, ...lookup];
     const result = await this.subjectSchema.aggregate(aggregate);
     if (!result[0]) {
@@ -178,72 +178,5 @@ export class ClassSubjectService {
     if (degreeLevel) {
       await validate.fieldId(collections.degreelevels, degreeLevel);
     }
-  }
-
-  private lookupClass() {
-    const lookup: any = new LookupCommon([
-      {
-        from: collections.degreelevels,
-        localField: 'degreeLevel',
-        foreignField: '_id',
-        as: 'degreeLevel',
-        unwind: true,
-      },
-      {
-        from: collections.profiles,
-        localField: 'homeroomteacher',
-        foreignField: '_id',
-        as: 'homeroomteacher',
-        unwind: true,
-      },
-    ]);
-    return [...this.lookupCommon(), ...lookup];
-  }
-
-  private lookupSubject() {
-    const lookup: any = new LookupCommon([
-      {
-        from: collections.semesters,
-        localField: 'semester',
-        foreignField: '_id',
-        as: 'semester',
-        unwind: true,
-      },
-      {
-        from: collections.profiles,
-        localField: 'lecturer',
-        foreignField: '_id',
-        as: 'lecturer',
-        unwind: true,
-      },
-      {
-        from: collections.subject_processes,
-        localField: '_id',
-        foreignField: 'subject',
-        as: 'process',
-        unwind: true,
-      },
-    ]);
-    return [...this.lookupCommon(), ...lookup];
-  }
-
-  private lookupCommon() {
-    const lookup: any = new LookupCommon([
-      {
-        from: collections.courses,
-        localField: 'course',
-        foreignField: '_id',
-        as: 'course',
-        unwind: true,
-      },
-      {
-        from: collections.majors,
-        localField: 'major',
-        foreignField: '_id',
-        as: 'major',
-        unwind: true,
-      },
-    ]);
-    return lookup;
   }
 }

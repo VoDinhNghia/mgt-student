@@ -3,7 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { collections } from 'src/constants/collections.name';
 import { CommonException } from 'src/exceptions/exeception.common-error';
-import { LookupCommon } from 'src/utils/lookup.query.aggregate-query';
+import { LookupService } from 'src/utils/lookup.query.service';
 import { QueryService } from 'src/utils/query.service';
 import { CreateUnionDto } from './dtos/unions.create.dto';
 import { UpdateUnionDto } from './dtos/unions.update.dto';
@@ -63,7 +63,7 @@ export class UnionsService {
 
   async findUnionById(id: string): Promise<Union> {
     const match = { $match: { _id: new Types.ObjectId(id) } };
-    const lookup = this.lookupUnion();
+    const lookup = new LookupService().union();
     const aggregate = [match, ...lookup];
     const result = await this.unionSchema.aggregate(aggregate);
     if (!result[0]) {
@@ -100,29 +100,9 @@ export class UnionsService {
 
   async findAllUnions(): Promise<Union[]> {
     const match = { $match: { isDeleted: false } };
-    const lookup = this.lookupUnion();
+    const lookup = new LookupService().union();
     const aggregate = [match, ...lookup];
     const results = await this.unionSchema.aggregate(aggregate);
     return results;
-  }
-
-  private lookupUnion() {
-    const lookup: any = new LookupCommon([
-      {
-        from: collections.profiles,
-        localField: 'members.user',
-        foreignField: '_id',
-        as: 'user',
-        unwind: true,
-      },
-      {
-        from: collections.attachments,
-        localField: 'images.attachment',
-        foreignField: '_id',
-        as: 'attachment',
-        unwind: true,
-      },
-    ]);
-    return lookup;
   }
 }
