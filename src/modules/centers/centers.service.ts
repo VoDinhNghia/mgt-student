@@ -7,6 +7,7 @@ import { Center, CenterDocument } from './schemas/centers.schema';
 import { UpdateCenterDto } from './dtos/centers.update.dto';
 import { ValidateDto } from 'src/validates/validate.common.dto';
 import { LookupCommon } from 'src/utils/lookup.query.aggregate-query';
+import { collectionNames } from 'src/constants/constant';
 
 @Injectable()
 export class CenterService {
@@ -20,10 +21,10 @@ export class CenterService {
     const { office } = contacts;
     const validate = new ValidateDto();
     if (director) {
-      await validate.fieldId('profiles', director);
+      await validate.fieldId(collectionNames.profiles, director);
     }
     if (office) {
-      await validate.fieldId('rooms', office);
+      await validate.fieldId(collectionNames.rooms, office);
     }
   }
 
@@ -35,7 +36,7 @@ export class CenterService {
     await this.validateCenterDto(centerDto);
     const validate = new ValidateDto();
     if (award.length > 0) {
-      const awards = await validate.idLists('awards', award);
+      const awards = await validate.idLists(collectionNames.awards, award);
       centerDto.award = awards;
     }
     const results = await new this.centerSchema({
@@ -54,7 +55,7 @@ export class CenterService {
     await this.validateCenterDto(centerDto);
     const validate = new ValidateDto();
     if (award.length > 0) {
-      const awards = await validate.idLists('awards', award);
+      const awards = await validate.idLists(collectionNames.awards, award);
       centerDto.award = awards;
     }
     const dto = {
@@ -99,21 +100,21 @@ export class CenterService {
   private lookupCenter() {
     const lookup: any = new LookupCommon([
       {
-        from: 'profiles',
+        from: collectionNames.profiles,
         localField: 'director',
         foreignField: '_id',
         as: 'director',
         unwind: true,
       },
       {
-        from: 'awards',
+        from: collectionNames.awards,
         localField: 'award',
         foreignField: '_id',
         as: 'award',
         unwind: false,
       },
       {
-        from: 'rooms',
+        from: collectionNames.rooms,
         localField: 'contacts.office',
         foreignField: '_id',
         as: 'office',

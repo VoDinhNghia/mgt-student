@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { Document } from 'mongoose';
+import { collectionNames } from 'src/constants/constant';
 import { FieldsCommonSchema } from 'src/utils/fields-common.schema';
 
 export type MajorsDocument = Majors & Document;
@@ -8,7 +9,7 @@ export type MajorsDocument = Majors & Document;
 export class Majors extends FieldsCommonSchema {
   @Prop({
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'faculties',
+    ref: collectionNames.faculties,
   })
   faculty?: mongoose.Types.ObjectId;
 
@@ -26,19 +27,19 @@ export class Majors extends FieldsCommonSchema {
 
   @Prop({
     type: [mongoose.Schema.Types.ObjectId],
-    ref: 'awards',
+    ref: collectionNames.awards,
   })
   award?: [mongoose.Types.ObjectId];
 
   @Prop({
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'profiles',
+    ref: collectionNames.profiles,
   })
   headOfSection?: mongoose.Types.ObjectId;
 
   @Prop({
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'profiles',
+    ref: collectionNames.profiles,
   })
   eputeHead?: mongoose.Types.ObjectId;
 }

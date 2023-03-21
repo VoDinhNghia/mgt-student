@@ -15,7 +15,7 @@ import {
 } from './schemas/departments.staff.schema';
 import { unionBy } from 'lodash';
 import { CreateStaffDepartmentDto } from './dtos/department.staff.create.dto';
-import { ErolesUser, EroomType } from 'src/constants/constant';
+import { collectionNames, ErolesUser, EroomType } from 'src/constants/constant';
 import { UpdateDepartmentDto } from './dtos/department.update.dto';
 import { Users, UsersDocument } from '../users/schemas/users.schema';
 import { UpdateStaffDepartmentDto } from './dtos/department.staff.update.dto';
@@ -46,10 +46,10 @@ export class DepartmentsService {
         _id: new Types.ObjectId(contacts?.office),
         type: EroomType.OFFICE_DEPARTMENT,
       };
-      await validate.fieldOptions('rooms', options, 'Room');
+      await validate.fieldOptions(collectionNames.rooms, options, 'Room');
     }
     if (manager) {
-      await validate.fieldId('profiles', manager);
+      await validate.fieldId(collectionNames.profiles, manager);
     }
   }
 
@@ -60,7 +60,10 @@ export class DepartmentsService {
     const { attachment = [] } = departmentDto;
     await this.validateDepartmentDto(departmentDto);
     if (attachment.length > 0) {
-      const ids = await new ValidateDto().idLists('attachments', attachment);
+      const ids = await new ValidateDto().idLists(
+        collectionNames.attachments,
+        attachment,
+      );
       departmentDto.attachment = ids;
     }
     const newDocument = await new this.deparmentSchema({
@@ -79,7 +82,10 @@ export class DepartmentsService {
     const { attachment = [] } = departmentDto;
     await this.validateDepartmentDto(departmentDto);
     if (attachment.length > 0) {
-      const ids = await new ValidateDto().idLists('attachments', attachment);
+      const ids = await new ValidateDto().idLists(
+        collectionNames.attachments,
+        attachment,
+      );
       departmentDto.attachment = ids;
     }
     const dto = {
@@ -211,35 +217,35 @@ export class DepartmentsService {
   private lookupDepartment() {
     const lookup: any = new LookupCommon([
       {
-        from: 'profiles',
+        from: collectionNames.profiles,
         localField: 'manager',
         foreignField: '_id',
         as: 'manager',
         unwind: true,
       },
       {
-        from: 'attachments',
+        from: collectionNames.attachments,
         localField: 'attachment',
         foreignField: '_id',
         as: 'attachment',
         unwind: false,
       },
       {
-        from: 'rooms',
+        from: collectionNames.rooms,
         localField: 'contacts.office',
         foreignField: '_id',
         as: 'office',
         unwind: true,
       },
       {
-        from: 'department_staffs',
+        from: collectionNames.department_staffs,
         localField: '_id',
         foreignField: 'department',
         as: 'departmentStaff',
         unwind: true,
       },
       {
-        from: 'profiles',
+        from: collectionNames.profiles,
         localField: 'departmentStaff.staff',
         foreignField: '_id',
         as: 'staffLists',

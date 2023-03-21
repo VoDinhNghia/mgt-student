@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
+import { collectionNames } from 'src/constants/constant';
 import { CommonException } from 'src/exceptions/exeception.common-error';
 import { LookupCommon } from 'src/utils/lookup.query.aggregate-query';
 import { Pagination } from 'src/utils/page.pagination';
@@ -23,11 +24,11 @@ export class BranchService {
   ): Promise<Branch> {
     const { country, province, district, ward } = branchCreateDto?.location;
     const validate = new ValidateDto();
-    await validate.fieldId('countries', country);
-    await validate.fieldId('provinces', province);
-    await validate.fieldId('districts', district);
+    await validate.fieldId(collectionNames.countries, country);
+    await validate.fieldId(collectionNames.provinces, province);
+    await validate.fieldId(collectionNames.districts, district);
     if (ward) {
-      await validate.fieldId('wards', ward);
+      await validate.fieldId(collectionNames.wards, ward);
     }
     const options = { name: branchCreateDto?.name?.trim() };
     await validate.existedByOptions('branchs', options, 'Branch name');
@@ -84,28 +85,28 @@ export class BranchService {
   private lookupBranch() {
     const lookup: any = new LookupCommon([
       {
-        from: 'countries',
+        from: collectionNames.countries,
         localField: 'location.country',
         foreignField: '_id',
         as: 'country',
         unwind: true,
       },
       {
-        from: 'provinces',
+        from: collectionNames.provinces,
         localField: 'location.province',
         foreignField: '_id',
         as: 'province',
         unwind: true,
       },
       {
-        from: 'districts',
+        from: collectionNames.districts,
         localField: 'location.district',
         foreignField: '_id',
         as: 'district',
         unwind: true,
       },
       {
-        from: 'wards',
+        from: collectionNames.wards,
         localField: 'location.ward',
         foreignField: '_id',
         as: 'ward',

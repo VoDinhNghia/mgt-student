@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { Document } from 'mongoose';
-import { EtypeAward } from 'src/constants/constant';
+import { collectionNames, EtypeAward } from 'src/constants/constant';
 import { FieldsCommonSchema } from 'src/utils/fields-common.schema';
 
 export type AwardDocument = Award & Document;
@@ -15,7 +15,7 @@ export class Award extends FieldsCommonSchema {
 
   @Prop({
     type: [mongoose.Types.ObjectId],
-    ref: 'attachments',
+    ref: collectionNames.attachments,
   })
   attachment?: [mongoose.Types.ObjectId];
 

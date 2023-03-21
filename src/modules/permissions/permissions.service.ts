@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
+import { collectionNames } from 'src/constants/constant';
 import { CommonException } from 'src/exceptions/exeception.common-error';
 import { LookupCommon } from 'src/utils/lookup.query.aggregate-query';
 import { Pagination } from 'src/utils/page.pagination';
@@ -25,7 +26,7 @@ export class PermissionsService {
     createdBy: string,
   ): Promise<Admin_Permission> {
     const { user } = permissionDto;
-    await new ValidateDto().fieldId('profiles', user);
+    await new ValidateDto().fieldId(collectionNames.profiles, user);
     const dto = {
       ...permissionDto,
       createdBy,
@@ -102,7 +103,7 @@ export class PermissionsService {
   private lookupPermission() {
     const lookup: any = new LookupCommon([
       {
-        from: 'profiles',
+        from: collectionNames.profiles,
         localField: 'user',
         foreignField: '_id',
         as: 'user',

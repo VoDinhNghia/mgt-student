@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { Document } from 'mongoose';
+import { collectionNames } from 'src/constants/constant';
 import { FieldsCommonSchema } from 'src/utils/fields-common.schema';
 
 export type SubjectDocument = Subjects & Document;
@@ -11,31 +12,31 @@ export class Subjects extends FieldsCommonSchema {
 
   @Prop({
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'profiles',
+    ref: collectionNames.profiles,
   })
   lecturer?: mongoose.Types.ObjectId;
 
   @Prop({
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'majors',
+    ref: collectionNames.majors,
   })
   major?: mongoose.Types.ObjectId;
 
   @Prop({
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'courses',
+    ref: collectionNames.courses,
   })
   course?: mongoose.Types.ObjectId;
 
   @Prop({
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'degreelevels',
+    ref: collectionNames.degreelevels,
   })
   degreeLevel?: mongoose.Types.ObjectId;
 
   @Prop({
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'semesters',
+    ref: collectionNames.semesters,
   })
   semester?: mongoose.Types.ObjectId;
 

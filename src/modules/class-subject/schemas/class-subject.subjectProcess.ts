@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { Document } from 'mongoose';
+import { collectionNames } from 'src/constants/constant';
 import { FieldsCommonSchema } from 'src/utils/fields-common.schema';
 
 export type SubjectProcessDocument = Subject_Process & Document;
@@ -9,7 +10,7 @@ export type SubjectProcessDocument = Subject_Process & Document;
 export class Subject_Process extends FieldsCommonSchema {
   @Prop({
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'subjects',
+    ref: collectionNames.subjects,
   })
   subject?: mongoose.Types.ObjectId;
 

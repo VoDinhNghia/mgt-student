@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { Document } from 'mongoose';
-import { Epermission } from 'src/constants/constant';
+import { collectionNames, Epermission } from 'src/constants/constant';
 import { FieldsCommonSchema } from 'src/utils/fields-common.schema';
 
 export type AdminPermissionDocument = Admin_Permission & Document;
@@ -10,7 +10,7 @@ export type AdminPermissionDocument = Admin_Permission & Document;
 export class Admin_Permission extends FieldsCommonSchema {
   @Prop({
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'profiles',
+    ref: collectionNames.profiles,
     required: true,
   })
   user?: mongoose.Types.ObjectId;

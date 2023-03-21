@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { Document } from 'mongoose';
+import { collectionNames } from 'src/constants/constant';
 import { FieldsCommonSchema } from 'src/utils/fields-common.schema';
 
 export type AttachmentDocument = Attachment & Document;
@@ -26,7 +27,7 @@ export class Attachment extends FieldsCommonSchema {
 
   @Prop({
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'profiles',
+    ref: collectionNames.profiles,
   })
   uploadBy?: mongoose.Types.ObjectId;
 }

@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { Document } from 'mongoose';
+import { collectionNames } from 'src/constants/constant';
 
 export type DepartmentsDocument = Departments & Document;
 
@@ -16,7 +17,7 @@ export class Departments {
 
   @Prop({
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'profiles',
+    ref: collectionNames.profiles,
   })
   manager?: mongoose.Types.ObjectId;
 
@@ -24,7 +25,7 @@ export class Departments {
     type: {
       office: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'rooms',
+        ref: collectionNames.rooms,
       },
       email: String,
       phone: String,
@@ -70,7 +71,7 @@ export class Departments {
 
   @Prop({
     type: [mongoose.Schema.Types.ObjectId],
-    ref: 'attachments',
+    ref: collectionNames.attachments,
   })
   attachment?: [mongoose.Types.ObjectId];
 

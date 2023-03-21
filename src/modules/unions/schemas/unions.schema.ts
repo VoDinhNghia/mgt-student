@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { Document } from 'mongoose';
+import { collectionNames } from 'src/constants/constant';
 import { FieldsCommonSchema } from 'src/utils/fields-common.schema';
 
 export type UnionDocument = Union & Document;
@@ -32,7 +33,7 @@ export class Union extends FieldsCommonSchema {
       {
         attachment: {
           type: mongoose.Schema.Types.ObjectId,
-          ref: 'attachments',
+          ref: collectionNames.attachments,
         },
         description: String,
       },
@@ -50,7 +51,7 @@ export class Union extends FieldsCommonSchema {
       {
         user: {
           type: mongoose.Schema.Types.ObjectId,
-          ref: 'profiles',
+          ref: collectionNames.profiles,
         },
         position: String,
       },

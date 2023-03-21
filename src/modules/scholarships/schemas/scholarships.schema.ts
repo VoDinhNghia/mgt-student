@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { Document } from 'mongoose';
-import { EscholarshirpType } from 'src/constants/constant';
+import { collectionNames, EscholarshirpType } from 'src/constants/constant';
 import { FieldsCommonSchema } from 'src/utils/fields-common.schema';
 
 export type ScholarshipDocument = Scholarship & Document;
@@ -15,7 +15,7 @@ export class Scholarship extends FieldsCommonSchema {
 
   @Prop({
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'semesters',
+    ref: collectionNames.semesters,
   })
   semester?: mongoose.Types.ObjectId;
 
@@ -44,7 +44,7 @@ export class Scholarship extends FieldsCommonSchema {
 
   @Prop({
     type: [mongoose.Schema.Types.ObjectId],
-    ref: 'attachments',
+    ref: collectionNames.attachments,
   })
   attachment?: [mongoose.Types.ObjectId];
 }

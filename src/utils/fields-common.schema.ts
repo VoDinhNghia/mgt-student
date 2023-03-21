@@ -1,22 +1,23 @@
 import { Prop } from '@nestjs/mongoose';
 import mongoose from 'mongoose';
+import { collectionNames } from 'src/constants/constant';
 
 export class FieldsCommonSchema {
   @Prop({
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'profiles',
+    ref: collectionNames.profiles,
   })
   createdBy?: mongoose.Types.ObjectId;
 
   @Prop({
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'profiles',
+    ref: collectionNames.profiles,
   })
   updatedBy?: mongoose.Types.ObjectId;
 
   @Prop({
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'profiles',
+    ref: collectionNames.profiles,
   })
   deletedBy?: mongoose.Types.ObjectId;
 

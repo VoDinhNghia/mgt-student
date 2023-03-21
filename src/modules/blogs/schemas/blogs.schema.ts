@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { Document } from 'mongoose';
+import { collectionNames } from 'src/constants/constant';
 import { FieldsCommonSchema } from 'src/utils/fields-common.schema';
 
 export type BlogDocument = Blog & Document;
@@ -17,7 +18,7 @@ export class Blog extends FieldsCommonSchema {
 
   @Prop({
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'attachments',
+    ref: collectionNames.attachments,
   })
   images?: [mongoose.Types.ObjectId];
 
@@ -26,7 +27,7 @@ export class Blog extends FieldsCommonSchema {
       {
         user: {
           type: mongoose.Schema.Types.ObjectId,
-          ref: 'profiles',
+          ref: collectionNames.profiles,
         },
       },
     ],
@@ -43,7 +44,7 @@ export class Blog extends FieldsCommonSchema {
       {
         user: {
           type: mongoose.Schema.Types.ObjectId,
-          ref: 'profiles',
+          ref: collectionNames.profiles,
         },
       },
     ],

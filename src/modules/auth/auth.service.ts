@@ -6,7 +6,7 @@ import { Users, UsersDocument } from '../users/schemas/users.schema';
 import { cryptoPassWord } from 'src/constants/crypto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { EstatusUser } from 'src/constants/constant';
+import { collectionNames, EstatusUser } from 'src/constants/constant';
 import { LookupCommon } from 'src/utils/lookup.query.aggregate-query';
 
 @Injectable()
@@ -43,7 +43,7 @@ export class AuthService {
     };
     const lookup: any = new LookupCommon([
       {
-        from: 'profiles',
+        from: collectionNames.profiles,
         localField: '_id',
         foreignField: 'user',
         as: 'profile',

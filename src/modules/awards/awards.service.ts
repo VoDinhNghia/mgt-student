@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
+import { collectionNames } from 'src/constants/constant';
 import { CommonException } from 'src/exceptions/exeception.common-error';
 import { LookupCommon } from 'src/utils/lookup.query.aggregate-query';
 import { Pagination } from 'src/utils/page.pagination';
@@ -23,7 +24,7 @@ export class AwardsService {
   ): Promise<Award> {
     const { attachment = [] } = createAwardDto;
     const attachmentIds = await new ValidateDto().idLists(
-      'attachments',
+      collectionNames.attachments,
       attachment,
     );
     createAwardDto.attachment = attachmentIds;
@@ -98,7 +99,7 @@ export class AwardsService {
   private lookupAward() {
     const lookup: any = new LookupCommon([
       {
-        from: 'attachments',
+        from: collectionNames.attachments,
         localField: 'attachment',
         foreignField: '_id',
         as: 'attachment',

@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { CommonException } from 'src/exceptions/exeception.common-error';
-import { schoolId } from 'src/constants/constant';
+import { collectionNames, schoolId } from 'src/constants/constant';
 import { CreateSchoolDto } from './dtos/school.create.dto';
 import { UpdateSchoolDto } from './dtos/school.update.dto';
 import { School_Info, SchoolInfoDocument } from './schemas/school.schema';
@@ -21,16 +21,16 @@ export class SchoolService {
     const { country, province, district, ward } = location;
     const validate = new ValidateDto();
     if (country) {
-      await validate.fieldId('countries', country);
+      await validate.fieldId(collectionNames.countries, country);
     }
     if (province) {
       await validate.fieldId('province', province);
     }
     if (district) {
-      await validate.fieldId('districts', district);
+      await validate.fieldId(collectionNames.districts, district);
     }
     if (ward) {
-      await validate.fieldId('wards', ward);
+      await validate.fieldId(collectionNames.wards, ward);
     }
   }
 
@@ -59,11 +59,17 @@ export class SchoolService {
   ): Promise<School_Info> {
     const { image = [], award = [] } = schoolDto;
     if (image.length > 0) {
-      const imageIds = await new ValidateDto().idLists('attachments', image);
+      const imageIds = await new ValidateDto().idLists(
+        collectionNames.attachments,
+        image,
+      );
       schoolDto.image = imageIds;
     }
     if (award.length > 0) {
-      const awardIds = await new ValidateDto().idLists('awards', award);
+      const awardIds = await new ValidateDto().idLists(
+        collectionNames.awards,
+        award,
+      );
       schoolDto.award = awardIds;
     }
     await this.validateSchoolDto(schoolDto);
@@ -87,49 +93,49 @@ export class SchoolService {
   private lookupSchool() {
     const lookup: any = new LookupCommon([
       {
-        from: 'attachments',
+        from: collectionNames.attachments,
         localField: 'image',
         foreignField: '_id',
         as: 'image',
         unwind: false,
       },
       {
-        from: 'awards',
+        from: collectionNames.awards,
         localField: 'award',
         foreignField: '_id',
         as: 'award',
         unwind: false,
       },
       {
-        from: 'attachments',
+        from: collectionNames.attachments,
         localField: 'policy.attachment',
         foreignField: '_id',
         as: 'attachmentPolicy',
         unwind: false,
       },
       {
-        from: 'countries',
+        from: collectionNames.countries,
         localField: 'location.country',
         foreignField: '_id',
         as: 'country',
         unwind: false,
       },
       {
-        from: 'provinces',
+        from: collectionNames.provinces,
         localField: 'location.province',
         foreignField: '_id',
         as: 'province',
         unwind: false,
       },
       {
-        from: 'districts',
+        from: collectionNames.districts,
         localField: 'location.district',
         foreignField: '_id',
         as: 'district',
         unwind: false,
       },
       {
-        from: 'wards',
+        from: collectionNames.wards,
         localField: 'location.ward',
         foreignField: '_id',
         as: 'ward',
