@@ -30,6 +30,7 @@ import { DbConnection } from './constants/db.mongo.connection';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { SyncServiceModule } from './modules/sync-service/sync-service.module';
 import { ChatModule } from './modules/chat/chat.module';
+import { ThrottlerModule } from '@nestjs/throttler';
 
 @Module({
   imports: [
@@ -45,6 +46,10 @@ import { ChatModule } from './modules/chat/chat.module';
         useNewUrlParser: true,
         useUnifiedTopology: true,
       }),
+    }),
+    ThrottlerModule.forRoot({
+      ttl: 60, // the number of seconds that each request will last in storage
+      limit: 20, // the maximum number of requests within the TTL limit
     }),
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '../..', 'src/public'),

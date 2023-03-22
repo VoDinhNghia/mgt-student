@@ -3,9 +3,12 @@ import { AppModule } from './app.module';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { ConfigService } from '@nestjs/config';
 import { ValidationPipe } from '@nestjs/common';
-
+import helmet from 'helmet';
+// link reference config helmet: https://github.com/helmetjs/helmet
+// Note that applying helmet as global or registering it must come before other calls to app.use()
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, { cors: true });
+  app.use(helmet());
   app.useGlobalPipes(new ValidationPipe());
   const config = new DocumentBuilder()
     .addBearerAuth()
