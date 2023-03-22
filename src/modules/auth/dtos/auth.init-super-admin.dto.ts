@@ -1,15 +1,22 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
 
 export class InitSuperAdminDto {
-  @ApiProperty({ required: true })
+  @IsNotEmpty()
+  @IsEmail()
+  @ApiProperty()
   email: string;
 
-  @ApiProperty({ required: true })
+  @IsNotEmpty()
+  @IsString()
+  @ApiProperty()
   passWord: string;
 
-  @ApiProperty({ required: true, default: 'Admin' })
-  firstName?: string;
+  @IsString()
+  @ApiProperty({ default: 'Admin' })
+  firstName: string;
 
-  @ApiProperty({ required: true, default: 'Supper' })
-  lastName?: string;
+  @IsString()
+  @ApiProperty({ default: 'Supper' })
+  lastName: string;
 }

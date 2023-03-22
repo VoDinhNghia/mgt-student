@@ -7,7 +7,7 @@ import {
   Res,
   UseGuards,
 } from '@nestjs/common';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { ResponseRequest } from 'src/utils/response-api';
 import { UsersService } from '../users/users.service';
 import { AuthService } from './auth.service';
@@ -15,6 +15,7 @@ import { LoginDto } from './dtos/auth.login.dto';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { Request } from 'express';
 import { InitSuperAdminDto } from './dtos/auth.init-super-admin.dto';
+import { ResponseLoginApiDto } from './dtos/auth.api.login.response.dto';
 
 @Controller('api/auth')
 @ApiTags('auth')
@@ -34,6 +35,7 @@ export class AuthController {
   }
 
   @Post('/login')
+  @ApiOkResponse({ type: ResponseLoginApiDto })
   async login(
     @Body() loginDto: LoginDto,
     @Res() res: Response,
