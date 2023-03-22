@@ -17,8 +17,13 @@ import { Users, UsersSchema } from '../users/schemas/users.schema';
     MongooseModule.forFeature([{ name: Users.name, schema: UsersSchema }]),
     PassportModule,
     JwtModule.register({
-      secret: jwtConstants.secret,
-      signOptions: { expiresIn: expiresInJwt },
+      // secret: jwtConstants.secret,
+      privateKey: jwtConstants.JWT_PRIVATE_KEY,
+      publicKey: jwtConstants.JWT_PUBLIC_KEY,
+      signOptions: {
+        expiresIn: expiresInJwt,
+        algorithm: 'HS512', // default: HS256, only use HS algorithm
+      },
     }),
   ],
   providers: [AuthService, LocalStrategy, JwtStrategy],

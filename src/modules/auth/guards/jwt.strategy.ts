@@ -11,7 +11,8 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreExpiration: false,
-      secretOrKey: jwtConstants.secret,
+      secretOrKey: jwtConstants.JWT_PRIVATE_KEY,
+      algorithm: 'HS512',
     });
   }
 
@@ -30,7 +31,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   verifyToken(token: string) {
     try {
       const payload: UserLoginResponseDto = this.jwtService.verify(token, {
-        secret: jwtConstants.secret,
+        secret: jwtConstants.JWT_PRIVATE_KEY,
       });
       return payload;
     } catch (error) {
