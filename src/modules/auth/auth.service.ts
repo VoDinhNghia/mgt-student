@@ -8,7 +8,7 @@ import { Model } from 'mongoose';
 import { EstatusUser } from 'src/constants/constant';
 import { LookupService } from 'src/utils/lookup.query.service';
 import { LoginDto } from './dtos/auth.login.dto';
-import { UserLoginResponseDto } from './dtos/response.login.dto';
+import { UserLoginResponseDto } from './dtos/auth.result.login-service.dto';
 
 @Injectable()
 export class AuthService {
@@ -28,7 +28,6 @@ export class AuthService {
     const result: Record<string, any> = {
       ...user,
       statusLogin: true,
-      historyLogin: user.historyLogin,
       accessToken: this.jwtService.sign({ ...user }),
     };
     return result;
