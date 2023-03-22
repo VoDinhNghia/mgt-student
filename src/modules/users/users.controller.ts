@@ -15,7 +15,12 @@ import {
 } from '@nestjs/common';
 import { CreateUserDto } from './dto/users.create.dto';
 import { UsersService } from './users.service';
-import { ApiBearerAuth, ApiConsumes, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiConsumes,
+  ApiOkResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { ErolesUser } from 'src/constants/constant';
 import { UsersUpdateDto } from './dto/user.update.dto';
 import { RoleGuard } from '../auth/guards/role-auth.guard';
@@ -37,6 +42,8 @@ import {
   fileName,
 } from 'src/validates/validate.attachment.upload-file';
 import { getDataFromCsvFileUpload } from 'src/utils/getDataFromCsvUpload';
+import { UserResponse } from './responses/user.response-swagger';
+import { ProfileResponse } from './responses/profile.response-swagger';
 
 @Controller('api/users')
 @ApiTags('users')
@@ -47,6 +54,11 @@ export class UsersController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
+  @ApiOkResponse({
+    type: UserResponse,
+    description: 'Response data when create user success.',
+    isArray: false,
+  })
   async createUser(
     @Body() userDto: CreateUserDto,
     @Req() req: Request,
@@ -90,6 +102,11 @@ export class UsersController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
+  @ApiOkResponse({
+    type: UserResponse,
+    description: 'Response data when create update user success.',
+    isArray: false,
+  })
   async updateUser(
     @Param('id') id: string,
     @Body() updateDto: UsersUpdateDto,
@@ -105,6 +122,11 @@ export class UsersController {
   @Put('/profile/:id')
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
+  @ApiOkResponse({
+    type: ProfileResponse,
+    description: 'Response data when update user profile success.',
+    isArray: false,
+  })
   async updateProfile(
     @Param('id') id: string,
     @Body() updateProfileDto: UpdateProfileDto,
@@ -196,6 +218,11 @@ export class UsersController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
+  @ApiOkResponse({
+    type: UserResponse,
+    description: 'Response data when get all user success.',
+    isArray: true,
+  })
   async getAllUsers(
     @Query() queryDto: UsersFillterDto,
     @Res() res: Response,
@@ -217,14 +244,19 @@ export class UsersController {
   ): Promise<ResponseRequest> {
     const { user }: Request | Record<string, any> = req;
     const deletedBy: string = user.profileId;
-    const result = await this.service.deleteUser(id, deletedBy);
-    return new ResponseRequest(res, result, 'Delete user success');
+    await this.service.deleteUser(id, deletedBy);
+    return new ResponseRequest(res, true, 'Delete user success');
   }
 
   @Get('/:id')
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
+  @ApiOkResponse({
+    type: UserResponse,
+    description: 'Response data when get user by id success.',
+    isArray: false,
+  })
   async getUserByid(
     @Param('id') id: string,
     @Res() res: Response,

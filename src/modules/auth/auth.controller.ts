@@ -16,6 +16,7 @@ import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { Request } from 'express';
 import { InitSuperAdminDto } from './dtos/auth.init-super-admin.dto';
 import { ResponseLoginApiDto } from './dtos/auth.api.login.response.dto';
+import { UserResponse } from '../users/responses/user.response-swagger';
 
 @Controller('api/auth')
 @ApiTags('auth')
@@ -26,6 +27,11 @@ export class AuthController {
   ) {}
 
   @Post('/init-supper-admin')
+  @ApiOkResponse({
+    type: UserResponse,
+    description: 'Response data when create supper admin success.',
+    isArray: false,
+  })
   async initAdmin(
     @Body() superAdminDto: InitSuperAdminDto,
     @Res() res: Response,
@@ -35,7 +41,11 @@ export class AuthController {
   }
 
   @Post('/login')
-  @ApiOkResponse({ type: ResponseLoginApiDto })
+  @ApiOkResponse({
+    description: 'Response data when login success.',
+    type: ResponseLoginApiDto,
+    isArray: false,
+  })
   async login(
     @Body() loginDto: LoginDto,
     @Res() res: Response,
@@ -46,9 +56,18 @@ export class AuthController {
 
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
+  @ApiOkResponse({
+    type: UserResponse,
+    description: 'Response data when get me success.',
+    isArray: false,
+  })
   @Get('/me')
-  getProfile(@Req() req: Request, @Res() res: Response) {
-    const { user } = req;
-    return new ResponseRequest(res, user, `Get me success.`);
+  async getProfile(
+    @Req() req: Request,
+    @Res() res: Response,
+  ): Promise<ResponseRequest> {
+    const { user }: Request | Record<string, any> = req;
+    const result = await this.userService.findUserById(user._id);
+    return new ResponseRequest(res, result, `Get me success.`);
   }
 }

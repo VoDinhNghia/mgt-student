@@ -33,6 +33,8 @@ import { ValidateDto } from 'src/validates/validate.common.dto';
 import { UsersUpdateDto } from './dto/user.update.dto';
 import { collections } from 'src/constants/collections.name';
 import { LookupService } from 'src/utils/lookup.query.service';
+import { UserResponse } from './responses/user.response-swagger';
+import { ProfileResponse } from './responses/profile.response-swagger';
 
 @Injectable()
 export class UsersService {
@@ -49,7 +51,7 @@ export class UsersService {
   async createUser(
     usersDto: CreateUserDto,
     createdBy: string,
-  ): Promise<Users | any> {
+  ): Promise<UserResponse> {
     const { email } = usersDto;
     await this.validateEmailUser(email);
     await this.validateProfileDto(usersDto);
@@ -101,7 +103,7 @@ export class UsersService {
     }
   }
 
-  async findUserById(id: string | any): Promise<Users | any> {
+  async findUserById(id: string | any): Promise<UserResponse> {
     const match = { $match: { _id: new Types.ObjectId(id) } };
     const lookup = new LookupService().user();
     const aggregate = [match, ...lookup];
@@ -112,7 +114,10 @@ export class UsersService {
     return result[0];
   }
 
-  async findAllUsers(query: UsersFillterDto, userId: string): Promise<Users[]> {
+  async findAllUsers(
+    query: UsersFillterDto,
+    userId: string,
+  ): Promise<UserResponse[]> {
     const { searchKey, limit, page, role, status } = query;
     const match: Record<string, any> = {
       $match: { _id: { $ne: new Types.ObjectId(userId) }, isDeleted: false },
@@ -149,7 +154,7 @@ export class UsersService {
     id: string,
     payload: UsersUpdateDto,
     updatedBy: string,
-  ): Promise<Users> {
+  ): Promise<UserResponse> {
     const { email, passWord } = payload;
     if (email) {
       await this.validateEmailUser(email);
@@ -171,7 +176,7 @@ export class UsersService {
     id: string,
     profileDto: UpdateProfileDto,
     updatedBy: string,
-  ): Promise<Profile | any> {
+  ): Promise<ProfileResponse> {
     const { award = [] } = profileDto;
     await this.validateProfileDto(profileDto);
     if (award.length > 0) {
@@ -264,9 +269,10 @@ export class UsersService {
     return data;
   }
 
-  async initSupperAdmin(superAdminDto: InitSuperAdminDto): Promise<Users> {
+  async initSupperAdmin(
+    superAdminDto: InitSuperAdminDto,
+  ): Promise<UserResponse> {
     const { email, passWord, firstName, lastName } = superAdminDto;
-    await this.validateEmailUser(email);
     const option = { role: ErolesUser.SUPPER_ADMIN };
     await new ValidateDto().existedByOptions(
       collections.users,
