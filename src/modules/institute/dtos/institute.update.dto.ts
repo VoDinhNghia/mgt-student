@@ -1,36 +1,33 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiPropertyOptional } from '@nestjs/swagger';
 import { GetCurrentDate } from 'src/utils/get.current-date';
 import { ContactInstituteDto } from './institute.contact.dto';
 import { FunctionAndTaskInstituteDto } from './institute.function-task.dto';
 
 export class UpdateInstituteDto {
-  @ApiProperty({ required: false })
+  @ApiPropertyOptional()
   unitName?: string;
 
-  @ApiProperty({ required: false })
+  @ApiPropertyOptional()
   url?: string;
 
-  @ApiProperty({
-    required: false,
-    default: new GetCurrentDate().getYearMonthDate(),
-  })
+  @ApiPropertyOptional({ default: new GetCurrentDate().getYearMonthDate() })
   foundYear?: Date;
 
-  @ApiProperty({ required: false })
+  @ApiPropertyOptional()
   parson?: string;
 
-  @ApiProperty({ required: false })
+  @ApiPropertyOptional()
   viceParson?: string;
 
-  @ApiProperty({ type: ContactInstituteDto, required: false })
+  @ApiPropertyOptional({ type: ContactInstituteDto })
   contacts?: ContactInstituteDto;
 
-  @ApiProperty({ required: false, type: [FunctionAndTaskInstituteDto] })
+  @ApiPropertyOptional({ type: [FunctionAndTaskInstituteDto] })
   function?: FunctionAndTaskInstituteDto[];
 
-  @ApiProperty({ required: false, type: [FunctionAndTaskInstituteDto] })
+  @ApiPropertyOptional({ type: [FunctionAndTaskInstituteDto] })
   task?: FunctionAndTaskInstituteDto[];
 
-  @ApiProperty({ required: false })
+  @ApiPropertyOptional()
   attachment?: string[];
 }

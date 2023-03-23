@@ -1,21 +1,32 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
 
 export class CreateClassDto {
-  @ApiProperty({ required: true })
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty()
   course?: string;
 
-  @ApiProperty({ required: true, default: 'DHKHMT12A' })
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty({ default: 'DHKHMT12A' })
   name?: string;
 
-  @ApiProperty({ required: true })
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty()
   degreeLevel?: string;
 
-  @ApiProperty({ required: true, default: 50 })
+  @IsNumber()
+  @IsNotEmpty()
+  @ApiProperty({ default: 50 })
   classSize?: number;
 
-  @ApiProperty({ required: true })
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty()
   major?: string;
 
-  @ApiProperty({ required: false })
+  @ApiPropertyOptional()
   homeroomteacher?: string;
 }

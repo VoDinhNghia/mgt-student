@@ -1,14 +1,19 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { IsNotEmpty, IsString } from 'class-validator';
 import { GetCurrentDate } from 'src/utils/get.current-date';
 
 export class CreateMajorDto {
-  @ApiProperty({ required: true })
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty()
   name?: string;
 
-  @ApiProperty({ required: true })
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty()
   faculty?: string;
 
-  @ApiProperty()
+  @ApiPropertyOptional()
   introduction?: string;
 
   @ApiProperty({
@@ -17,12 +22,12 @@ export class CreateMajorDto {
   })
   foundYear?: Date;
 
-  @ApiProperty({ required: false, type: [String] })
+  @ApiPropertyOptional({ type: [String] })
   award?: [string];
 
-  @ApiProperty({ required: false })
+  @ApiPropertyOptional()
   headOfSection?: string;
 
-  @ApiProperty({ required: false })
+  @ApiPropertyOptional()
   eputeHead?: string;
 }

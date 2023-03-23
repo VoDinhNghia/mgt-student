@@ -1,12 +1,13 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiPropertyOptional } from '@nestjs/swagger';
+import { GetCurrentDate } from 'src/utils/get.current-date';
 
 export class ToeicCertificateDto {
-  @ApiProperty({ required: false })
+  @ApiPropertyOptional()
   attachment: string;
 
-  @ApiProperty({ required: false })
+  @ApiPropertyOptional()
   scores: number;
 
-  @ApiProperty({ required: false, default: '2023-02-26' })
+  @ApiPropertyOptional({ default: new GetCurrentDate().getYearMonthDate() })
   expirationDate: string;
 }

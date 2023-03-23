@@ -1,38 +1,40 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { IsNumber } from 'class-validator';
 import { EscholarshirpType } from 'src/constants/constant';
 
 export class UpdateScholarshipDto {
-  @ApiProperty({ required: false })
+  @ApiPropertyOptional()
   name?: string;
 
-  @ApiProperty({ required: false })
+  @ApiPropertyOptional()
   semester?: string;
 
   @ApiProperty({
-    required: false,
     enum: EscholarshirpType,
     default: EscholarshirpType.EXCELLENCE,
   })
   type?: string;
 
-  @ApiProperty({ required: false })
+  @ApiPropertyOptional()
   content?: string;
 
-  @ApiProperty({ default: 8.0, required: true })
+  @IsNumber()
+  @ApiProperty({ default: 8.0 })
   minimunPoints?: number;
 
-  @ApiProperty({ default: 8.9, required: true })
+  @IsNumber()
+  @ApiProperty({ default: 8.9 })
   maximunPoints?: number;
 
-  @ApiProperty({ default: 65, required: false })
+  @ApiPropertyOptional({ default: 65 })
   trainningPoints?: number;
 
-  @ApiProperty({ default: 80, required: false })
+  @ApiPropertyOptional({ default: 80 })
   percentTuition?: number;
 
-  @ApiProperty({ required: false, default: 11 })
+  @ApiPropertyOptional({ default: 11 })
   numberCredit?: number;
 
-  @ApiProperty({ required: false })
+  @ApiPropertyOptional({ type: [String] })
   attachment?: string[];
 }

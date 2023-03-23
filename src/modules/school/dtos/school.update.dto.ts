@@ -1,40 +1,39 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiPropertyOptional } from '@nestjs/swagger';
 import { GetCurrentDate } from 'src/utils/get.current-date';
 import { ContactSchoolDto } from './school.contact.dto';
 import { LocationSchoolDto } from './school.location.dto';
 import { PoliCySchoolDto } from './school.policy.dto';
 
 export class UpdateSchoolDto {
-  @ApiProperty({ required: false })
+  @ApiPropertyOptional()
   name?: string;
 
-  @ApiProperty({ required: false })
+  @ApiPropertyOptional()
   schoolCode?: string;
 
-  @ApiProperty({ required: false, default: 40000 })
+  @ApiPropertyOptional({ default: 40000 })
   numberTotal?: number;
 
-  @ApiProperty({ required: false, type: [String] })
+  @ApiPropertyOptional({ type: [String] })
   image?: string[];
 
-  @ApiProperty({ required: false, type: [String] })
+  @ApiPropertyOptional({ type: [String] })
   award?: string[];
 
-  @ApiProperty({ required: false, type: LocationSchoolDto })
+  @ApiPropertyOptional({ type: LocationSchoolDto })
   location?: LocationSchoolDto;
 
-  @ApiProperty({ required: false, type: ContactSchoolDto })
+  @ApiPropertyOptional({ type: ContactSchoolDto })
   contactInfo?: ContactSchoolDto;
 
-  @ApiProperty({ required: false, type: [PoliCySchoolDto] })
+  @ApiPropertyOptional({ type: [PoliCySchoolDto] })
   policy?: PoliCySchoolDto[];
 
-  @ApiProperty({
-    required: false,
+  @ApiPropertyOptional({
     default: new GetCurrentDate().getYearMonthDate(),
   })
   yearFound?: Date;
 
-  @ApiProperty({ required: false })
+  @ApiPropertyOptional()
   generalInfo?: string;
 }

@@ -1,20 +1,20 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiPropertyOptional } from '@nestjs/swagger';
 import { EroomType } from 'src/constants/constant';
 import { DiviceRoomDto } from './rooms.divice.dto';
 
 export class UpdateRoomDto {
-  @ApiProperty({ required: false })
+  @ApiPropertyOptional()
   name?: string;
 
-  @ApiProperty({ required: false, default: EroomType.CLASS_ROOM })
+  @ApiPropertyOptional({ default: EroomType.CLASS_ROOM })
   type?: string;
 
-  @ApiProperty({ required: false, default: 100 })
+  @ApiPropertyOptional({ default: 100 })
   capacity?: number;
 
-  @ApiProperty({ required: false, type: DiviceRoomDto })
+  @ApiPropertyOptional({ type: DiviceRoomDto })
   divice?: DiviceRoomDto;
 
-  @ApiProperty({ required: false })
+  @ApiPropertyOptional()
   description?: string;
 }

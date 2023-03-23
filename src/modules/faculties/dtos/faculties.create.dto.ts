@@ -1,25 +1,27 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { IsNotEmpty, IsString } from 'class-validator';
 import { GetCurrentDate } from 'src/utils/get.current-date';
 
 export class CreateFacultyDto {
-  @ApiProperty({ required: true })
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty()
   name?: string;
 
+  @IsString()
+  @IsNotEmpty()
   @ApiProperty()
   introduction?: string;
 
-  @ApiProperty({
-    required: true,
-    default: new GetCurrentDate().getYearMonthDate(),
-  })
+  @ApiProperty({ default: new GetCurrentDate().getYearMonthDate() })
   foundYear?: Date;
 
-  @ApiProperty({ required: false, type: [String] })
+  @ApiPropertyOptional({ type: [String] })
   award?: string[];
 
-  @ApiProperty({ required: false })
+  @ApiPropertyOptional()
   headOfSection?: string;
 
-  @ApiProperty({ required: false })
+  @ApiPropertyOptional()
   eputeHead?: string;
 }

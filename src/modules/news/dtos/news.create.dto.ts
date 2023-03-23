@@ -1,22 +1,28 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { IsNotEmpty, IsString } from 'class-validator';
 import { EtypeNews } from 'src/constants/constant';
 export class CreateNewDto {
-  @ApiProperty({ required: true })
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty()
   title: string;
 
+  @IsString()
+  @IsNotEmpty()
   @ApiProperty()
   content?: string;
 
+  @IsString()
+  @IsNotEmpty()
   @ApiProperty({
-    required: true,
     enum: EtypeNews,
     default: EtypeNews.UNIVERSITY,
   })
   type?: string;
 
-  @ApiProperty()
+  @ApiPropertyOptional()
   url?: string;
 
-  @ApiProperty({ type: [String], required: false })
+  @ApiPropertyOptional({ type: [String] })
   attachment?: string[];
 }

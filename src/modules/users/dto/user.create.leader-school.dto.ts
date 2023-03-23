@@ -1,10 +1,14 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { IsArray, IsNotEmpty, IsString } from 'class-validator';
 import { TitleLeaDerSchoolDto } from './user.create.leader-school.title.dto';
 
 export class CreateLeaderSchoolDto {
-  @ApiProperty({ required: true })
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty()
   user?: string;
 
-  @ApiProperty({ required: true, type: [TitleLeaDerSchoolDto] })
+  @IsArray()
+  @ApiProperty({ type: [TitleLeaDerSchoolDto] })
   title?: TitleLeaDerSchoolDto[];
 }

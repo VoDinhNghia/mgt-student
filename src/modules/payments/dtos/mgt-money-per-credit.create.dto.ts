@@ -1,12 +1,18 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
 
 export class CreateMoneyPerCreditMgtDto {
-  @ApiProperty({ required: true })
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty()
   name?: string;
 
-  @ApiProperty({ required: true, default: 520000 })
-  moneyPerCredit?: number; // money per credit
+  @IsNumber()
+  @ApiProperty({ default: 520000, description: 'money per credit' })
+  moneyPerCredit?: number;
 
-  @ApiProperty({ required: true })
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty()
   semester?: string;
 }

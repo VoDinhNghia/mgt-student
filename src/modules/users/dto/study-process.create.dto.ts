@@ -1,22 +1,26 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { IsNotEmpty, IsString } from 'class-validator';
 import { EstatusUserProfile } from 'src/constants/constant';
 import { ItCertificateDto } from './study-process.itCer.dto';
 import { ToeicCertificateDto } from './study-process.toeicCer.dto';
 
 export class CreateStudyProcessDto {
-  @ApiProperty({ required: true })
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty()
   user?: string;
 
+  @IsString()
+  @IsNotEmpty()
   @ApiProperty({
-    required: true,
     default: EstatusUserProfile.STUDYING,
     enum: EstatusUserProfile,
   })
   status: string;
 
-  @ApiProperty({ required: false, type: ToeicCertificateDto })
+  @ApiPropertyOptional({ type: ToeicCertificateDto })
   toeicCertificate?: ToeicCertificateDto;
 
-  @ApiProperty({ required: false, type: ItCertificateDto })
+  @ApiPropertyOptional({ type: ItCertificateDto })
   itCertificate?: ItCertificateDto;
 }

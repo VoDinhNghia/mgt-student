@@ -1,18 +1,18 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiPropertyOptional } from '@nestjs/swagger';
 
 export class BranchUpdateLocationDto {
-  @ApiProperty({ required: false })
+  @ApiPropertyOptional()
   province: string;
 
-  @ApiProperty({ required: false })
+  @ApiPropertyOptional()
   district: string;
 
-  @ApiProperty({ required: false })
+  @ApiPropertyOptional()
   ward: string;
 
-  @ApiProperty({ required: false })
+  @ApiPropertyOptional()
   country: string;
 
-  @ApiProperty({ required: false })
+  @ApiPropertyOptional()
   address: string;
 }

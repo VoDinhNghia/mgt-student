@@ -1,12 +1,12 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiPropertyOptional } from '@nestjs/swagger';
 
 export class IdentityCardNumberDto {
-  @ApiProperty({ required: false })
+  @ApiPropertyOptional()
   id?: string;
 
-  @ApiProperty({ required: false })
+  @ApiPropertyOptional()
   date?: string;
 
-  @ApiProperty({ required: false })
+  @ApiPropertyOptional()
   location?: string;
 }

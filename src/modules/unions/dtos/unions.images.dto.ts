@@ -1,9 +1,9 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiPropertyOptional } from '@nestjs/swagger';
 
 export class UnionImagesDto {
-  @ApiProperty()
+  @ApiPropertyOptional()
   attachment: string;
 
-  @ApiProperty()
+  @ApiPropertyOptional()
   description: string;
 }

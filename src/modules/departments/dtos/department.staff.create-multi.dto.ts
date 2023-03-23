@@ -1,10 +1,14 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { IsArray, IsNotEmpty, IsString } from 'class-validator';
 import { StaffDepartmentCommonDto } from './department.staff.dto';
 
 export class CreateMultiStaffDepartmentDto {
-  @ApiProperty({ required: true, type: [StaffDepartmentCommonDto] })
+  @IsArray()
+  @ApiProperty({ type: [StaffDepartmentCommonDto] })
   staffs?: StaffDepartmentCommonDto[];
 
-  @ApiProperty({ required: true })
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty()
   department?: string;
 }

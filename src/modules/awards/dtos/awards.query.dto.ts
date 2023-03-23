@@ -1,25 +1,22 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiPropertyOptional } from '@nestjs/swagger';
 import { QueryPagination } from 'src/utils/page.query.pagination.dto';
 import { EtypeAward } from 'src/constants/constant';
 import { GetCurrentDate } from 'src/utils/get.current-date';
 
 export class QueryAwardDto extends QueryPagination {
-  @ApiProperty({
-    required: false,
+  @ApiPropertyOptional({
     enum: EtypeAward,
     default: EtypeAward.UNIVERSITY,
   })
   type?: string;
 
-  @ApiProperty({
-    required: false,
+  @ApiPropertyOptional({
     default: `${new GetCurrentDate().getYearMonthDate()}T00:00:01`,
   })
-  fromDate?: string;
+  fromDate?: Date;
 
-  @ApiProperty({
-    required: false,
-    default: `${new GetCurrentDate().getYearMonthDate()}T00:00:01`,
+  @ApiPropertyOptional({
+    default: `${new GetCurrentDate().getYearMonthDate()}T23:59:59`,
   })
-  toDate?: string;
+  toDate?: Date;
 }

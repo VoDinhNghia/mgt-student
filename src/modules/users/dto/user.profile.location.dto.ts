@@ -1,18 +1,18 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiPropertyOptional } from '@nestjs/swagger';
 
 export class LocationProfileDto {
-  @ApiProperty({ required: false })
+  @ApiPropertyOptional()
   province?: string;
 
-  @ApiProperty({ required: false })
+  @ApiPropertyOptional()
   country?: string;
 
-  @ApiProperty({ required: false })
+  @ApiPropertyOptional()
   state?: string;
 
-  @ApiProperty({ required: false })
+  @ApiPropertyOptional()
   permanentAddress?: string;
 
-  @ApiProperty({ required: false })
+  @ApiPropertyOptional()
   temporaryAddress?: string;
 }

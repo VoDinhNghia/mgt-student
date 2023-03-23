@@ -1,15 +1,22 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
 
 export class CreateScholarshipUser {
-  @ApiProperty({ required: true })
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty()
   scholarship?: string;
 
-  @ApiProperty({ required: true })
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty()
   user?: string;
 
-  @ApiProperty({ required: true })
+  @IsNumber()
+  @ApiProperty()
   accumalatedPoint?: number;
 
-  @ApiProperty({ required: true })
+  @IsNumber()
+  @ApiProperty()
   trainningPoint?: number;
 }

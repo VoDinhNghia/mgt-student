@@ -1,6 +1,6 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiPropertyOptional } from '@nestjs/swagger';
 
 export class QueryLeaderSchoolDto {
-  @ApiProperty({ required: false })
+  @ApiPropertyOptional()
   user?: string;
 }

@@ -1,11 +1,17 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
 export class CreateCourseDto {
-  @ApiProperty({ required: true, default: 'K12' })
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty({ default: 'K12' })
   name: string;
 
-  @ApiProperty({ required: true, default: '2016-2017' })
-  year?: string; // 2016-2017
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty({ default: '2016-2017', description: '2016-2017' })
+  year?: string;
 
-  @ApiProperty({ required: true, default: 0 })
+  @IsNumber()
+  @ApiProperty({ default: 0 })
   total?: number;
 }

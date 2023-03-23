@@ -1,9 +1,9 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiPropertyOptional } from '@nestjs/swagger';
 
 export class UnionMemberDto {
-  @ApiProperty()
+  @ApiPropertyOptional()
   user: string;
 
-  @ApiProperty()
+  @ApiPropertyOptional()
   position: string;
 }

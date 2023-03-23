@@ -1,23 +1,30 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { IsArray, IsNotEmpty, IsObject, IsString } from 'class-validator';
 import { BranchContactInfoDto } from './branchs.contact-info.dto';
 import { BranchLocationDto } from './branchs.location.dto';
 
 export class BranchCreateDto {
-  @ApiProperty({ required: true })
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty()
   title?: string;
 
-  @ApiProperty({ required: true })
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty()
   name?: string;
 
-  @ApiProperty()
+  @ApiPropertyOptional()
   description?: string;
 
-  @ApiProperty()
+  @ApiPropertyOptional()
   website?: string;
 
-  @ApiProperty({ type: BranchLocationDto, required: true })
+  @IsObject()
+  @ApiProperty({ type: BranchLocationDto })
   location?: BranchLocationDto;
 
-  @ApiProperty({ required: true, type: [BranchContactInfoDto] })
+  @IsArray()
+  @ApiProperty({ type: [BranchContactInfoDto] })
   contactInfo?: [BranchContactInfoDto];
 }

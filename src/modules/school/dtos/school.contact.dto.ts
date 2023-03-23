@@ -1,12 +1,12 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiPropertyOptional } from '@nestjs/swagger';
 
 export class ContactSchoolDto {
-  @ApiProperty({ required: false })
+  @ApiPropertyOptional()
   email?: string;
 
-  @ApiProperty({ required: false })
+  @ApiPropertyOptional()
   fax?: string;
 
-  @ApiProperty({ required: false })
+  @ApiPropertyOptional()
   mobile?: string;
 }

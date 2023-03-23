@@ -1,14 +1,26 @@
 import { ApiProperty } from '@nestjs/swagger';
+import {
+  IsEmail,
+  IsNotEmpty,
+  IsString,
+  MaxLength,
+  MinLength,
+} from 'class-validator';
 import { ErolesUser } from 'src/constants/constant';
 export class UsersDto {
-  @ApiProperty({ required: true })
+  @IsEmail()
+  @IsNotEmpty()
+  @ApiProperty()
   email: string;
 
-  @ApiProperty({ required: true, maxLength: 20, minLength: 6 })
+  @MaxLength(20)
+  @MinLength(6)
+  @ApiProperty({ required: true })
   passWord?: string;
 
+  @IsString()
+  @IsNotEmpty()
   @ApiProperty({
-    required: true,
     enum: ErolesUser,
     default: ErolesUser.STUDENT,
   })

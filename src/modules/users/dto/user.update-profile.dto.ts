@@ -1,83 +1,84 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiPropertyOptional } from '@nestjs/swagger';
 import { EuserGender } from 'src/constants/constant';
 import { IdentityCardNumberDto } from './user.profile.identityCardNumber.dto';
 import { LocationProfileDto } from './user.profile.location.dto';
 
 export class UpdateProfileDto {
-  @ApiProperty({ required: false })
+  @ApiPropertyOptional()
   firstName?: string;
 
-  @ApiProperty({ required: false })
+  @ApiPropertyOptional()
   lastName?: string;
 
-  @ApiProperty({ required: false })
+  @ApiPropertyOptional()
   middleName?: string;
 
-  @ApiProperty({ required: false })
+  @ApiPropertyOptional()
   classId?: string;
 
-  @ApiProperty({ required: false })
+  @ApiPropertyOptional()
   faculty?: string;
 
-  @ApiProperty({ required: false })
+  @ApiPropertyOptional()
   major?: string;
 
-  @ApiProperty({ required: false })
+  @ApiPropertyOptional()
   course?: string;
 
-  @ApiProperty({ required: false })
+  @ApiPropertyOptional()
   degreeLevel?: string;
 
-  @ApiProperty({ required: false })
+  @ApiPropertyOptional()
   avatar?: string;
 
-  @ApiProperty({ required: false, default: '0948494849' })
+  @ApiPropertyOptional({ default: '0948494849' })
   mobile?: string;
 
-  @ApiProperty({
-    required: false,
+  @ApiPropertyOptional({
     enum: EuserGender,
     default: EuserGender.MALE,
   })
   gender?: string;
 
-  @ApiProperty({ required: false })
+  @ApiPropertyOptional()
   dateOfBirth?: string;
 
-  @ApiProperty({ required: false })
+  @ApiPropertyOptional()
   joinDate?: string;
 
-  @ApiProperty({ required: false })
+  @ApiPropertyOptional()
   endDate?: string;
 
-  @ApiProperty({
-    required: false,
+  @ApiPropertyOptional({
     type: [String],
     default: ['class president'],
   })
   positionHeld?: string[];
 
-  @ApiProperty({ required: false, type: [String] }) // Should award old and award new
+  @ApiPropertyOptional({
+    type: [String],
+    description: 'Should award old and award new',
+  })
   award?: string[];
 
-  @ApiProperty({ required: false, type: LocationProfileDto })
+  @ApiPropertyOptional({ type: LocationProfileDto })
   location?: LocationProfileDto;
 
-  @ApiProperty({ required: false, type: IdentityCardNumberDto })
+  @ApiPropertyOptional({ type: IdentityCardNumberDto })
   identityCardNumber?: IdentityCardNumberDto;
 
-  @ApiProperty({ required: false })
+  @ApiPropertyOptional()
   object?: string;
 
-  @ApiProperty({ required: false })
+  @ApiPropertyOptional()
   unionDate?: string;
 
-  @ApiProperty({ required: false })
+  @ApiPropertyOptional()
   communistPartyDay?: string;
 
-  @ApiProperty({ required: false })
+  @ApiPropertyOptional()
   ethnic?: string;
 
-  @ApiProperty({ required: false })
+  @ApiPropertyOptional()
   religion?: string;
 }

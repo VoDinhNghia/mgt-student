@@ -1,23 +1,23 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiPropertyOptional } from '@nestjs/swagger';
 import { BranchUpdateContactInfoDto } from './branchs.update-contact-info.dto';
 import { BranchUpdateLocationDto } from './branchs.update-location.dto';
 
 export class BranchUpdateDto {
-  @ApiProperty({ required: false })
+  @ApiPropertyOptional()
   title?: string;
 
-  @ApiProperty({ required: false })
+  @ApiPropertyOptional()
   name?: string;
 
-  @ApiProperty({ required: false })
+  @ApiPropertyOptional()
   description?: string;
 
-  @ApiProperty({ required: false })
+  @ApiPropertyOptional()
   website?: string;
 
-  @ApiProperty({ type: BranchUpdateLocationDto, required: false })
+  @ApiPropertyOptional({ type: BranchUpdateLocationDto })
   location?: BranchUpdateLocationDto;
 
-  @ApiProperty({ required: false, type: [BranchUpdateContactInfoDto] })
+  @ApiPropertyOptional({ type: [BranchUpdateContactInfoDto] })
   contactInfo?: [BranchUpdateContactInfoDto];
 }

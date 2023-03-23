@@ -1,16 +1,21 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { IsNumber, IsString } from 'class-validator';
 
 export class ProcessSubjectDto {
-  @ApiProperty({ required: true, default: 1 })
+  @IsNumber()
+  @ApiProperty({ default: 1 })
   week?: number;
 
-  @ApiProperty({ required: true, default: 60 })
+  @IsNumber()
+  @ApiProperty({ default: 60 })
   time?: number;
 
-  @ApiProperty({ required: true, default: 'LO1 LO2 ...' })
+  @IsString()
+  @ApiProperty({ default: 'LO1 LO2 ...' })
   output?: string;
 
-  @ApiProperty({ required: true, default: 30 })
+  @IsNumber()
+  @ApiProperty({ default: 30 })
   percent?: number;
 
   @ApiProperty({ required: true, default: '2023-03-01' })

@@ -1,9 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { IsNumber } from 'class-validator';
 
 export class TrainningTimeCourseDto {
-  @ApiProperty({ required: true, default: 7 })
-  maximum?: number; // 7 year
+  @IsNumber()
+  @ApiProperty({ default: 7, description: '7 year' })
+  maximum?: number;
 
-  @ApiProperty({ required: true, default: 3 })
-  minimum?: number; // 3 year
+  @IsNumber()
+  @ApiProperty({ default: 3, description: '3 year' })
+  minimum?: number;
 }
