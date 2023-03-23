@@ -1,12 +1,17 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { IsNotEmpty, IsString } from 'class-validator';
 
 export class QueryTuitionUser {
-  @ApiProperty({ required: true })
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty()
   semester: string;
 
-  @ApiProperty({ required: true })
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty()
   profile?: string;
 
-  @ApiProperty({ required: false })
+  @ApiPropertyOptional()
   faculty?: string;
 }

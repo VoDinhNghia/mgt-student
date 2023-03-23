@@ -1,32 +1,38 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
 import { GetCurrentDate } from 'src/utils/get.current-date';
 import { ContactSchoolDto } from './school.contact.dto';
 import { LocationSchoolDto } from './school.location.dto';
 import { PoliCySchoolDto } from './school.policy.dto';
 
 export class CreateSchoolDto {
-  @ApiProperty({ required: true })
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty()
   name?: string;
 
-  @ApiProperty({ required: true })
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty()
   schoolCode?: string;
 
-  @ApiProperty({ required: true, default: 40000 })
+  @IsNumber()
+  @ApiProperty({ default: 40000 })
   numberTotal?: number;
 
-  @ApiProperty({ required: false, type: [String] })
+  @ApiPropertyOptional({ type: [String] })
   image?: string[];
 
-  @ApiProperty({ required: false, type: [String] })
+  @ApiPropertyOptional({ type: [String] })
   award?: string[];
 
-  @ApiProperty({ required: false, type: LocationSchoolDto })
+  @ApiPropertyOptional({ type: LocationSchoolDto })
   location?: LocationSchoolDto;
 
-  @ApiProperty({ required: false, type: ContactSchoolDto })
+  @ApiPropertyOptional({ type: ContactSchoolDto })
   contactInfo?: ContactSchoolDto;
 
-  @ApiProperty({ required: false, type: [PoliCySchoolDto] })
+  @ApiPropertyOptional({ type: [PoliCySchoolDto] })
   policy?: PoliCySchoolDto[];
 
   @ApiProperty({
@@ -35,6 +41,6 @@ export class CreateSchoolDto {
   })
   yearFound?: Date;
 
-  @ApiProperty({ required: false })
+  @ApiPropertyOptional()
   generalInfo?: string;
 }

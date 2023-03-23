@@ -1,21 +1,21 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiPropertyOptional } from '@nestjs/swagger';
 
 export class UpdateClassDto {
-  @ApiProperty({ required: false })
+  @ApiPropertyOptional()
   course?: string;
 
-  @ApiProperty({ required: false, default: 'DHKHMT12A' })
+  @ApiPropertyOptional({ default: 'DHKHMT12A' })
   name?: string;
 
-  @ApiProperty({ required: false })
+  @ApiPropertyOptional()
   degreeLevel?: string;
 
-  @ApiProperty({ required: false, default: 50 })
+  @ApiPropertyOptional({ default: 50 })
   classSize?: number;
 
-  @ApiProperty({ required: false })
+  @ApiPropertyOptional()
   major?: string;
 
-  @ApiProperty({ required: false })
+  @ApiPropertyOptional()
   homeroomteacher?: string;
 }

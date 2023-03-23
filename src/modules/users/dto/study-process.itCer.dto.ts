@@ -1,9 +1,9 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiPropertyOptional } from '@nestjs/swagger';
 
 export class ItCertificateDto {
-  @ApiProperty({ required: false })
+  @ApiPropertyOptional()
   attachment: string;
 
-  @ApiProperty({ required: false })
+  @ApiPropertyOptional()
   scores: number;
 }

@@ -1,19 +1,29 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
 import { EstatusPayments, EtypePayments } from 'src/constants/constant';
 
 export class CreateUserPaymentDto {
-  @ApiProperty({ required: true })
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty()
   user?: string;
 
-  @ApiProperty({ required: true })
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty()
   semester?: string;
 
-  @ApiProperty({ required: true, default: 0 })
+  @IsNumber()
+  @ApiProperty({ default: 0 })
   totalMoney?: number;
 
-  @ApiProperty({ required: true, default: EtypePayments.CASH })
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty({ default: EtypePayments.CASH })
   type?: string;
 
-  @ApiProperty({ required: true, default: EstatusPayments.OWED })
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty({ default: EstatusPayments.OWED })
   status?: string;
 }

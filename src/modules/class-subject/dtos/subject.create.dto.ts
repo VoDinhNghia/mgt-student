@@ -1,62 +1,101 @@
 import { ApiProperty } from '@nestjs/swagger';
+import {
+  IsBoolean,
+  IsNotEmpty,
+  IsNumber,
+  IsObject,
+  IsString,
+} from 'class-validator';
+import { GetCurrentDate } from 'src/utils/get.current-date';
 import { ProcessSubjectDto } from './process.create.dto';
 
 export class CreateSubjectDto {
-  @ApiProperty({ required: true })
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty()
   course?: string;
 
-  @ApiProperty({ required: true, default: 'KTLT' })
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty({ default: 'KTLT' })
   name?: string;
 
-  @ApiProperty({ required: true })
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty()
   degreeLevel?: string;
 
-  @ApiProperty({ required: true })
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty()
   major?: string;
 
-  @ApiProperty({ required: true })
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty()
   lecturer?: string;
 
-  @ApiProperty({ required: true })
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty()
   semester?: string;
 
-  @ApiProperty({ required: true, default: '2023-02-27 ' })
-  openTime?: string;
+  @ApiProperty({
+    required: true,
+    default: new GetCurrentDate().getYearMonthDate(),
+  })
+  openTime?: Date;
 
-  @ApiProperty({ required: true, default: '2023-02-27' })
+  @ApiProperty({
+    required: true,
+    default: new GetCurrentDate().getYearMonthDate(),
+  })
   closeTime?: Date;
 
-  @ApiProperty({ required: true, default: 60 })
+  @IsNumber()
+  @ApiProperty({ default: 60 })
   size?: number;
 
-  @ApiProperty({ required: true, default: 3 })
-  numberCredits?: number; // 3 TC
+  @IsNumber()
+  @ApiProperty({ default: 3, description: '3 TC' })
+  numberCredits?: number;
 
-  // create subject process
-  @ApiProperty({ required: true, default: 'Monday' })
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty({ default: 'Monday', description: 'create subject process' })
   learnDate?: string;
 
-  @ApiProperty({ required: true, default: '8-10h A.M' })
-  time?: string; // 8h - 10h A.M
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty({
+    default: '8-10h A.M',
+    description: 'Learn time',
+  })
+  time?: string;
 
-  @ApiProperty({ required: true, default: '2023-02-28' })
+  @ApiProperty({ default: new GetCurrentDate().getYearMonthDate() })
   startDate?: Date;
 
-  @ApiProperty({ required: true, default: '2023-03-28' })
+  @ApiProperty({ default: new GetCurrentDate().getYearMonthDate() })
   endDate?: Date;
 
-  @ApiProperty({ required: true, default: false })
+  @IsBoolean()
+  @ApiProperty({ default: false })
   elective?: boolean;
 
-  @ApiProperty({ required: true, default: true })
+  @IsBoolean()
+  @ApiProperty({ default: true })
   calculateCumulativePoint?: boolean;
 
-  @ApiProperty({ required: true, type: ProcessSubjectDto })
+  @IsObject()
+  @ApiProperty({ type: ProcessSubjectDto })
   midTermTest?: ProcessSubjectDto;
 
-  @ApiProperty({ required: true, type: ProcessSubjectDto })
+  @IsObject()
+  @ApiProperty({ type: ProcessSubjectDto })
   finalExam?: ProcessSubjectDto;
 
-  @ApiProperty({ required: true, type: ProcessSubjectDto })
+  @IsObject()
+  @ApiProperty({ type: ProcessSubjectDto })
   studentEssay?: ProcessSubjectDto;
 }

@@ -1,9 +1,9 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiPropertyOptional } from '@nestjs/swagger';
 
 export class UpdateDegreeLevelDto {
-  @ApiProperty({ required: false })
+  @ApiPropertyOptional()
   name?: string;
 
-  @ApiProperty({ required: false })
+  @ApiPropertyOptional()
   description?: string;
 }

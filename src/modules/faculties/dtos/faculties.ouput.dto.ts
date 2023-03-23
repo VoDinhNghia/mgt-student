@@ -1,12 +1,16 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { IsBoolean, IsNotEmpty, IsString } from 'class-validator';
 
 export class OutputCourseDto {
-  @ApiProperty({ required: true, default: 400 })
-  toeic?: string; // 400, 450, 500 ...
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty({ default: 400, description: '400, 450, 500 ...' })
+  toeic?: string;
 
-  @ApiProperty({ required: true, default: true })
+  @IsBoolean()
+  @ApiProperty()
   it?: boolean;
 
-  @ApiProperty({ required: false })
-  conditionDiff?: string; // GDTC, GDQP ...
+  @ApiPropertyOptional({ description: 'GDTC, GDQP ...' })
+  conditionDiff?: string;
 }

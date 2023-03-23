@@ -1,29 +1,41 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { IsArray, IsNotEmpty, IsObject, IsString } from 'class-validator';
 import { ContactDepartmentDto } from './department.contact.dto';
 import { FunctionAndTaskDepartmentDto } from './department.function-task.dto';
 
 export class CreateDepartmentDto {
-  @ApiProperty({ required: true })
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty()
   unitName?: string;
 
-  @ApiProperty({ required: true })
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty()
   introduction?: string;
 
-  @ApiProperty({ required: true })
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty()
   foundYear?: string;
 
-  @ApiProperty({ required: true })
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty()
   manager?: string;
 
-  @ApiProperty({ type: ContactDepartmentDto, required: true })
+  @IsObject()
+  @ApiProperty({ type: ContactDepartmentDto })
   contacts?: ContactDepartmentDto;
 
-  @ApiProperty({ required: true, type: [FunctionAndTaskDepartmentDto] })
+  @IsArray()
+  @ApiProperty({ type: [FunctionAndTaskDepartmentDto] })
   function?: FunctionAndTaskDepartmentDto[];
 
-  @ApiProperty({ required: true, type: [FunctionAndTaskDepartmentDto] })
+  @IsArray()
+  @ApiProperty({ type: [FunctionAndTaskDepartmentDto] })
   task?: FunctionAndTaskDepartmentDto[];
 
-  @ApiProperty({ required: false })
+  @ApiPropertyOptional({ type: [String] })
   attachment?: string[];
 }

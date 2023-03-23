@@ -1,13 +1,18 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { IsArray, IsNotEmpty, IsObject, IsString } from 'class-validator';
 import { GetCurrentDate } from 'src/utils/get.current-date';
 import { ContactInstituteDto } from './institute.contact.dto';
 import { FunctionAndTaskInstituteDto } from './institute.function-task.dto';
 
 export class CreateInstituteDto {
-  @ApiProperty({ required: true })
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty()
   unitName?: string;
 
-  @ApiProperty({ required: true })
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty()
   url?: string;
 
   @ApiProperty({
@@ -16,21 +21,28 @@ export class CreateInstituteDto {
   })
   foundYear?: Date;
 
-  @ApiProperty({ required: true })
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty()
   parson?: string;
 
-  @ApiProperty({ required: true })
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty()
   viceParson?: string;
 
-  @ApiProperty({ type: ContactInstituteDto, required: true })
+  @IsObject()
+  @ApiProperty({ type: ContactInstituteDto })
   contacts?: ContactInstituteDto;
 
-  @ApiProperty({ required: true, type: [FunctionAndTaskInstituteDto] })
+  @IsArray()
+  @ApiProperty({ type: [FunctionAndTaskInstituteDto] })
   function?: FunctionAndTaskInstituteDto[];
 
-  @ApiProperty({ required: true, type: [FunctionAndTaskInstituteDto] })
+  @IsArray()
+  @ApiProperty({ type: [FunctionAndTaskInstituteDto] })
   task?: FunctionAndTaskInstituteDto[];
 
-  @ApiProperty({ required: false })
+  @ApiPropertyOptional({ type: [String] })
   attachment?: string[];
 }

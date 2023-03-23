@@ -1,9 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { IsNotEmpty, IsString } from 'class-validator';
 import { EtypeLeaderSchool } from 'src/constants/constant';
 import { GetCurrentDate } from 'src/utils/get.current-date';
 
 export class TitleLeaDerSchoolDto {
-  @ApiProperty({ required: true })
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty()
   name: string;
 
   @ApiProperty({
@@ -12,8 +15,9 @@ export class TitleLeaDerSchoolDto {
   })
   acceptDate: Date;
 
+  @IsString()
+  @IsNotEmpty()
   @ApiProperty({
-    required: true,
     enum: EtypeLeaderSchool,
     default: EtypeLeaderSchool.PARTYCOMMITTEE,
   })

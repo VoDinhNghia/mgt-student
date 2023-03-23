@@ -1,32 +1,46 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { IsNotEmpty, IsString } from 'class-validator';
 import { UnionImagesDto } from './unions.images.dto';
 import { UnionMemberDto } from './unions.member.dto';
 
 export class CreateUnionDto {
-  @ApiProperty({ required: true })
+  @IsString()
+  @ApiProperty()
   url: string;
 
-  @ApiProperty({ required: true })
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty()
   nameUnit: string;
 
-  @ApiProperty({ required: true })
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty()
   address: string;
 
-  @ApiProperty({ required: true })
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty()
   mobile: string;
 
-  @ApiProperty({ required: true })
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty()
   email: string;
 
-  @ApiProperty({ required: true })
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty()
   introduction: string;
 
-  @ApiProperty({ required: true })
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty()
   function: string;
 
-  @ApiProperty({ required: false, type: [UnionImagesDto] })
+  @ApiPropertyOptional({ type: [UnionImagesDto] })
   images: UnionImagesDto[];
 
-  @ApiProperty({ required: false, type: [UnionMemberDto] })
+  @ApiPropertyOptional({ type: [UnionMemberDto] })
   members: UnionMemberDto[];
 }

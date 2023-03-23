@@ -1,26 +1,28 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiPropertyOptional } from '@nestjs/swagger';
 import { EtypeAward } from 'src/constants/constant';
+import { GetCurrentDate } from 'src/utils/get.current-date';
 
 export class UpdateAwardDto {
-  @ApiProperty({ required: false })
+  @ApiPropertyOptional()
   name?: string;
 
-  @ApiProperty({ required: false, default: '2023-12-01T17:00:00' })
-  time?: string;
+  @ApiPropertyOptional({
+    default: `${new GetCurrentDate().getYearMonthDate()}T00:00:00`,
+  })
+  time?: Date;
 
-  @ApiProperty({ required: false, type: [String] })
+  @ApiPropertyOptional({ type: [String] })
   attachment?: [string];
 
-  @ApiProperty({ required: false, default: 'award - location' })
+  @ApiPropertyOptional({ default: 'award - location' })
   location?: string;
 
-  @ApiProperty({
-    required: false,
+  @ApiPropertyOptional({
     enum: EtypeAward,
     default: EtypeAward.UNIVERSITY,
   })
   type?: string;
 
-  @ApiProperty({ required: false })
+  @ApiPropertyOptional()
   description?: string;
 }

@@ -1,7 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { IsArray } from 'class-validator';
 import { TitleLeaDerSchoolDto } from './user.create.leader-school.title.dto';
 
 export class UpdateLeaderSchoolDto {
-  @ApiProperty({ required: true, type: [TitleLeaDerSchoolDto] })
+  @IsArray()
+  @ApiProperty({ type: [TitleLeaDerSchoolDto] })
   title?: TitleLeaDerSchoolDto[];
 }

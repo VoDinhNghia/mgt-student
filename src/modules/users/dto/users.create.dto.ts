@@ -1,20 +1,31 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { IsNotEmpty, IsString } from 'class-validator';
 import { EuserGender } from 'src/constants/constant';
 import { UsersDto } from './users.dto';
 
 export class CreateUserDto extends UsersDto {
-  @ApiProperty({ required: true })
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty()
   firstName: string;
 
-  @ApiProperty({ required: true })
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty()
   lastName: string;
 
-  @ApiProperty({ required: true })
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty()
   middleName: string;
 
-  @ApiProperty({ required: true, default: '0984848480' })
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty({ default: '0984848480' })
   mobile: string;
 
-  @ApiProperty({ required: true, enum: EuserGender, default: EuserGender.MALE })
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty({ enum: EuserGender, default: EuserGender.MALE })
   gender: string;
 }

@@ -1,29 +1,29 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiPropertyOptional } from '@nestjs/swagger';
 import { ContactDepartmentDto } from './department.contact.dto';
 import { FunctionAndTaskDepartmentDto } from './department.function-task.dto';
 
 export class UpdateDepartmentDto {
-  @ApiProperty({ required: false })
+  @ApiPropertyOptional()
   unitName?: string;
 
-  @ApiProperty({ required: false })
+  @ApiPropertyOptional()
   introduction?: string;
 
-  @ApiProperty({ required: false })
+  @ApiPropertyOptional()
   foundYear?: string;
 
-  @ApiProperty({ required: false })
+  @ApiPropertyOptional()
   manager?: string;
 
-  @ApiProperty({ type: ContactDepartmentDto, required: false })
+  @ApiPropertyOptional({ type: ContactDepartmentDto })
   contacts?: ContactDepartmentDto;
 
-  @ApiProperty({ required: false, type: [FunctionAndTaskDepartmentDto] })
+  @ApiPropertyOptional({ type: [FunctionAndTaskDepartmentDto] })
   function?: FunctionAndTaskDepartmentDto[];
 
-  @ApiProperty({ required: false, type: [FunctionAndTaskDepartmentDto] })
+  @ApiPropertyOptional({ type: [FunctionAndTaskDepartmentDto] })
   task?: FunctionAndTaskDepartmentDto[];
 
-  @ApiProperty({ required: false })
+  @ApiPropertyOptional({ type: [String] })
   attachment?: string[];
 }

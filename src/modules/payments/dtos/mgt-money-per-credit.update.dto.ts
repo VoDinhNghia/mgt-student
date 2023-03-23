@@ -1,12 +1,12 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiPropertyOptional } from '@nestjs/swagger';
 
 export class UpdateMoneyPerCreditMgtDto {
-  @ApiProperty({ required: false })
+  @ApiPropertyOptional()
   name?: string;
 
-  @ApiProperty({ required: false, default: 520000 })
-  moneyPerCredit?: number; // money per credit
+  @ApiPropertyOptional({ default: 520000 })
+  moneyPerCredit?: number;
 
-  @ApiProperty({ required: false })
+  @ApiPropertyOptional()
   semester?: string;
 }

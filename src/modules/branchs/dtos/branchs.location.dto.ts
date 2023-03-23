@@ -1,18 +1,27 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { IsNotEmpty, IsString } from 'class-validator';
 
 export class BranchLocationDto {
+  @IsString()
+  @IsNotEmpty()
   @ApiProperty()
   province: string;
 
+  @IsString()
+  @IsNotEmpty()
   @ApiProperty()
   district: string;
 
-  @ApiProperty({ required: false })
+  @ApiPropertyOptional()
   ward: string;
 
+  @IsString()
+  @IsNotEmpty()
   @ApiProperty()
   country: string;
 
-  @ApiProperty({ required: true })
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty()
   address: string;
 }

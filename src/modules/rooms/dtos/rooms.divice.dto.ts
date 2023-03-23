@@ -1,12 +1,12 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiPropertyOptional } from '@nestjs/swagger';
 
 export class DiviceRoomDto {
-  @ApiProperty({ required: false })
+  @ApiPropertyOptional()
   airConditioner?: string;
 
-  @ApiProperty({ required: false })
+  @ApiPropertyOptional()
   projector?: string;
 
-  @ApiProperty({ required: false })
+  @ApiPropertyOptional()
   status?: string;
 }

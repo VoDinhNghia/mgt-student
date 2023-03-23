@@ -1,12 +1,12 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiPropertyOptional } from '@nestjs/swagger';
 
 export class QueryPagination {
-  @ApiProperty({ required: false, default: 10 })
+  @ApiPropertyOptional({ default: 10 })
   limit?: number;
 
-  @ApiProperty({ required: false, default: 1 })
+  @ApiPropertyOptional({ default: 1 })
   page?: number;
 
-  @ApiProperty({ required: false })
+  @ApiPropertyOptional()
   searchKey?: string;
 }

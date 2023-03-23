@@ -1,32 +1,32 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiPropertyOptional } from '@nestjs/swagger';
 import { UnionImagesDto } from './unions.images.dto';
 import { UnionMemberDto } from './unions.member.dto';
 
 export class UpdateUnionDto {
-  @ApiProperty({ required: false })
+  @ApiPropertyOptional()
   url: string;
 
-  @ApiProperty({ required: false })
+  @ApiPropertyOptional()
   nameUnit: string;
 
-  @ApiProperty({ required: false })
+  @ApiPropertyOptional()
   address: string;
 
-  @ApiProperty({ required: false })
+  @ApiPropertyOptional()
   mobile: string;
 
-  @ApiProperty({ required: false })
+  @ApiPropertyOptional()
   email: string;
 
-  @ApiProperty({ required: false })
+  @ApiPropertyOptional()
   introduction: string;
 
-  @ApiProperty({ required: false })
+  @ApiPropertyOptional()
   function: string;
 
-  @ApiProperty({ required: false, type: [UnionImagesDto] })
+  @ApiPropertyOptional({ type: [UnionImagesDto] })
   images: UnionImagesDto[];
 
-  @ApiProperty({ required: false, type: [UnionMemberDto] })
+  @ApiPropertyOptional({ type: [UnionMemberDto] })
   members: UnionMemberDto[];
 }

@@ -1,16 +1,12 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiPropertyOptional } from '@nestjs/swagger';
 import { EtypeNews } from 'src/constants/constant';
 export class UpdateNewDto {
-  @ApiProperty({ required: false })
+  @ApiPropertyOptional()
   title?: string;
 
-  @ApiProperty({
-    enum: EtypeNews,
-    required: false,
-    default: EtypeNews.UNIVERSITY,
-  })
+  @ApiPropertyOptional({ enum: EtypeNews, default: EtypeNews.UNIVERSITY })
   type?: string;
 
-  @ApiProperty({ type: [String], required: false })
+  @ApiPropertyOptional({ type: [String] })
   attachment?: string[];
 }
