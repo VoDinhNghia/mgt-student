@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
 import { IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class UpdateClassDto {
@@ -19,6 +20,7 @@ export class UpdateClassDto {
 
   @IsOptional()
   @IsNumber()
+  @Type(() => Number)
   @ApiProperty({ default: 50 })
   classSize?: number;
 

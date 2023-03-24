@@ -1,6 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
 import {
   IsArray,
+  IsDate,
   IsNotEmpty,
   IsObject,
   IsOptional,
@@ -21,6 +23,8 @@ export class CreateInstituteDto {
   @ApiProperty()
   url?: string;
 
+  @IsDate()
+  @Type(() => Date)
   @ApiProperty({
     required: true,
     default: new GetCurrentDate().getYearMonthDate(),

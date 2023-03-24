@@ -1,5 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsArray, IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { Type } from 'class-transformer';
+import {
+  IsArray,
+  IsDate,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 import { GetCurrentDate } from 'src/utils/get.current-date';
 
 export class CreateFacultyDto {
@@ -13,6 +20,8 @@ export class CreateFacultyDto {
   @ApiProperty()
   introduction?: string;
 
+  @IsDate()
+  @Type(() => Date)
   @ApiProperty({ default: new GetCurrentDate().getYearMonthDate() })
   foundYear?: Date;
 

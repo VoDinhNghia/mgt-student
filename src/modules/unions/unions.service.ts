@@ -101,7 +101,7 @@ export class UnionsService {
 
   async findAllUnions(): Promise<Union[]> {
     const match = { $match: { isDeleted: false } };
-    const lookup = new LookupService().union();
+    const lookup = new LookupService().union(); // check again
     const aggregate = [match, ...lookup];
     const results = await this.unionSchema.aggregate(aggregate);
     return results;

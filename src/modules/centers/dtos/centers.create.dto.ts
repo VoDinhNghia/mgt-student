@@ -1,6 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
 import {
   IsArray,
+  IsDate,
   IsNotEmpty,
   IsObject,
   IsOptional,
@@ -25,6 +27,8 @@ export class CreateCenterDto {
   @ApiProperty()
   director?: string;
 
+  @IsDate()
+  @Type(() => Date)
   @ApiProperty({
     default: new GetCurrentDate().getYearMonthDate(),
   })

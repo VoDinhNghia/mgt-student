@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
 import { IsNumber, IsObject, IsOptional, IsString } from 'class-validator';
 import { EroomType } from 'src/constants/constant';
 import { DiviceRoomDto } from './rooms.divice.dto';
@@ -16,6 +17,7 @@ export class UpdateRoomDto {
 
   @IsOptional()
   @IsNumber()
+  @Type(() => Number)
   @ApiProperty({ default: 100 })
   capacity?: number;
 

@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsString } from 'class-validator';
+import { Type } from 'class-transformer';
+import { IsDate, IsNotEmpty, IsString } from 'class-validator';
 import { EtypeLeaderSchool } from 'src/constants/constant';
 import { GetCurrentDate } from 'src/utils/get.current-date';
 
@@ -9,6 +10,8 @@ export class TitleLeaDerSchoolDto {
   @ApiProperty()
   name: string;
 
+  @IsDate()
+  @Type(() => Date)
   @ApiProperty({
     required: true,
     default: new GetCurrentDate().getYearMonthDate(),

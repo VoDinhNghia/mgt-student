@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
 import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
 
 export class CreateMoneyPerCreditMgtDto {
@@ -8,6 +9,7 @@ export class CreateMoneyPerCreditMgtDto {
   name?: string;
 
   @IsNumber()
+  @Type(() => Number)
   @ApiProperty({ default: 520000, description: 'money per credit' })
   moneyPerCredit?: number;
 

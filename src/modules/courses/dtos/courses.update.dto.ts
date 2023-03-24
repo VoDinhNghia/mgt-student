@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
 import { IsNumber, IsOptional, IsString } from 'class-validator';
 export class UpdateCourseDto {
   @IsOptional()
@@ -13,6 +14,7 @@ export class UpdateCourseDto {
 
   @IsOptional()
   @IsNumber()
+  @Type(() => Number)
   @ApiProperty({ default: 0 })
   total?: number;
 }
