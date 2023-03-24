@@ -1,3 +1,4 @@
+/* eslint-disable class-methods-use-this */
 import { collections } from 'src/constants/collections.name';
 import { LookupCommon } from './lookup.query.aggregate-query';
 

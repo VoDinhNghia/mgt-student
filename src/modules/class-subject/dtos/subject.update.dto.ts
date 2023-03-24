@@ -1,6 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
 import {
   IsBoolean,
+  IsDate,
   IsNumber,
   IsObject,
   IsOptional,
@@ -41,20 +43,26 @@ export class UpdateSubjectDto {
   semester?: string;
 
   @IsOptional()
+  @IsDate()
+  @Type(() => Date)
   @ApiProperty({ default: new GetCurrentDate().getYearMonthDate() })
   openTime?: Date;
 
   @IsOptional()
+  @IsDate()
+  @Type(() => Date)
   @ApiProperty({ default: new GetCurrentDate().getYearMonthDate() })
   closeTime?: Date;
 
   @IsOptional()
   @IsNumber()
+  @Type(() => Number)
   @ApiProperty({ default: 60 })
   size?: number;
 
   @IsOptional()
   @IsNumber()
+  @Type(() => Number)
   @ApiProperty({ default: 3 })
   numberCredits?: number;
 
@@ -79,10 +87,14 @@ export class UpdateSubjectDto {
   time?: string;
 
   @IsOptional()
+  @IsDate()
+  @Type(() => Date)
   @ApiProperty({ default: new GetCurrentDate().getYearMonthDate() })
   startDate?: Date;
 
   @IsOptional()
+  @IsDate()
+  @Type(() => Date)
   @ApiProperty({ default: new GetCurrentDate().getYearMonthDate() })
   endDate?: Date;
 

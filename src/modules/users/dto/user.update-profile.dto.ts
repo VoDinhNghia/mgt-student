@@ -11,6 +11,8 @@ export class UpdateProfileDto {
   @ApiProperty()
   readonly firstName?: string;
 
+  @IsOptional()
+  @IsString()
   @ApiProperty()
   lastName?: string;
 

@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
 import {
   IsNotEmpty,
   IsNumber,
@@ -21,6 +22,7 @@ export class CreateRoomDto {
   type?: string;
 
   @IsNumber()
+  @Type(() => Number)
   @ApiProperty({ default: 100 })
   capacity?: number;
 

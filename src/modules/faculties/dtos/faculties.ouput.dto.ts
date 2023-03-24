@@ -8,7 +8,7 @@ export class OutputCourseDto {
   toeic?: string;
 
   @IsBoolean()
-  @ApiProperty()
+  @ApiProperty({ default: true })
   it?: boolean;
 
   @IsOptional()

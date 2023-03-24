@@ -1,12 +1,14 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { IsString } from 'class-validator';
+import { ApiPropertyOptional } from '@nestjs/swagger';
+import { IsOptional, IsString } from 'class-validator';
 
 export class FunctionAndTaskDto {
+  @IsOptional()
   @IsString()
-  @ApiProperty()
+  @ApiPropertyOptional()
   title?: string;
 
+  @IsOptional()
   @IsString()
-  @ApiProperty()
+  @ApiPropertyOptional()
   content?: string;
 }

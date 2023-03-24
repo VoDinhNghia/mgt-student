@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsArray, IsOptional, IsString } from 'class-validator';
+import { Type } from 'class-transformer';
+import { IsArray, IsDate, IsOptional, IsString } from 'class-validator';
 import { GetCurrentDate } from 'src/utils/get.current-date';
 
 export class UpdateMajorDto {
@@ -19,6 +20,8 @@ export class UpdateMajorDto {
   introduction?: string;
 
   @IsOptional()
+  @IsDate()
+  @Type(() => Date)
   @ApiProperty({ default: new GetCurrentDate().getYearMonthDate() })
   foundYear?: Date;
 

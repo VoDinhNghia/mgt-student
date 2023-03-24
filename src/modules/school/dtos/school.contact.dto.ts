@@ -1,9 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsOptional, IsString } from 'class-validator';
+import { IsEmail, IsOptional, IsString } from 'class-validator';
 
 export class ContactSchoolDto {
   @IsOptional()
-  @IsString()
+  @IsEmail()
   @ApiProperty()
   email?: string;
 

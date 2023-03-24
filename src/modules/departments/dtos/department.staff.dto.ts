@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsString } from 'class-validator';
+import { Type } from 'class-transformer';
+import { IsDate, IsNotEmpty, IsString } from 'class-validator';
 import { GetCurrentDate } from 'src/utils/get.current-date';
 
 export class StaffDepartmentCommonDto {
@@ -8,6 +9,8 @@ export class StaffDepartmentCommonDto {
   @ApiProperty()
   staff?: string;
 
+  @IsDate()
+  @Type(() => Date)
   @ApiProperty({ default: new GetCurrentDate().getYearMonthDate() })
   joinDate?: Date;
 }

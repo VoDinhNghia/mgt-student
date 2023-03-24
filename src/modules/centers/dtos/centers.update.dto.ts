@@ -1,5 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsArray, IsObject, IsOptional, IsString } from 'class-validator';
+import { Type } from 'class-transformer';
+import {
+  IsArray,
+  IsDate,
+  IsObject,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 import { GetCurrentDate } from 'src/utils/get.current-date';
 import { CenterContacts } from './centers.contacts.dto';
 
@@ -20,6 +27,8 @@ export class UpdateCenterDto {
   director?: string;
 
   @IsOptional()
+  @IsDate()
+  @Type(() => Date)
   @ApiProperty({
     default: new GetCurrentDate().getYearMonthDate(),
   })

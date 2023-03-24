@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
 import {
   IsArray,
   IsNotEmpty,
@@ -24,6 +25,7 @@ export class CreateSchoolDto {
   schoolCode?: string;
 
   @IsNumber()
+  @Type(() => Number)
   @ApiProperty({ default: 40000 })
   numberTotal?: number;
 

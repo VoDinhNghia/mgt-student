@@ -1,6 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
 import {
   IsArray,
+  IsDate,
   IsNumber,
   IsObject,
   IsOptional,
@@ -24,6 +26,7 @@ export class UpdateSchoolDto {
 
   @IsOptional()
   @IsNumber()
+  @Type(() => Number)
   @ApiProperty({ default: 40000 })
   numberTotal?: number;
 
@@ -53,6 +56,8 @@ export class UpdateSchoolDto {
   policy?: PoliCySchoolDto[];
 
   @IsOptional()
+  @IsDate()
+  @Type(() => Date)
   @ApiProperty({
     default: new GetCurrentDate().getYearMonthDate(),
   })

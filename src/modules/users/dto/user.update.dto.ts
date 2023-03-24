@@ -3,10 +3,13 @@ import { IsOptional, IsString, Length } from 'class-validator';
 import { EstatusUser } from 'src/constants/constant';
 
 export class UsersUpdateDto {
+  @IsOptional()
   @IsString()
   @ApiProperty()
   email?: string;
 
+  @IsOptional()
+  @IsString()
   @ApiProperty()
   role?: string;
 

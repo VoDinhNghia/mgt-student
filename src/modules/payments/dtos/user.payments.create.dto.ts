@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
 import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
 import { EstatusPayments, EtypePayments } from 'src/constants/constant';
 
@@ -14,6 +15,7 @@ export class CreateUserPaymentDto {
   semester?: string;
 
   @IsNumber()
+  @Type(() => Number)
   @ApiProperty({ default: 0 })
   totalMoney?: number;
 
