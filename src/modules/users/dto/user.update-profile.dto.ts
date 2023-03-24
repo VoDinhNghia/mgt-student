@@ -1,84 +1,129 @@
-import { ApiPropertyOptional } from '@nestjs/swagger';
+import { ApiProperty } from '@nestjs/swagger';
+import { IsArray, IsObject, IsOptional, IsString } from 'class-validator';
 import { EuserGender } from 'src/constants/constant';
+import { GetCurrentDate } from 'src/utils/get.current-date';
 import { IdentityCardNumberDto } from './user.profile.identityCardNumber.dto';
 import { LocationProfileDto } from './user.profile.location.dto';
 
 export class UpdateProfileDto {
-  @ApiPropertyOptional()
-  firstName?: string;
+  @IsOptional()
+  @IsString()
+  @ApiProperty()
+  readonly firstName?: string;
 
-  @ApiPropertyOptional()
+  @ApiProperty()
   lastName?: string;
 
-  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  @ApiProperty()
   middleName?: string;
 
-  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  @ApiProperty()
   classId?: string;
 
-  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  @ApiProperty()
   faculty?: string;
 
-  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  @ApiProperty()
   major?: string;
 
-  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  @ApiProperty()
   course?: string;
 
-  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  @ApiProperty()
   degreeLevel?: string;
 
-  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  @ApiProperty()
   avatar?: string;
 
-  @ApiPropertyOptional({ default: '0948494849' })
+  @IsOptional()
+  @IsString()
+  @ApiProperty({ default: '0948494849' })
   mobile?: string;
 
-  @ApiPropertyOptional({
+  @IsOptional()
+  @IsString()
+  @ApiProperty({
     enum: EuserGender,
     default: EuserGender.MALE,
   })
   gender?: string;
 
-  @ApiPropertyOptional()
-  dateOfBirth?: string;
+  @IsOptional()
+  @ApiProperty({ default: new GetCurrentDate().getYearMonthDate() })
+  @ApiProperty()
+  dateOfBirth?: Date;
 
-  @ApiPropertyOptional()
-  joinDate?: string;
+  @IsOptional()
+  @ApiProperty({ default: new GetCurrentDate().getYearMonthDate() })
+  joinDate?: Date;
 
-  @ApiPropertyOptional()
+  @IsOptional()
+  @ApiProperty({ default: new GetCurrentDate().getYearMonthDate() })
+  @ApiProperty()
   endDate?: string;
 
-  @ApiPropertyOptional({
+  @IsOptional()
+  @IsArray()
+  @ApiProperty({
     type: [String],
     default: ['class president'],
   })
   positionHeld?: string[];
 
-  @ApiPropertyOptional({
+  @IsOptional()
+  @IsArray()
+  @ApiProperty({
     type: [String],
     description: 'Should award old and award new',
   })
   award?: string[];
 
-  @ApiPropertyOptional({ type: LocationProfileDto })
+  @IsOptional()
+  @IsObject()
+  @ApiProperty({ type: LocationProfileDto })
   location?: LocationProfileDto;
 
-  @ApiPropertyOptional({ type: IdentityCardNumberDto })
+  @IsOptional()
+  @IsObject()
+  @ApiProperty({ type: IdentityCardNumberDto })
   identityCardNumber?: IdentityCardNumberDto;
 
-  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  @ApiProperty()
   object?: string;
 
-  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  @ApiProperty()
   unionDate?: string;
 
-  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  @ApiProperty()
   communistPartyDay?: string;
 
-  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  @ApiProperty()
   ethnic?: string;
 
-  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  @ApiProperty()
   religion?: string;
 }

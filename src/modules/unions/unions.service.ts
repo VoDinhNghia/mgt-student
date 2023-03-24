@@ -12,6 +12,7 @@ import { Union, UnionDocument } from './schemas/unions.schema';
 
 @Injectable()
 export class UnionsService {
+  queryService = new QueryService();
   constructor(
     @InjectModel(Union.name) private readonly unionSchema: Model<UnionDocument>,
   ) {}
@@ -19,13 +20,12 @@ export class UnionsService {
   async validateUnionDto(
     unionDto: CreateUnionDto,
   ): Promise<Record<string, any>> {
-    const queryService = new QueryService();
     const { images = [], members = [] } = unionDto;
     if (images.length > 0) {
       const imageLists = [];
       for (const item of images) {
         const options = { _id: new Types.ObjectId(item.attachment) };
-        const result = await queryService.findOneByOptions(
+        const result = await this.queryService.findOneByOptions(
           collections.attachments,
           options,
         );
@@ -39,7 +39,7 @@ export class UnionsService {
       const memberLists = [];
       for (const item of members) {
         const options = { _id: new Types.ObjectId(item.user) };
-        const result = await queryService.findOneByOptions(
+        const result = await this.queryService.findOneByOptions(
           collections.profiles,
           options,
         );

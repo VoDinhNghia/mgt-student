@@ -1,5 +1,11 @@
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { IsArray, IsNotEmpty, IsObject, IsString } from 'class-validator';
+import { ApiProperty } from '@nestjs/swagger';
+import {
+  IsArray,
+  IsNotEmpty,
+  IsObject,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 import { GetCurrentDate } from 'src/utils/get.current-date';
 import { ContactInstituteDto } from './institute.contact.dto';
 import { FunctionAndTaskInstituteDto } from './institute.function-task.dto';
@@ -43,6 +49,8 @@ export class CreateInstituteDto {
   @ApiProperty({ type: [FunctionAndTaskInstituteDto] })
   task?: FunctionAndTaskInstituteDto[];
 
-  @ApiPropertyOptional({ type: [String] })
+  @IsOptional()
+  @IsArray()
+  @ApiProperty({ type: [String] })
   attachment?: string[];
 }

@@ -1,5 +1,5 @@
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { IsNotEmpty, IsString } from 'class-validator';
+import { ApiProperty } from '@nestjs/swagger';
+import { IsArray, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 import { EtypeAward } from 'src/constants/constant';
 import { GetCurrentDate } from 'src/utils/get.current-date';
 
@@ -15,7 +15,9 @@ export class CreateAwardDto {
   })
   time?: Date;
 
-  @ApiPropertyOptional({ type: [String] })
+  @IsOptional()
+  @IsArray()
+  @ApiProperty({ type: [String] })
   attachment?: string[];
 
   @IsString()

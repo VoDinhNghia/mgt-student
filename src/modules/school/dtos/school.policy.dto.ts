@@ -1,16 +1,24 @@
-import { ApiPropertyOptional } from '@nestjs/swagger';
+import { ApiProperty } from '@nestjs/swagger';
+import { IsOptional, IsString } from 'class-validator';
 import { GetCurrentDate } from 'src/utils/get.current-date';
 
 export class PoliCySchoolDto {
-  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  @ApiProperty()
   name?: string;
 
-  @ApiPropertyOptional({ default: new GetCurrentDate().getYearMonthDate() })
+  @IsOptional()
+  @ApiProperty({ default: new GetCurrentDate().getYearMonthDate() })
   effectiveDate?: Date;
 
-  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  @ApiProperty()
   content?: string;
 
-  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  @ApiProperty()
   attachment?: string;
 }

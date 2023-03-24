@@ -1,21 +1,34 @@
-import { ApiPropertyOptional } from '@nestjs/swagger';
+import { ApiProperty } from '@nestjs/swagger';
+import { IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class UpdateClassDto {
-  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  @ApiProperty()
   course?: string;
 
-  @ApiPropertyOptional({ default: 'DHKHMT12A' })
+  @IsOptional()
+  @IsString()
+  @ApiProperty({ default: 'DHKHMT12A' })
   name?: string;
 
-  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  @ApiProperty()
   degreeLevel?: string;
 
-  @ApiPropertyOptional({ default: 50 })
+  @IsOptional()
+  @IsNumber()
+  @ApiProperty({ default: 50 })
   classSize?: number;
 
-  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  @ApiProperty()
   major?: string;
 
-  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  @ApiProperty()
   homeroomteacher?: string;
 }

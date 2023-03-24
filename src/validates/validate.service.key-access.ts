@@ -1,3 +1,4 @@
+/* eslint-disable class-methods-use-this */
 import { CanActivate, ExecutionContext, mixin, Type } from '@nestjs/common';
 
 export const AuthServiceAccessByKey = (key: string): Type<CanActivate> => {

@@ -25,6 +25,7 @@ import {
 
 @Injectable()
 export class ClassSubjectService {
+  validate = new ValidateDto();
   constructor(
     @InjectModel(Class_Infos.name)
     private readonly classSchema: Model<ClassInfosDocument>,
@@ -157,27 +158,26 @@ export class ClassSubjectService {
       faculty,
       lecturer,
     } = dtos;
-    const validate = new ValidateDto();
     if (course) {
-      await validate.fieldId(collections.courses, course);
+      await this.validate.fieldId(collections.courses, course);
     }
     if (homeroomteacher) {
-      await validate.fieldId(collections.profiles, homeroomteacher);
+      await this.validate.fieldId(collections.profiles, homeroomteacher);
     }
     if (lecturer) {
-      await validate.fieldId(collections.profiles, lecturer);
+      await this.validate.fieldId(collections.profiles, lecturer);
     }
     if (semester) {
-      await validate.fieldId(collections.semesters, semester);
+      await this.validate.fieldId(collections.semesters, semester);
     }
     if (faculty) {
-      await validate.fieldId(collections.faculties, faculty);
+      await this.validate.fieldId(collections.faculties, faculty);
     }
     if (major) {
-      await validate.fieldId(collections.majors, major);
+      await this.validate.fieldId(collections.majors, major);
     }
     if (degreeLevel) {
-      await validate.fieldId(collections.degreelevels, degreeLevel);
+      await this.validate.fieldId(collections.degreelevels, degreeLevel);
     }
   }
 }

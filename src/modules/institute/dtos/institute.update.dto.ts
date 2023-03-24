@@ -1,33 +1,51 @@
-import { ApiPropertyOptional } from '@nestjs/swagger';
+import { ApiProperty } from '@nestjs/swagger';
+import { IsArray, IsObject, IsOptional, IsString } from 'class-validator';
 import { GetCurrentDate } from 'src/utils/get.current-date';
 import { ContactInstituteDto } from './institute.contact.dto';
 import { FunctionAndTaskInstituteDto } from './institute.function-task.dto';
 
 export class UpdateInstituteDto {
-  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  @ApiProperty()
   unitName?: string;
 
-  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  @ApiProperty()
   url?: string;
 
-  @ApiPropertyOptional({ default: new GetCurrentDate().getYearMonthDate() })
+  @IsOptional()
+  @ApiProperty({ default: new GetCurrentDate().getYearMonthDate() })
   foundYear?: Date;
 
-  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  @ApiProperty()
   parson?: string;
 
-  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  @ApiProperty()
   viceParson?: string;
 
-  @ApiPropertyOptional({ type: ContactInstituteDto })
+  @IsOptional()
+  @IsObject()
+  @ApiProperty({ type: ContactInstituteDto })
   contacts?: ContactInstituteDto;
 
-  @ApiPropertyOptional({ type: [FunctionAndTaskInstituteDto] })
+  @IsOptional()
+  @IsArray()
+  @ApiProperty({ type: [FunctionAndTaskInstituteDto] })
   function?: FunctionAndTaskInstituteDto[];
 
-  @ApiPropertyOptional({ type: [FunctionAndTaskInstituteDto] })
+  @IsOptional()
+  @IsArray()
+  @ApiProperty({ type: [FunctionAndTaskInstituteDto] })
   task?: FunctionAndTaskInstituteDto[];
 
-  @ApiPropertyOptional()
+  @IsOptional()
+  @IsArray()
+  @ApiProperty()
   attachment?: string[];
 }

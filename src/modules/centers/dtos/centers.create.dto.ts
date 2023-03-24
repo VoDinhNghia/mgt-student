@@ -1,5 +1,11 @@
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { IsNotEmpty, IsObject, IsString } from 'class-validator';
+import { ApiProperty } from '@nestjs/swagger';
+import {
+  IsArray,
+  IsNotEmpty,
+  IsObject,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 import { GetCurrentDate } from 'src/utils/get.current-date';
 import { CenterContacts } from './centers.contacts.dto';
 
@@ -24,7 +30,9 @@ export class CreateCenterDto {
   })
   foundYear?: Date;
 
-  @ApiPropertyOptional({ type: [String] })
+  @IsOptional()
+  @IsArray()
+  @ApiProperty({ type: [String] })
   award?: string[];
 
   @IsObject()

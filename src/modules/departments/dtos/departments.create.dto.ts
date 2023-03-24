@@ -1,5 +1,11 @@
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { IsArray, IsNotEmpty, IsObject, IsString } from 'class-validator';
+import { ApiProperty } from '@nestjs/swagger';
+import {
+  IsArray,
+  IsNotEmpty,
+  IsObject,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 import { ContactDepartmentDto } from './department.contact.dto';
 import { FunctionAndTaskDepartmentDto } from './department.function-task.dto';
 
@@ -36,6 +42,8 @@ export class CreateDepartmentDto {
   @ApiProperty({ type: [FunctionAndTaskDepartmentDto] })
   task?: FunctionAndTaskDepartmentDto[];
 
-  @ApiPropertyOptional({ type: [String] })
+  @IsOptional()
+  @IsArray()
+  @ApiProperty({ type: [String] })
   attachment?: string[];
 }

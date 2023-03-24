@@ -13,6 +13,7 @@ import { msgNotFound } from 'src/constants/message.response';
 
 @Injectable()
 export class SchoolService {
+  validate = new ValidateDto();
   constructor(
     @InjectModel(School_Info.name)
     private readonly schoolSchema: Model<SchoolInfoDocument>,
@@ -21,18 +22,17 @@ export class SchoolService {
   async validateSchoolDto(schoolDto: Record<string, any>): Promise<void> {
     const { location = {} } = schoolDto;
     const { country, province, district, ward } = location;
-    const validate = new ValidateDto();
     if (country) {
-      await validate.fieldId(collections.countries, country);
+      await this.validate.fieldId(collections.countries, country);
     }
     if (province) {
-      await validate.fieldId('province', province);
+      await this.validate.fieldId('province', province);
     }
     if (district) {
-      await validate.fieldId(collections.districts, district);
+      await this.validate.fieldId(collections.districts, district);
     }
     if (ward) {
-      await validate.fieldId(collections.wards, ward);
+      await this.validate.fieldId(collections.wards, ward);
     }
   }
 
@@ -61,17 +61,14 @@ export class SchoolService {
   ): Promise<School_Info> {
     const { image = [], award = [] } = schoolDto;
     if (image.length > 0) {
-      const imageIds = await new ValidateDto().idLists(
+      const imageIds = await this.validate.idLists(
         collections.attachments,
         image,
       );
       schoolDto.image = imageIds;
     }
     if (award.length > 0) {
-      const awardIds = await new ValidateDto().idLists(
-        collections.awards,
-        award,
-      );
+      const awardIds = await this.validate.idLists(collections.awards, award);
       schoolDto.award = awardIds;
     }
     await this.validateSchoolDto(schoolDto);

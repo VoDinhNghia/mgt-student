@@ -1,12 +1,19 @@
-import { ApiPropertyOptional } from '@nestjs/swagger';
+import { ApiProperty } from '@nestjs/swagger';
+import { IsOptional, IsString } from 'class-validator';
+import { GetCurrentDate } from 'src/utils/get.current-date';
 
 export class IdentityCardNumberDto {
-  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  @ApiProperty()
   id?: string;
 
-  @ApiPropertyOptional()
-  date?: string;
+  @IsOptional()
+  @ApiProperty({ default: new GetCurrentDate().getYearMonthDate() })
+  date?: Date;
 
-  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  @ApiProperty()
   location?: string;
 }

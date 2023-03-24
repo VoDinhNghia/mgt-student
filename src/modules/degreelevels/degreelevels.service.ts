@@ -14,6 +14,7 @@ import {
 
 @Injectable()
 export class DegreelevelService {
+  validate = new ValidateDto();
   constructor(
     @InjectModel(DegreeLevel.name)
     private readonly degreeLevelSchema: Model<DegreeLevelDocument>,
@@ -25,7 +26,7 @@ export class DegreelevelService {
     const { name } = degreeLevelDto;
     if (name) {
       const options = { name: name.trim() };
-      await new ValidateDto().existedByOptions(
+      await this.validate.existedByOptions(
         collections.degreelevels,
         options,
         'DegreeLevel name',

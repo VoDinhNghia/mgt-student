@@ -1,39 +1,65 @@
-import { ApiPropertyOptional } from '@nestjs/swagger';
+import { ApiProperty } from '@nestjs/swagger';
+import {
+  IsArray,
+  IsNumber,
+  IsObject,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 import { GetCurrentDate } from 'src/utils/get.current-date';
 import { ContactSchoolDto } from './school.contact.dto';
 import { LocationSchoolDto } from './school.location.dto';
 import { PoliCySchoolDto } from './school.policy.dto';
 
 export class UpdateSchoolDto {
-  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  @ApiProperty()
   name?: string;
 
-  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  @ApiProperty()
   schoolCode?: string;
 
-  @ApiPropertyOptional({ default: 40000 })
+  @IsOptional()
+  @IsNumber()
+  @ApiProperty({ default: 40000 })
   numberTotal?: number;
 
-  @ApiPropertyOptional({ type: [String] })
+  @IsOptional()
+  @IsArray()
+  @ApiProperty({ type: [String] })
   image?: string[];
 
-  @ApiPropertyOptional({ type: [String] })
+  @IsOptional()
+  @IsArray()
+  @ApiProperty({ type: [String] })
   award?: string[];
 
-  @ApiPropertyOptional({ type: LocationSchoolDto })
+  @IsOptional()
+  @IsObject()
+  @ApiProperty({ type: LocationSchoolDto })
   location?: LocationSchoolDto;
 
-  @ApiPropertyOptional({ type: ContactSchoolDto })
+  @IsOptional()
+  @IsObject()
+  @ApiProperty({ type: ContactSchoolDto })
   contactInfo?: ContactSchoolDto;
 
-  @ApiPropertyOptional({ type: [PoliCySchoolDto] })
+  @IsOptional()
+  @IsArray()
+  @ApiProperty({ type: [PoliCySchoolDto] })
   policy?: PoliCySchoolDto[];
 
-  @ApiPropertyOptional({
+  @IsOptional()
+  @ApiProperty({
     default: new GetCurrentDate().getYearMonthDate(),
   })
   yearFound?: Date;
 
-  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  @ApiProperty()
   generalInfo?: string;
 }

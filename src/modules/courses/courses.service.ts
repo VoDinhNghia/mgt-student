@@ -11,6 +11,7 @@ import { Course, CourseDocument } from './schemas/courses.schema';
 
 @Injectable()
 export class CoursesService {
+  validate = new ValidateDto();
   constructor(
     @InjectModel(Course.name)
     private readonly courseSchema: Model<CourseDocument>,
@@ -20,7 +21,7 @@ export class CoursesService {
     const { name } = courseDto;
     if (name) {
       const options = { name: name.trim() };
-      await new ValidateDto().existedByOptions(
+      await this.validate.existedByOptions(
         collections.courses,
         options,
         'Course name',

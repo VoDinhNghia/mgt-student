@@ -1,9 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { IsString } from 'class-validator';
 
 export class FunctionAndTaskDto {
-  @ApiProperty({ required: true })
+  @IsString()
+  @ApiProperty()
   title?: string;
 
-  @ApiProperty({ required: true })
+  @IsString()
+  @ApiProperty()
   content?: string;
 }

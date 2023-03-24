@@ -1,12 +1,19 @@
-import { ApiPropertyOptional } from '@nestjs/swagger';
+import { ApiProperty } from '@nestjs/swagger';
+import { IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class QueryPagination {
-  @ApiPropertyOptional({ default: 10 })
+  @IsOptional()
+  @IsNumber()
+  @ApiProperty({ default: 10 })
   limit?: number;
 
-  @ApiPropertyOptional({ default: 1 })
+  @IsOptional()
+  @IsNumber()
+  @ApiProperty({ default: 1 })
   page?: number;
 
-  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  @ApiProperty()
   searchKey?: string;
 }
