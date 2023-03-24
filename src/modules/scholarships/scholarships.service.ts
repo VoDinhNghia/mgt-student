@@ -7,6 +7,7 @@ import {
   EstatusUserProfile,
   trainningPointDefault,
 } from 'src/constants/constant';
+import { msgNotFound } from 'src/constants/message.response';
 import { CommonException } from 'src/exceptions/exeception.common-error';
 import { LookupService } from 'src/utils/lookup.query.service';
 import { Pagination } from 'src/utils/page.pagination';
@@ -94,7 +95,7 @@ export class ScholarshipService {
     const aggregate = [match, ...lookup];
     const results = await this.scholarshipSchema.aggregate(aggregate);
     if (!results[0]) {
-      new CommonException(404, 'Scholarship not found.');
+      new CommonException(404, msgNotFound);
     }
     return results[0];
   }

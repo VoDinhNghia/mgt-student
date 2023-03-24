@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
+import { msgNotFound } from 'src/constants/message.response';
 import { CommonException } from 'src/exceptions/exeception.common-error';
 import { CreateSemesterDto } from './dtos/semesters.create.dto';
 import { UpdateSemesterDto } from './dtos/semesters.update.dto';
@@ -28,7 +29,7 @@ export class SemestersService {
   async findSemesterById(id: string): Promise<Semester> {
     const result = await this.semesterSchema.findById(id);
     if (!result) {
-      new CommonException(404, 'Semester not found.');
+      new CommonException(404, msgNotFound);
     }
     return result;
   }

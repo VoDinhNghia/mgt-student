@@ -35,6 +35,11 @@ import { collections } from 'src/constants/collections.name';
 import { LookupService } from 'src/utils/lookup.query.service';
 import { UserResponse } from './responses/user.response-swagger';
 import { ProfileResponse } from './responses/profile.response-swagger';
+import {
+  msgNotFound,
+  msgServerError,
+  msgValidateEmail,
+} from 'src/constants/message.response';
 
 @Injectable()
 export class UsersService {
@@ -109,7 +114,7 @@ export class UsersService {
     const aggregate = [match, ...lookup];
     const result = await this.userSchema.aggregate(aggregate);
     if (!result[0]) {
-      new CommonException(404, 'User not found.');
+      new CommonException(404, msgNotFound);
     }
     return result[0];
   }
@@ -324,7 +329,7 @@ export class UsersService {
     } catch (error) {
       await this.userSchema.findByIdAndDelete(profileDto.user);
       console.log(error);
-      new CommonException(500, `Server interval.`);
+      new CommonException(500, msgServerError);
     }
   }
 
@@ -336,7 +341,11 @@ export class UsersService {
     const validate = new ValidateDto();
     await validate.fieldId(collections.profiles, user);
     const option = { user: new Types.ObjectId(user) };
-    await validate.existedByOptions('leaderschools', option, 'Leader school');
+    await validate.existedByOptions(
+      collections.leader_schools,
+      option,
+      'Leader school',
+    );
     const dto = {
       ...leaderDto,
       createdBy,
@@ -352,7 +361,7 @@ export class UsersService {
     const aggregate = [match, ...lookup];
     const result = await this.leaderSchoolSchema.aggregate(aggregate);
     if (!result[0]) {
-      new CommonException(404, 'Leader school not found.');
+      new CommonException(404, msgNotFound);
     }
     return result[0];
   }
@@ -411,9 +420,13 @@ export class UsersService {
 
   async validateEmailUser(email: string): Promise<void> {
     if (!validateEmail(email)) {
-      new CommonException(400, `Email not correct format.`);
+      new CommonException(400, msgValidateEmail);
     }
-    await new ValidateDto().existedByOptions('users', { email }, 'Email');
+    await new ValidateDto().existedByOptions(
+      collections.users,
+      { email },
+      'Email',
+    );
   }
 
   async validateProfileDto(fields: Record<string, any>): Promise<void> {

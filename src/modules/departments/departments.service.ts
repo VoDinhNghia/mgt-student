@@ -22,6 +22,7 @@ import { UpdateStaffDepartmentDto } from './dtos/department.staff.update.dto';
 import { ValidateDto } from 'src/validates/validate.common.dto';
 import { collections } from 'src/constants/collections.name';
 import { LookupService } from 'src/utils/lookup.query.service';
+import { msgNotFound } from 'src/constants/message.response';
 
 @Injectable()
 export class DepartmentsService {
@@ -107,7 +108,7 @@ export class DepartmentsService {
     const aggregate = [match, ...lookup];
     const result = await this.deparmentSchema.aggregate(aggregate);
     if (!result[0]) {
-      new CommonException(404, 'Department not found.');
+      new CommonException(404, msgNotFound);
     }
     return result[0];
   }
@@ -161,7 +162,7 @@ export class DepartmentsService {
     await this.findDepartmentById(department);
     const staffInfo = await this.findUserProfile(staff);
     if (!staffInfo) {
-      new CommonException(404, 'Staff not found.');
+      new CommonException(404, msgNotFound);
     }
     const result = await new this.staffSchema({
       ...staffDto,
@@ -181,7 +182,7 @@ export class DepartmentsService {
     }
     const staff: Record<string, any> = await this.staffSchema.findById(id);
     if (!staff) {
-      new CommonException(404, 'Staff not found.');
+      new CommonException(404, msgNotFound);
     }
     staff.department = department || staff.department;
     staff.joinDate = joinDate || staff.joinDate;
@@ -194,7 +195,7 @@ export class DepartmentsService {
   async deleteDepartmentStaff(id: string, deletedBy: string): Promise<void> {
     const staff: Record<string, any> = await this.staffSchema.findById(id);
     if (!staff) {
-      new CommonException(404, 'Staff not found.');
+      new CommonException(404, msgNotFound);
     }
     const dto = {
       isDeleted: true,

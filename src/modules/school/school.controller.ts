@@ -18,6 +18,7 @@ import { Response, Request } from 'express';
 import { ResponseRequest } from 'src/utils/response-api';
 import { ErolesUser } from 'src/constants/constant';
 import { GetCurrentDate } from 'src/utils/get.current-date';
+import { msgResponse } from 'src/constants/message.response';
 
 @Controller('api/school')
 @ApiTags('school')
@@ -54,13 +55,13 @@ export class SchoolController {
       schoolDto,
       updatedBy,
     );
-    return new ResponseRequest(res, result, 'Update school success.');
+    return new ResponseRequest(res, result, msgResponse.updateSchool);
   }
 
   @Get()
   async getAllSchool(@Res() res: Response): Promise<ResponseRequest> {
     const result = await this.schoolService.findAllSchool();
-    return new ResponseRequest(res, result, 'Get all school success.');
+    return new ResponseRequest(res, result, msgResponse.getAllSchool);
   }
 
   @Get('/:id')
@@ -69,6 +70,6 @@ export class SchoolController {
     @Res() res: Response,
   ): Promise<ResponseRequest> {
     const result = await this.schoolService.findSchoolById(id);
-    return new ResponseRequest(res, result, 'Get school success.');
+    return new ResponseRequest(res, result, msgResponse.getByIdSchool);
   }
 }

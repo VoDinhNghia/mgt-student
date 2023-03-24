@@ -9,6 +9,7 @@ import { School_Info, SchoolInfoDocument } from './schemas/school.schema';
 import { ValidateDto } from 'src/validates/validate.common.dto';
 import { collections } from 'src/constants/collections.name';
 import { LookupService } from 'src/utils/lookup.query.service';
+import { msgNotFound } from 'src/constants/message.response';
 
 @Injectable()
 export class SchoolService {
@@ -48,7 +49,7 @@ export class SchoolService {
     const aggregate = [match, ...lookup];
     const results = await this.schoolSchema.aggregate(aggregate);
     if (!results[0]) {
-      new CommonException(404, 'School not found');
+      new CommonException(404, msgNotFound);
     }
     return results[0];
   }

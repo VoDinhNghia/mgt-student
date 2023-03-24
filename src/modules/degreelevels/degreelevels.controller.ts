@@ -18,6 +18,7 @@ import { DegreelevelService } from './degreelevels.service';
 import { CreateDegreeLevelDto } from './dtos/degreelevels.create.dto';
 import { Response, Request } from 'express';
 import { UpdateDegreeLevelDto } from './dtos/degreeLevels.update.dto';
+import { msgResponse } from 'src/constants/message.response';
 
 @Controller('api/degreelevels')
 @ApiTags('degreelevels')
@@ -39,7 +40,7 @@ export class DegreelevelController {
       degreeLevelDto,
       createdBy,
     );
-    return new ResponseRequest(res, result, 'Create degreeLevel success.');
+    return new ResponseRequest(res, result, msgResponse.createDegreelevel);
   }
 
   @Put('/:id')
@@ -59,13 +60,13 @@ export class DegreelevelController {
       degreeLevelDto,
       updatedBy,
     );
-    return new ResponseRequest(res, result, 'Create degreeLevel success.');
+    return new ResponseRequest(res, result, msgResponse.updateDegreelevel);
   }
 
   @Get()
   async getAllDegreeLevel(@Res() res: Response): Promise<ResponseRequest> {
     const result = await this.degreeLevelService.findAllDegreeLevels();
-    return new ResponseRequest(res, result, 'Get all degreeLevel success.');
+    return new ResponseRequest(res, result, msgResponse.getAllDegreelevel);
   }
 
   @Get('/:id')
@@ -74,6 +75,6 @@ export class DegreelevelController {
     @Res() res: Response,
   ): Promise<ResponseRequest> {
     const result = await this.degreeLevelService.findDegreeLevelById(id);
-    return new ResponseRequest(res, result, 'Get all degreeLevel success.');
+    return new ResponseRequest(res, result, msgResponse.getByIdDegreelevel);
   }
 }

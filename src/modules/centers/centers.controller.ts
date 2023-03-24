@@ -19,6 +19,7 @@ import { CenterService } from './centers.service';
 import { Response, Request } from 'express';
 import { CreateCenterDto } from './dtos/centers.create.dto';
 import { UpdateCenterDto } from './dtos/centers.update.dto';
+import { msgResponse } from 'src/constants/message.response';
 
 @Controller('api/centers')
 @ApiTags('centers')
@@ -37,7 +38,7 @@ export class CenterController {
     const { user }: Request | Record<string, any> = req;
     const createdBy: string = user.profileId;
     const result = await this.service.createCenter(centerDto, createdBy);
-    return new ResponseRequest(res, result, 'Create center success.');
+    return new ResponseRequest(res, result, msgResponse.createCenter);
   }
 
   @Put('/:id')
@@ -53,7 +54,7 @@ export class CenterController {
     const { user }: Request | Record<string, any> = req;
     const updatedBy: string = user.profileId;
     const result = await this.service.updateCenter(id, centerDto, updatedBy);
-    return new ResponseRequest(res, result, 'Update center success.');
+    return new ResponseRequest(res, result, msgResponse.updateCenter);
   }
 
   @Delete('/:id')
@@ -68,13 +69,13 @@ export class CenterController {
     const { user }: Request | Record<string, any> = req;
     const deletedBy: string = user.profileId;
     await this.service.deleteCenter(id, deletedBy);
-    return new ResponseRequest(res, true, 'Delete center success.');
+    return new ResponseRequest(res, true, msgResponse.deleteCenter);
   }
 
   @Get()
   async getAllCenter(@Res() res: Response): Promise<ResponseRequest> {
     const result = await this.service.findAllCenter();
-    return new ResponseRequest(res, result, 'Get center success.');
+    return new ResponseRequest(res, result, msgResponse.getAllCenter);
   }
 
   @Get('/:id')
@@ -83,6 +84,6 @@ export class CenterController {
     @Res() res: Response,
   ): Promise<ResponseRequest> {
     const result = await this.service.findCenterById(id);
-    return new ResponseRequest(res, result, 'Get center success.');
+    return new ResponseRequest(res, result, msgResponse.getByIdCenter);
   }
 }

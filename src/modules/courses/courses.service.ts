@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { collections } from 'src/constants/collections.name';
+import { msgNotFound } from 'src/constants/message.response';
 import { CommonException } from 'src/exceptions/exeception.common-error';
 import { ValidateDto } from 'src/validates/validate.common.dto';
 import { CreateCourseDto } from './dtos/courses.create.dto';
@@ -42,7 +43,7 @@ export class CoursesService {
   async findCourseById(id: string): Promise<Course> {
     const result = await this.courseSchema.findById(id);
     if (!result) {
-      new CommonException(404, 'Course not found.');
+      new CommonException(404, msgNotFound);
     }
     return result;
   }

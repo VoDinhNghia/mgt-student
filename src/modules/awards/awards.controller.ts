@@ -20,6 +20,7 @@ import { ResponseRequest } from 'src/utils/response-api';
 import { CreateAwardDto } from './dtos/awards.create.dto';
 import { UpdateAwardDto } from './dtos/awards.update.dto';
 import { QueryAwardDto } from './dtos/awards.query.dto';
+import { msgResponse } from 'src/constants/message.response';
 
 @Controller('api/awards')
 @ApiTags('awards')
@@ -41,7 +42,7 @@ export class AwardsController {
       createAwardDto,
       createdBy,
     );
-    return new ResponseRequest(res, result, `Create award success.`);
+    return new ResponseRequest(res, result, msgResponse.createAward);
   }
 
   @Get()
@@ -50,7 +51,7 @@ export class AwardsController {
     @Res() res: Response,
   ): Promise<ResponseRequest> {
     const result = await this.awardService.findAllAward(queryAwardDto);
-    return new ResponseRequest(res, result, `Get all award success.`);
+    return new ResponseRequest(res, result, msgResponse.getAllAward);
   }
 
   @Get('/:id')
@@ -59,7 +60,7 @@ export class AwardsController {
     @Param('id') id: string,
   ): Promise<ResponseRequest> {
     const result = await this.awardService.findAwardById(id);
-    return new ResponseRequest(res, result, `Get award by Id sucess.`);
+    return new ResponseRequest(res, result, msgResponse.getByIdAward);
   }
 
   @Put('/:id')
@@ -75,6 +76,6 @@ export class AwardsController {
     const { user }: Request | Record<string, any> = req;
     const updatedBy: string = user.profileId;
     await this.awardService.updateAward(id, updateAwardDto, updatedBy);
-    return new ResponseRequest(res, true, `Update award success.`);
+    return new ResponseRequest(res, true, msgResponse.updateAward);
   }
 }

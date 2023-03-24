@@ -21,6 +21,7 @@ import { RoleGuard } from '../auth/guards/role-auth.guard';
 import { ErolesUser } from 'src/constants/constant';
 import { UpdatePermissionDto } from './dtos/permissions.update.dto';
 import { QueryPermissionDto } from './dtos/permissions.query.dto';
+import { msgResponse } from 'src/constants/message.response';
 
 @Controller('api/permissions')
 @ApiTags('permissions')
@@ -42,7 +43,7 @@ export class PermissionsController {
       permissionDto,
       createdBy,
     );
-    return new ResponseRequest(res, result, `Create admin permission success.`);
+    return new ResponseRequest(res, result, msgResponse.createPermission);
   }
 
   @Put('/:id')
@@ -62,7 +63,7 @@ export class PermissionsController {
       permissionDto,
       updatedBy,
     );
-    return new ResponseRequest(res, result, `Update admin permission success.`);
+    return new ResponseRequest(res, result, msgResponse.updatePermission);
   }
 
   @Delete('/:id')
@@ -77,7 +78,7 @@ export class PermissionsController {
     const { user }: Request | Record<string, any> = req;
     const deletedBy: string = user.profileId;
     await this.service.deleteAdminPermission(id, deletedBy);
-    return new ResponseRequest(res, true, `Delete admin permission success.`);
+    return new ResponseRequest(res, true, msgResponse.deletePermission);
   }
 
   @Get()
@@ -89,7 +90,7 @@ export class PermissionsController {
     @Res() res: Response,
   ) {
     const results = await this.service.findAllAdminPermissions(queryDto);
-    return new ResponseRequest(res, results, `Get admin permission success.`);
+    return new ResponseRequest(res, results, msgResponse.getAllPermission);
   }
 
   @Get('/:id')
@@ -98,6 +99,6 @@ export class PermissionsController {
   @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
   async getAdminPermissionById(@Param('id') id: string, @Res() res: Response) {
     const result = await this.service.findAdminPermissionById(id);
-    return new ResponseRequest(res, result, `Get admin permission success.`);
+    return new ResponseRequest(res, result, msgResponse.getByIdPermission);
   }
 }

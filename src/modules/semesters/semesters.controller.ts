@@ -19,6 +19,7 @@ import { CreateSemesterDto } from './dtos/semesters.create.dto';
 import { SemestersService } from './semesters.service';
 import { Response, Request } from 'express';
 import { UpdateSemesterDto } from './dtos/semesters.update.dto';
+import { msgResponse } from 'src/constants/message.response';
 
 @Controller('api/semesters')
 @ApiTags('semesters')
@@ -40,7 +41,7 @@ export class SemestersController {
       semesterDto,
       createdBy,
     );
-    return new ResponseRequest(res, result, 'Create Semester success.');
+    return new ResponseRequest(res, result, msgResponse.createSemester);
   }
 
   @Put('/:id')
@@ -60,7 +61,7 @@ export class SemestersController {
       updateDto,
       updatedBy,
     );
-    return new ResponseRequest(res, result, 'Update semester success.');
+    return new ResponseRequest(res, result, msgResponse.updateSemester);
   }
 
   @Delete('/:id')
@@ -75,13 +76,13 @@ export class SemestersController {
     const { user }: Request | Record<string, any> = req;
     const deletedBy: string = user.profileId;
     await this.semesterService.deleteSemester(id, deletedBy);
-    return new ResponseRequest(res, true, 'Delete semester success.');
+    return new ResponseRequest(res, true, msgResponse.deleteSemester);
   }
 
   @Get()
   async getAllSemester(@Res() res: Response): Promise<ResponseRequest> {
     const results = await this.semesterService.findAllSemesters();
-    return new ResponseRequest(res, results, 'Get all semester success.');
+    return new ResponseRequest(res, results, msgResponse.getAllSemester);
   }
 
   @Get('/:id')
@@ -90,6 +91,6 @@ export class SemestersController {
     @Res() res: Response,
   ): Promise<ResponseRequest> {
     const result = await this.semesterService.findSemesterById(id);
-    return new ResponseRequest(res, result, 'Get semester by id success.');
+    return new ResponseRequest(res, result, msgResponse.getByIdSemester);
   }
 }

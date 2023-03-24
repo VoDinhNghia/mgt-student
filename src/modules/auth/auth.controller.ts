@@ -17,6 +17,10 @@ import { Request } from 'express';
 import { InitSuperAdminDto } from './dtos/auth.init-super-admin.dto';
 import { ResponseLoginApiDto } from './dtos/auth.api.login.response.dto';
 import { UserResponse } from '../users/responses/user.response-swagger';
+import {
+  descriptionResponse,
+  msgResponse,
+} from 'src/constants/message.response';
 
 @Controller('api/auth')
 @ApiTags('auth')
@@ -29,7 +33,7 @@ export class AuthController {
   @Post('/init-supper-admin')
   @ApiOkResponse({
     type: UserResponse,
-    description: 'Response data when create supper admin success.',
+    description: descriptionResponse.apiInitAdmin,
     isArray: false,
   })
   async initAdmin(
@@ -37,12 +41,12 @@ export class AuthController {
     @Res() res: Response,
   ): Promise<ResponseRequest> {
     const result = await this.userService.initSupperAdmin(superAdminDto);
-    return new ResponseRequest(res, result, 'Create supper admin success');
+    return new ResponseRequest(res, result, msgResponse.initSupperAdminAuth);
   }
 
   @Post('/login')
   @ApiOkResponse({
-    description: 'Response data when login success.',
+    description: descriptionResponse.apiLogin,
     type: ResponseLoginApiDto,
     isArray: false,
   })
@@ -51,14 +55,14 @@ export class AuthController {
     @Res() res: Response,
   ): Promise<ResponseRequest> {
     const checkUser = await this.authService.login(loginDto);
-    return new ResponseRequest(res, checkUser, `Login sucess.`);
+    return new ResponseRequest(res, checkUser, msgResponse.loginAuth);
   }
 
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @ApiOkResponse({
     type: UserResponse,
-    description: 'Response data when get me success.',
+    description: descriptionResponse.apiGetMe,
     isArray: false,
   })
   @Get('/me')
@@ -68,6 +72,6 @@ export class AuthController {
   ): Promise<ResponseRequest> {
     const { user }: Request | Record<string, any> = req;
     const result = await this.userService.findUserById(user._id);
-    return new ResponseRequest(res, result, `Get me success.`);
+    return new ResponseRequest(res, result, msgResponse.getMeAuth);
   }
 }

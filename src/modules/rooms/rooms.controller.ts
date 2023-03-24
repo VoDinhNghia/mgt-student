@@ -21,6 +21,7 @@ import { Response, Request } from 'express';
 import { QueryRoomDto } from './dtos/rooms.query.dto';
 import { UpdateRoomDto } from './dtos/rooms.update.dto';
 import { Delete } from '@nestjs/common/decorators';
+import { msgResponse } from 'src/constants/message.response';
 
 @Controller('api/rooms')
 @ApiTags('rooms')
@@ -39,7 +40,7 @@ export class RoomsController {
     const { user }: Request | Record<string, any> = req;
     const createdBy: string = user.profileId;
     const result = await this.roomService.createRoom(createRoomDto, createdBy);
-    return new ResponseRequest(res, result, 'Create room success');
+    return new ResponseRequest(res, result, msgResponse.createRoom);
   }
 
   @Get()
@@ -50,7 +51,7 @@ export class RoomsController {
     @Res() res: Response,
   ): Promise<ResponseRequest> {
     const result = await this.roomService.findAllRooms(queryRoomDto);
-    return new ResponseRequest(res, result, 'Get all room success');
+    return new ResponseRequest(res, result, msgResponse.getAllRoom);
   }
 
   @Put('/:id')
@@ -70,7 +71,7 @@ export class RoomsController {
       updateRoomDto,
       updatedBy,
     );
-    return new ResponseRequest(res, result, 'Update room success');
+    return new ResponseRequest(res, result, msgResponse.updateRoom);
   }
 
   @Delete('/:id')
@@ -85,7 +86,7 @@ export class RoomsController {
     const { user }: Request | Record<string, any> = req;
     const deletedBy: string = user.profileId;
     const result = await this.roomService.deleteRoom(id, deletedBy);
-    return new ResponseRequest(res, result, 'Delete room success');
+    return new ResponseRequest(res, result, msgResponse.deleteRoom);
   }
 
   @Get('/:id')
@@ -96,6 +97,6 @@ export class RoomsController {
     @Res() res: Response,
   ): Promise<ResponseRequest> {
     const result = await this.roomService.findRoomById(id);
-    return new ResponseRequest(res, result, 'Get room success');
+    return new ResponseRequest(res, result, msgResponse.getByIdRoom);
   }
 }

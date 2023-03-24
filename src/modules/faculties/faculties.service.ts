@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { collections } from 'src/constants/collections.name';
+import { msgNotFound } from 'src/constants/message.response';
 import { CommonException } from 'src/exceptions/exeception.common-error';
 import { LookupService } from 'src/utils/lookup.query.service';
 import { ValidateDto } from 'src/validates/validate.common.dto';
@@ -66,7 +67,7 @@ export class FacultiesService {
     const aggregate = [match, ...lookup];
     const result = await this.facultySchema.aggregate(aggregate);
     if (!result[0]) {
-      new CommonException(404, 'Faculty not found.');
+      new CommonException(404, msgNotFound);
     }
     return result[0];
   }
@@ -117,7 +118,7 @@ export class FacultiesService {
     const aggregate = [match, ...lookup];
     const result = await this.majorSchema.aggregate(aggregate);
     if (!result[0]) {
-      new CommonException(404, 'Major not found.');
+      new CommonException(404, msgNotFound);
     }
     return result[0];
   }

@@ -7,6 +7,7 @@ import { ErolesUser, keyAccessLibraryService } from 'src/constants/constant';
 import { AuthServiceAccessByKey } from 'src/validates/validate.service.key-access';
 import { RoleGuard } from '../auth/guards/role-auth.guard';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { msgResponse } from 'src/constants/message.response';
 
 @Controller('api/sync-service')
 @ApiTags('sync-service')
@@ -19,13 +20,13 @@ export class SyncServiceController {
   @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN]))
   async migrateUsers(@Res() res: Response): Promise<ResponseRequest> {
     const result = await this.service.migrateUser();
-    return new ResponseRequest(res, result, 'Sync data success');
+    return new ResponseRequest(res, result, msgResponse.migrateUsersLibrary);
   }
 
   @Get('/users')
   @UseGuards(AuthServiceAccessByKey(keyAccessLibraryService))
   async getAllUsers(@Res() res: Response): Promise<ResponseRequest> {
     const result = await this.service.getUserForSyncData();
-    return new ResponseRequest(res, result, 'Get all users success');
+    return new ResponseRequest(res, result, msgResponse.getAllUserSyncLibrary);
   }
 }

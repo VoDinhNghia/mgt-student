@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { collections } from 'src/constants/collections.name';
+import { msgNotFound } from 'src/constants/message.response';
 import { CommonException } from 'src/exceptions/exeception.common-error';
 import { LookupService } from 'src/utils/lookup.query.service';
 import { Pagination } from 'src/utils/page.pagination';
@@ -31,7 +32,11 @@ export class BranchService {
       await validate.fieldId(collections.wards, ward);
     }
     const options = { name: branchCreateDto?.name?.trim() };
-    await validate.existedByOptions('branchs', options, 'Branch name');
+    await validate.existedByOptions(
+      collections.branches,
+      options,
+      'Branch name',
+    );
     const result = await new this.branchSchema({
       ...branchCreateDto,
       createdBy,
@@ -48,7 +53,7 @@ export class BranchService {
     const aggregate = [match, ...lookup];
     const result = await this.branchSchema.aggregate(aggregate);
     if (!result[0]) {
-      new CommonException(404, `Branch not found.`);
+      new CommonException(404, msgNotFound);
     }
 
     return result[0];

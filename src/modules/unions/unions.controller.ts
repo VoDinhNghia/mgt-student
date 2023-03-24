@@ -19,6 +19,7 @@ import { Response, Request } from 'express';
 import { CreateUnionDto } from './dtos/unions.create.dto';
 import { ResponseRequest } from 'src/utils/response-api';
 import { UpdateUnionDto } from './dtos/unions.update.dto';
+import { msgResponse } from 'src/constants/message.response';
 
 @Controller('api/unions')
 @ApiTags('unions')
@@ -37,7 +38,7 @@ export class UnionsController {
     const { user }: Request | Record<string, any> = req;
     const createdBy: string = user.profileId;
     const result = await this.unionService.createUnion(unionDto, createdBy);
-    return new ResponseRequest(res, result, 'Create union success');
+    return new ResponseRequest(res, result, msgResponse.createUnion);
   }
 
   @Put('/:id')
@@ -53,7 +54,7 @@ export class UnionsController {
     const { user }: Request | Record<string, any> = req;
     const updatedBy: string = user.profileId;
     const result = await this.unionService.updateUnion(id, unionDto, updatedBy);
-    return new ResponseRequest(res, result, 'Update union success.');
+    return new ResponseRequest(res, result, msgResponse.updateUnion);
   }
 
   @Delete('/:id')
@@ -68,13 +69,13 @@ export class UnionsController {
     const { user }: Request | Record<string, any> = req;
     const deletedBy: string = user.profileId;
     await this.unionService.deleteUnion(id, deletedBy);
-    return new ResponseRequest(res, true, 'Delete union success.');
+    return new ResponseRequest(res, true, msgResponse.deleteUnion);
   }
 
   @Get()
   async getAllUnion(@Res() res: ResponseRequest): Promise<ResponseRequest> {
     const results = await this.unionService.findAllUnions();
-    return new ResponseRequest(res, results, 'Get all union success');
+    return new ResponseRequest(res, results, msgResponse.getAllUnion);
   }
 
   @Get('/:id')
@@ -83,6 +84,6 @@ export class UnionsController {
     @Res() res: ResponseRequest,
   ): Promise<ResponseRequest> {
     const result = await this.unionService.findUnionById(id);
-    return new ResponseRequest(res, result, 'Get union by id success.');
+    return new ResponseRequest(res, result, msgResponse.getByIdUnion);
   }
 }

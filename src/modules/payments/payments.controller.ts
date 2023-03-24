@@ -21,6 +21,7 @@ import { ErolesUser } from 'src/constants/constant';
 import { UpdateMoneyPerCreditMgtDto } from './dtos/mgt-money-per-credit.update.dto';
 import { QueryTuitionUser } from './dtos/query.tuition-user.dto';
 import { CreateUserPaymentDto } from './dtos/user.payments.create.dto';
+import { msgResponse } from 'src/constants/message.response';
 
 @Controller('api/payments')
 @ApiTags('payments')
@@ -42,7 +43,7 @@ export class PaymentsController {
       createCreditmgtDto,
       createdBy,
     );
-    return new ResponseRequest(res, result, 'Create amount credit success.');
+    return new ResponseRequest(res, result, msgResponse.createMoneyCreditMgt);
   }
 
   @Put('/mgt-money-per-credit/:id')
@@ -62,7 +63,7 @@ export class PaymentsController {
       updateCreditmgtDto,
       updatedBy,
     );
-    return new ResponseRequest(res, result, 'Update mgt money credit success.');
+    return new ResponseRequest(res, result, msgResponse.updateMoneyCreditMgt);
   }
 
   @Get('/mgt-money-per-credit')
@@ -70,7 +71,7 @@ export class PaymentsController {
     @Res() res: Response,
   ): Promise<ResponseRequest> {
     const result = await this.paymentService.findAllMoneyPerCreditMgt();
-    return new ResponseRequest(res, result, 'Get mgt money credit success.');
+    return new ResponseRequest(res, result, msgResponse.getAllMoneyCreditMgt);
   }
 
   @Get('/mgt-money-per-credit/:id')
@@ -79,7 +80,7 @@ export class PaymentsController {
     @Res() res: Response,
   ): Promise<ResponseRequest> {
     const result = await this.paymentService.findByIdMoneyPerCreditMgt(id);
-    return new ResponseRequest(res, result, 'Get mgt money credit success.');
+    return new ResponseRequest(res, result, msgResponse.getByIdMoneyCreditMgt);
   }
 
   @Get('/user-tuition/')
@@ -93,7 +94,7 @@ export class PaymentsController {
     const result = await this.paymentService.findTuitionUserInSemester(
       queryDto,
     );
-    return new ResponseRequest(res, result, 'Get tuition of user success.');
+    return new ResponseRequest(res, result, msgResponse.getAllUserTuition);
   }
 
   @Post('/user-tuition')
@@ -111,6 +112,6 @@ export class PaymentsController {
       userPaymentDto,
       createdBy,
     );
-    return new ResponseRequest(res, result, 'Create user payment success.');
+    return new ResponseRequest(res, result, msgResponse.createUserTuition);
   }
 }

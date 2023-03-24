@@ -3,6 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { InjectModel } from '@nestjs/mongoose';
 import { unlinkSync } from 'fs';
 import { Model, Types } from 'mongoose';
+import { msgServerError, msgResponse } from 'src/constants/message.response';
 import { CommonException } from 'src/exceptions/exeception.common-error';
 import { FileRequestDto } from 'src/utils/file-request.dto';
 import { CreateAttachmentDto } from './dtos/attachments.create.dto';
@@ -32,7 +33,7 @@ export class AttachmentsService {
   async getAttachmentById(id: string): Promise<Attachment> {
     const result = await this.attachmentSchema.findById(id);
     if (!result) {
-      new CommonException(404, 'Attachment not found.');
+      new CommonException(404, msgResponse.notFoundAttachment);
     }
     return result;
   }
@@ -43,13 +44,13 @@ export class AttachmentsService {
       uploadBy: new Types.ObjectId(profileId),
     });
     if (!result) {
-      new CommonException(404, 'Attachment not found.');
+      new CommonException(404, msgResponse.notFoundAttachment);
     }
     try {
       await this.attachmentSchema.findByIdAndDelete(id);
     } catch (error) {
       console.log(error);
-      new CommonException(500, 'Server error.');
+      new CommonException(500, msgServerError);
     }
     unlinkSync(result.path);
   }
