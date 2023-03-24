@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { collections } from 'src/constants/collections.name';
+import { msgNotFound } from 'src/constants/message.response';
 import { CommonException } from 'src/exceptions/exeception.common-error';
 import { Pagination } from 'src/utils/page.pagination';
 import { ValidateDto } from 'src/validates/validate.common.dto';
@@ -32,7 +33,7 @@ export class RoomsService {
   async findRoomById(id: string): Promise<Rooms> {
     const result = await this.roomSchema.findById(id);
     if (!result) {
-      new CommonException(404, `Room not found.`);
+      new CommonException(404, msgNotFound);
     }
     return result;
   }

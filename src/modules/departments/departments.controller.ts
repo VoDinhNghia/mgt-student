@@ -22,6 +22,7 @@ import { UpdateStaffDepartmentDto } from './dtos/department.staff.update.dto';
 import { UpdateDepartmentDto } from './dtos/department.update.dto';
 import { CreateDepartmentDto } from './dtos/departments.create.dto';
 import { Response, Request } from 'express';
+import { msgResponse } from 'src/constants/message.response';
 
 @Controller('api/departments')
 @ApiTags('departments')
@@ -43,7 +44,7 @@ export class DepartmentsController {
       departmentDto,
       createdBy,
     );
-    return new ResponseRequest(res, result, 'Create department success.');
+    return new ResponseRequest(res, result, msgResponse.createDepartment);
   }
 
   @Put('/:id')
@@ -63,7 +64,7 @@ export class DepartmentsController {
       departmentDto,
       updatedBy,
     );
-    return new ResponseRequest(res, result, 'Update department success.');
+    return new ResponseRequest(res, result, msgResponse.updateDepartment);
   }
 
   @Post('/staff/multi')
@@ -81,7 +82,7 @@ export class DepartmentsController {
       staffDto,
       createdBy,
     );
-    return new ResponseRequest(res, result, 'Create multi staff success.');
+    return new ResponseRequest(res, result, msgResponse.createMultiStaff);
   }
 
   @Post('/staff')
@@ -99,7 +100,7 @@ export class DepartmentsController {
       staffDto,
       createdBy,
     );
-    return new ResponseRequest(res, result, 'Create staff success.');
+    return new ResponseRequest(res, result, msgResponse.createDepartmentStaff);
   }
 
   @Put('/staff/:id')
@@ -119,7 +120,7 @@ export class DepartmentsController {
       staffDto,
       updatedBy,
     );
-    return new ResponseRequest(res, result, 'Update staff success.');
+    return new ResponseRequest(res, result, msgResponse.updateDepartmentStaff);
   }
 
   @Delete('/staff/:id')
@@ -134,13 +135,13 @@ export class DepartmentsController {
     const { user }: Request | Record<string, any> = req;
     const deletedBy: string = user.profileId;
     await this.service.deleteDepartmentStaff(id, deletedBy);
-    return new ResponseRequest(res, true, 'Delete staff success.');
+    return new ResponseRequest(res, true, msgResponse.deleteDepartmentStaff);
   }
 
   @Get()
   async getAllDepartment(@Res() res: Response): Promise<ResponseRequest> {
     const result = await this.service.findAllDepartment();
-    return new ResponseRequest(res, result, 'Get department success.');
+    return new ResponseRequest(res, result, msgResponse.getAllDepartment);
   }
 
   @Get('/:id')
@@ -149,6 +150,6 @@ export class DepartmentsController {
     @Res() res: Response,
   ): Promise<ResponseRequest> {
     const result = await this.service.findDepartmentById(id);
-    return new ResponseRequest(res, result, 'Get department success.');
+    return new ResponseRequest(res, result, msgResponse.getByIdDepartment);
   }
 }

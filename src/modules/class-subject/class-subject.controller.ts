@@ -22,6 +22,7 @@ import { CreateSubjectDto } from './dtos/subject.create.dto';
 import { UpdateSubjectDto } from './dtos/subject.update.dto';
 import { UpdateClassDto } from './dtos/class.update.dto';
 import { ValidatePercentPoint } from 'src/validates/validate.percent-point.subject';
+import { msgResponse } from 'src/constants/message.response';
 
 @Controller('api/class-subject')
 @ApiTags('class-subject')
@@ -43,7 +44,7 @@ export class ClassSubjectController {
       createClassDto,
       createdBy,
     );
-    return new ResponseRequest(res, result, `Create class success.`);
+    return new ResponseRequest(res, result, msgResponse.createClass);
   }
 
   @Post('/subject')
@@ -62,7 +63,7 @@ export class ClassSubjectController {
       subjectDto,
       createdBy,
     );
-    return new ResponseRequest(res, result, `Create subject success.`);
+    return new ResponseRequest(res, result, msgResponse.createSubject);
   }
 
   @Put('/subject/:id')
@@ -82,7 +83,7 @@ export class ClassSubjectController {
       subjectDto,
       updatedBy,
     );
-    return new ResponseRequest(res, result, `Update subject success.`);
+    return new ResponseRequest(res, result, msgResponse.updateSubject);
   }
 
   @Put('/class/:id')
@@ -102,7 +103,7 @@ export class ClassSubjectController {
       classDto,
       updatedBy,
     );
-    return new ResponseRequest(res, result, `Update class success.`);
+    return new ResponseRequest(res, result, msgResponse.updateClass);
   }
 
   @Get('/class/:id')
@@ -111,7 +112,7 @@ export class ClassSubjectController {
     @Res() res: Response,
   ): Promise<ResponseRequest> {
     const result = await this.classSubjectService.findClassById(id);
-    return new ResponseRequest(res, result, `Get class success.`);
+    return new ResponseRequest(res, result, msgResponse.getByIdClass);
   }
 
   @Get('/subject/:id')
@@ -120,6 +121,6 @@ export class ClassSubjectController {
     @Res() res: Response,
   ): Promise<ResponseRequest> {
     const result = await this.classSubjectService.findSubjectById(id);
-    return new ResponseRequest(res, result, `Get subject success.`);
+    return new ResponseRequest(res, result, msgResponse.getByIdSubject);
   }
 }

@@ -9,6 +9,7 @@ import { EstatusUser } from 'src/constants/constant';
 import { LookupService } from 'src/utils/lookup.query.service';
 import { LoginDto } from './dtos/auth.login.dto';
 import { UserLoginResponseDto } from './dtos/auth.result.login-service.dto';
+import { msgResponse } from 'src/constants/message.response';
 
 @Injectable()
 export class AuthService {
@@ -22,7 +23,7 @@ export class AuthService {
     const { email, passWord } = loginDto;
     const user = await this.findUserAuth(email, passWord);
     if (!user) {
-      new CommonException(401, `User or password incorrect.`);
+      new CommonException(401, msgResponse.errorAuth);
     }
     await this.userSchema.findByIdAndUpdate(user._id, { statusLogin: true });
     const result: Record<string, any> = {

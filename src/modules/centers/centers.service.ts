@@ -8,6 +8,7 @@ import { UpdateCenterDto } from './dtos/centers.update.dto';
 import { ValidateDto } from 'src/validates/validate.common.dto';
 import { collections } from 'src/constants/collections.name';
 import { LookupService } from 'src/utils/lookup.query.service';
+import { msgNotFound } from 'src/constants/message.response';
 
 @Injectable()
 export class CenterService {
@@ -74,7 +75,7 @@ export class CenterService {
     const aggregate = [match, ...lookup];
     const result = await this.centerSchema.aggregate(aggregate);
     if (!result[0]) {
-      new CommonException(404, 'Center not found.');
+      new CommonException(404, msgNotFound);
     }
     return result[0];
   }

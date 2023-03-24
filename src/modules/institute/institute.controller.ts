@@ -19,6 +19,7 @@ import { Response, Request } from 'express';
 import { CreateInstituteDto } from './dtos/institute.create.dto';
 import { UpdateInstituteDto } from './dtos/institute.update.dto';
 import { Delete } from '@nestjs/common/decorators/http/request-mapping.decorator';
+import { msgResponse } from 'src/constants/message.response';
 
 @Controller('api/institutes')
 @ApiTags('institutes')
@@ -40,7 +41,7 @@ export class InstituteController {
       instituteDto,
       createdBy,
     );
-    return new ResponseRequest(res, result, 'Create institute success');
+    return new ResponseRequest(res, result, msgResponse.createInstitute);
   }
 
   @Put('/:id')
@@ -60,7 +61,7 @@ export class InstituteController {
       instituteDto,
       updatedBy,
     );
-    return new ResponseRequest(res, result, 'Update institute success.');
+    return new ResponseRequest(res, result, msgResponse.updateInstitute);
   }
 
   @Delete('/:id')
@@ -75,13 +76,13 @@ export class InstituteController {
     const { user }: Request | Record<string, any> = req;
     const deletedBy: string = user.profileId;
     await this.instutiteService.deleteInstitude(id, deletedBy);
-    return new ResponseRequest(res, true, 'Delete institute success.');
+    return new ResponseRequest(res, true, msgResponse.deleteInstitute);
   }
 
   @Get()
   async getAllInstitute(@Res() res: ResponseRequest): Promise<ResponseRequest> {
     const result = await this.instutiteService.findAllInstitudes();
-    return new ResponseRequest(res, result, 'Get all institute success');
+    return new ResponseRequest(res, result, msgResponse.getAllInstitute);
   }
 
   @Get('/:id')
@@ -90,6 +91,6 @@ export class InstituteController {
     @Res() res: ResponseRequest,
   ): Promise<ResponseRequest> {
     const result = await this.instutiteService.findInstituteById(id);
-    return new ResponseRequest(res, result, 'Get institute by id success.');
+    return new ResponseRequest(res, result, msgResponse.getByIdInstitute);
   }
 }

@@ -44,6 +44,10 @@ import {
 import { getDataFromCsvFileUpload } from 'src/utils/getDataFromCsvUpload';
 import { UserResponse } from './responses/user.response-swagger';
 import { ProfileResponse } from './responses/profile.response-swagger';
+import {
+  descriptionResponse,
+  msgResponse,
+} from 'src/constants/message.response';
 
 @Controller('api/users')
 @ApiTags('users')
@@ -67,7 +71,7 @@ export class UsersController {
     const { user }: Request | Record<string, any> = req;
     const createdBy: string = user.profileId;
     const result = await this.service.createUser(userDto, createdBy);
-    return new ResponseRequest(res, result, 'Create user success');
+    return new ResponseRequest(res, result, msgResponse.createUser);
   }
 
   @Post('import')
@@ -95,7 +99,7 @@ export class UsersController {
     const rawData = readFileSync(file.path, 'utf8');
     const csvData = getDataFromCsvFileUpload(rawData);
     const result = await this.service.importUser(createdBy, csvData);
-    return new ResponseRequest(res, result, 'Import multi user success');
+    return new ResponseRequest(res, result, msgResponse.importUser);
   }
 
   @Put('/:id')
@@ -104,7 +108,7 @@ export class UsersController {
   @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
   @ApiOkResponse({
     type: UserResponse,
-    description: 'Response data when create update user success.',
+    description: descriptionResponse.apiUpdateUser,
     isArray: false,
   })
   async updateUser(
@@ -116,7 +120,7 @@ export class UsersController {
     const { user }: Request | Record<string, any> = req;
     const updatedBy: string = user.profileId;
     const result = await this.service.updateUser(id, updateDto, updatedBy);
-    return new ResponseRequest(res, result, 'Update user success');
+    return new ResponseRequest(res, result, msgResponse.updateUser);
   }
 
   @Put('/profile/:id')
@@ -124,7 +128,7 @@ export class UsersController {
   @UseGuards(JwtAuthGuard)
   @ApiOkResponse({
     type: ProfileResponse,
-    description: 'Response data when update user profile success.',
+    description: descriptionResponse.apiUpdateProfile,
     isArray: false,
   })
   async updateProfile(
@@ -140,7 +144,7 @@ export class UsersController {
       updateProfileDto,
       updatedBy,
     );
-    return new ResponseRequest(res, result, 'Update profile user success');
+    return new ResponseRequest(res, result, msgResponse.updateUserProfile);
   }
 
   @Post('/leader-school')
@@ -158,7 +162,7 @@ export class UsersController {
       leaderSchoolDto,
       createdBy,
     );
-    return new ResponseRequest(res, result, 'Create leader school success.');
+    return new ResponseRequest(res, result, msgResponse.createLeaderSchool);
   }
 
   @Put('/leader-school/:id')
@@ -178,7 +182,7 @@ export class UsersController {
       updateLeaderDto,
       updatedBy,
     );
-    return new ResponseRequest(res, result, 'Update leader school success.');
+    return new ResponseRequest(res, result, msgResponse.updateLeaderSchool);
   }
 
   @Get('/leader-school')
@@ -187,7 +191,7 @@ export class UsersController {
     @Res() res: Response,
   ): Promise<ResponseRequest> {
     const results = await this.service.findAllLeaderSchool(queryLeaderDto);
-    return new ResponseRequest(res, results, 'Get all leader school succees.');
+    return new ResponseRequest(res, results, msgResponse.getAllLeaderSchool);
   }
 
   @Get('/leader-school/:id')
@@ -196,7 +200,7 @@ export class UsersController {
     @Res() res: Response,
   ): Promise<ResponseRequest> {
     const result = await this.service.findLeaderSchoolById(id);
-    return new ResponseRequest(res, result, 'Get leader school succees.');
+    return new ResponseRequest(res, result, msgResponse.getByIdLeaderSchool);
   }
 
   @Delete('/leader-school/:id')
@@ -211,7 +215,7 @@ export class UsersController {
     const { user }: Request | Record<string, any> = req;
     const deletedBy: string = user.profileId;
     await this.service.deleteLeaderSchool(id, deletedBy);
-    return new ResponseRequest(res, true, 'Delete leader school succees.');
+    return new ResponseRequest(res, true, msgResponse.deleteLeaderSchool);
   }
 
   @Get()
@@ -220,7 +224,7 @@ export class UsersController {
   @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
   @ApiOkResponse({
     type: UserResponse,
-    description: 'Response data when get all user success.',
+    description: descriptionResponse.apiGetAllUser,
     isArray: true,
   })
   async getAllUsers(
@@ -230,7 +234,7 @@ export class UsersController {
   ): Promise<ResponseRequest> {
     const { user }: Request | Record<string, any> = req;
     const result = await this.service.findAllUsers(queryDto, user._id);
-    return new ResponseRequest(res, result, 'Get all users success');
+    return new ResponseRequest(res, result, msgResponse.getAllUser);
   }
 
   @Delete('/:id')
@@ -245,7 +249,7 @@ export class UsersController {
     const { user }: Request | Record<string, any> = req;
     const deletedBy: string = user.profileId;
     await this.service.deleteUser(id, deletedBy);
-    return new ResponseRequest(res, true, 'Delete user success');
+    return new ResponseRequest(res, true, msgResponse.deleteUser);
   }
 
   @Get('/:id')
@@ -254,7 +258,7 @@ export class UsersController {
   @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
   @ApiOkResponse({
     type: UserResponse,
-    description: 'Response data when get user by id success.',
+    description: descriptionResponse.apiGetUserById,
     isArray: false,
   })
   async getUserByid(
@@ -262,6 +266,6 @@ export class UsersController {
     @Res() res: Response,
   ): Promise<ResponseRequest> {
     const result = await this.service.findUserById(id);
-    return new ResponseRequest(res, result, 'Get user by id success');
+    return new ResponseRequest(res, result, msgResponse.getByIdUser);
   }
 }

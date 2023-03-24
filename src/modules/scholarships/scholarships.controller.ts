@@ -21,6 +21,7 @@ import { QueryScholarshipDto } from './dtos/scholarship.query.dto';
 import { QueryUserScholarshipDto } from './dtos/scholarship.user.query.dto';
 import { ScholarshipService } from './scholarships.service';
 import { Response, Request } from 'express';
+import { msgResponse } from 'src/constants/message.response';
 
 @Controller('api/scholarships')
 @ApiTags('scholarships')
@@ -42,7 +43,7 @@ export class ScholarshipController {
       scholarshipDto,
       createdBy,
     );
-    return new ResponseRequest(res, result, 'Create scholarship success.');
+    return new ResponseRequest(res, result, msgResponse.createScholarship);
   }
 
   @Put('/:id')
@@ -58,7 +59,7 @@ export class ScholarshipController {
     const { user }: Request | Record<string, any> = req;
     const updatedBy: string = user.profileId;
     const result = await this.service.updateScholarship(id, dto, updatedBy);
-    return new ResponseRequest(res, result, 'Update scholarship success.');
+    return new ResponseRequest(res, result, msgResponse.updateScholarship);
   }
 
   @Get()
@@ -67,7 +68,7 @@ export class ScholarshipController {
     @Res() res: Response,
   ): Promise<ResponseRequest> {
     const result = await this.service.findAllScholarship(queryDto);
-    return new ResponseRequest(res, result, 'Get scholarships success.');
+    return new ResponseRequest(res, result, msgResponse.getAllScholarship);
   }
 
   @Post('/user')
@@ -85,7 +86,7 @@ export class ScholarshipController {
       dto.semester,
       createdBy,
     );
-    return new ResponseRequest(res, result, 'Create user scholarship success.');
+    return new ResponseRequest(res, result, msgResponse.createUserScholarship);
   }
 
   @Get('/user')
@@ -96,7 +97,7 @@ export class ScholarshipController {
     @Res() res: Response,
   ): Promise<ResponseRequest> {
     const result = await this.service.findAllUserScholarShip(dto);
-    return new ResponseRequest(res, result, 'Get user scholarship success.');
+    return new ResponseRequest(res, result, msgResponse.getAllUserScholarship);
   }
 
   @Get('/:id')
@@ -105,6 +106,6 @@ export class ScholarshipController {
     @Res() res: Response,
   ): Promise<ResponseRequest> {
     const result = await this.service.findScholarshipById(id);
-    return new ResponseRequest(res, result, 'Get scholarship success.');
+    return new ResponseRequest(res, result, msgResponse.getByIdScholarship);
   }
 }

@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { collections } from 'src/constants/collections.name';
+import { msgNotFound } from 'src/constants/message.response';
 import { CommonException } from 'src/exceptions/exeception.common-error';
 import { LookupService } from 'src/utils/lookup.query.service';
 import { Pagination } from 'src/utils/page.pagination';
@@ -41,7 +42,7 @@ export class AwardsService {
     const aggregate = [match, ...lookup];
     const result = await this.awardSchema.aggregate(aggregate);
     if (!result[0]) {
-      new CommonException(404, `Award not found.`);
+      new CommonException(404, msgNotFound);
     }
     return result[0];
   }

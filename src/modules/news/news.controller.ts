@@ -21,6 +21,7 @@ import { Response, Request } from 'express';
 import { UpdateNewDto } from './dtos/news.update.dto';
 import { QueryNewDto } from './dtos/news.query.dto';
 import { ResponseRequest } from 'src/utils/response-api';
+import { msgResponse } from 'src/constants/message.response';
 
 @Controller('api/news')
 @ApiTags('news')
@@ -39,7 +40,7 @@ export class NewsController {
     const { user }: Request | Record<string, any> = req;
     const createdBy: string = user.profileId;
     const result = await this.newService.createNews(createNewDto, createdBy);
-    return new ResponseRequest(res, result, 'Create news success');
+    return new ResponseRequest(res, result, msgResponse.createNews);
   }
 
   @Get('/:id')
@@ -51,7 +52,7 @@ export class NewsController {
     @Res() res: Response,
   ): Promise<ResponseRequest> {
     const result = await this.newService.findNewsById(id);
-    return new ResponseRequest(res, result, 'Get news by id success');
+    return new ResponseRequest(res, result, msgResponse.getByIdNews);
   }
 
   @Put('/:id')
@@ -71,7 +72,7 @@ export class NewsController {
       updateNewDto,
       updatedBy,
     );
-    return new ResponseRequest(res, result, 'Update news success');
+    return new ResponseRequest(res, result, msgResponse.updateNews);
   }
 
   @Get()
@@ -83,7 +84,7 @@ export class NewsController {
     @Res() res: Response,
   ): Promise<ResponseRequest> {
     const result = await this.newService.findAllNews(queryNewDto);
-    return new ResponseRequest(res, result, 'Get news list success');
+    return new ResponseRequest(res, result, msgResponse.getAllNews);
   }
 
   @Delete('/:id')
@@ -98,6 +99,6 @@ export class NewsController {
     const { user }: Request | Record<string, any> = req;
     const deletedBy: string = user.profileId;
     await this.newService.deleteNews(id, deletedBy);
-    return new ResponseRequest(res, true, 'Delete news success');
+    return new ResponseRequest(res, true, msgResponse.deleteNews);
   }
 }

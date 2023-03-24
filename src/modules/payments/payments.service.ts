@@ -3,6 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { collections } from 'src/constants/collections.name';
 import { EstatusPayments } from 'src/constants/constant';
+import { msgNotFound } from 'src/constants/message.response';
 import { CommonException } from 'src/exceptions/exeception.common-error';
 import { getRandomCodeReceiptId } from 'src/utils/generate.code-payment';
 import { LookupService } from 'src/utils/lookup.query.service';
@@ -76,7 +77,7 @@ export class PaymentsService {
     aggregate = [...aggregate, ...lookup];
     const result = await this.moneyCreditSchema.aggregate(aggregate);
     if (!result[0]) {
-      new CommonException(404, 'Money per credit not found.');
+      new CommonException(404, msgNotFound);
     }
     return result[0];
   }
@@ -133,7 +134,7 @@ export class PaymentsService {
     const aggregate = [match, ...lookupPayment, ...lookupUserPayment];
     const result = await this.paymentSchema.aggregate(aggregate);
     if (!result[0]) {
-      new CommonException(404, 'Payment user not found.');
+      new CommonException(404, msgNotFound);
     }
     return result[0];
   }
@@ -167,7 +168,7 @@ export class PaymentsService {
     const option = { semester: new Types.ObjectId(semester), isDeleted: false };
     const creditMgt = await this.moneyCreditSchema.findOne(option);
     if (!creditMgt) {
-      new CommonException(404, 'Money per credit not found.');
+      new CommonException(404, msgNotFound);
     }
     const { moneyPerCredit } = creditMgt;
     for (const item of subjectList) {

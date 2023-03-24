@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { collections } from 'src/constants/collections.name';
+import { msgNotFound, msgResponse } from 'src/constants/message.response';
 import { CommonException } from 'src/exceptions/exeception.common-error';
 import { LookupService } from 'src/utils/lookup.query.service';
 import { ValidateDto } from 'src/validates/validate.common.dto';
@@ -60,7 +61,7 @@ export class ClassSubjectService {
     const aggregate = [match, ...lookup];
     const result = await this.classSchema.aggregate(aggregate);
     if (!result[0]) {
-      new CommonException(404, `Class not found`);
+      new CommonException(404, msgNotFound);
     }
     return result[0];
   }
@@ -109,7 +110,7 @@ export class ClassSubjectService {
     } catch (error) {
       console.log(error);
       await this.subjectSchema.findByIdAndDelete(subjectId);
-      new CommonException(500, 'Can not create subject process.');
+      new CommonException(500, msgResponse.createSubjectProcessError);
     }
   }
 
@@ -121,7 +122,7 @@ export class ClassSubjectService {
     const aggregate = [match, ...lookup];
     const result = await this.subjectSchema.aggregate(aggregate);
     if (!result[0]) {
-      new CommonException(404, 'Subject not found.');
+      new CommonException(404, msgNotFound);
     }
     return result[0];
   }

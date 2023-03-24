@@ -20,6 +20,7 @@ import { BranchCreateDto } from './dtos/branchs.create.dto';
 import { BranchQueryDto } from './dtos/branchs.query.dto';
 import { BranchUpdateDto } from './dtos/branchs.update.dto';
 import { ResponseRequest } from 'src/utils/response-api';
+import { msgResponse } from 'src/constants/message.response';
 
 @Controller('api/branchs')
 @ApiTags('branchs')
@@ -41,7 +42,7 @@ export class BranchController {
       branchCreateDto,
       createdBy,
     );
-    return new ResponseRequest(res, result, `Create branch success.`);
+    return new ResponseRequest(res, result, msgResponse.createBranch);
   }
 
   @Get()
@@ -50,7 +51,7 @@ export class BranchController {
     @Res() res: Response,
   ): Promise<ResponseRequest> {
     const result = await this.branchService.findAllBranchs(branchQueryDto);
-    return new ResponseRequest(res, result, `Get all branchs success.`);
+    return new ResponseRequest(res, result, msgResponse.getAllBranch);
   }
 
   @Put('/:id')
@@ -66,7 +67,7 @@ export class BranchController {
     const { user }: Request | Record<string, any> = req;
     const updatedBy: string = user.profileId;
     await this.branchService.updateBranch(id, updateBranchDto, updatedBy);
-    return new ResponseRequest(res, true, `Update branch success.`);
+    return new ResponseRequest(res, true, msgResponse.updateBranch);
   }
 
   @Get('/:id')
@@ -75,6 +76,6 @@ export class BranchController {
     @Res() res: Response,
   ): Promise<ResponseRequest> {
     const result = await this.branchService.findById(id);
-    return new ResponseRequest(res, result, `Get branch by id success.`);
+    return new ResponseRequest(res, result, msgResponse.getByIdBranch);
   }
 }

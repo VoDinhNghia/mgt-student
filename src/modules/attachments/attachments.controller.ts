@@ -24,6 +24,7 @@ import {
   fileName,
   imageFileFilter,
 } from 'src/validates/validate.attachment.upload-file';
+import { msgResponse } from 'src/constants/message.response';
 @Controller('api/attachments')
 @ApiTags('attachments')
 export class AttachmentsController {
@@ -54,7 +55,7 @@ export class AttachmentsController {
       file,
       profileId,
     );
-    return new ResponseRequest(res, result, `Create attachment success.`);
+    return new ResponseRequest(res, result, msgResponse.createAttachment);
   }
 
   @Delete('/:id')
@@ -67,7 +68,7 @@ export class AttachmentsController {
   ): Promise<ResponseRequest> {
     const { user }: Request | Record<string, any> = req;
     await this.attachmentService.deleteAttachment(id, user.profileId);
-    return new ResponseRequest(res, true, `Delete attachment success.`);
+    return new ResponseRequest(res, true, msgResponse.deleteAttachment);
   }
 
   @Get('/:id')
@@ -78,6 +79,6 @@ export class AttachmentsController {
     @Res() res: Response,
   ): Promise<ResponseRequest> {
     const result = await this.attachmentService.getAttachmentById(id);
-    return new ResponseRequest(res, result, `Get attachment success.`);
+    return new ResponseRequest(res, result, msgResponse.getByIdAttachment);
   }
 }

@@ -22,6 +22,7 @@ import { ResponseRequest } from 'src/utils/response-api';
 import { RoleGuard } from '../auth/guards/role-auth.guard';
 import { ErolesUser } from 'src/constants/constant';
 import { ConfigService } from '@nestjs/config';
+import { msgResponse } from 'src/constants/message.response';
 
 @Controller('api/countries')
 @ApiTags('countries')
@@ -37,7 +38,7 @@ export class CountriesController {
     for (const obj of data) {
       obj.flag = `${this.configService.get('PREFIX_URL_FLAG')}${obj.flag}`;
     }
-    return new ResponseRequest(res, data, `Get all countries success.`);
+    return new ResponseRequest(res, data, msgResponse.getAllCountries);
   }
 
   @Get('/provinces')
@@ -46,7 +47,7 @@ export class CountriesController {
     @Res() res: Response,
   ): Promise<ResponseRequest> {
     const result = await this.countryService.findAllProvinces(queryPovinceDto);
-    return new ResponseRequest(res, result, `Get all provinces success.`);
+    return new ResponseRequest(res, result, msgResponse.getAllProvince);
   }
 
   @Get('/districts')
@@ -55,13 +56,13 @@ export class CountriesController {
     @Res() res: Response,
   ): Promise<ResponseRequest> {
     const result = await this.countryService.findAllDistricts(queryDistrictDto);
-    return new ResponseRequest(res, result, `Get all district success.`);
+    return new ResponseRequest(res, result, msgResponse.getAllDistrict);
   }
 
   @Get('/wards')
   async getWardAlls(@Res() res: Response): Promise<ResponseRequest> {
     const result = await this.countryService.findAllWards();
-    return new ResponseRequest(res, result, `Get all wards success.`);
+    return new ResponseRequest(res, result, msgResponse.getAllWard);
   }
 
   @Get('/:id')
@@ -70,7 +71,7 @@ export class CountriesController {
     @Res() res: Response,
   ): Promise<ResponseRequest> {
     const result = await this.countryService.findOneCountry(id);
-    return new ResponseRequest(res, result, `Get country by id success.`);
+    return new ResponseRequest(res, result, msgResponse.getByIdCountry);
   }
 
   @Post('/init-data')
@@ -80,7 +81,7 @@ export class CountriesController {
   async initCountries(@Res() res: Response): Promise<ResponseRequest> {
     const data = this.readFileJson('countries.json');
     const result = await this.countryService.initCountries(data);
-    return new ResponseRequest(res, result, `Init countries success.`);
+    return new ResponseRequest(res, result, msgResponse.initCountries);
   }
 
   @Put('/:id')
@@ -96,7 +97,7 @@ export class CountriesController {
       id,
       updateCountriesDto,
     );
-    return new ResponseRequest(res, result, `Update country success.`);
+    return new ResponseRequest(res, result, msgResponse.updateCountry);
   }
 
   @Post('/province/init-data')
@@ -106,7 +107,7 @@ export class CountriesController {
   async initProvince(@Res() res: Response): Promise<ResponseRequest> {
     const data = this.readFileJson('province.json');
     const result = await this.countryService.initProvinces(data);
-    return new ResponseRequest(res, result, `Init province success.`);
+    return new ResponseRequest(res, result, msgResponse.initProvince);
   }
 
   @Post('/district/init-data')
@@ -116,7 +117,7 @@ export class CountriesController {
   async initDistrict(@Res() res: Response): Promise<ResponseRequest> {
     const data = this.readFileJson('district.json');
     const result = await this.countryService.initDisTricts(data);
-    return new ResponseRequest(res, result, 'Init district success');
+    return new ResponseRequest(res, result, msgResponse.initDistrict);
   }
 
   @Post('/ward/init-data')
@@ -126,7 +127,7 @@ export class CountriesController {
   async initWard(@Res() res: Response): Promise<ResponseRequest> {
     const data = this.readFileJson('ward.json');
     const result = await this.countryService.initWards(data);
-    return new ResponseRequest(res, result, 'Init ward success');
+    return new ResponseRequest(res, result, msgResponse.initWard);
   }
 
   readFileJson(fileName: string) {

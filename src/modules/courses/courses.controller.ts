@@ -18,6 +18,7 @@ import { Response, Request } from 'express';
 import { CoursesService } from './courses.service';
 import { CreateCourseDto } from './dtos/courses.create.dto';
 import { UpdateCourseDto } from './dtos/courses.update.dto';
+import { msgResponse } from 'src/constants/message.response';
 
 @Controller('api/courses')
 @ApiTags('courses')
@@ -36,7 +37,7 @@ export class CoursesController {
     const { user }: Request | Record<string, any> = req;
     const createdBy: string = user.profileId;
     const result = await this.courseService.createCourse(courseDto, createdBy);
-    return new ResponseRequest(res, result, 'Create cource success');
+    return new ResponseRequest(res, result, msgResponse.createCourse);
   }
 
   @Put('/:id')
@@ -56,7 +57,7 @@ export class CoursesController {
       courseDto,
       updatedBy,
     );
-    return new ResponseRequest(res, result, 'Update course success.');
+    return new ResponseRequest(res, result, msgResponse.updateCourse);
   }
 
   @Get('/:id')
@@ -68,7 +69,7 @@ export class CoursesController {
     @Res() res: Response,
   ): Promise<ResponseRequest> {
     const result = await this.courseService.findCourseById(id);
-    return new ResponseRequest(res, result, 'Get course by id success');
+    return new ResponseRequest(res, result, msgResponse.getByIdCourse);
   }
 
   @Get()
@@ -76,6 +77,6 @@ export class CoursesController {
   @UseGuards(JwtAuthGuard)
   async getListFaculties(@Res() res: Response): Promise<ResponseRequest> {
     const result = await this.courseService.findAllCourses();
-    return new ResponseRequest(res, result, 'Get course list success');
+    return new ResponseRequest(res, result, msgResponse.getAllCourse);
   }
 }
