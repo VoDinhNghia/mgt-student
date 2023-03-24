@@ -1,5 +1,5 @@
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { IsNotEmpty, IsString } from 'class-validator';
+import { ApiProperty } from '@nestjs/swagger';
+import { IsArray, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 import { UnionImagesDto } from './unions.images.dto';
 import { UnionMemberDto } from './unions.member.dto';
 
@@ -38,9 +38,13 @@ export class CreateUnionDto {
   @ApiProperty()
   function: string;
 
-  @ApiPropertyOptional({ type: [UnionImagesDto] })
+  @IsOptional()
+  @IsArray()
+  @ApiProperty({ type: [UnionImagesDto] })
   images: UnionImagesDto[];
 
-  @ApiPropertyOptional({ type: [UnionMemberDto] })
+  @IsOptional()
+  @IsArray()
+  @ApiProperty({ type: [UnionMemberDto] })
   members: UnionMemberDto[];
 }

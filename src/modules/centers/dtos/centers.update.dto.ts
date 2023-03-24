@@ -1,25 +1,37 @@
-import { ApiPropertyOptional } from '@nestjs/swagger';
+import { ApiProperty } from '@nestjs/swagger';
+import { IsArray, IsObject, IsOptional, IsString } from 'class-validator';
 import { GetCurrentDate } from 'src/utils/get.current-date';
 import { CenterContacts } from './centers.contacts.dto';
 
 export class UpdateCenterDto {
-  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  @ApiProperty()
   name?: string;
 
-  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  @ApiProperty()
   introduction?: string;
 
-  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  @ApiProperty()
   director?: string;
 
-  @ApiPropertyOptional({
+  @IsOptional()
+  @ApiProperty({
     default: new GetCurrentDate().getYearMonthDate(),
   })
   foundYear?: Date;
 
-  @ApiPropertyOptional({ type: [String] })
+  @IsOptional()
+  @IsArray()
+  @ApiProperty({ type: [String] })
   award?: string[];
 
-  @ApiPropertyOptional({ type: CenterContacts })
+  @IsOptional()
+  @IsObject()
+  @ApiProperty({ type: CenterContacts })
   contacts?: CenterContacts;
 }

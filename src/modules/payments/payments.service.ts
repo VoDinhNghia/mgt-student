@@ -25,6 +25,7 @@ import {
 
 @Injectable()
 export class PaymentsService {
+  validate = new ValidateDto();
   constructor(
     @InjectModel(Money_Per_Credit_Mgt.name)
     private readonly moneyCreditSchema: Model<MoneyPerCreditManagementDocument>,
@@ -180,7 +181,7 @@ export class PaymentsService {
 
   async validateSemesterDto(semester: string): Promise<void> {
     if (semester) {
-      await new ValidateDto().fieldId(collections.semesters, semester);
+      await this.validate.fieldId(collections.semesters, semester);
     }
   }
 }

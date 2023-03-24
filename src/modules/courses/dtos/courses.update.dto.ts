@@ -1,11 +1,18 @@
-import { ApiPropertyOptional } from '@nestjs/swagger';
+import { ApiProperty } from '@nestjs/swagger';
+import { IsNumber, IsOptional, IsString } from 'class-validator';
 export class UpdateCourseDto {
-  @ApiPropertyOptional({ default: 'DHKHMT12A' })
+  @IsOptional()
+  @IsString()
+  @ApiProperty({ default: 'DHKHMT12A' })
   name: string;
 
-  @ApiPropertyOptional({ default: '2016-2017' })
+  @IsOptional()
+  @IsString()
+  @ApiProperty({ default: '2016-2017' })
   year?: string;
 
-  @ApiPropertyOptional({ default: 0 })
+  @IsOptional()
+  @IsNumber()
+  @ApiProperty({ default: 0 })
   total?: number;
 }

@@ -1,12 +1,19 @@
-import { ApiPropertyOptional } from '@nestjs/swagger';
+import { ApiProperty } from '@nestjs/swagger';
+import { IsOptional, IsString } from 'class-validator';
 
 export class QueryUserScholarshipDto {
-  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  @ApiProperty()
   scholarship?: string;
 
-  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  @ApiProperty()
   user?: string;
 
-  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  @ApiProperty()
   semester?: string;
 }

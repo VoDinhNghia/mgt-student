@@ -35,14 +35,12 @@ import { collections } from 'src/constants/collections.name';
 import { LookupService } from 'src/utils/lookup.query.service';
 import { UserResponse } from './responses/user.response-swagger';
 import { ProfileResponse } from './responses/profile.response-swagger';
-import {
-  msgNotFound,
-  msgServerError,
-  msgValidateEmail,
-} from 'src/constants/message.response';
+import { msgNotFound, msgServerError } from 'src/constants/message.response';
+import { UserValidate } from 'src/validates/validate.user-service';
 
 @Injectable()
 export class UsersService {
+  userValidate = new UserValidate();
   constructor(
     @InjectModel(Users.name) private readonly userSchema: Model<UsersDocument>,
     @InjectModel(Profile.name)
@@ -58,8 +56,8 @@ export class UsersService {
     createdBy: string,
   ): Promise<UserResponse> {
     const { email } = usersDto;
-    await this.validateEmailUser(email);
-    await this.validateProfileDto(usersDto);
+    await this.userValidate.email(email);
+    await this.userValidate.profileDto(usersDto);
     usersDto.passWord = cryptoPassWord(usersDto.passWord);
     const newDto = {
       ...usersDto,
@@ -162,7 +160,7 @@ export class UsersService {
   ): Promise<UserResponse> {
     const { email, passWord } = payload;
     if (email) {
-      await this.validateEmailUser(email);
+      await this.userValidate.email(email);
     }
     if (passWord) {
       payload.passWord = cryptoPassWord(passWord);
@@ -183,16 +181,10 @@ export class UsersService {
     updatedBy: string,
   ): Promise<ProfileResponse> {
     const { award = [] } = profileDto;
-    await this.validateProfileDto(profileDto);
-    if (award.length > 0) {
-      const awardIds = await new ValidateDto().idLists(
-        collections.awards,
-        award,
-      );
-      profileDto.award = awardIds;
-    }
+    await this.userValidate.profileDto(profileDto);
+    const profileValidate = await this.userValidate.awards(profileDto, award);
     const updateProfileDto = {
-      ...profileDto,
+      ...profileValidate,
       updatedBy,
       updatedAt: Date.now(),
     };
@@ -416,36 +408,5 @@ export class UsersService {
       { user: new Types.ObjectId(id) },
       dto,
     );
-  }
-
-  async validateEmailUser(email: string): Promise<void> {
-    if (!validateEmail(email)) {
-      new CommonException(400, msgValidateEmail);
-    }
-    await new ValidateDto().existedByOptions(
-      collections.users,
-      { email },
-      'Email',
-    );
-  }
-
-  async validateProfileDto(fields: Record<string, any>): Promise<void> {
-    const validate = new ValidateDto();
-    const { major, faculty, course, degreeLevel, classId } = fields;
-    if (major) {
-      await validate.fieldId(collections.majors, major);
-    }
-    if (faculty) {
-      await validate.fieldId(collections.faculties, faculty);
-    }
-    if (course) {
-      await validate.fieldId(collections.courses, course);
-    }
-    if (degreeLevel) {
-      await validate.fieldId(collections.degreelevels, degreeLevel);
-    }
-    if (classId) {
-      await validate.fieldId(collections.class_infos, classId);
-    }
   }
 }

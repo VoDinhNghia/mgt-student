@@ -1,12 +1,17 @@
-import { ApiPropertyOptional } from '@nestjs/swagger';
+import { ApiProperty } from '@nestjs/swagger';
+import { IsOptional, IsString } from 'class-validator';
 import { EscholarshirpType } from 'src/constants/constant';
 import { QueryPagination } from 'src/utils/page.query.pagination.dto';
 
 export class QueryScholarshipDto extends QueryPagination {
-  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  @ApiProperty()
   semester?: string;
 
-  @ApiPropertyOptional({
+  @IsOptional()
+  @IsString()
+  @ApiProperty({
     enum: EscholarshirpType,
     default: EscholarshirpType.EXCELLENCE,
   })

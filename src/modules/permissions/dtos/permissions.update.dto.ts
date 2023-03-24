@@ -1,10 +1,15 @@
-import { ApiPropertyOptional } from '@nestjs/swagger';
+import { ApiProperty } from '@nestjs/swagger';
+import { IsArray, IsOptional, IsString } from 'class-validator';
 import { Epermission } from 'src/constants/constant';
 
 export class UpdatePermissionDto {
-  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  @ApiProperty()
   moduleName?: string;
 
-  @ApiPropertyOptional({ default: [Epermission.ONLY_VIEW] })
+  @IsOptional()
+  @IsArray()
+  @ApiProperty({ default: [Epermission.ONLY_VIEW] })
   permission?: string[];
 }

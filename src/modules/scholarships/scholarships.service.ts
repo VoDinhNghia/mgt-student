@@ -30,6 +30,9 @@ import {
 
 @Injectable()
 export class ScholarshipService {
+  validate = new ValidateDto();
+  queryService = new QueryService();
+  subjectRegisterService = new SubjectUserRegister();
   constructor(
     @InjectModel(Scholarship.name)
     private readonly scholarshipSchema: Model<ScholarshipDocument>,
@@ -41,16 +44,15 @@ export class ScholarshipService {
     scholarshipDto: CreateScholarshipDto,
   ): Promise<void> {
     const { semester, name } = scholarshipDto;
-    const validate = new ValidateDto();
     if (semester) {
-      await validate.fieldId(collections.semesters, semester);
+      await this.validate.fieldId(collections.semesters, semester);
     }
     if (name) {
       const options = {
         semester: new Types.ObjectId(semester),
         name: name.trim(),
       };
-      await validate.existedByOptions(
+      await this.validate.existedByOptions(
         collections.scholarships,
         options,
         'Scholarship',
@@ -166,7 +168,7 @@ export class ScholarshipService {
       semester: new Types.ObjectId(semester),
       user: new Types.ObjectId(profile),
     };
-    const result = await new QueryService().findOneByOptions(
+    const result = await this.queryService.findOneByOptions(
       collections.payment_study_fees,
       options,
     );
@@ -262,9 +264,13 @@ export class ScholarshipService {
     semester: string,
     profileId: string,
   ): Promise<{ totalAccumalated: number; totalNumberCredits: number }> {
-    const service = new SubjectUserRegister();
-    const subjectIds = await service.getSubjectIds(semester);
-    const result = await service.getUserSubjects(profileId, subjectIds);
+    const subjectIds = await this.subjectRegisterService.getSubjectIds(
+      semester,
+    );
+    const result = await this.subjectRegisterService.getUserSubjects(
+      profileId,
+      subjectIds,
+    );
     let totalAccumalated = 0;
     let totalNumberCredits = 0;
     if (result.length <= 0) {
@@ -295,7 +301,7 @@ export class ScholarshipService {
       },
       ...lookup,
     ];
-    const results = await new QueryService().findByAggregate(
+    const results = await this.queryService.findByAggregate(
       collections.trainning_points,
       aggregate,
     );

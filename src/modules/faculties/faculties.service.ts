@@ -17,6 +17,7 @@ import { Majors, MajorsDocument } from './schemas/major.schema';
 
 @Injectable()
 export class FacultiesService {
+  validate = new ValidateDto();
   constructor(
     @InjectModel(Faculty.name)
     private readonly facultySchema: Model<FacultyDocument>,
@@ -26,15 +27,14 @@ export class FacultiesService {
 
   async validateDto(dtos: Record<string, any>): Promise<void> {
     const { headOfSection, eputeHead, faculty } = dtos;
-    const validate = new ValidateDto();
     if (headOfSection) {
-      await validate.fieldId(collections.profiles, headOfSection);
+      await this.validate.fieldId(collections.profiles, headOfSection);
     }
     if (eputeHead) {
-      await validate.fieldId(collections.profiles, eputeHead);
+      await this.validate.fieldId(collections.profiles, eputeHead);
     }
     if (faculty) {
-      await validate.fieldId(collections.faculties, faculty);
+      await this.validate.fieldId(collections.faculties, faculty);
     }
   }
 

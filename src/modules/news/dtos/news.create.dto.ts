@@ -1,5 +1,5 @@
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { IsNotEmpty, IsString } from 'class-validator';
+import { ApiProperty } from '@nestjs/swagger';
+import { IsArray, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 import { EtypeNews } from 'src/constants/constant';
 export class CreateNewDto {
   @IsString()
@@ -20,9 +20,13 @@ export class CreateNewDto {
   })
   type?: string;
 
-  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  @ApiProperty()
   url?: string;
 
-  @ApiPropertyOptional({ type: [String] })
+  @IsOptional()
+  @IsArray()
+  @ApiProperty({ type: [String] })
   attachment?: string[];
 }

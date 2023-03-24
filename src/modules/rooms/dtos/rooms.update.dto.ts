@@ -1,20 +1,31 @@
-import { ApiPropertyOptional } from '@nestjs/swagger';
+import { ApiProperty } from '@nestjs/swagger';
+import { IsNumber, IsObject, IsOptional, IsString } from 'class-validator';
 import { EroomType } from 'src/constants/constant';
 import { DiviceRoomDto } from './rooms.divice.dto';
 
 export class UpdateRoomDto {
-  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  @ApiProperty()
   name?: string;
 
-  @ApiPropertyOptional({ default: EroomType.CLASS_ROOM })
+  @IsOptional()
+  @IsString()
+  @ApiProperty({ default: EroomType.CLASS_ROOM })
   type?: string;
 
-  @ApiPropertyOptional({ default: 100 })
+  @IsOptional()
+  @IsNumber()
+  @ApiProperty({ default: 100 })
   capacity?: number;
 
-  @ApiPropertyOptional({ type: DiviceRoomDto })
+  @IsOptional()
+  @IsObject()
+  @ApiProperty({ type: DiviceRoomDto })
   divice?: DiviceRoomDto;
 
-  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  @ApiProperty()
   description?: string;
 }

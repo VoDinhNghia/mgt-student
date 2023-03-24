@@ -12,6 +12,7 @@ import { InstitudeDocument, Institudes } from './schemas/institute.schema';
 
 @Injectable()
 export class InstituteService {
+  validate = new ValidateDto();
   constructor(
     @InjectModel(Institudes.name)
     private readonly institutiSchema: Model<InstitudeDocument>,
@@ -81,15 +82,14 @@ export class InstituteService {
   async validateInstituteDto(dtos: CreateInstituteDto): Promise<void> {
     const { parson, viceParson, contacts = {} } = dtos;
     const { office } = contacts;
-    const validate = new ValidateDto();
     if (parson) {
-      await validate.fieldId(collections.profiles, parson);
+      await this.validate.fieldId(collections.profiles, parson);
     }
     if (viceParson) {
-      await validate.fieldId(collections.profiles, viceParson);
+      await this.validate.fieldId(collections.profiles, viceParson);
     }
     if (office) {
-      await validate.fieldId(collections.rooms, office);
+      await this.validate.fieldId(collections.rooms, office);
     }
   }
 }

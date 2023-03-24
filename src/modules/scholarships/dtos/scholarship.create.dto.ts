@@ -1,5 +1,11 @@
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import { ApiProperty } from '@nestjs/swagger';
+import {
+  IsArray,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 import { EscholarshirpType } from 'src/constants/constant';
 
 export class CreateScholarshipDto {
@@ -34,7 +40,9 @@ export class CreateScholarshipDto {
   @ApiProperty({ default: 8.9 })
   maximunPoints?: number;
 
-  @ApiPropertyOptional({ default: 65 })
+  @IsOptional()
+  @IsNumber()
+  @ApiProperty({ default: 65 })
   trainningPoints?: number;
 
   @IsNumber()
@@ -45,6 +53,8 @@ export class CreateScholarshipDto {
   @ApiProperty({ default: 11 })
   numberCredit?: number;
 
-  @ApiPropertyOptional({ type: [String] })
+  @IsOptional()
+  @IsArray()
+  @ApiProperty({ type: [String] })
   attachment?: string[];
 }

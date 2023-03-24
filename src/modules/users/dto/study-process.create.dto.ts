@@ -1,5 +1,5 @@
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { IsNotEmpty, IsString } from 'class-validator';
+import { ApiProperty } from '@nestjs/swagger';
+import { IsNotEmpty, IsObject, IsOptional, IsString } from 'class-validator';
 import { EstatusUserProfile } from 'src/constants/constant';
 import { ItCertificateDto } from './study-process.itCer.dto';
 import { ToeicCertificateDto } from './study-process.toeicCer.dto';
@@ -18,9 +18,13 @@ export class CreateStudyProcessDto {
   })
   status: string;
 
-  @ApiPropertyOptional({ type: ToeicCertificateDto })
+  @IsOptional()
+  @IsObject()
+  @ApiProperty({ type: ToeicCertificateDto })
   toeicCertificate?: ToeicCertificateDto;
 
-  @ApiPropertyOptional({ type: ItCertificateDto })
+  @IsOptional()
+  @IsObject()
+  @ApiProperty({ type: ItCertificateDto })
   itCertificate?: ItCertificateDto;
 }

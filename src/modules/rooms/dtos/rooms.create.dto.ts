@@ -1,5 +1,11 @@
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import { ApiProperty } from '@nestjs/swagger';
+import {
+  IsNotEmpty,
+  IsNumber,
+  IsObject,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 import { EroomType } from 'src/constants/constant';
 import { DiviceRoomDto } from './rooms.divice.dto';
 
@@ -18,9 +24,13 @@ export class CreateRoomDto {
   @ApiProperty({ default: 100 })
   capacity?: number;
 
-  @ApiPropertyOptional({ type: DiviceRoomDto })
+  @IsOptional()
+  @IsObject()
+  @ApiProperty({ type: DiviceRoomDto })
   divice?: DiviceRoomDto;
 
-  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  @ApiProperty()
   description?: string;
 }

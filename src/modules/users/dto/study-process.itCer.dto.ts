@@ -1,9 +1,14 @@
-import { ApiPropertyOptional } from '@nestjs/swagger';
+import { ApiProperty } from '@nestjs/swagger';
+import { IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class ItCertificateDto {
-  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  @ApiProperty()
   attachment: string;
 
-  @ApiPropertyOptional()
+  @IsOptional()
+  @IsNumber()
+  @ApiProperty()
   scores: number;
 }

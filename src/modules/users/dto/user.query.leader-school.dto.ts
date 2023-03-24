@@ -1,6 +1,8 @@
-import { ApiPropertyOptional } from '@nestjs/swagger';
+import { ApiProperty } from '@nestjs/swagger';
+import { IsOptional } from 'class-validator';
 
 export class QueryLeaderSchoolDto {
-  @ApiPropertyOptional()
+  @IsOptional()
+  @ApiProperty()
   user?: string;
 }

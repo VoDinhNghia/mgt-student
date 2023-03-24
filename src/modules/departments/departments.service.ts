@@ -26,6 +26,7 @@ import { msgNotFound } from 'src/constants/message.response';
 
 @Injectable()
 export class DepartmentsService {
+  validate = new ValidateDto();
   constructor(
     @InjectModel(Departments.name)
     private readonly deparmentSchema: Model<DepartmentsDocument>,
@@ -42,16 +43,15 @@ export class DepartmentsService {
   ): Promise<void> {
     const { manager, contacts } = departmentDto;
     const { office } = contacts;
-    const validate = new ValidateDto();
     if (office) {
       const options = {
         _id: new Types.ObjectId(contacts?.office),
         type: EroomType.OFFICE_DEPARTMENT,
       };
-      await validate.fieldOptions(collections.rooms, options, 'Room');
+      await this.validate.fieldOptions(collections.rooms, options, 'Room');
     }
     if (manager) {
-      await validate.fieldId(collections.profiles, manager);
+      await this.validate.fieldId(collections.profiles, manager);
     }
   }
 
