@@ -7,6 +7,7 @@ import { LookupService } from 'src/utils/lookup.query.service';
 import { ValidateDto } from 'src/validates/validate.common.dto';
 import { CreateInstituteDto } from './dtos/institute.create.dto';
 import { UpdateInstituteDto } from './dtos/institute.update.dto';
+import { ImatchFindInstitute } from './interfaces/institute.match.find';
 import { InstitudeDocument, Institudes } from './schemas/institute.schema';
 
 @Injectable()
@@ -50,7 +51,7 @@ export class InstituteService {
   }
 
   async findInstituteById(id: string): Promise<Institudes> {
-    const match: Record<string, any> = {
+    const match: ImatchFindInstitute = {
       $match: { _id: new Types.ObjectId(id) },
     };
     const lookup = new LookupService().institute();
@@ -63,7 +64,7 @@ export class InstituteService {
   }
 
   async findAllInstitudes(): Promise<Institudes[]> {
-    const match = { $match: { isDeleted: false } };
+    const match: ImatchFindInstitute = { $match: { isDeleted: false } };
     const lookup = new LookupService().institute();
     const aggregate = [match, ...lookup];
     const results = await this.institutiSchema.aggregate(aggregate);

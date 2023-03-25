@@ -10,6 +10,7 @@ import { LookupService } from 'src/utils/lookup.query.service';
 import { LoginDto } from './dtos/auth.login.dto';
 import { UserLoginResponseDto } from './dtos/auth.result.login-service.dto';
 import { msgResponse } from 'src/constants/message.response';
+import { ImatchFindAuth } from './interfaces/auth.match.find';
 
 @Injectable()
 export class AuthService {
@@ -26,7 +27,7 @@ export class AuthService {
       new CommonException(401, msgResponse.errorAuth);
     }
     await this.userSchema.findByIdAndUpdate(user._id, { statusLogin: true });
-    const result: Record<string, any> = {
+    const result = {
       ...user,
       statusLogin: true,
       accessToken: this.jwtService.sign({ ...user }),
@@ -34,9 +35,9 @@ export class AuthService {
     return result;
   }
 
-  async findUserAuth(email: string, passWord: string): Promise<Users | any> {
+  async findUserAuth(email: string, passWord: string): Promise<UsersDocument> {
     const password = cryptoPassWord(passWord);
-    const match: Record<string, any> = {
+    const match: ImatchFindAuth = {
       $match: { email, passWord: password, status: EstatusUser.ACTIVE },
     };
     const lookup = new LookupService().user();

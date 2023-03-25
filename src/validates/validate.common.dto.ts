@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Types } from 'mongoose';
 import { DbConnection } from 'src/constants/db.mongo.connection';
 import { CommonException } from 'src/exceptions/exeception.common-error';
@@ -5,13 +6,13 @@ import { uniq } from 'lodash';
 import { validateEmail } from './validate.email';
 import { msgValidateEmail } from 'src/constants/message.response';
 import { collections } from 'src/constants/collections.name';
-import { CreateUnionDto } from 'src/modules/unions/dtos/unions.create.dto';
 import { CreateInstituteDto } from 'src/modules/institute/dtos/institute.create.dto';
 import { CreateDepartmentDto } from 'src/modules/departments/dtos/departments.create.dto';
 import { EroomType } from 'src/constants/constant';
-import { CreateCourseDto } from 'src/modules/courses/dtos/courses.create.dto';
 import { CreateCenterDto } from 'src/modules/centers/dtos/centers.create.dto';
 import { CreateScholarshipDto } from 'src/modules/scholarships/dtos/scholarship.create.dto';
+import { UpdateUnionDto } from 'src/modules/unions/dtos/unions.update.dto';
+import { UpdateCourseDto } from 'src/modules/courses/dtos/courses.update.dto';
 
 export class ValidateDto {
   db = new DbConnection();
@@ -124,7 +125,7 @@ export class ValidateDto {
     return profileDto;
   }
 
-  async union(unionDto: CreateUnionDto): Promise<Record<string, any>> {
+  async union(unionDto: UpdateUnionDto): Promise<Record<string, any>> {
     const { images = [], members = [] } = unionDto;
     if (images.length > 0) {
       const imageLists = [];
@@ -226,7 +227,7 @@ export class ValidateDto {
     }
   }
 
-  async courseName(courseDto: CreateCourseDto): Promise<void> {
+  async courseName(courseDto: UpdateCourseDto): Promise<void> {
     const { name } = courseDto;
     if (name) {
       const options = { name: name.trim() };

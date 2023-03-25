@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable class-methods-use-this */
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
@@ -28,6 +29,7 @@ import {
   Scholarship_User,
   ScholarshipUserDocument,
 } from './schemas/scholarships.user.schema';
+import { ImatchFindAllScholarship } from './interfaces/scholarship.match.find-all';
 
 @Injectable()
 export class ScholarshipService {
@@ -69,7 +71,7 @@ export class ScholarshipService {
   }
 
   async findScholarshipById(id: string): Promise<Scholarship> {
-    const match: Record<string, any> = {
+    const match: ImatchFindAllScholarship = {
       $match: { _id: new Types.ObjectId(id) },
     };
     const lookup = new LookupService().semesterScholarship();
@@ -85,7 +87,7 @@ export class ScholarshipService {
     queryDto: QueryScholarshipDto,
   ): Promise<Scholarship[]> {
     const { semester, type, limit, page, searchKey } = queryDto;
-    const match: Record<string, any> = { $match: { isDeleted: false } };
+    const match: ImatchFindAllScholarship = { $match: { isDeleted: false } };
     if (semester) {
       match.$match.semester = new Types.ObjectId(semester);
     }
@@ -110,7 +112,7 @@ export class ScholarshipService {
   ): Promise<Record<string, any>[]> {
     const { scholarship, user, semester } = queryDto;
     let aggregate = [];
-    const matchOne: Record<string, any> = { $match: { isDeleted: false } };
+    const matchOne: ImatchFindAllScholarship = { $match: { isDeleted: false } };
     if (scholarship) {
       matchOne.$match.scholarship = new Types.ObjectId(scholarship);
     }
@@ -231,7 +233,7 @@ export class ScholarshipService {
     tranningpoint: number,
     numberCredit: number,
     semester: string,
-  ): Promise<Record<string, any>> {
+  ): Promise<ScholarshipDocument> {
     const result = await this.scholarshipSchema.findOne({
       semester: new Types.ObjectId(semester),
       minimunPoints: { $lt: accumalatedPoint },

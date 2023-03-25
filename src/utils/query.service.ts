@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { DbConnection } from 'src/constants/db.mongo.connection';
 
 export class QueryService {

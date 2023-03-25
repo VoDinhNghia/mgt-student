@@ -9,6 +9,7 @@ import { ValidateDto } from 'src/validates/validate.common.dto';
 import { CreateRoomDto } from './dtos/rooms.create.dto';
 import { QueryRoomDto } from './dtos/rooms.query.dto';
 import { UpdateRoomDto } from './dtos/rooms.update.dto';
+import { ImatchFindRoom } from './interfaces/rooms.match.find';
 import { Rooms, RoomsDocument } from './schemas/rooms.schema';
 
 @Injectable()
@@ -42,7 +43,7 @@ export class RoomsService {
     queryRoomDto: QueryRoomDto,
   ): Promise<{ data: Rooms[]; countTotal: number }> {
     const { limit, page, searchKey, type } = queryRoomDto;
-    const match: Record<string, any> = { $match: { isDeleted: false } };
+    const match: ImatchFindRoom = { $match: { isDeleted: false } };
     if (searchKey) {
       match.$match.name = RegExp(searchKey);
     }

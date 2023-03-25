@@ -10,6 +10,7 @@ import { ValidateDto } from 'src/validates/validate.common.dto';
 import { CreateNewDto } from './dtos/news.create.dto';
 import { QueryNewDto } from './dtos/news.query.dto';
 import { UpdateNewDto } from './dtos/news.update.dto';
+import { ImatchFindNews } from './interfaces/news.match.find';
 import { News, NewsDocument } from './schemas/news.schema';
 
 @Injectable()
@@ -39,7 +40,7 @@ export class NewsService {
   }
 
   async findNewsById(id: string): Promise<News> {
-    const match: Record<string, any> = {
+    const match: ImatchFindNews = {
       $match: { _id: new Types.ObjectId(id) },
     };
     const lookup = new LookupService().news();
@@ -53,7 +54,7 @@ export class NewsService {
 
   async findAllNews(query: QueryNewDto): Promise<News[]> {
     const { limit, page, type } = query;
-    const match: Record<string, any> = { $match: { isDeleted: false } };
+    const match: ImatchFindNews = { $match: { isDeleted: false } };
     if (type) {
       match.$match.type = type;
     }

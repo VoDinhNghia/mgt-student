@@ -10,6 +10,7 @@ import { ValidateDto } from 'src/validates/validate.common.dto';
 import { BranchCreateDto } from './dtos/branchs.create.dto';
 import { BranchQueryDto } from './dtos/branchs.query.dto';
 import { BranchUpdateDto } from './dtos/branchs.update.dto';
+import { ImatchFindBranch } from './interfaces/branchs.match.find';
 import { Branch, BranchDocument } from './schemas/branchs.schema';
 
 @Injectable()
@@ -46,8 +47,8 @@ export class BranchService {
   }
 
   async findById(id: string): Promise<Branch> {
-    const match: Record<string, any> = {
-      $match: { id: new Types.ObjectId(id) },
+    const match: ImatchFindBranch = {
+      $match: { _id: new Types.ObjectId(id) },
     };
     const lookup = new LookupService().branch();
     const aggregate = [match, ...lookup];
@@ -61,7 +62,7 @@ export class BranchService {
 
   async findAllBranchs(branchQueryDto: BranchQueryDto): Promise<Branch[]> {
     const { limit, page, searchKey } = branchQueryDto;
-    const match: Record<string, any> = { $match: { isDeleted: false } };
+    const match: ImatchFindBranch = { $match: { isDeleted: false } };
     if (searchKey) {
       match.$match.name = new RegExp(searchKey);
     }

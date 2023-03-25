@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
@@ -23,6 +24,7 @@ import { ValidateDto } from 'src/validates/validate.common.dto';
 import { collections } from 'src/constants/collections.name';
 import { LookupService } from 'src/utils/lookup.query.service';
 import { msgNotFound } from 'src/constants/message.response';
+import { ImatchFindDeparment } from './interfaces/departments.match.find';
 
 @Injectable()
 export class DepartmentsService {
@@ -84,7 +86,7 @@ export class DepartmentsService {
   }
 
   async findDepartmentById(id: string): Promise<Departments> {
-    const match: Record<string, any> = {
+    const match: ImatchFindDeparment = {
       $match: { _id: new Types.ObjectId(id) },
     };
     const lookup = new LookupService().department();
@@ -97,7 +99,7 @@ export class DepartmentsService {
   }
 
   async findAllDepartment(): Promise<Departments[]> {
-    const match = { $match: { isDeleted: false } };
+    const match: ImatchFindDeparment = { $match: { isDeleted: false } };
     const aggregateLookup = new LookupService().department();
     const aggregate = [match, ...aggregateLookup];
     const results = await this.deparmentSchema.aggregate(aggregate);
@@ -118,10 +120,11 @@ export class DepartmentsService {
         if (!staffInfo) {
           continue;
         }
-        if (staffInfo.user?.role !== ErolesUser.STAFF) {
+        const userInfo: Users | any = staffInfo?.user;
+        if (userInfo?.role !== ErolesUser.STAFF) {
           continue;
         }
-        const dto: CreateStaffDepartmentDto | Record<string, any> = {
+        const dto = {
           department,
           staff: item?.staff,
           joinDate: item?.joinDate || Date.now(),
@@ -163,20 +166,22 @@ export class DepartmentsService {
     if (department) {
       await this.findDepartmentById(department);
     }
-    const staff: Record<string, any> = await this.staffSchema.findById(id);
+    const staff: DepartmentStaffDocument = await this.staffSchema.findById(id);
     if (!staff) {
       new CommonException(404, msgNotFound);
     }
-    staff.department = department || staff.department;
+    staff.department = department
+      ? new Types.ObjectId(department)
+      : staff.department;
     staff.joinDate = joinDate || staff.joinDate;
-    staff.updatedBy = updatedBy;
-    staff.updatedAt = Date.now();
+    staff.updatedBy = new Types.ObjectId(updatedBy);
+    staff.updatedAt = new Date(Date.now());
     await staff.save();
     return staff;
   }
 
   async deleteDepartmentStaff(id: string, deletedBy: string): Promise<void> {
-    const staff: Record<string, any> = await this.staffSchema.findById(id);
+    const staff: DepartmentStaffDocument = await this.staffSchema.findById(id);
     if (!staff) {
       new CommonException(404, msgNotFound);
     }
@@ -188,8 +193,8 @@ export class DepartmentsService {
     await this.staffSchema.findByIdAndUpdate(id, dto);
   }
 
-  async findUserProfile(profile: string): Promise<Record<string, any>> {
-    const staffInfo: Record<string, any> = await this.profileSchema
+  async findUserProfile(profile: string): Promise<ProfileDocument> {
+    const staffInfo = await this.profileSchema
       .findOne({
         _id: new Types.ObjectId(profile),
         isDeleted: false,
