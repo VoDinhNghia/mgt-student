@@ -21,16 +21,6 @@ export class Users extends FieldsCommonSchema {
 
   @Prop({ enum: ErolesUser, default: ErolesUser.STUDENT })
   role?: string;
-
-  @Prop()
-  historyLogin?: [
-    {
-      divice: string;
-      date: Date;
-      host: string;
-      origin: string;
-    },
-  ];
 }
 
 export const UsersSchema = SchemaFactory.createForClass(Users);

@@ -128,7 +128,7 @@ export class ValidateDto {
     const { images = [], members = [] } = unionDto;
     if (images.length > 0) {
       const imageLists = [];
-      for (const item of images) {
+      for await (const item of images) {
         const options = { _id: new Types.ObjectId(item.attachment) };
         const result = await this.db
           .collection(collections.attachments)
@@ -141,7 +141,7 @@ export class ValidateDto {
     }
     if (members.length > 0) {
       const memberLists = [];
-      for (const item of members) {
+      for await (const item of members) {
         const options = { _id: new Types.ObjectId(item.user) };
         const result = await this.db
           .collection(collections.profiles)

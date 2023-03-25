@@ -112,7 +112,7 @@ export class DepartmentsService {
     await this.findDepartmentById(department);
     const staffLists = unionBy(staffs, 'staff');
     const results = [];
-    for (const item of staffLists) {
+    for await (const item of staffLists) {
       try {
         const staffInfo = await this.findUserProfile(item.staff);
         if (!staffInfo) {
