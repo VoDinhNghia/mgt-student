@@ -13,7 +13,7 @@ export function validateEmail(email: string) {
 
   const domainParts = parts[1].split('.');
   if (
-    domainParts.some(function (part) {
+    domainParts.some((part) => {
       return part.length > 63;
     })
   )

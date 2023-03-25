@@ -6,10 +6,10 @@ export const getDataFromCsvFileUpload = (data: any) => {
     header: true,
     worker: true,
     delimiter: ',',
-    step: function (row: any) {
+    step: (row: any) => {
       csvData.push(row.data);
     },
-    complete: function () {
+    complete: () => {
       console.log('Done!');
     },
   });
