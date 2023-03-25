@@ -22,6 +22,7 @@ import { UpdateMoneyPerCreditMgtDto } from './dtos/mgt-money-per-credit.update.d
 import { QueryTuitionUser } from './dtos/query.tuition-user.dto';
 import { CreateUserPaymentDto } from './dtos/user.payments.create.dto';
 import { msgResponse } from 'src/constants/message.response';
+import { UserLoginResponseDto } from '../auth/dtos/auth.result.login-service.dto';
 
 @Controller('api/payments')
 @ApiTags('payments')
@@ -37,7 +38,7 @@ export class PaymentsController {
     @Res() res: Response,
     @Req() req: Request,
   ): Promise<ResponseRequest> {
-    const { user }: Request | Record<string, any> = req;
+    const user: UserLoginResponseDto = req?.user;
     const createdBy: string = user.profileId;
     const result = await this.paymentService.createMoneyPerCreditMgt(
       createCreditmgtDto,
@@ -56,7 +57,7 @@ export class PaymentsController {
     @Res() res: Response,
     @Req() req: Request,
   ): Promise<ResponseRequest> {
-    const { user }: Request | Record<string, any> = req;
+    const user: UserLoginResponseDto = req?.user;
     const updatedBy: string = user.profileId;
     const result = await this.paymentService.updateMoneyPerCreditMgt(
       id,
@@ -106,7 +107,7 @@ export class PaymentsController {
     @Res() res: Response,
     @Req() req: Request,
   ): Promise<ResponseRequest> {
-    const { user }: Request | Record<string, any> = req;
+    const user: UserLoginResponseDto = req?.user;
     const createdBy: string = user.profileId;
     const result = await this.paymentService.createUserPayment(
       userPaymentDto,

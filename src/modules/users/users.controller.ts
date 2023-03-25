@@ -15,12 +15,7 @@ import {
 } from '@nestjs/common';
 import { CreateUserDto } from './dto/users.create.dto';
 import { UsersService } from './users.service';
-import {
-  ApiBearerAuth,
-  ApiConsumes,
-  ApiOkResponse,
-  ApiTags,
-} from '@nestjs/swagger';
+import { ApiBearerAuth, ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { ErolesUser } from 'src/constants/constant';
 import { UsersUpdateDto } from './dto/users.update.dto';
 import { RoleGuard } from '../auth/guards/role-auth.guard';
@@ -43,6 +38,7 @@ import {
 } from 'src/validates/validate.attachment.upload-file';
 import { getDataFromCsvFileUpload } from 'src/utils/getDataFromCsvUpload';
 import { msgResponse } from 'src/constants/message.response';
+import { UserLoginResponseDto } from '../auth/dtos/auth.result.login-service.dto';
 
 @Controller('api/users')
 @ApiTags('users')
@@ -58,7 +54,7 @@ export class UsersController {
     @Req() req: Request,
     @Res() res: Response,
   ): Promise<ResponseRequest> {
-    const { user }: Request | Record<string, any> = req;
+    const user: UserLoginResponseDto = req?.user;
     const createdBy: string = user.profileId;
     const result = await this.service.createUser(userDto, createdBy);
     return new ResponseRequest(res, result, msgResponse.createUser);
@@ -84,7 +80,7 @@ export class UsersController {
     @Body() body: StorageObjectDto,
     @UploadedFile('file') file: Express.Multer.File,
   ): Promise<ResponseRequest> {
-    const { user }: Request | Record<string, any> = req;
+    const user: UserLoginResponseDto = req?.user;
     const createdBy: string = user.profileId;
     const rawData = readFileSync(file.path, 'utf8');
     const csvData = getDataFromCsvFileUpload(rawData);
@@ -102,7 +98,7 @@ export class UsersController {
     @Req() req: Request,
     @Res() res: Response,
   ): Promise<ResponseRequest> {
-    const { user }: Request | Record<string, any> = req;
+    const user: UserLoginResponseDto = req?.user;
     const updatedBy: string = user.profileId;
     const result = await this.service.updateUser(id, updateDto, updatedBy);
     return new ResponseRequest(res, result, msgResponse.updateUser);
@@ -117,7 +113,7 @@ export class UsersController {
     @Req() req: Request,
     @Res() res: Response,
   ): Promise<ResponseRequest> {
-    const { user }: Request | Record<string, any> = req;
+    const user: UserLoginResponseDto = req?.user;
     const updatedBy: string = user.profileId;
     const result = await this.service.updateUserProfile(
       id,
@@ -136,7 +132,7 @@ export class UsersController {
     @Res() res: Response,
     @Req() req: Request,
   ): Promise<ResponseRequest> {
-    const { user }: Request | Record<string, any> = req;
+    const user: UserLoginResponseDto = req?.user;
     const createdBy: string = user.profileId;
     const result = await this.service.createLeaderSchool(
       leaderSchoolDto,
@@ -155,7 +151,7 @@ export class UsersController {
     @Res() res: Response,
     @Req() req: Request,
   ): Promise<ResponseRequest> {
-    const { user }: Request | Record<string, any> = req;
+    const user: UserLoginResponseDto = req?.user;
     const updatedBy: string = user.profileId;
     const result = await this.service.updateLeaderSchool(
       id,
@@ -192,7 +188,7 @@ export class UsersController {
     @Res() res: Response,
     @Req() req: Request,
   ): Promise<ResponseRequest> {
-    const { user }: Request | Record<string, any> = req;
+    const user: UserLoginResponseDto = req?.user;
     const deletedBy: string = user.profileId;
     await this.service.deleteLeaderSchool(id, deletedBy);
     return new ResponseRequest(res, true, msgResponse.deleteLeaderSchool);
@@ -207,7 +203,7 @@ export class UsersController {
     @Res() res: Response,
     @Req() req: Request,
   ): Promise<ResponseRequest> {
-    const { user }: Request | Record<string, any> = req;
+    const user: UserLoginResponseDto = req?.user;
     const result = await this.service.findAllUsers(queryDto, user._id);
     return new ResponseRequest(res, result, msgResponse.getAllUser);
   }
@@ -221,7 +217,7 @@ export class UsersController {
     @Req() req: Request,
     @Res() res: Response,
   ): Promise<ResponseRequest> {
-    const { user }: Request | Record<string, any> = req;
+    const user: UserLoginResponseDto = req?.user;
     const deletedBy: string = user.profileId;
     await this.service.deleteUser(id, deletedBy);
     return new ResponseRequest(res, true, msgResponse.deleteUser);

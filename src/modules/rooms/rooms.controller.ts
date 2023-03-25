@@ -22,6 +22,7 @@ import { QueryRoomDto } from './dtos/rooms.query.dto';
 import { UpdateRoomDto } from './dtos/rooms.update.dto';
 import { Delete } from '@nestjs/common/decorators';
 import { msgResponse } from 'src/constants/message.response';
+import { UserLoginResponseDto } from '../auth/dtos/auth.result.login-service.dto';
 
 @Controller('api/rooms')
 @ApiTags('rooms')
@@ -37,7 +38,7 @@ export class RoomsController {
     @Res() res: Response,
     @Req() req: Request,
   ): Promise<ResponseRequest> {
-    const { user }: Request | Record<string, any> = req;
+    const user: UserLoginResponseDto = req?.user;
     const createdBy: string = user.profileId;
     const result = await this.roomService.createRoom(createRoomDto, createdBy);
     return new ResponseRequest(res, result, msgResponse.createRoom);
@@ -64,7 +65,7 @@ export class RoomsController {
     @Res() res: Response,
     @Req() req: Request,
   ): Promise<ResponseRequest> {
-    const { user }: Request | Record<string, any> = req;
+    const user: UserLoginResponseDto = req?.user;
     const updatedBy: string = user.profileId;
     const result = await this.roomService.updateRoom(
       id,
@@ -83,7 +84,7 @@ export class RoomsController {
     @Res() res: Response,
     @Req() req: Request,
   ): Promise<ResponseRequest> {
-    const { user }: Request | Record<string, any> = req;
+    const user: UserLoginResponseDto = req?.user;
     const deletedBy: string = user.profileId;
     const result = await this.roomService.deleteRoom(id, deletedBy);
     return new ResponseRequest(res, result, msgResponse.deleteRoom);

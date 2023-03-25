@@ -21,6 +21,7 @@ import { BranchQueryDto } from './dtos/branchs.query.dto';
 import { BranchUpdateDto } from './dtos/branchs.update.dto';
 import { ResponseRequest } from 'src/utils/response-api';
 import { msgResponse } from 'src/constants/message.response';
+import { UserLoginResponseDto } from '../auth/dtos/auth.result.login-service.dto';
 
 @Controller('api/branchs')
 @ApiTags('branchs')
@@ -36,7 +37,7 @@ export class BranchController {
     @Body() branchCreateDto: BranchCreateDto,
     @Req() req: Request,
   ): Promise<ResponseRequest> {
-    const { user }: Request | Record<string, any> = req;
+    const user: UserLoginResponseDto = req?.user;
     const createdBy: string = user.profileId;
     const result = await this.branchService.createBranchNew(
       branchCreateDto,
@@ -64,7 +65,7 @@ export class BranchController {
     @Res() res: Response,
     @Req() req: Request,
   ): Promise<ResponseRequest> {
-    const { user }: Request | Record<string, any> = req;
+    const user: UserLoginResponseDto = req?.user;
     const updatedBy: string = user.profileId;
     await this.branchService.updateBranch(id, updateBranchDto, updatedBy);
     return new ResponseRequest(res, true, msgResponse.updateBranch);

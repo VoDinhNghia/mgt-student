@@ -23,6 +23,7 @@ import { UpdateSubjectDto } from './dtos/subject.update.dto';
 import { UpdateClassDto } from './dtos/class.update.dto';
 import { ValidatePercentPoint } from 'src/validates/validate.percent-point.subject';
 import { msgResponse } from 'src/constants/message.response';
+import { UserLoginResponseDto } from '../auth/dtos/auth.result.login-service.dto';
 
 @Controller('api/class-subject')
 @ApiTags('class-subject')
@@ -38,7 +39,7 @@ export class ClassSubjectController {
     @Body() createClassDto: CreateClassDto,
     @Req() req: Request,
   ): Promise<ResponseRequest> {
-    const { user }: Request | Record<string, any> = req;
+    const user: UserLoginResponseDto = req?.user;
     const createdBy: string = user.profileId;
     const result = await this.classSubjectService.createClass(
       createClassDto,
@@ -57,7 +58,7 @@ export class ClassSubjectController {
     @Body() subjectDto: CreateSubjectDto,
     @Req() req: Request,
   ): Promise<ResponseRequest> {
-    const { user }: Request | Record<string, any> = req;
+    const user: UserLoginResponseDto = req?.user;
     const createdBy: string = user.profileId;
     const result = await this.classSubjectService.createSubject(
       subjectDto,
@@ -76,7 +77,7 @@ export class ClassSubjectController {
     @Body() subjectDto: UpdateSubjectDto,
     @Req() req: Request,
   ): Promise<ResponseRequest> {
-    const { user }: Request | Record<string, any> = req;
+    const user: UserLoginResponseDto = req?.user;
     const updatedBy: string = user.profileId;
     const result = await this.classSubjectService.updateSubject(
       id,
@@ -96,7 +97,7 @@ export class ClassSubjectController {
     @Body() classDto: UpdateClassDto,
     @Req() req: Request,
   ): Promise<ResponseRequest> {
-    const { user }: Request | Record<string, any> = req;
+    const user: UserLoginResponseDto = req?.user;
     const updatedBy: string = user.profileId;
     const result = await this.classSubjectService.updateClass(
       id,

@@ -20,6 +20,7 @@ import {
   descriptionResponse,
   msgResponse,
 } from 'src/constants/message.response';
+import { UserLoginResponseDto } from './dtos/auth.result.login-service.dto';
 
 @Controller('api/auth')
 @ApiTags('auth')
@@ -59,7 +60,7 @@ export class AuthController {
     @Req() req: Request,
     @Res() res: Response,
   ): Promise<ResponseRequest> {
-    const { user }: Request | Record<string, any> = req;
+    const user: UserLoginResponseDto = req?.user;
     const result = await this.userService.findUserById(user._id);
     return new ResponseRequest(res, result, msgResponse.getMeAuth);
   }

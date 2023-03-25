@@ -19,6 +19,7 @@ import { CreateDegreeLevelDto } from './dtos/degreelevels.create.dto';
 import { Response, Request } from 'express';
 import { UpdateDegreeLevelDto } from './dtos/degreeLevels.update.dto';
 import { msgResponse } from 'src/constants/message.response';
+import { UserLoginResponseDto } from '../auth/dtos/auth.result.login-service.dto';
 
 @Controller('api/degreelevels')
 @ApiTags('degreelevels')
@@ -34,7 +35,7 @@ export class DegreelevelController {
     @Res() res: Response,
     @Req() req: Request,
   ): Promise<ResponseRequest> {
-    const { user }: Request | Record<string, any> = req;
+    const user: UserLoginResponseDto = req?.user;
     const createdBy: string = user.profileId;
     const result = await this.degreeLevelService.createDegreeLevel(
       degreeLevelDto,
@@ -53,7 +54,7 @@ export class DegreelevelController {
     @Res() res: Response,
     @Req() req: Request,
   ): Promise<ResponseRequest> {
-    const { user }: Request | Record<string, any> = req;
+    const user: UserLoginResponseDto = req?.user;
     const updatedBy: string = user.profileId;
     const result = await this.degreeLevelService.updateDegreeLevel(
       id,

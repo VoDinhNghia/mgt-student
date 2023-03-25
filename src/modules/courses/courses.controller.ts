@@ -19,6 +19,7 @@ import { CoursesService } from './courses.service';
 import { CreateCourseDto } from './dtos/courses.create.dto';
 import { UpdateCourseDto } from './dtos/courses.update.dto';
 import { msgResponse } from 'src/constants/message.response';
+import { UserLoginResponseDto } from '../auth/dtos/auth.result.login-service.dto';
 
 @Controller('api/courses')
 @ApiTags('courses')
@@ -34,7 +35,7 @@ export class CoursesController {
     @Body() courseDto: CreateCourseDto,
     @Req() req: Request,
   ): Promise<ResponseRequest> {
-    const { user }: Request | Record<string, any> = req;
+    const user: UserLoginResponseDto = req?.user;
     const createdBy: string = user.profileId;
     const result = await this.courseService.createCourse(courseDto, createdBy);
     return new ResponseRequest(res, result, msgResponse.createCourse);
@@ -50,7 +51,7 @@ export class CoursesController {
     @Res() res: Response,
     @Req() req: Request,
   ): Promise<ResponseRequest> {
-    const { user }: Request | Record<string, any> = req;
+    const user: UserLoginResponseDto = req?.user;
     const updatedBy: string = user.profileId;
     const result = await this.courseService.updateCourse(
       id,

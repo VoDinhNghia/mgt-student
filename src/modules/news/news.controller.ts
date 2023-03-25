@@ -22,6 +22,7 @@ import { UpdateNewDto } from './dtos/news.update.dto';
 import { QueryNewDto } from './dtos/news.query.dto';
 import { ResponseRequest } from 'src/utils/response-api';
 import { msgResponse } from 'src/constants/message.response';
+import { UserLoginResponseDto } from '../auth/dtos/auth.result.login-service.dto';
 
 @Controller('api/news')
 @ApiTags('news')
@@ -37,7 +38,7 @@ export class NewsController {
     @Res() res: Response,
     @Req() req: Request,
   ): Promise<ResponseRequest> {
-    const { user }: Request | Record<string, any> = req;
+    const user: UserLoginResponseDto = req?.user;
     const createdBy: string = user.profileId;
     const result = await this.newService.createNews(createNewDto, createdBy);
     return new ResponseRequest(res, result, msgResponse.createNews);
@@ -65,7 +66,7 @@ export class NewsController {
     @Res() res: Response,
     @Req() req: Request,
   ): Promise<ResponseRequest> {
-    const { user }: Request | Record<string, any> = req;
+    const user: UserLoginResponseDto = req?.user;
     const updatedBy: string = user.profileId;
     const result = await this.newService.updateNews(
       id,
@@ -96,7 +97,7 @@ export class NewsController {
     @Res() res: Response,
     @Req() req: Request,
   ): Promise<ResponseRequest> {
-    const { user }: Request | Record<string, any> = req;
+    const user: UserLoginResponseDto = req?.user;
     const deletedBy: string = user.profileId;
     await this.newService.deleteNews(id, deletedBy);
     return new ResponseRequest(res, true, msgResponse.deleteNews);
