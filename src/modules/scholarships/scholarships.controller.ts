@@ -15,7 +15,7 @@ import { ErolesUser } from 'src/constants/constant';
 import { ResponseRequest } from 'src/utils/response-api';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RoleGuard } from '../auth/guards/role-auth.guard';
-import { CreateUserScholarshipInSemester } from './dtos/admin.create.user-scholarship.semester.dto';
+import { CreateUserScholarshipInSemester } from './dtos/scholarship.user-semester.create.dto';
 import { CreateScholarshipDto } from './dtos/scholarship.create.dto';
 import { QueryScholarshipDto } from './dtos/scholarship.query.dto';
 import { QueryUserScholarshipDto } from './dtos/scholarship.user.query.dto';

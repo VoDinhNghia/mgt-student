@@ -6,10 +6,10 @@ import { msgNotFound, msgResponse } from 'src/constants/message.response';
 import { CommonException } from 'src/exceptions/exeception.common-error';
 import { LookupService } from 'src/utils/lookup.query.service';
 import { ValidateDto } from 'src/validates/validate.common.dto';
-import { CreateClassDto } from './dtos/class.create.dto';
-import { UpdateClassDto } from './dtos/class.update.dto';
-import { CreateSubjectDto } from './dtos/subject.create.dto';
-import { UpdateSubjectDto } from './dtos/subject.update.dto';
+import { CreateClassDto } from './dtos/class-subject.create-class.dto';
+import { UpdateClassDto } from './dtos/class-subject.update-class.dto';
+import { CreateSubjectDto } from './dtos/class-subject.create-subject.dto';
+import { UpdateSubjectDto } from './dtos/class-subject.update-subject.dto';
 import {
   Class_Infos,
   ClassInfosDocument,

@@ -48,7 +48,7 @@ export class UnionsController {
   @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
   async updateUnion(
     @Param('id') id: string,
-    @Body() unionDto: UpdateUnionDto,
+    @Body() unionDto: CreateUnionDto,
     @Res() res: ResponseRequest,
     @Req() req: Request,
   ): Promise<ResponseRequest> {

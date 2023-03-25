@@ -15,7 +15,7 @@ import { QueryPagination } from 'src/utils/page.pagination';
 import { QueryService } from 'src/utils/query.service';
 import { SubjectUserRegister } from 'src/utils/user.register-subject.query';
 import { ValidateDto } from 'src/validates/validate.common.dto';
-import { CreateScholarshipUser } from './dtos/scholarship-user.create.dto';
+import { CreateScholarshipUser } from './dtos/scholarship.user.create.dto';
 import { CreateScholarshipDto } from './dtos/scholarship.create.dto';
 import { QueryScholarshipDto } from './dtos/scholarship.query.dto';
 import { UpdateScholarshipDto } from './dtos/scholarship.update.dto';

@@ -1,7 +1,7 @@
 /* eslint-disable class-methods-use-this */
 import { CallHandler, ExecutionContext, NestInterceptor } from '@nestjs/common';
 import { of } from 'rxjs';
-import { CreateSubjectDto } from 'src/modules/class-subject/dtos/subject.create.dto';
+import { CreateSubjectDto } from 'src/modules/class-subject/dtos/class-subject.create-subject.dto';
 import { CommonException } from '../exceptions/exeception.common-error';
 
 export class ValidatePercentPoint implements NestInterceptor {

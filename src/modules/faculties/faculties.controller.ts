@@ -20,9 +20,9 @@ import { Response, Request } from 'express';
 import { ResponseRequest } from 'src/utils/response-api';
 import { FacultyQueryDto } from './dtos/faculties.query.dto';
 import { UpdateFacultyDto } from './dtos/faculties.update.dto';
-import { CreateMajorDto } from './dtos/major.create.dto';
-import { UpdateMajorDto } from './dtos/major.update.dto';
-import { MajorQueryDto } from './dtos/major.query.dto';
+import { CreateMajorDto } from './dtos/faculties.major.create.dto';
+import { UpdateMajorDto } from './dtos/faculties.major.update.dto';
+import { MajorQueryDto } from './dtos/faculties.major.query.dto';
 import { msgResponse } from 'src/constants/message.response';
 import { UserLoginResponseDto } from '../auth/dtos/auth.result.login-service.dto';
 

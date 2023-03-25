@@ -9,15 +9,15 @@ import { getRandomCodeReceiptId } from 'src/utils/generate.code-payment';
 import { LookupService } from 'src/utils/lookup.query.service';
 import { SubjectUserRegister } from 'src/utils/user.register-subject.query';
 import { ValidateDto } from 'src/validates/validate.common.dto';
-import { CreateMoneyPerCreditMgtDto } from './dtos/mgt-money-per-credit.create.dto';
-import { UpdateMoneyPerCreditMgtDto } from './dtos/mgt-money-per-credit.update.dto';
-import { QueryTuitionUser } from './dtos/query.tuition-user.dto';
-import { CreateUserPaymentDto } from './dtos/user.payments.create.dto';
-import { UpdateUserPaymentDto } from './dtos/user.payments.update.dto';
+import { CreateMoneyPerCreditMgtDto } from './dtos/payments.mgt-money-per-credit.create.dto';
+import { UpdateMoneyPerCreditMgtDto } from './dtos/payment.mgt-money-per-credit.update.dto';
+import { QueryTuitionUser } from './dtos/payments.query.tuition-user.dto';
+import { CreateUserPaymentDto } from './dtos/payments.users.create.dto';
+import { UpdateUserPaymentDto } from './dtos/payments.users.update.dto';
 import {
   Money_Per_Credit_Mgt,
   MoneyPerCreditManagementDocument,
-} from './schemas/mgt-money-per-credit.schema';
+} from './schemas/payments.mgt-money-per-credit.schema';
 import {
   Payment_Study_Fee,
   PaymentStudyFeeDocument,
