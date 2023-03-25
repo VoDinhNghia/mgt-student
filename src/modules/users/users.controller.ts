@@ -42,11 +42,7 @@ import {
   fileName,
 } from 'src/validates/validate.attachment.upload-file';
 import { getDataFromCsvFileUpload } from 'src/utils/getDataFromCsvUpload';
-import { UserResponse } from './responses/user.response-swagger';
-import {
-  descriptionResponse,
-  msgResponse,
-} from 'src/constants/message.response';
+import { msgResponse } from 'src/constants/message.response';
 
 @Controller('api/users')
 @ApiTags('users')
@@ -57,11 +53,6 @@ export class UsersController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
-  @ApiOkResponse({
-    type: UserResponse,
-    description: 'Response data when create user success.',
-    isArray: false,
-  })
   async createUser(
     @Body() userDto: CreateUserDto,
     @Req() req: Request,
@@ -211,11 +202,6 @@ export class UsersController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
-  @ApiOkResponse({
-    type: UserResponse,
-    description: descriptionResponse.apiGetAllUser,
-    isArray: true,
-  })
   async getAllUsers(
     @Query() queryDto: UsersFillterDto,
     @Res() res: Response,
@@ -245,11 +231,6 @@ export class UsersController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
-  @ApiOkResponse({
-    type: UserResponse,
-    description: descriptionResponse.apiGetUserById,
-    isArray: false,
-  })
   async getUserByid(
     @Param('id') id: string,
     @Res() res: Response,

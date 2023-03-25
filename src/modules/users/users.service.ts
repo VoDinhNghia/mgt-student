@@ -33,7 +33,6 @@ import { ValidateDto } from 'src/validates/validate.common.dto';
 import { UsersUpdateDto } from './dto/user.update.dto';
 import { collections } from 'src/constants/collections.name';
 import { LookupService } from 'src/utils/lookup.query.service';
-import { UserResponse } from './responses/user.response-swagger';
 import { msgNotFound, msgServerError } from 'src/constants/message.response';
 
 @Injectable()
@@ -48,10 +47,7 @@ export class UsersService {
     private readonly studyProcessSchema: Model<StudyProcessDocument>,
   ) {}
 
-  async createUser(
-    usersDto: CreateUserDto,
-    createdBy: string,
-  ): Promise<UserResponse> {
+  async createUser(usersDto: CreateUserDto, createdBy: string): Promise<Users> {
     const { email } = usersDto;
     const validate = new ValidateDto();
     await validate.email(email);
@@ -104,7 +100,7 @@ export class UsersService {
     }
   }
 
-  async findUserById(id: string | any): Promise<UserResponse> {
+  async findUserById(id: string | any): Promise<Users> {
     const match = { $match: { _id: new Types.ObjectId(id) } };
     const lookup = new LookupService().user();
     const aggregate = [match, ...lookup];
@@ -115,10 +111,7 @@ export class UsersService {
     return result[0];
   }
 
-  async findAllUsers(
-    query: UsersFillterDto,
-    userId: string,
-  ): Promise<UserResponse[]> {
+  async findAllUsers(query: UsersFillterDto, userId: string): Promise<Users[]> {
     const { searchKey, limit, page, role, status } = query;
     const match: Record<string, any> = {
       $match: { _id: { $ne: new Types.ObjectId(userId) }, isDeleted: false },
@@ -203,7 +196,7 @@ export class UsersService {
   }
 
   async importUser(createdBy: string, data = []) {
-    for (const item of data) {
+    for await (const item of data) {
       const { email, passWord, role, firstName, lastName } = item;
       if (!email || !passWord || !role || !firstName || !lastName) {
         item.statusImport =
@@ -268,9 +261,7 @@ export class UsersService {
     return data;
   }
 
-  async initSupperAdmin(
-    superAdminDto: InitSuperAdminDto,
-  ): Promise<UserResponse> {
+  async initSupperAdmin(superAdminDto: InitSuperAdminDto): Promise<Users> {
     const { email, passWord, firstName, lastName } = superAdminDto;
     const option = { role: ErolesUser.SUPPER_ADMIN };
     await new ValidateDto().existedByOptions(

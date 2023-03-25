@@ -125,7 +125,7 @@ export class ScholarshipService {
       ];
     }
     const results = await this.scholarshipUserSchema.aggregate(aggregate);
-    for (const item of results) {
+    for await (const item of results) {
       const tuition = await this.getUserPaymentStudyFee(
         item?.scholarship?.semester,
         item?.user?._id,
@@ -174,7 +174,7 @@ export class ScholarshipService {
       optionFind,
     );
     const data = [];
-    for (const item of studyProcessLists) {
+    for await (const item of studyProcessLists) {
       try {
         const { totalAccumalated, totalNumberCredits } =
           await this.getUserTotalAccumalated(semester, item.user);

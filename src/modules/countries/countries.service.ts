@@ -32,7 +32,7 @@ export class CountriesService {
 
   async initCountries(data: Record<string, any>[]): Promise<Countries[]> {
     const result = [];
-    for (const item of data) {
+    for await (const item of data) {
       try {
         const existed = await this.countrySchema.findOne({
           countryId: item.countryId,
@@ -55,7 +55,7 @@ export class CountriesService {
 
   async initProvinces(data: Record<string, any>[]): Promise<Provinces[]> {
     const result = [];
-    for (const item of data) {
+    for await (const item of data) {
       try {
         const existedCountry = await this.countrySchema.findById({
           _id: item.countryId,
@@ -86,7 +86,7 @@ export class CountriesService {
 
   async initDisTricts(data: Record<string, any>[]): Promise<Districts[]> {
     const result = [];
-    for (const item of data) {
+    for await (const item of data) {
       try {
         const existedCountry = await this.countrySchema.findById({
           _id: item.countryId,
@@ -125,7 +125,7 @@ export class CountriesService {
 
   async initWards(data: Record<string, any>[]): Promise<Wards[]> {
     const result = [];
-    for (const item of data) {
+    for await (const item of data) {
       try {
         const existedCountry = await this.countrySchema.findById({
           _id: item.countryId,

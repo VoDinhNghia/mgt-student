@@ -16,7 +16,6 @@ import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { Request } from 'express';
 import { InitSuperAdminDto } from './dtos/auth.init-super-admin.dto';
 import { ResponseLoginApiDto } from './dtos/auth.api.login.response.dto';
-import { UserResponse } from '../users/responses/user.response-swagger';
 import {
   descriptionResponse,
   msgResponse,
@@ -31,11 +30,6 @@ export class AuthController {
   ) {}
 
   @Post('/init-supper-admin')
-  @ApiOkResponse({
-    type: UserResponse,
-    description: descriptionResponse.apiInitAdmin,
-    isArray: false,
-  })
   async initAdmin(
     @Body() superAdminDto: InitSuperAdminDto,
     @Res() res: Response,
@@ -60,11 +54,6 @@ export class AuthController {
 
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
-  @ApiOkResponse({
-    type: UserResponse,
-    description: descriptionResponse.apiGetMe,
-    isArray: false,
-  })
   @Get('/me')
   async getProfile(
     @Req() req: Request,
