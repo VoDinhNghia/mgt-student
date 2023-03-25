@@ -47,7 +47,7 @@ export class CoursesController {
   @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
   async updateCourse(
     @Param('id') id: string,
-    @Body() courseDto: CreateCourseDto,
+    @Body() courseDto: UpdateCourseDto,
     @Res() res: Response,
     @Req() req: Request,
   ): Promise<ResponseRequest> {

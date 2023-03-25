@@ -1,4 +1,5 @@
-export class IlookupInterface {
+/* eslint-disable class-methods-use-this */
+interface IlookupInterface {
   from: string;
   localField: string;
   foreignField: string;
@@ -7,7 +8,7 @@ export class IlookupInterface {
 }
 
 export class LookupCommon {
-  constructor(listFields: IlookupInterface[]) {
+  lookup(listFields: IlookupInterface[]) {
     const results = [];
     for (const obj of listFields) {
       const lookup = {

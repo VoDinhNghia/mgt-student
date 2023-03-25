@@ -1,7 +1,9 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { ObjectId, Types } from 'mongoose';
 import { collections } from 'src/constants/collections.name';
 import { DbConnection } from 'src/constants/db.mongo.connection';
 import { CommonException } from 'src/exceptions/exeception.common-error';
+import { SubjectDocument } from 'src/modules/class-subject/schemas/class-subject.subject.schema';
 
 export class SubjectUserRegister {
   db = new DbConnection();
@@ -58,7 +60,7 @@ export class SubjectUserRegister {
       .collection(collections.subjects)
       .find(query);
     const subjectList = await cursorQuery.toArray();
-    const subjectIds = subjectList.map((subject: any) => {
+    const subjectIds = subjectList.map((subject: SubjectDocument) => {
       return subject._id;
     });
     return subjectIds;

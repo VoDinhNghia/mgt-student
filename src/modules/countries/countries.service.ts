@@ -30,7 +30,7 @@ export class CountriesService {
     private readonly wardSchema: Model<WardDocument>,
   ) {}
 
-  async initCountries(data: Record<string, any>[]): Promise<Countries[]> {
+  async initCountries(data = []): Promise<Countries[]> {
     const result = [];
     for await (const item of data) {
       try {
@@ -53,7 +53,7 @@ export class CountriesService {
     return result;
   }
 
-  async initProvinces(data: Record<string, any>[]): Promise<Provinces[]> {
+  async initProvinces(data = []): Promise<Provinces[]> {
     const result = [];
     for await (const item of data) {
       try {
@@ -84,7 +84,7 @@ export class CountriesService {
     return result;
   }
 
-  async initDisTricts(data: Record<string, any>[]): Promise<Districts[]> {
+  async initDisTricts(data = []): Promise<Districts[]> {
     const result = [];
     for await (const item of data) {
       try {
@@ -123,7 +123,7 @@ export class CountriesService {
     return result;
   }
 
-  async initWards(data: Record<string, any>[]): Promise<Wards[]> {
+  async initWards(data = []): Promise<Wards[]> {
     const result = [];
     for await (const item of data) {
       try {

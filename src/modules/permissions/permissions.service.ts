@@ -10,6 +10,7 @@ import { ValidateDto } from 'src/validates/validate.common.dto';
 import { CreatePermissionDto } from './dtos/permissions.create.dto';
 import { QueryPermissionDto } from './dtos/permissions.query.dto';
 import { UpdatePermissionDto } from './dtos/permissions.update.dto';
+import { ImatchFindPermission } from './interfaces/permissions.match.find';
 import {
   Admin_Permission,
   AdminPermissionDocument,
@@ -68,7 +69,7 @@ export class PermissionsService {
     queryDto: QueryPermissionDto,
   ): Promise<Admin_Permission[]> {
     const { limit, page, user, searchKey } = queryDto;
-    const match: Record<string, any> = { $match: { isDeleted: false } };
+    const match: ImatchFindPermission = { $match: { isDeleted: false } };
     if (user) {
       match.$match = { user: new Types.ObjectId(user) };
     }
@@ -76,7 +77,7 @@ export class PermissionsService {
     const lookup = new LookupService().permission();
     agg = [...agg, ...lookup];
     if (searchKey) {
-      const matchSearchKey = {
+      const matchSearchKey: ImatchFindPermission = {
         $match: {
           $or: [
             { moduleName: new RegExp(searchKey) },

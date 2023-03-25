@@ -22,6 +22,7 @@ import {
   Subject_Process,
   SubjectProcessDocument,
 } from './schemas/class-subject.subjectProcess';
+import { ImatchFindClassSubject } from './interfaces/class-subject.match.find';
 
 @Injectable()
 export class ClassSubjectService {
@@ -55,7 +56,7 @@ export class ClassSubjectService {
   }
 
   async findClassById(id: string): Promise<Class_Infos> {
-    const match: Record<string, any> = {
+    const match: ImatchFindClassSubject = {
       $match: { _id: new Types.ObjectId(id) },
     };
     const lookup = new LookupService().classInfo();
@@ -116,7 +117,7 @@ export class ClassSubjectService {
   }
 
   async findSubjectById(id: string): Promise<Subjects> {
-    const match: Record<string, any> = {
+    const match: ImatchFindClassSubject = {
       $match: { _id: new Types.ObjectId(id) },
     };
     const lookup = new LookupService().subject();

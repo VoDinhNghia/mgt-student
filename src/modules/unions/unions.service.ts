@@ -38,7 +38,7 @@ export class UnionsService {
 
   async updateUnion(
     id: string,
-    unionDto: CreateUnionDto,
+    unionDto: UpdateUnionDto,
     updatedBy: string,
   ): Promise<Union> {
     const validateDto = await new ValidateDto().union(unionDto);

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { parse } from 'papaparse';
 
 export const getDataFromCsvFileUpload = (data: any) => {

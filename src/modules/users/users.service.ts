@@ -13,7 +13,6 @@ import {
 import { UsersFillterDto } from './dto/users.query.dto';
 import { CommonException } from 'src/exceptions/exeception.common-error';
 import { QueryPagination } from 'src/utils/page.pagination';
-import { UpdateProfileDto } from './dto/users.update.profile.dto';
 import {
   Leader_Schools,
   LeaderSchoolDocument,
@@ -35,7 +34,7 @@ import { LookupService } from 'src/utils/lookup.query.service';
 import { msgNotFound, msgServerError } from 'src/constants/message.response';
 import { ImatchFindAllUser } from './interfaces/users.match.find-all.interface';
 import { UserProfileDto } from './dto/users.create-profile.dto';
-import { ImatchFindLeaderSchool } from './interfaces/users.match.find-leader-school.interface';
+import { UpdateProfileDto } from './dto/users.update.profile.dto';
 
 @Injectable()
 export class UsersService {
@@ -369,7 +368,7 @@ export class UsersService {
     queryDto: QueryLeaderSchoolDto,
   ): Promise<Leader_Schools[]> {
     const { user } = queryDto;
-    const match: ImatchFindLeaderSchool = { $match: { isDeleted: false } };
+    const match: ImatchFindAllUser = { $match: { isDeleted: false } };
     if (user) {
       match.$match.user = new Types.ObjectId(user);
     }

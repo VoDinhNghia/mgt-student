@@ -4,7 +4,7 @@ import { LookupCommon } from './lookup.query.aggregate-query';
 
 export class LookupService {
   public award() {
-    const lookup: any = new LookupCommon([this.referenceAttachment()]);
+    const lookup = new LookupCommon().lookup([this.referenceAttachment()]);
     return lookup;
   }
 
@@ -13,7 +13,7 @@ export class LookupService {
   }
 
   public center() {
-    const lookup: any = new LookupCommon([
+    const lookup = new LookupCommon().lookup([
       {
         from: collections.profiles,
         localField: 'director',
@@ -28,7 +28,7 @@ export class LookupService {
   }
 
   public classInfo() {
-    const lookup: any = new LookupCommon([
+    const lookup = new LookupCommon().lookup([
       {
         from: collections.degreelevels,
         localField: 'degreeLevel',
@@ -48,7 +48,7 @@ export class LookupService {
   }
 
   public subject() {
-    const lookup: any = new LookupCommon([
+    const lookup = new LookupCommon().lookup([
       this.referenceSemester(),
       {
         from: collections.profiles,
@@ -69,7 +69,7 @@ export class LookupService {
   }
 
   public classSubjectCommon() {
-    const lookup: any = new LookupCommon([
+    const lookup = new LookupCommon().lookup([
       {
         from: collections.courses,
         localField: 'course',
@@ -89,7 +89,7 @@ export class LookupService {
   }
 
   public department() {
-    const lookup: any = new LookupCommon([
+    const lookup = new LookupCommon().lookup([
       {
         from: collections.profiles,
         localField: 'manager',
@@ -104,7 +104,7 @@ export class LookupService {
   }
 
   public faculty() {
-    const lookup: any = new LookupCommon([
+    const lookup = new LookupCommon().lookup([
       this.referenceAward(),
       {
         from: collections.profiles,
@@ -125,7 +125,7 @@ export class LookupService {
   }
 
   public major() {
-    const lookup: any = new LookupCommon([
+    const lookup = new LookupCommon().lookup([
       {
         from: collections.faculties,
         localField: 'faculty',
@@ -138,7 +138,7 @@ export class LookupService {
   }
 
   public institute() {
-    const lookup: any = new LookupCommon([
+    const lookup = new LookupCommon().lookup([
       {
         from: collections.profiles,
         localField: 'parson',
@@ -160,32 +160,32 @@ export class LookupService {
   }
 
   public news() {
-    const lookup: any = new LookupCommon([this.referenceAttachment()]);
+    const lookup = new LookupCommon().lookup([this.referenceAttachment()]);
     return lookup;
   }
 
   public userPayment() {
-    const lookup: any = new LookupCommon([this.referenceUser()]);
+    const lookup = new LookupCommon().lookup([this.referenceUser()]);
     return [...this.payment(), ...lookup];
   }
 
   public payment() {
-    const lookup: any = new LookupCommon([this.referenceSemester()]);
+    const lookup = new LookupCommon().lookup([this.referenceSemester()]);
     return lookup;
   }
 
   public permission() {
-    const lookup: any = new LookupCommon([this.referenceUser()]);
+    const lookup = new LookupCommon().lookup([this.referenceUser()]);
     return lookup;
   }
 
   public semesterScholarship() {
-    const lookup: any = new LookupCommon([this.referenceSemester()]);
+    const lookup = new LookupCommon().lookup([this.referenceSemester()]);
     return lookup;
   }
 
   public trainningPointScholarship() {
-    const lookup: any = new LookupCommon([
+    const lookup = new LookupCommon().lookup([
       {
         from: collections.voluntee_programs,
         localField: 'program',
@@ -198,7 +198,7 @@ export class LookupService {
   }
 
   public userScholarship() {
-    const lookup: any = new LookupCommon([
+    const lookup = new LookupCommon().lookup([
       {
         from: collections.scholarships,
         localField: 'scholarship',
@@ -212,7 +212,7 @@ export class LookupService {
   }
 
   public school() {
-    const lookup: any = new LookupCommon([
+    const lookup = new LookupCommon().lookup([
       {
         from: collections.attachments,
         localField: 'image',
@@ -237,7 +237,7 @@ export class LookupService {
   }
 
   public union() {
-    const lookup: any = new LookupCommon([
+    const lookup = new LookupCommon().lookup([
       {
         from: collections.profiles,
         localField: 'members.user',
@@ -261,7 +261,7 @@ export class LookupService {
   }
 
   public profile() {
-    const lookup: any = new LookupCommon([
+    const lookup = new LookupCommon().lookup([
       {
         from: collections.profiles,
         localField: 'user',
@@ -274,7 +274,7 @@ export class LookupService {
   }
 
   public userAndSync() {
-    const lookup: any = new LookupCommon([
+    const lookup = new LookupCommon().lookup([
       {
         from: collections.profiles,
         localField: '_id',
@@ -287,7 +287,7 @@ export class LookupService {
   }
 
   public locationBranchAndSchool() {
-    const lookup: any = new LookupCommon([
+    const lookup = new LookupCommon().lookup([
       {
         from: collections.countries,
         localField: 'location.country',

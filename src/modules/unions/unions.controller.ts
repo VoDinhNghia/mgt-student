@@ -18,9 +18,9 @@ import { UnionsService } from './unions.service';
 import { Response, Request } from 'express';
 import { CreateUnionDto } from './dtos/unions.create.dto';
 import { ResponseRequest } from 'src/utils/response-api';
-import { UpdateUnionDto } from './dtos/unions.update.dto';
 import { msgResponse } from 'src/constants/message.response';
 import { UserLoginResponseDto } from '../auth/dtos/auth.result.login-service.dto';
+import { UpdateUnionDto } from './dtos/unions.update.dto';
 
 @Controller('api/unions')
 @ApiTags('unions')
@@ -48,7 +48,7 @@ export class UnionsController {
   @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
   async updateUnion(
     @Param('id') id: string,
-    @Body() unionDto: CreateUnionDto,
+    @Body() unionDto: UpdateUnionDto,
     @Res() res: ResponseRequest,
     @Req() req: Request,
   ): Promise<ResponseRequest> {

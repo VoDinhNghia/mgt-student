@@ -14,6 +14,7 @@ import { MajorQueryDto } from './dtos/faculties.major.query.dto';
 import { UpdateMajorDto } from './dtos/faculties.major.update.dto';
 import { Faculty, FacultyDocument } from './schemas/faculties.schema';
 import { Majors, MajorsDocument } from './schemas/faculties.major.schema';
+import { ImatchFindFaculty } from './interfaces/faculties.match.find';
 
 @Injectable()
 export class FacultiesService {
@@ -46,7 +47,7 @@ export class FacultiesService {
   }
 
   async findFacultyById(id: string): Promise<Faculty> {
-    const match: Record<string, any> = {
+    const match: ImatchFindFaculty = {
       $match: { _id: new Types.ObjectId(id) },
     };
     const lookup = new LookupService().faculty();
@@ -77,7 +78,7 @@ export class FacultiesService {
 
   async findAllFaculties(facultyQueryDto: FacultyQueryDto): Promise<Faculty[]> {
     const { searchKey } = facultyQueryDto;
-    const match: Record<string, any> = { $match: { isDeleted: false } };
+    const match: ImatchFindFaculty = { $match: { isDeleted: false } };
     if (searchKey) {
       match.$match.name = new RegExp(searchKey);
     }
@@ -98,7 +99,7 @@ export class FacultiesService {
   }
 
   async findMajorById(id: string): Promise<Majors> {
-    const match: Record<string, any> = {
+    const match: ImatchFindFaculty = {
       $match: { _id: new Types.ObjectId(id) },
     };
     const lookup = new LookupService().major();
@@ -129,7 +130,7 @@ export class FacultiesService {
 
   async findAllMajors(queryDto: MajorQueryDto): Promise<Majors[]> {
     const { faculty } = queryDto;
-    const match: Record<string, any> = { $match: { isDeleted: false } };
+    const match: ImatchFindFaculty = { $match: { isDeleted: false } };
     if (faculty) {
       match.$match.faculty = new Types.ObjectId(faculty);
     }

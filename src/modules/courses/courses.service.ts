@@ -37,7 +37,7 @@ export class CoursesService {
 
   async updateCourse(
     id: string,
-    courseDto: CreateCourseDto,
+    courseDto: UpdateCourseDto,
     updatedBy: string,
   ): Promise<Course> {
     await new ValidateDto().courseName(courseDto);

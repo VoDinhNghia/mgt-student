@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable consistent-return */
 import { HttpException } from '@nestjs/common';
 import { join } from 'path';

@@ -10,6 +10,7 @@ import { ValidateDto } from 'src/validates/validate.common.dto';
 import { CreateAwardDto } from './dtos/awards.create.dto';
 import { QueryAwardDto } from './dtos/awards.query.dto';
 import { UpdateAwardDto } from './dtos/awards.update.dto';
+import { ImatchFindAward } from './interfaces/awards.match.find';
 import { Award, AwardDocument } from './schemas/awards.schema';
 
 @Injectable()
@@ -71,9 +72,9 @@ export class AwardsService {
 
   async findAllAward(
     queryAwardDto: QueryAwardDto,
-  ): Promise<{ data: Award[]; countTotal: number | any }> {
+  ): Promise<{ data: Award[]; countTotal: number }> {
     const { limit, page, searchKey, type, fromDate, toDate } = queryAwardDto;
-    const match: Record<string, any> = { $match: { isDeleted: false } };
+    const match: ImatchFindAward = { $match: { isDeleted: false } };
     if (searchKey) {
       match.$match.name = new RegExp(searchKey);
     }
@@ -84,10 +85,10 @@ export class AwardsService {
       match.$match.time = { $gte: fromDate };
     }
     if (!fromDate && toDate) {
-      match.$match.time = { $lt: toDate };
+      match.$match.time = { $lte: toDate };
     }
     if (fromDate && !toDate) {
-      match.$match.time = { $gte: fromDate, $lt: toDate };
+      match.$match.time = { $gte: fromDate, $lte: toDate };
     }
     const lookup = new LookupService().award();
     const aggregatePagi = new QueryPagination().skipLimitAndSort(limit, page);
