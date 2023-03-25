@@ -102,13 +102,12 @@ export class ClassSubjectService {
   async createSubjectProcess(
     subjectId: string,
     processDto: CreateSubjectDto,
-  ): Promise<Subject_Process> {
+  ): Promise<void> {
     try {
-      const result = await new this.subjectProcessSchema({
+      await new this.subjectProcessSchema({
         subject: subjectId,
         ...processDto,
       }).save();
-      return result;
     } catch (error) {
       console.log(error);
       await this.subjectSchema.findByIdAndDelete(subjectId);

@@ -310,6 +310,7 @@ export class UsersService {
   async createUserProfile(
     profileDto: Record<string, any>,
   ): Promise<Profile | any> {
+    let result = null;
     try {
       const validate = new ValidateDto();
       const option = { user: profileDto.user };
@@ -318,13 +319,13 @@ export class UsersService {
         option,
         'User profile',
       );
-      const result = await new this.profileSchema(profileDto).save();
-      return result;
+      result = await new this.profileSchema(profileDto).save();
     } catch (error) {
       await this.userSchema.findByIdAndDelete(profileDto.user);
       console.log(error);
       new CommonException(500, msgServerError);
     }
+    return result;
   }
 
   async createLeaderSchool(

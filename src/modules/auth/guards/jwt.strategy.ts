@@ -30,13 +30,14 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   }
 
   verifyToken(token: string) {
+    let payload: UserLoginResponseDto = null;
     try {
-      const payload: UserLoginResponseDto = this.jwtService.verify(token, {
+      payload = this.jwtService.verify(token, {
         secret: jwtConstants.JWT_PRIVATE_KEY,
       });
-      return payload;
     } catch (error) {
       console.log('verify token socket error');
     }
+    return payload;
   }
 }

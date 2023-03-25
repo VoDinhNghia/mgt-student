@@ -21,7 +21,7 @@ module.exports = {
       'endOfLine': 'auto',
     }],
     'class-methods-use-this': 'error',
-    'consistent-return': 'off',
+    'consistent-return': 'error',
     'func-names': 'error',
     'max-len': ['error', { 'code': 250, 'ignoreTemplateLiterals': true }],
     'newline-per-chained-call': 'off',
