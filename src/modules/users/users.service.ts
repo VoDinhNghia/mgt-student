@@ -12,7 +12,7 @@ import {
 } from 'src/constants/constant';
 import { UsersFillterDto } from './dto/users.query.dto';
 import { CommonException } from 'src/exceptions/exeception.common-error';
-import { Pagination } from 'src/utils/page.pagination';
+import { QueryPagination } from 'src/utils/page.pagination';
 import { UpdateProfileDto } from './dto/users.update.profile.dto';
 import {
   Leader_Schools,
@@ -25,7 +25,7 @@ import { getRandomCode } from 'src/utils/generate.code-profile';
 import {
   Study_Processes,
   StudyProcessDocument,
-} from './schemas/study-process.schema';
+} from './schemas/users.study-process.schema';
 import { CreateStudyProcessDto } from './dto/users.create.study-process.dto';
 import { InitSuperAdminDto } from '../auth/dtos/auth.init-super-admin.dto';
 import { ValidateDto } from 'src/validates/validate.common.dto';
@@ -142,8 +142,11 @@ export class UsersService {
         },
       ];
     }
-    const aggPagination: any = new Pagination(limit, page, aggregate);
-    const result = await this.userSchema.aggregate(aggPagination);
+    const aggPagination = new QueryPagination().skipLimitAndSort(limit, page);
+    const result = await this.userSchema.aggregate([
+      ...aggregate,
+      ...aggPagination,
+    ]);
     return result;
   }
 

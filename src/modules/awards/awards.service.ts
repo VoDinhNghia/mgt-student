@@ -5,7 +5,7 @@ import { collections } from 'src/constants/collections.name';
 import { msgNotFound } from 'src/constants/message.response';
 import { CommonException } from 'src/exceptions/exeception.common-error';
 import { LookupService } from 'src/utils/lookup.query.service';
-import { Pagination } from 'src/utils/page.pagination';
+import { QueryPagination } from 'src/utils/page.pagination';
 import { ValidateDto } from 'src/validates/validate.common.dto';
 import { CreateAwardDto } from './dtos/awards.create.dto';
 import { QueryAwardDto } from './dtos/awards.query.dto';
@@ -90,8 +90,8 @@ export class AwardsService {
       match.$match.time = { $gte: fromDate, $lt: toDate };
     }
     const lookup = new LookupService().award();
-    const aggregatePagi: any = new Pagination(limit, page, [match]);
-    const aggregate = [...aggregatePagi, ...lookup];
+    const aggregatePagi = new QueryPagination().skipLimitAndSort(limit, page);
+    const aggregate = [match, ...aggregatePagi, ...lookup];
     const result = await this.awardSchema.aggregate(aggregate);
     const countDocument = await this.awardSchema.countDocuments();
     return {

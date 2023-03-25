@@ -11,7 +11,7 @@ import {
 import { msgNotFound } from 'src/constants/message.response';
 import { CommonException } from 'src/exceptions/exeception.common-error';
 import { LookupService } from 'src/utils/lookup.query.service';
-import { Pagination } from 'src/utils/page.pagination';
+import { QueryPagination } from 'src/utils/page.pagination';
 import { QueryService } from 'src/utils/query.service';
 import { SubjectUserRegister } from 'src/utils/user.register-subject.query';
 import { ValidateDto } from 'src/validates/validate.common.dto';
@@ -96,9 +96,12 @@ export class ScholarshipService {
       match.$match.$or = [{ name: new RegExp(searchKey) }];
     }
     const lookup = new LookupService().semesterScholarship();
-    const agg = [match, ...lookup];
-    const aggregate: any = new Pagination(limit, page, agg);
-    const results = await this.scholarshipSchema.aggregate(aggregate);
+    const aggregate = new QueryPagination().skipLimitAndSort(limit, page);
+    const results = await this.scholarshipSchema.aggregate([
+      match,
+      ...aggregate,
+      ...lookup,
+    ]);
     return results;
   }
 

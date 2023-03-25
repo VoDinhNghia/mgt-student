@@ -5,7 +5,7 @@ import { collections } from 'src/constants/collections.name';
 import { msgNotFound } from 'src/constants/message.response';
 import { CommonException } from 'src/exceptions/exeception.common-error';
 import { LookupService } from 'src/utils/lookup.query.service';
-import { Pagination } from 'src/utils/page.pagination';
+import { QueryPagination } from 'src/utils/page.pagination';
 import { ValidateDto } from 'src/validates/validate.common.dto';
 import { CreateNewDto } from './dtos/news.create.dto';
 import { QueryNewDto } from './dtos/news.query.dto';
@@ -57,10 +57,9 @@ export class NewsService {
     if (type) {
       match.$match.type = type;
     }
-    const agg = [match];
-    const aggPagination: any = new Pagination(limit, page, agg);
+    const aggPagination = new QueryPagination().skipLimitAndSort(limit, page);
     const lookup = new LookupService().news();
-    const aggregate = [...aggPagination, ...lookup];
+    const aggregate = [match, ...aggPagination, ...lookup];
     const results = await this.newsSchema.aggregate(aggregate);
     return results;
   }
