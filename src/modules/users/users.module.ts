@@ -11,7 +11,7 @@ import {
 import {
   Study_Processes,
   StudyProcessSchema,
-} from './schemas/study-process.schema';
+} from './schemas/users.study-process.schema';
 @Module({
   imports: [
     MongooseModule.forFeature([

@@ -5,7 +5,7 @@ import { collections } from 'src/constants/collections.name';
 import { msgNotFound } from 'src/constants/message.response';
 import { CommonException } from 'src/exceptions/exeception.common-error';
 import { LookupService } from 'src/utils/lookup.query.service';
-import { Pagination } from 'src/utils/page.pagination';
+import { QueryPagination } from 'src/utils/page.pagination';
 import { ValidateDto } from 'src/validates/validate.common.dto';
 import { CreatePermissionDto } from './dtos/permissions.create.dto';
 import { QueryPermissionDto } from './dtos/permissions.query.dto';
@@ -87,8 +87,11 @@ export class PermissionsService {
       };
       agg = [...agg, matchSearchKey];
     }
-    const aggregate: any = new Pagination(limit, page, agg);
-    const results = await this.permissionSchema.aggregate(aggregate);
+    const aggregate = new QueryPagination().skipLimitAndSort(limit, page);
+    const results = await this.permissionSchema.aggregate([
+      ...agg,
+      ...aggregate,
+    ]);
     return results;
   }
 
