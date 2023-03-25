@@ -20,6 +20,7 @@ import { Response, Request } from 'express';
 import { CreateCenterDto } from './dtos/centers.create.dto';
 import { UpdateCenterDto } from './dtos/centers.update.dto';
 import { msgResponse } from 'src/constants/message.response';
+import { UserLoginResponseDto } from '../auth/dtos/auth.result.login-service.dto';
 
 @Controller('api/centers')
 @ApiTags('centers')
@@ -35,7 +36,7 @@ export class CenterController {
     @Res() res: Response,
     @Req() req: Request,
   ): Promise<ResponseRequest> {
-    const { user }: Request | Record<string, any> = req;
+    const user: UserLoginResponseDto = req?.user;
     const createdBy: string = user.profileId;
     const result = await this.service.createCenter(centerDto, createdBy);
     return new ResponseRequest(res, result, msgResponse.createCenter);
@@ -51,7 +52,7 @@ export class CenterController {
     @Res() res: Response,
     @Req() req: Request,
   ): Promise<ResponseRequest> {
-    const { user }: Request | Record<string, any> = req;
+    const user: UserLoginResponseDto = req?.user;
     const updatedBy: string = user.profileId;
     const result = await this.service.updateCenter(id, centerDto, updatedBy);
     return new ResponseRequest(res, result, msgResponse.updateCenter);
@@ -66,7 +67,7 @@ export class CenterController {
     @Res() res: Response,
     @Req() req: Request,
   ): Promise<ResponseRequest> {
-    const { user }: Request | Record<string, any> = req;
+    const user: UserLoginResponseDto = req?.user;
     const deletedBy: string = user.profileId;
     await this.service.deleteCenter(id, deletedBy);
     return new ResponseRequest(res, true, msgResponse.deleteCenter);

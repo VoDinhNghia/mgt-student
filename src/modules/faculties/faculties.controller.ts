@@ -24,6 +24,7 @@ import { CreateMajorDto } from './dtos/major.create.dto';
 import { UpdateMajorDto } from './dtos/major.update.dto';
 import { MajorQueryDto } from './dtos/major.query.dto';
 import { msgResponse } from 'src/constants/message.response';
+import { UserLoginResponseDto } from '../auth/dtos/auth.result.login-service.dto';
 
 @Controller('api/faculties')
 @ApiTags('faculties')
@@ -39,7 +40,7 @@ export class FacultiesController {
     @Body() createFacultyDto: CreateFacultyDto,
     @Req() req: Request,
   ): Promise<ResponseRequest> {
-    const { user }: Request | Record<string, any> = req;
+    const user: UserLoginResponseDto = req?.user;
     const createdBy: string = user.profileId;
     const result = await this.facultyService.createFaculty(
       createFacultyDto,
@@ -58,7 +59,7 @@ export class FacultiesController {
     @Res() res: Response,
     @Req() req: Request,
   ): Promise<ResponseRequest> {
-    const { user }: Request | Record<string, any> = req;
+    const user: UserLoginResponseDto = req?.user;
     const updatedBy: string = user.profileId;
     const result = await this.facultyService.updateFaculty(
       id,
@@ -89,7 +90,7 @@ export class FacultiesController {
     @Body() createMajorDto: CreateMajorDto,
     @Req() req: Request,
   ): Promise<ResponseRequest> {
-    const { user }: Request | Record<string, any> = req;
+    const user: UserLoginResponseDto = req?.user;
     const createdBy: string = user.profileId;
     const result = await this.facultyService.createMajor(
       createMajorDto,
@@ -108,7 +109,7 @@ export class FacultiesController {
     @Res() res: Response,
     @Req() req: Request,
   ): Promise<ResponseRequest> {
-    const { user }: Request | Record<string, any> = req;
+    const user: UserLoginResponseDto = req?.user;
     const updatedBy: string = user.profileId;
     const result = await this.facultyService.updateMajor(
       id,

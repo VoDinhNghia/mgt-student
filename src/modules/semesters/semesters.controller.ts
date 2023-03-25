@@ -20,6 +20,7 @@ import { SemestersService } from './semesters.service';
 import { Response, Request } from 'express';
 import { UpdateSemesterDto } from './dtos/semesters.update.dto';
 import { msgResponse } from 'src/constants/message.response';
+import { UserLoginResponseDto } from '../auth/dtos/auth.result.login-service.dto';
 
 @Controller('api/semesters')
 @ApiTags('semesters')
@@ -35,7 +36,7 @@ export class SemestersController {
     @Res() res: Response,
     @Req() req: Request,
   ): Promise<ResponseRequest> {
-    const { user }: Request | Record<string, any> = req;
+    const user: UserLoginResponseDto = req?.user;
     const createdBy: string = user.profileId;
     const result = await this.semesterService.createSemester(
       semesterDto,
@@ -54,7 +55,7 @@ export class SemestersController {
     @Res() res: Response,
     @Req() req: Request,
   ): Promise<ResponseRequest> {
-    const { user }: Request | Record<string, any> = req;
+    const user: UserLoginResponseDto = req?.user;
     const updatedBy: string = user.profileId;
     const result = await this.semesterService.updateSemester(
       id,
@@ -73,7 +74,7 @@ export class SemestersController {
     @Res() res: Response,
     @Req() req: Request,
   ): Promise<ResponseRequest> {
-    const { user }: Request | Record<string, any> = req;
+    const user: UserLoginResponseDto = req?.user;
     const deletedBy: string = user.profileId;
     await this.semesterService.deleteSemester(id, deletedBy);
     return new ResponseRequest(res, true, msgResponse.deleteSemester);

@@ -23,6 +23,7 @@ import { UpdateDepartmentDto } from './dtos/department.update.dto';
 import { CreateDepartmentDto } from './dtos/departments.create.dto';
 import { Response, Request } from 'express';
 import { msgResponse } from 'src/constants/message.response';
+import { UserLoginResponseDto } from '../auth/dtos/auth.result.login-service.dto';
 
 @Controller('api/departments')
 @ApiTags('departments')
@@ -38,7 +39,7 @@ export class DepartmentsController {
     @Res() res: Response,
     @Req() req: Request,
   ): Promise<ResponseRequest> {
-    const { user }: Request | Record<string, any> = req;
+    const user: UserLoginResponseDto = req?.user;
     const createdBy: string = user.profileId;
     const result = await this.service.createDepartment(
       departmentDto,
@@ -57,7 +58,7 @@ export class DepartmentsController {
     @Res() res: Response,
     @Req() req: Request,
   ): Promise<ResponseRequest> {
-    const { user }: Request | Record<string, any> = req;
+    const user: UserLoginResponseDto = req?.user;
     const updatedBy: string = user.profileId;
     const result = await this.service.updateDepartment(
       id,
@@ -76,7 +77,7 @@ export class DepartmentsController {
     @Res() res: Response,
     @Req() req: Request,
   ): Promise<ResponseRequest> {
-    const { user }: Request | Record<string, any> = req;
+    const user: UserLoginResponseDto = req?.user;
     const createdBy: string = user.profileId;
     const result = await this.service.createMultiStaffDepartment(
       staffDto,
@@ -94,7 +95,7 @@ export class DepartmentsController {
     @Res() res: Response,
     @Req() req: Request,
   ): Promise<ResponseRequest> {
-    const { user }: Request | Record<string, any> = req;
+    const user: UserLoginResponseDto = req?.user;
     const createdBy: string = user.profileId;
     const result = await this.service.createDepartmentStaff(
       staffDto,
@@ -113,7 +114,7 @@ export class DepartmentsController {
     @Res() res: Response,
     @Req() req: Request,
   ): Promise<ResponseRequest> {
-    const { user }: Request | Record<string, any> = req;
+    const user: UserLoginResponseDto = req?.user;
     const updatedBy: string = user.profileId;
     const result = await this.service.updateDepartmentStaff(
       id,
@@ -132,7 +133,7 @@ export class DepartmentsController {
     @Res() res: Response,
     @Req() req: Request,
   ): Promise<ResponseRequest> {
-    const { user }: Request | Record<string, any> = req;
+    const user: UserLoginResponseDto = req?.user;
     const deletedBy: string = user.profileId;
     await this.service.deleteDepartmentStaff(id, deletedBy);
     return new ResponseRequest(res, true, msgResponse.deleteDepartmentStaff);

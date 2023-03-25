@@ -25,6 +25,7 @@ import {
   imageFileFilter,
 } from 'src/validates/validate.attachment.upload-file';
 import { msgResponse } from 'src/constants/message.response';
+import { UserLoginResponseDto } from '../auth/dtos/auth.result.login-service.dto';
 @Controller('api/attachments')
 @ApiTags('attachments')
 export class AttachmentsController {
@@ -49,7 +50,7 @@ export class AttachmentsController {
     @Body() body: StorageObjectDto,
     @UploadedFile('file') file: Express.Multer.File,
   ): Promise<ResponseRequest> {
-    const { user }: Request | Record<string, any> = req;
+    const user: UserLoginResponseDto = req?.user;
     const { profileId } = user;
     const result = await this.attachmentService.createAttachment(
       file,
@@ -66,7 +67,7 @@ export class AttachmentsController {
     @Req() req: Request,
     @Res() res: Response,
   ): Promise<ResponseRequest> {
-    const { user }: Request | Record<string, any> = req;
+    const user: UserLoginResponseDto = req?.user;
     await this.attachmentService.deleteAttachment(id, user.profileId);
     return new ResponseRequest(res, true, msgResponse.deleteAttachment);
   }

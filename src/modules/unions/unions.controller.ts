@@ -20,6 +20,7 @@ import { CreateUnionDto } from './dtos/unions.create.dto';
 import { ResponseRequest } from 'src/utils/response-api';
 import { UpdateUnionDto } from './dtos/unions.update.dto';
 import { msgResponse } from 'src/constants/message.response';
+import { UserLoginResponseDto } from '../auth/dtos/auth.result.login-service.dto';
 
 @Controller('api/unions')
 @ApiTags('unions')
@@ -35,7 +36,7 @@ export class UnionsController {
     @Res() res: Response,
     @Req() req: Request,
   ): Promise<ResponseRequest> {
-    const { user }: Request | Record<string, any> = req;
+    const user: UserLoginResponseDto = req?.user;
     const createdBy: string = user.profileId;
     const result = await this.unionService.createUnion(unionDto, createdBy);
     return new ResponseRequest(res, result, msgResponse.createUnion);
@@ -51,7 +52,7 @@ export class UnionsController {
     @Res() res: ResponseRequest,
     @Req() req: Request,
   ): Promise<ResponseRequest> {
-    const { user }: Request | Record<string, any> = req;
+    const user: UserLoginResponseDto = req?.user;
     const updatedBy: string = user.profileId;
     const result = await this.unionService.updateUnion(id, unionDto, updatedBy);
     return new ResponseRequest(res, result, msgResponse.updateUnion);
@@ -66,7 +67,7 @@ export class UnionsController {
     @Res() res: ResponseRequest,
     @Req() req: Request,
   ): Promise<ResponseRequest> {
-    const { user }: Request | Record<string, any> = req;
+    const user: UserLoginResponseDto = req?.user;
     const deletedBy: string = user.profileId;
     await this.unionService.deleteUnion(id, deletedBy);
     return new ResponseRequest(res, true, msgResponse.deleteUnion);

@@ -21,6 +21,7 @@ import { CreateAwardDto } from './dtos/awards.create.dto';
 import { UpdateAwardDto } from './dtos/awards.update.dto';
 import { QueryAwardDto } from './dtos/awards.query.dto';
 import { msgResponse } from 'src/constants/message.response';
+import { UserLoginResponseDto } from '../auth/dtos/auth.result.login-service.dto';
 
 @Controller('api/awards')
 @ApiTags('awards')
@@ -36,7 +37,7 @@ export class AwardsController {
     @Body() createAwardDto: CreateAwardDto,
     @Req() req: Request,
   ): Promise<ResponseRequest> {
-    const { user }: Request | Record<string, any> = req;
+    const user: UserLoginResponseDto = req?.user;
     const createdBy: string = user.profileId;
     const result = await this.awardService.createAward(
       createAwardDto,
@@ -73,7 +74,7 @@ export class AwardsController {
     @Body() updateAwardDto: UpdateAwardDto,
     @Req() req: Request,
   ): Promise<ResponseRequest> {
-    const { user }: Request | Record<string, any> = req;
+    const user: UserLoginResponseDto = req?.user;
     const updatedBy: string = user.profileId;
     await this.awardService.updateAward(id, updateAwardDto, updatedBy);
     return new ResponseRequest(res, true, msgResponse.updateAward);

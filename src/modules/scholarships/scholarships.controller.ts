@@ -22,6 +22,7 @@ import { QueryUserScholarshipDto } from './dtos/scholarship.user.query.dto';
 import { ScholarshipService } from './scholarships.service';
 import { Response, Request } from 'express';
 import { msgResponse } from 'src/constants/message.response';
+import { UserLoginResponseDto } from '../auth/dtos/auth.result.login-service.dto';
 
 @Controller('api/scholarships')
 @ApiTags('scholarships')
@@ -37,7 +38,7 @@ export class ScholarshipController {
     @Res() res: Response,
     @Req() req: Request,
   ): Promise<ResponseRequest> {
-    const { user }: Request | Record<string, any> = req;
+    const user: UserLoginResponseDto = req?.user;
     const createdBy: string = user.profileId;
     const result = await this.service.createScholarship(
       scholarshipDto,
@@ -56,7 +57,7 @@ export class ScholarshipController {
     @Res() res: Response,
     @Req() req: Request,
   ): Promise<ResponseRequest> {
-    const { user }: Request | Record<string, any> = req;
+    const user: UserLoginResponseDto = req?.user;
     const updatedBy: string = user.profileId;
     const result = await this.service.updateScholarship(id, dto, updatedBy);
     return new ResponseRequest(res, result, msgResponse.updateScholarship);
@@ -80,7 +81,7 @@ export class ScholarshipController {
     @Res() res: Response,
     @Req() req: Request,
   ): Promise<ResponseRequest> {
-    const { user }: Request | Record<string, any> = req;
+    const user: UserLoginResponseDto = req?.user;
     const createdBy: string = user.profileId;
     const result = await this.service.createUserScholarshipInSemester(
       dto.semester,
