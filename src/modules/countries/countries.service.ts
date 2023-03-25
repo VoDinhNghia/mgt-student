@@ -233,6 +233,11 @@ export class CountriesService {
     updateCountriesDto: UpdateCountriesDto,
   ): Promise<Countries> {
     await this.findOneCountry(id);
-    return this.countrySchema.findByIdAndUpdate(id, updateCountriesDto).exec();
+    const result = await this.countrySchema.findByIdAndUpdate(
+      id,
+      updateCountriesDto,
+      { new: true },
+    );
+    return result;
   }
 }

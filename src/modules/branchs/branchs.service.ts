@@ -77,13 +77,16 @@ export class BranchService {
     id: string,
     branchUpdateDto: BranchUpdateDto,
     updatedBy: string,
-  ): Promise<void> {
+  ): Promise<Branch> {
     await this.findById(id);
     const dto = {
       ...branchUpdateDto,
       updatedBy,
       updatedAt: Date.now(),
     };
-    await this.branchSchema.findByIdAndUpdate(id, dto);
+    const result = await this.branchSchema.findByIdAndUpdate(id, dto, {
+      new: true,
+    });
+    return result;
   }
 }

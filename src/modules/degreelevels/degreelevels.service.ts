@@ -49,8 +49,9 @@ export class DegreelevelService {
       updatedBy,
       updatedAt: Date.now(),
     };
-    await this.degreeLevelSchema.findByIdAndUpdate(id, dto);
-    const result = await this.findDegreeLevelById(id);
+    const result = await this.degreeLevelSchema.findByIdAndUpdate(id, dto, {
+      new: true,
+    });
     return result;
   }
 

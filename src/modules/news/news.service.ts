@@ -83,8 +83,9 @@ export class NewsService {
       updatedBy,
       updatedAt: Date.now(),
     };
-    await this.newsSchema.findByIdAndUpdate(id, dto);
-    const getNew = await this.findNewsById(id);
+    const getNew = await this.newsSchema.findByIdAndUpdate(id, dto, {
+      new: true,
+    });
 
     return getNew;
   }

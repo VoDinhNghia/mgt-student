@@ -63,14 +63,17 @@ export class RoomsService {
     id: string,
     updateDto: UpdateRoomDto,
     updatedBy,
-  ): Promise<void> {
+  ): Promise<Rooms> {
     await this.findRoomById(id);
     const dto = {
       ...updateDto,
       updatedBy,
       updatedAt: Date.now(),
     };
-    await this.roomSchema.findByIdAndUpdate(id, dto);
+    const result = await this.roomSchema.findByIdAndUpdate(id, dto, {
+      new: true,
+    });
+    return result;
   }
 
   async deleteRoom(id: string, deletedBy: string): Promise<void> {

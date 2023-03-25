@@ -34,7 +34,6 @@ import { UsersUpdateDto } from './dto/user.update.dto';
 import { collections } from 'src/constants/collections.name';
 import { LookupService } from 'src/utils/lookup.query.service';
 import { UserResponse } from './responses/user.response-swagger';
-import { ProfileResponse } from './responses/profile.response-swagger';
 import { msgNotFound, msgServerError } from 'src/constants/message.response';
 
 @Injectable()
@@ -156,7 +155,7 @@ export class UsersService {
     id: string,
     payload: UsersUpdateDto,
     updatedBy: string,
-  ): Promise<UserResponse> {
+  ): Promise<Users> {
     const { email, passWord } = payload;
     if (email) {
       await new ValidateDto().email(email);
@@ -169,8 +168,9 @@ export class UsersService {
       updatedBy,
       updatedAt: Date.now(),
     };
-    await this.userSchema.findByIdAndUpdate(id, updateInfo);
-    const result = await this.findUserById(id);
+    const result = await this.userSchema.findByIdAndUpdate(id, updateInfo, {
+      new: true,
+    });
     return result;
   }
 
@@ -178,7 +178,7 @@ export class UsersService {
     id: string,
     profileDto: UpdateProfileDto,
     updatedBy: string,
-  ): Promise<ProfileResponse> {
+  ): Promise<Profile> {
     const { award = [] } = profileDto;
     const validate = new ValidateDto();
     await validate.profileDto(profileDto);
@@ -188,15 +188,17 @@ export class UsersService {
       updatedBy,
       updatedAt: Date.now(),
     };
-    const profile = await this.profileSchema.findByIdAndUpdate(
+    const result = await this.profileSchema.findByIdAndUpdate(
       id,
       updateProfileDto,
+      {
+        new: true,
+      },
     );
-    await this.userSchema.findByIdAndUpdate(profile.user, {
+    await this.userSchema.findByIdAndUpdate(result.user, {
       updatedAt: Date.now(),
       updatedBy,
     });
-    const result = await this.findUserById(profile.user);
     return result;
   }
 
@@ -368,8 +370,9 @@ export class UsersService {
       updatedBy,
       updatedAt: Date.now(),
     };
-    await this.leaderSchoolSchema.findByIdAndUpdate(id, dto);
-    const result = await this.findLeaderSchoolById(id);
+    const result = await this.leaderSchoolSchema.findByIdAndUpdate(id, dto, {
+      new: true,
+    });
     return result;
   }
 

@@ -43,7 +43,6 @@ import {
 } from 'src/validates/validate.attachment.upload-file';
 import { getDataFromCsvFileUpload } from 'src/utils/getDataFromCsvUpload';
 import { UserResponse } from './responses/user.response-swagger';
-import { ProfileResponse } from './responses/profile.response-swagger';
 import {
   descriptionResponse,
   msgResponse,
@@ -106,11 +105,6 @@ export class UsersController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
-  @ApiOkResponse({
-    type: UserResponse,
-    description: descriptionResponse.apiUpdateUser,
-    isArray: false,
-  })
   async updateUser(
     @Param('id') id: string,
     @Body() updateDto: UsersUpdateDto,
@@ -126,11 +120,6 @@ export class UsersController {
   @Put('/profile/:id')
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
-  @ApiOkResponse({
-    type: ProfileResponse,
-    description: descriptionResponse.apiUpdateProfile,
-    isArray: false,
-  })
   async updateProfile(
     @Param('id') id: string,
     @Body() updateProfileDto: UpdateProfileDto,

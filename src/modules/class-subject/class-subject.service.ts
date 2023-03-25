@@ -78,8 +78,9 @@ export class ClassSubjectService {
       updatedBy,
       updatedAt: Date.now(),
     };
-    await this.classSchema.findByIdAndUpdate(id, dto);
-    const result = await this.findClassById(id);
+    const result = await this.classSchema.findByIdAndUpdate(id, dto, {
+      new: true,
+    });
     return result;
   }
 
@@ -139,12 +140,13 @@ export class ClassSubjectService {
       updatedBy,
       updatedAt: Date.now(),
     };
-    await this.subjectSchema.findByIdAndUpdate(id, dto);
+    const result = await this.subjectSchema.findByIdAndUpdate(id, dto, {
+      new: true,
+    });
     await this.subjectProcessSchema.findOneAndUpdate(
       { subject: new Types.ObjectId(id) },
       dto,
     );
-    const result = await this.findSubjectById(id);
     return result;
   }
 }
