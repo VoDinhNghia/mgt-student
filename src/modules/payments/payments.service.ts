@@ -25,7 +25,6 @@ import {
 
 @Injectable()
 export class PaymentsService {
-  validate = new ValidateDto();
   constructor(
     @InjectModel(Money_Per_Credit_Mgt.name)
     private readonly moneyCreditSchema: Model<MoneyPerCreditManagementDocument>,
@@ -38,7 +37,10 @@ export class PaymentsService {
     createdBy: string,
   ): Promise<Money_Per_Credit_Mgt> {
     const { semester } = creditMgtDto;
-    await this.validateSemesterDto(semester);
+    const validate = new ValidateDto();
+    if (semester) {
+      await validate.fieldId(collections.semesters, semester);
+    }
     const option = { semester: new Types.ObjectId(semester), isDeleted: false };
     await new ValidateDto().existedByOptions(
       collections.money_per_credit_mgts,
@@ -59,7 +61,10 @@ export class PaymentsService {
     updatedBy: string,
   ): Promise<Money_Per_Credit_Mgt> {
     const { semester } = creditMgtDto;
-    await this.validateSemesterDto(semester);
+    const validate = new ValidateDto();
+    if (semester) {
+      await validate.fieldId(collections.semesters, semester);
+    }
     const dto = {
       ...creditMgtDto,
       updatedBy,
@@ -97,7 +102,10 @@ export class PaymentsService {
   ): Promise<Payment_Study_Fee> {
     const { user, semester } = paymentDto;
     await new ValidateDto().fieldId(collections.profiles, user);
-    await this.validateSemesterDto(semester);
+    const validate = new ValidateDto();
+    if (semester) {
+      await validate.fieldId(collections.semesters, semester);
+    }
     const newPaymentDto: CreateUserPaymentDto & {
       receiptId: string;
       createdBy: string;
@@ -117,7 +125,10 @@ export class PaymentsService {
     updatedBy: string,
   ): Promise<Payment_Study_Fee> {
     const { semester } = paymentDto;
-    await this.validateSemesterDto(semester);
+    const validate = new ValidateDto();
+    if (semester) {
+      await validate.fieldId(collections.semesters, semester);
+    }
     const dto = {
       ...paymentDto,
       updatedBy,
@@ -144,7 +155,10 @@ export class PaymentsService {
     queryDto: QueryTuitionUser,
   ): Promise<{ subjects: Record<string, any>; tuitionStatus: string }> {
     const { semester, profile } = queryDto;
-    await this.validateSemesterDto(semester);
+    const validate = new ValidateDto();
+    if (semester) {
+      await validate.fieldId(collections.semesters, semester);
+    }
     const options = {
       user: new Types.ObjectId(profile),
       semester: new Types.ObjectId(semester),
@@ -177,11 +191,5 @@ export class PaymentsService {
       item.totalMoney = moneyPerCredit * numberCredits;
     }
     return subjectList;
-  }
-
-  async validateSemesterDto(semester: string): Promise<void> {
-    if (semester) {
-      await this.validate.fieldId(collections.semesters, semester);
-    }
   }
 }

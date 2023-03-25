@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { collections } from 'src/constants/collections.name';
 import { msgNotFound } from 'src/constants/message.response';
 import { CommonException } from 'src/exceptions/exeception.common-error';
 import { ValidateDto } from 'src/validates/validate.common.dto';
@@ -11,29 +10,16 @@ import { Course, CourseDocument } from './schemas/courses.schema';
 
 @Injectable()
 export class CoursesService {
-  validate = new ValidateDto();
   constructor(
     @InjectModel(Course.name)
     private readonly courseSchema: Model<CourseDocument>,
   ) {}
 
-  async validateCourseName(courseDto: CreateCourseDto): Promise<void> {
-    const { name } = courseDto;
-    if (name) {
-      const options = { name: name.trim() };
-      await this.validate.existedByOptions(
-        collections.courses,
-        options,
-        'Course name',
-      );
-    }
-  }
-
   async createCourse(
     courseDto: CreateCourseDto,
     createdBy: string,
   ): Promise<Course> {
-    await this.validateCourseName(courseDto);
+    await new ValidateDto().courseName(courseDto);
     const course = await new this.courseSchema({
       ...courseDto,
       createdBy,
@@ -54,7 +40,7 @@ export class CoursesService {
     courseDto: UpdateCourseDto,
     updatedBy: string,
   ): Promise<Course> {
-    await this.validateCourseName(courseDto);
+    await new ValidateDto().courseName(courseDto);
     const dto = {
       ...courseDto,
       updatedBy,

@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
-import { collections } from 'src/constants/collections.name';
 import { msgNotFound } from 'src/constants/message.response';
 import { CommonException } from 'src/exceptions/exeception.common-error';
 import { LookupService } from 'src/utils/lookup.query.service';
@@ -12,7 +11,6 @@ import { InstitudeDocument, Institudes } from './schemas/institute.schema';
 
 @Injectable()
 export class InstituteService {
-  validate = new ValidateDto();
   constructor(
     @InjectModel(Institudes.name)
     private readonly institutiSchema: Model<InstitudeDocument>,
@@ -22,7 +20,8 @@ export class InstituteService {
     instituteDto: CreateInstituteDto,
     createdBy: string,
   ): Promise<Institudes> {
-    await this.validateInstituteDto(instituteDto);
+    const validate = new ValidateDto();
+    await validate.institute(instituteDto);
     const dto = {
       ...instituteDto,
       createdBy,
@@ -37,7 +36,8 @@ export class InstituteService {
     instituteDto: UpdateInstituteDto,
     updatedBy: string,
   ): Promise<Institudes> {
-    await this.validateInstituteDto(instituteDto);
+    const validate = new ValidateDto();
+    await validate.institute(instituteDto);
     const dto = {
       ...instituteDto,
       updatedBy,
@@ -77,19 +77,5 @@ export class InstituteService {
       deletedAt: Date.now(),
     };
     await this.institutiSchema.findByIdAndUpdate(id, dto);
-  }
-
-  async validateInstituteDto(dtos: CreateInstituteDto): Promise<void> {
-    const { parson, viceParson, contacts = {} } = dtos;
-    const { office } = contacts;
-    if (parson) {
-      await this.validate.fieldId(collections.profiles, parson);
-    }
-    if (viceParson) {
-      await this.validate.fieldId(collections.profiles, viceParson);
-    }
-    if (office) {
-      await this.validate.fieldId(collections.rooms, office);
-    }
   }
 }

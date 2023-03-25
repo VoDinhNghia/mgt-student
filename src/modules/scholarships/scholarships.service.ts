@@ -1,3 +1,4 @@
+/* eslint-disable class-methods-use-this */
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
@@ -30,9 +31,6 @@ import {
 
 @Injectable()
 export class ScholarshipService {
-  validate = new ValidateDto();
-  queryService = new QueryService();
-  subjectRegisterService = new SubjectUserRegister();
   constructor(
     @InjectModel(Scholarship.name)
     private readonly scholarshipSchema: Model<ScholarshipDocument>,
@@ -40,31 +38,11 @@ export class ScholarshipService {
     private readonly scholarshipUserSchema: Model<ScholarshipUserDocument>,
   ) {}
 
-  async validateScholarShipDto(
-    scholarshipDto: CreateScholarshipDto,
-  ): Promise<void> {
-    const { semester, name } = scholarshipDto;
-    if (semester) {
-      await this.validate.fieldId(collections.semesters, semester);
-    }
-    if (name) {
-      const options = {
-        semester: new Types.ObjectId(semester),
-        name: name.trim(),
-      };
-      await this.validate.existedByOptions(
-        collections.scholarships,
-        options,
-        'Scholarship',
-      );
-    }
-  }
-
   async createScholarship(
     scholarshipDto: CreateScholarshipDto,
     createdBy: string,
   ): Promise<Scholarship> {
-    await this.validateScholarShipDto(scholarshipDto);
+    await new ValidateDto().scholarShip(scholarshipDto);
     const dto = {
       ...scholarshipDto,
       createdBy,
@@ -78,7 +56,7 @@ export class ScholarshipService {
     scholarshipDto: UpdateScholarshipDto,
     updatedBy: string,
   ): Promise<Scholarship> {
-    await this.validateScholarShipDto(scholarshipDto);
+    await new ValidateDto().scholarShip(scholarshipDto);
     const dto = {
       ...scholarshipDto,
       updatedBy,
@@ -168,7 +146,8 @@ export class ScholarshipService {
       semester: new Types.ObjectId(semester),
       user: new Types.ObjectId(profile),
     };
-    const result = await this.queryService.findOneByOptions(
+    const queryService = new QueryService();
+    const result = await queryService.findOneByOptions(
       collections.payment_study_fees,
       options,
     );
@@ -264,13 +243,9 @@ export class ScholarshipService {
     semester: string,
     profileId: string,
   ): Promise<{ totalAccumalated: number; totalNumberCredits: number }> {
-    const subjectIds = await this.subjectRegisterService.getSubjectIds(
-      semester,
-    );
-    const result = await this.subjectRegisterService.getUserSubjects(
-      profileId,
-      subjectIds,
-    );
+    const service = new SubjectUserRegister();
+    const subjectIds = await service.getSubjectIds(semester);
+    const result = await service.getUserSubjects(profileId, subjectIds);
     let totalAccumalated = 0;
     let totalNumberCredits = 0;
     if (result.length <= 0) {
@@ -301,7 +276,8 @@ export class ScholarshipService {
       },
       ...lookup,
     ];
-    const results = await this.queryService.findByAggregate(
+    const queryService = new QueryService();
+    const results = await queryService.findByAggregate(
       collections.trainning_points,
       aggregate,
     );

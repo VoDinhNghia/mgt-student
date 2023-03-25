@@ -15,7 +15,7 @@ import {
 } from './schemas/departments.staff.schema';
 import { unionBy } from 'lodash';
 import { CreateStaffDepartmentDto } from './dtos/department.staff.create.dto';
-import { ErolesUser, EroomType } from 'src/constants/constant';
+import { ErolesUser } from 'src/constants/constant';
 import { UpdateDepartmentDto } from './dtos/department.update.dto';
 import { Users, UsersDocument } from '../users/schemas/users.schema';
 import { UpdateStaffDepartmentDto } from './dtos/department.staff.update.dto';
@@ -26,7 +26,6 @@ import { msgNotFound } from 'src/constants/message.response';
 
 @Injectable()
 export class DepartmentsService {
-  validate = new ValidateDto();
   constructor(
     @InjectModel(Departments.name)
     private readonly deparmentSchema: Model<DepartmentsDocument>,
@@ -38,29 +37,12 @@ export class DepartmentsService {
     private readonly userSchema: Model<UsersDocument>,
   ) {}
 
-  async validateDepartmentDto(
-    departmentDto: CreateDepartmentDto,
-  ): Promise<void> {
-    const { manager, contacts } = departmentDto;
-    const { office } = contacts;
-    if (office) {
-      const options = {
-        _id: new Types.ObjectId(contacts?.office),
-        type: EroomType.OFFICE_DEPARTMENT,
-      };
-      await this.validate.fieldOptions(collections.rooms, options, 'Room');
-    }
-    if (manager) {
-      await this.validate.fieldId(collections.profiles, manager);
-    }
-  }
-
   async createDepartment(
     departmentDto: CreateDepartmentDto,
     createdBy: string,
   ): Promise<Departments> {
     const { attachment = [] } = departmentDto;
-    await this.validateDepartmentDto(departmentDto);
+    await new ValidateDto().department(departmentDto);
     if (attachment.length > 0) {
       const ids = await new ValidateDto().idLists(
         collections.attachments,
@@ -82,7 +64,7 @@ export class DepartmentsService {
     updatedBy: string,
   ): Promise<Departments> {
     const { attachment = [] } = departmentDto;
-    await this.validateDepartmentDto(departmentDto);
+    await new ValidateDto().department(departmentDto);
     if (attachment.length > 0) {
       const ids = await new ValidateDto().idLists(
         collections.attachments,
