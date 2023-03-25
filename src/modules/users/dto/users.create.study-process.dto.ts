@@ -1,8 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsObject, IsOptional, IsString } from 'class-validator';
 import { EstatusUserProfile } from 'src/constants/constant';
-import { ItCertificateDto } from './study-process.itCer.dto';
-import { ToeicCertificateDto } from './study-process.toeicCer.dto';
+import { ItCertificateDto } from './users.study-process.itCer.dto';
+import { ToeicCertificateDto } from './users.study-process.toeicCer.dto';
 
 export class CreateStudyProcessDto {
   @IsString()

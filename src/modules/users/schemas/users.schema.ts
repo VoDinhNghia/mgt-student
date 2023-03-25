@@ -7,10 +7,10 @@ export type UsersDocument = Users & Document;
 
 @Schema()
 export class Users extends FieldsCommonSchema {
-  @Prop({ required: true })
+  @Prop({ required: true, unique: true })
   email: string;
 
-  @Prop({ required: true })
+  @Prop({ required: true, minlength: 6 })
   passWord: string;
 
   @Prop({ default: false })
