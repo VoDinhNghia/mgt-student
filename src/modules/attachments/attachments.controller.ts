@@ -15,7 +15,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiBearerAuth, ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { diskStorage } from 'multer';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
-import { StorageObjectDto } from '../users/dto/user.file-upload.dto';
+import { StorageObjectDto } from '../users/dto/users.file-upload.dto';
 import { AttachmentsService } from './attachments.service';
 import { Request, Response } from 'express';
 import { ResponseRequest } from 'src/utils/response-api';

@@ -10,30 +10,32 @@ import {
   ErolesUser,
   EstatusUser,
 } from 'src/constants/constant';
-import { UsersFillterDto } from './dto/user.filter.dto';
-import { validateEmail } from 'src/validates/validate.email';
+import { UsersFillterDto } from './dto/users.query.dto';
 import { CommonException } from 'src/exceptions/exeception.common-error';
 import { Pagination } from 'src/utils/page.pagination';
-import { UpdateProfileDto } from './dto/user.update-profile.dto';
+import { UpdateProfileDto } from './dto/users.update.profile.dto';
 import {
   Leader_Schools,
   LeaderSchoolDocument,
 } from './schemas/users.leader-school.schema';
-import { CreateLeaderSchoolDto } from './dto/user.create.leader-school.dto';
-import { QueryLeaderSchoolDto } from './dto/user.query.leader-school.dto';
-import { UpdateLeaderSchoolDto } from './dto/user.update.leader-school.dto';
+import { CreateLeaderSchoolDto } from './dto/users.create.leader-school.dto';
+import { QueryLeaderSchoolDto } from './dto/users.query.leader-school.dto';
+import { UpdateLeaderSchoolDto } from './dto/users.update.leader-school.dto';
 import { getRandomCode } from 'src/utils/generate.code-profile';
 import {
   Study_Processes,
   StudyProcessDocument,
 } from './schemas/study-process.schema';
-import { CreateStudyProcessDto } from './dto/study-process.create.dto';
+import { CreateStudyProcessDto } from './dto/users.create.study-process.dto';
 import { InitSuperAdminDto } from '../auth/dtos/auth.init-super-admin.dto';
 import { ValidateDto } from 'src/validates/validate.common.dto';
-import { UsersUpdateDto } from './dto/user.update.dto';
+import { UsersUpdateDto } from './dto/users.update.dto';
 import { collections } from 'src/constants/collections.name';
 import { LookupService } from 'src/utils/lookup.query.service';
 import { msgNotFound, msgServerError } from 'src/constants/message.response';
+import { ImatchFindAllUser } from './interfaces/users.match.find-all.interface';
+import { UserProfileDto } from './dto/users.create-profile.dto';
+import { ImatchFindLeaderSchool } from './interfaces/users.match.find-leader-school.interface';
 
 @Injectable()
 export class UsersService {
@@ -48,9 +50,7 @@ export class UsersService {
   ) {}
 
   async createUser(usersDto: CreateUserDto, createdBy: string): Promise<Users> {
-    const { email } = usersDto;
     const validate = new ValidateDto();
-    await validate.email(email);
     await validate.profileDto(usersDto);
     usersDto.passWord = cryptoPassWord(usersDto.passWord);
     const newDto = {
@@ -100,7 +100,7 @@ export class UsersService {
     }
   }
 
-  async findUserById(id: string | any): Promise<Users> {
+  async findUserById(id: string): Promise<Users> {
     const match = { $match: { _id: new Types.ObjectId(id) } };
     const lookup = new LookupService().user();
     const aggregate = [match, ...lookup];
@@ -113,8 +113,11 @@ export class UsersService {
 
   async findAllUsers(query: UsersFillterDto, userId: string): Promise<Users[]> {
     const { searchKey, limit, page, role, status } = query;
-    const match: Record<string, any> = {
-      $match: { _id: { $ne: new Types.ObjectId(userId) }, isDeleted: false },
+    const match: ImatchFindAllUser = {
+      $match: {
+        _id: { $ne: new Types.ObjectId(userId) },
+        isDeleted: false,
+      },
     };
     if (role) {
       match.$match.role = role;
@@ -205,15 +208,6 @@ export class UsersService {
       }
       let user = null;
       let profile = null;
-      if (!validateEmail(email)) {
-        item.statusImport = 'Email incorect format.';
-        continue;
-      }
-      const existedEmail = await this.userSchema.findOne({ email });
-      if (existedEmail) {
-        item.statusImport = 'Email existed already.';
-        continue;
-      }
       try {
         const userDto = {
           ...item,
@@ -299,8 +293,8 @@ export class UsersService {
   }
 
   async createUserProfile(
-    profileDto: Record<string, any>,
-  ): Promise<Profile | any> {
+    profileDto: UserProfileDto,
+  ): Promise<ProfileDocument> {
     let result = null;
     try {
       const validate = new ValidateDto();
@@ -372,7 +366,7 @@ export class UsersService {
     queryDto: QueryLeaderSchoolDto,
   ): Promise<Leader_Schools[]> {
     const { user } = queryDto;
-    const match: Record<string, any> = { $match: { isDeleted: false } };
+    const match: ImatchFindLeaderSchool = { $match: { isDeleted: false } };
     if (user) {
       match.$match.user = new Types.ObjectId(user);
     }

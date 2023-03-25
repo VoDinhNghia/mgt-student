@@ -22,20 +22,20 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { ErolesUser } from 'src/constants/constant';
-import { UsersUpdateDto } from './dto/user.update.dto';
+import { UsersUpdateDto } from './dto/users.update.dto';
 import { RoleGuard } from '../auth/guards/role-auth.guard';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { Request, Response, Express } from 'express';
-import { UsersFillterDto } from './dto/user.filter.dto';
+import { UsersFillterDto } from './dto/users.query.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { StorageObjectDto } from './dto/user.file-upload.dto';
+import { StorageObjectDto } from './dto/users.file-upload.dto';
 import { diskStorage } from 'multer';
 import { readFileSync } from 'fs';
-import { UpdateProfileDto } from './dto/user.update-profile.dto';
+import { UpdateProfileDto } from './dto/users.update.profile.dto';
 import { ResponseRequest } from 'src/utils/response-api';
-import { CreateLeaderSchoolDto } from './dto/user.create.leader-school.dto';
-import { UpdateLeaderSchoolDto } from './dto/user.update.leader-school.dto';
-import { QueryLeaderSchoolDto } from './dto/user.query.leader-school.dto';
+import { CreateLeaderSchoolDto } from './dto/users.create.leader-school.dto';
+import { UpdateLeaderSchoolDto } from './dto/users.update.leader-school.dto';
+import { QueryLeaderSchoolDto } from './dto/users.query.leader-school.dto';
 import {
   csvFileFilter,
   destinationImportUser,

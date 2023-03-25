@@ -15,7 +15,6 @@ export class CreateUserDto extends UsersDto {
   lastName: string;
 
   @IsString()
-  @IsNotEmpty()
   @ApiProperty()
   middleName: string;
 

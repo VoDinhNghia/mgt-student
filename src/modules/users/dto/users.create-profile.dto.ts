@@ -1,18 +1,28 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsArray, IsObject, IsOptional, IsString } from 'class-validator';
+import {
+  IsArray,
+  IsNotEmpty,
+  IsObject,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 import { EuserGender } from 'src/constants/constant';
 import { GetCurrentDate } from 'src/utils/get.current-date';
-import { IdentityCardNumberDto } from './user.profile.identityCardNumber.dto';
-import { LocationProfileDto } from './user.profile.location.dto';
-
-export class UpdateProfileDto {
-  @IsOptional()
+import { IdentityCardNumberDto } from './users.profile.identity-card-number.dto';
+import { LocationProfileDto } from './users.profile.location.dto';
+export class UserProfileDto {
   @IsString()
+  @IsNotEmpty()
   @ApiProperty()
-  readonly firstName?: string;
+  user: string;
 
-  @IsOptional()
   @IsString()
+  @IsNotEmpty()
+  @ApiProperty()
+  firstName?: string;
+
+  @IsString()
+  @IsNotEmpty()
   @ApiProperty()
   lastName?: string;
 
