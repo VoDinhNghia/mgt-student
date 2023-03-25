@@ -13,7 +13,7 @@ import { UpdatePermissionDto } from './dtos/permissions.update.dto';
 import {
   Admin_Permission,
   AdminPermissionDocument,
-} from './schemas/permission.admin.acction-frontend.schema';
+} from './schemas/permissions.admin.schema';
 
 @Injectable()
 export class PermissionsService {

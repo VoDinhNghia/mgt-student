@@ -9,7 +9,7 @@ import {
   IsString,
 } from 'class-validator';
 import { GetCurrentDate } from 'src/utils/get.current-date';
-import { ProcessSubjectDto } from './process.create.dto';
+import { ProcessSubjectDto } from './class-subject.create-process.dto';
 
 export class CreateSubjectDto {
   @IsString()

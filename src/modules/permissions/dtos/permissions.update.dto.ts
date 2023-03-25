@@ -1,15 +1,4 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { IsArray, IsOptional, IsString } from 'class-validator';
-import { Epermission } from 'src/constants/constant';
+import { PartialType } from '@nestjs/swagger';
+import { CreatePermissionDto } from './permissions.create.dto';
 
-export class UpdatePermissionDto {
-  @IsOptional()
-  @IsString()
-  @ApiProperty()
-  moduleName?: string;
-
-  @IsOptional()
-  @IsArray()
-  @ApiProperty({ default: [Epermission.ONLY_VIEW] })
-  permission?: string[];
-}
+export class UpdatePermissionDto extends PartialType(CreatePermissionDto) {}

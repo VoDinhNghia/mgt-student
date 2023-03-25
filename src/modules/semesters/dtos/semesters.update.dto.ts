@@ -1,14 +1,4 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { IsOptional, IsString } from 'class-validator';
+import { PartialType } from '@nestjs/swagger';
+import { CreateSemesterDto } from './semesters.create.dto';
 
-export class UpdateSemesterDto {
-  @IsOptional()
-  @IsString()
-  @ApiProperty()
-  name?: string;
-
-  @IsOptional()
-  @IsString()
-  @ApiProperty({ default: '2016-2017' })
-  year?: string;
-}
+export class UpdateSemesterDto extends PartialType(CreateSemesterDto) {}

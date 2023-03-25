@@ -9,11 +9,11 @@ import { ValidateDto } from 'src/validates/validate.common.dto';
 import { CreateFacultyDto } from './dtos/faculties.create.dto';
 import { FacultyQueryDto } from './dtos/faculties.query.dto';
 import { UpdateFacultyDto } from './dtos/faculties.update.dto';
-import { CreateMajorDto } from './dtos/major.create.dto';
-import { MajorQueryDto } from './dtos/major.query.dto';
-import { UpdateMajorDto } from './dtos/major.update.dto';
+import { CreateMajorDto } from './dtos/faculties.major.create.dto';
+import { MajorQueryDto } from './dtos/faculties.major.query.dto';
+import { UpdateMajorDto } from './dtos/faculties.major.update.dto';
 import { Faculty, FacultyDocument } from './schemas/faculties.schema';
-import { Majors, MajorsDocument } from './schemas/major.schema';
+import { Majors, MajorsDocument } from './schemas/faculties.major.schema';
 
 @Injectable()
 export class FacultiesService {

@@ -1,17 +1,6 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { Type } from 'class-transformer';
-import { IsDate, IsOptional, IsString } from 'class-validator';
-import { GetCurrentDate } from 'src/utils/get.current-date';
+import { PartialType } from '@nestjs/swagger';
+import { CreateStaffDepartmentDto } from './department.staff.create.dto';
 
-export class UpdateStaffDepartmentDto {
-  @IsOptional()
-  @IsString()
-  @ApiProperty()
-  department?: string;
-
-  @IsOptional()
-  @IsDate()
-  @Type(() => Date)
-  @ApiProperty({ default: new GetCurrentDate().getYearMonthDate() })
-  joinDate?: Date;
-}
+export class UpdateStaffDepartmentDto extends PartialType(
+  CreateStaffDepartmentDto,
+) {}

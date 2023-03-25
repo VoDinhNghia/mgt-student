@@ -5,7 +5,7 @@ import { PermissionsService } from './permissions.service';
 import {
   Admin_Permission,
   AdminPermissionSchema,
-} from './schemas/permission.admin.acction-frontend.schema';
+} from './schemas/permissions.admin.schema';
 
 @Module({
   imports: [
