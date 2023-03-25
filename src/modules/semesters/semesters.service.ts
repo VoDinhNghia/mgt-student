@@ -44,8 +44,9 @@ export class SemestersService {
       updatedBy,
       updatedAt: Date.now(),
     };
-    await this.semesterSchema.findByIdAndUpdate(id, dto);
-    const result = this.findSemesterById(id);
+    const result = await this.semesterSchema.findByIdAndUpdate(id, dto, {
+      new: true,
+    });
     return result;
   }
 

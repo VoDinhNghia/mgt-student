@@ -47,8 +47,9 @@ export class PermissionsService {
       updatedBy,
       updatedAt: Date.now(),
     };
-    await this.permissionSchema.findByIdAndUpdate(id, dto);
-    const result = await this.findAdminPermissionById(id);
+    const result = await this.permissionSchema.findByIdAndUpdate(id, dto, {
+      new: true,
+    });
     return result;
   }
 

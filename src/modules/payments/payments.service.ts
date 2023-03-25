@@ -70,8 +70,9 @@ export class PaymentsService {
       updatedBy,
       updatedAt: Date.now(),
     };
-    await this.moneyCreditSchema.findByIdAndUpdate(id, dto);
-    const result = await this.findByIdMoneyPerCreditMgt(id);
+    const result = await this.moneyCreditSchema.findByIdAndUpdate(id, dto, {
+      new: true,
+    });
     return result;
   }
 

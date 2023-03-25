@@ -69,8 +69,9 @@ export class FacultiesService {
       updatedBy,
       updatedAt: Date.now(),
     };
-    await this.facultySchema.findByIdAndUpdate(id, dto);
-    const result = await this.findFacultyById(id);
+    const result = await this.facultySchema.findByIdAndUpdate(id, dto, {
+      new: true,
+    });
     return result;
   }
 
@@ -120,8 +121,9 @@ export class FacultiesService {
       updatedBy,
       updatedAt: Date.now(),
     };
-    await this.majorSchema.findByIdAndUpdate(id, dto);
-    const result = await this.findMajorById(id);
+    const result = await this.majorSchema.findByIdAndUpdate(id, dto, {
+      new: true,
+    });
     return result;
   }
 

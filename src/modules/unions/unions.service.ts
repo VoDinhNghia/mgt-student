@@ -47,8 +47,9 @@ export class UnionsService {
       updatedBy,
       updatedAt: Date.now(),
     };
-    await this.unionSchema.findByIdAndUpdate(id, updateDto);
-    const result = await this.findUnionById(id);
+    const result = await this.unionSchema.findByIdAndUpdate(id, updateDto, {
+      new: true,
+    });
     return result;
   }
 

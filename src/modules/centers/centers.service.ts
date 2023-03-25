@@ -52,9 +52,10 @@ export class CenterService {
       updatedBy,
       updatedAt: Date.now(),
     };
-    await this.centerSchema.findByIdAndUpdate(id, dto);
-    const results = await this.findCenterById(id);
-    return results;
+    const result = await this.centerSchema.findByIdAndUpdate(id, dto, {
+      new: true,
+    });
+    return result;
   }
 
   async findCenterById(id: string): Promise<Center> {

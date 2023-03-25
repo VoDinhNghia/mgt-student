@@ -77,8 +77,9 @@ export class DepartmentsService {
       updatedBy,
       updatedAt: Date.now(),
     };
-    await this.deparmentSchema.findByIdAndUpdate(id, dto);
-    const result = await this.findDepartmentById(id);
+    const result = await this.deparmentSchema.findByIdAndUpdate(id, dto, {
+      new: true,
+    });
     return result;
   }
 

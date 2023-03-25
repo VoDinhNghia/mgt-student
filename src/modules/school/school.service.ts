@@ -60,8 +60,9 @@ export class SchoolService {
       updatedBy,
       updatedAt: Date.now(),
     };
-    await this.schoolSchema.findByIdAndUpdate(id, dto);
-    const result = await this.findSchoolById(id);
+    const result = await this.schoolSchema.findByIdAndUpdate(id, dto, {
+      new: true,
+    });
     return result;
   }
 

@@ -51,14 +51,17 @@ export class AwardsService {
     id: string,
     updateAwardDto: UpdateAwardDto,
     updatedBy: string,
-  ): Promise<void> {
+  ): Promise<Award> {
     await this.findAwardById(id);
     const dto = {
       ...updateAwardDto,
       updatedBy,
       updatedAt: Date.now(),
     };
-    await this.awardSchema.findByIdAndUpdate(id, dto);
+    const result = await this.awardSchema.findByIdAndUpdate(id, dto, {
+      new: true,
+    });
+    return result;
   }
 
   async deleteAward(id: string): Promise<void> {

@@ -62,8 +62,9 @@ export class ScholarshipService {
       updatedBy,
       updatedAt: Date.now(),
     };
-    await this.scholarshipSchema.findByIdAndUpdate(id, dto);
-    const result = await this.findScholarshipById(id);
+    const result = await this.scholarshipSchema.findByIdAndUpdate(id, dto, {
+      new: true,
+    });
     return result;
   }
 

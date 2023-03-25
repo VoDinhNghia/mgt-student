@@ -46,8 +46,9 @@ export class CoursesService {
       updatedBy,
       updatedAt: Date.now(),
     };
-    await this.courseSchema.findByIdAndUpdate(id, dto);
-    const result = await this.findCourseById(id);
+    const result = await this.courseSchema.findByIdAndUpdate(id, dto, {
+      new: true,
+    });
     return result;
   }
 

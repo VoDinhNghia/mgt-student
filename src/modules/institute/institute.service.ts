@@ -43,8 +43,9 @@ export class InstituteService {
       updatedBy,
       updatedAt: Date.now(),
     };
-    await this.institutiSchema.findByIdAndUpdate(id, dto);
-    const result = await this.findInstituteById(id);
+    const result = await this.institutiSchema.findByIdAndUpdate(id, dto, {
+      new: true,
+    });
     return result;
   }
 
