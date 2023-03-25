@@ -24,7 +24,9 @@ export class DbConnection {
   }
 
   collection(name: string) {
-    console.log('test call connection');
-    if (dbInstance) return dbInstance.collection(name);
+    if (!dbInstance) {
+      console.log('connection error');
+    }
+    return dbInstance.collection(name);
   }
 }
