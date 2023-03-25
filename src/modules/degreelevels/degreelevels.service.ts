@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { collections } from 'src/constants/collections.name';
 import { msgNotFound } from 'src/constants/message.response';
 import { CommonException } from 'src/exceptions/exeception.common-error';
 import { ValidateDto } from 'src/validates/validate.common.dto';
@@ -14,31 +13,16 @@ import {
 
 @Injectable()
 export class DegreelevelService {
-  validate = new ValidateDto();
   constructor(
     @InjectModel(DegreeLevel.name)
     private readonly degreeLevelSchema: Model<DegreeLevelDocument>,
   ) {}
 
-  async validateDegreeLevelName(
-    degreeLevelDto: Record<string, any>,
-  ): Promise<void> {
-    const { name } = degreeLevelDto;
-    if (name) {
-      const options = { name: name.trim() };
-      await this.validate.existedByOptions(
-        collections.degreelevels,
-        options,
-        'DegreeLevel name',
-      );
-    }
-  }
-
   async createDegreeLevel(
     degreelevelDto: CreateDegreeLevelDto,
     createdBy: string,
   ): Promise<DegreeLevel> {
-    await this.validateDegreeLevelName(degreelevelDto);
+    await new ValidateDto().degreeLevelName(degreelevelDto);
     const result = await new this.degreeLevelSchema({
       ...degreelevelDto,
       createdBy,
@@ -59,7 +43,7 @@ export class DegreelevelService {
     updateDto: UpdateDegreeLevelDto,
     updatedBy: string,
   ): Promise<DegreeLevel> {
-    await this.validateDegreeLevelName(updateDto);
+    await new ValidateDto().degreeLevelName(updateDto);
     const dto = {
       ...updateDto,
       updatedBy,

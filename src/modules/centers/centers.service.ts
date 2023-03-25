@@ -12,29 +12,17 @@ import { msgNotFound } from 'src/constants/message.response';
 
 @Injectable()
 export class CenterService {
-  validate = new ValidateDto();
   constructor(
     @InjectModel(Center.name)
     private readonly centerSchema: Model<CenterDocument>,
   ) {}
-
-  async validateCenterDto(centerDto: CreateCenterDto): Promise<void> {
-    const { director, contacts } = centerDto;
-    const { office } = contacts;
-    if (director) {
-      await this.validate.fieldId(collections.profiles, director);
-    }
-    if (office) {
-      await this.validate.fieldId(collections.rooms, office);
-    }
-  }
 
   async createCenter(
     centerDto: CreateCenterDto,
     createdBy: string,
   ): Promise<Center> {
     const { award = [] } = centerDto;
-    await this.validateCenterDto(centerDto);
+    await new ValidateDto().center(centerDto);
     const validate = new ValidateDto();
     if (award.length > 0) {
       const awards = await validate.idLists(collections.awards, award);
@@ -53,7 +41,7 @@ export class CenterService {
     updatedBy: string,
   ): Promise<Center> {
     const { award = [] } = centerDto;
-    await this.validateCenterDto(centerDto);
+    await new ValidateDto().center(centerDto);
     const validate = new ValidateDto();
     if (award.length > 0) {
       const awards = await validate.idLists(collections.awards, award);

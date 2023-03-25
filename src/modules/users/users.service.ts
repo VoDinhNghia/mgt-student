@@ -36,11 +36,9 @@ import { LookupService } from 'src/utils/lookup.query.service';
 import { UserResponse } from './responses/user.response-swagger';
 import { ProfileResponse } from './responses/profile.response-swagger';
 import { msgNotFound, msgServerError } from 'src/constants/message.response';
-import { UserValidate } from 'src/validates/validate.user-service';
 
 @Injectable()
 export class UsersService {
-  userValidate = new UserValidate();
   constructor(
     @InjectModel(Users.name) private readonly userSchema: Model<UsersDocument>,
     @InjectModel(Profile.name)
@@ -56,8 +54,9 @@ export class UsersService {
     createdBy: string,
   ): Promise<UserResponse> {
     const { email } = usersDto;
-    await this.userValidate.email(email);
-    await this.userValidate.profileDto(usersDto);
+    const validate = new ValidateDto();
+    await validate.email(email);
+    await validate.profileDto(usersDto);
     usersDto.passWord = cryptoPassWord(usersDto.passWord);
     const newDto = {
       ...usersDto,
@@ -160,7 +159,7 @@ export class UsersService {
   ): Promise<UserResponse> {
     const { email, passWord } = payload;
     if (email) {
-      await this.userValidate.email(email);
+      await new ValidateDto().email(email);
     }
     if (passWord) {
       payload.passWord = cryptoPassWord(passWord);
@@ -181,8 +180,9 @@ export class UsersService {
     updatedBy: string,
   ): Promise<ProfileResponse> {
     const { award = [] } = profileDto;
-    await this.userValidate.profileDto(profileDto);
-    const profileValidate = await this.userValidate.awards(profileDto, award);
+    const validate = new ValidateDto();
+    await validate.profileDto(profileDto);
+    const profileValidate = await validate.awards(profileDto, award);
     const updateProfileDto = {
       ...profileValidate,
       updatedBy,

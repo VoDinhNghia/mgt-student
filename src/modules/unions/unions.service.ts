@@ -1,62 +1,25 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
-import { collections } from 'src/constants/collections.name';
 import { msgNotFound } from 'src/constants/message.response';
 import { CommonException } from 'src/exceptions/exeception.common-error';
 import { LookupService } from 'src/utils/lookup.query.service';
-import { QueryService } from 'src/utils/query.service';
+import { ValidateDto } from 'src/validates/validate.common.dto';
 import { CreateUnionDto } from './dtos/unions.create.dto';
 import { UpdateUnionDto } from './dtos/unions.update.dto';
 import { Union, UnionDocument } from './schemas/unions.schema';
 
 @Injectable()
 export class UnionsService {
-  queryService = new QueryService();
   constructor(
     @InjectModel(Union.name) private readonly unionSchema: Model<UnionDocument>,
   ) {}
-
-  async validateUnionDto(
-    unionDto: CreateUnionDto,
-  ): Promise<Record<string, any>> {
-    const { images = [], members = [] } = unionDto;
-    if (images.length > 0) {
-      const imageLists = [];
-      for (const item of images) {
-        const options = { _id: new Types.ObjectId(item.attachment) };
-        const result = await this.queryService.findOneByOptions(
-          collections.attachments,
-          options,
-        );
-        if (result) {
-          imageLists.push(item);
-        }
-      }
-      unionDto.images = imageLists;
-    }
-    if (members.length > 0) {
-      const memberLists = [];
-      for (const item of members) {
-        const options = { _id: new Types.ObjectId(item.user) };
-        const result = await this.queryService.findOneByOptions(
-          collections.profiles,
-          options,
-        );
-        if (result) {
-          memberLists.push(item);
-        }
-      }
-      unionDto.members = memberLists;
-    }
-    return unionDto;
-  }
 
   async createUnion(
     unionDto: CreateUnionDto,
     createdBy: string,
   ): Promise<Union> {
-    const newDto = await this.validateUnionDto(unionDto);
+    const newDto = await new ValidateDto().union(unionDto);
     const union = await new this.unionSchema({ ...newDto, createdBy }).save();
     const result = await this.findUnionById(union._id);
     return result;
@@ -78,7 +41,7 @@ export class UnionsService {
     unionDto: UpdateUnionDto,
     updatedBy: string,
   ): Promise<Union> {
-    const validateDto = await this.validateUnionDto(unionDto);
+    const validateDto = await new ValidateDto().union(unionDto);
     const updateDto = {
       ...validateDto,
       updatedBy,

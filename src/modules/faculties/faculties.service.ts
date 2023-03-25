@@ -17,26 +17,12 @@ import { Majors, MajorsDocument } from './schemas/major.schema';
 
 @Injectable()
 export class FacultiesService {
-  validate = new ValidateDto();
   constructor(
     @InjectModel(Faculty.name)
     private readonly facultySchema: Model<FacultyDocument>,
     @InjectModel(Majors.name)
     private readonly majorSchema: Model<MajorsDocument>,
   ) {}
-
-  async validateDto(dtos: Record<string, any>): Promise<void> {
-    const { headOfSection, eputeHead, faculty } = dtos;
-    if (headOfSection) {
-      await this.validate.fieldId(collections.profiles, headOfSection);
-    }
-    if (eputeHead) {
-      await this.validate.fieldId(collections.profiles, eputeHead);
-    }
-    if (faculty) {
-      await this.validate.fieldId(collections.faculties, faculty);
-    }
-  }
 
   async createFaculty(
     createFacultyDto: CreateFacultyDto,
@@ -45,7 +31,7 @@ export class FacultiesService {
     const { name, award = [] } = createFacultyDto;
     const validate = new ValidateDto();
     const option = { name: name?.trim() };
-    await this.validateDto(createFacultyDto);
+    await new ValidateDto().faculty(createFacultyDto);
     if (award.length > 0) {
       const awardIds = await validate.idLists(collections.awards, award);
       createFacultyDto.award = awardIds;
@@ -77,7 +63,7 @@ export class FacultiesService {
     facultyDto: UpdateFacultyDto,
     updatedBy,
   ): Promise<Faculty> {
-    await this.validateDto(facultyDto);
+    await new ValidateDto().faculty(facultyDto);
     const dto = {
       ...facultyDto,
       updatedBy,
@@ -104,7 +90,7 @@ export class FacultiesService {
     majorDto: CreateMajorDto,
     createdBy: string,
   ): Promise<Majors> {
-    await this.validateDto(majorDto);
+    await new ValidateDto().faculty(majorDto);
     const major = await new this.majorSchema({ ...majorDto, createdBy }).save();
     const result = await this.findMajorById(major._id);
     return result;
@@ -128,7 +114,7 @@ export class FacultiesService {
     majorDto: UpdateMajorDto,
     updatedBy: string,
   ): Promise<Majors> {
-    await this.validateDto(majorDto);
+    await new ValidateDto().faculty(majorDto);
     const dto = {
       ...majorDto,
       updatedBy,

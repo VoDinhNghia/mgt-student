@@ -25,7 +25,6 @@ import {
 
 @Injectable()
 export class ClassSubjectService {
-  validate = new ValidateDto();
   constructor(
     @InjectModel(Class_Infos.name)
     private readonly classSchema: Model<ClassInfosDocument>,
@@ -40,12 +39,13 @@ export class ClassSubjectService {
     createdBy: string,
   ): Promise<Class_Infos> {
     const options = { name: createClassDto.name?.trim() };
-    await new ValidateDto().existedByOptions(
+    const validate = new ValidateDto();
+    await validate.existedByOptions(
       collections.class_infos,
       options,
       'Class name',
     );
-    await this.validateDto(createClassDto);
+    await validate.subjectClass(createClassDto);
     const newClass = await new this.classSchema({
       ...createClassDto,
       createdBy,
@@ -72,7 +72,7 @@ export class ClassSubjectService {
     classDto: UpdateClassDto,
     updatedBy: string,
   ): Promise<Class_Infos> {
-    await this.validateDto(classDto);
+    await new ValidateDto().subjectClass(classDto);
     const dto = {
       ...classDto,
       updatedBy,
@@ -87,7 +87,7 @@ export class ClassSubjectService {
     subjectDto: CreateSubjectDto,
     createdBy: string,
   ): Promise<Subjects> {
-    await this.validateDto(subjectDto);
+    await new ValidateDto().subjectClass(subjectDto);
     const dto = {
       ...subjectDto,
       createdBy,
@@ -133,7 +133,7 @@ export class ClassSubjectService {
     subjectDto: UpdateSubjectDto,
     updatedBy: string,
   ): Promise<Subjects> {
-    await this.validateDto(subjectDto);
+    await new ValidateDto().subjectClass(subjectDto);
     const dto = {
       ...subjectDto,
       updatedBy,
@@ -146,38 +146,5 @@ export class ClassSubjectService {
     );
     const result = await this.findSubjectById(id);
     return result;
-  }
-
-  async validateDto(dtos: Record<string, any>): Promise<void> {
-    const {
-      course,
-      degreeLevel,
-      major,
-      homeroomteacher,
-      semester,
-      faculty,
-      lecturer,
-    } = dtos;
-    if (course) {
-      await this.validate.fieldId(collections.courses, course);
-    }
-    if (homeroomteacher) {
-      await this.validate.fieldId(collections.profiles, homeroomteacher);
-    }
-    if (lecturer) {
-      await this.validate.fieldId(collections.profiles, lecturer);
-    }
-    if (semester) {
-      await this.validate.fieldId(collections.semesters, semester);
-    }
-    if (faculty) {
-      await this.validate.fieldId(collections.faculties, faculty);
-    }
-    if (major) {
-      await this.validate.fieldId(collections.majors, major);
-    }
-    if (degreeLevel) {
-      await this.validate.fieldId(collections.degreelevels, degreeLevel);
-    }
   }
 }
