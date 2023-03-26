@@ -65,4 +65,25 @@ export class SubjectUserRegister {
     });
     return subjectIds;
   }
+
+  async getUserTotalAccumalated(
+    semester: string,
+    profileId: string,
+  ): Promise<{ totalAccumalated: number; totalNumberCredits: number }> {
+    const subjectIds = await this.getSubjectIds(semester);
+    const result = await this.getUserSubjects(profileId, subjectIds);
+    let totalAccumalated = 0;
+    let totalNumberCredits = 0;
+    if (result.length <= 0) {
+      return { totalAccumalated, totalNumberCredits };
+    }
+    for (const item of result) {
+      if (item.subject?.calculateCumulativePoint) {
+        totalAccumalated +=
+          (item?.accumalatedPoint || 0) * item?.subject?.numberCredits;
+        totalNumberCredits += item?.subject?.numberCredits || 0;
+      }
+    }
+    return { totalAccumalated, totalNumberCredits };
+  }
 }
