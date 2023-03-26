@@ -7,6 +7,7 @@ import {
   IsObject,
   IsOptional,
   IsString,
+  ValidateNested,
 } from 'class-validator';
 import { GetCurrentDate } from 'src/utils/get.current-date';
 import { CenterContacts } from './centers.contacts.dto';
@@ -40,6 +41,9 @@ export class CreateCenterDto {
   award?: string[];
 
   @IsObject()
-  @ApiProperty({ type: CenterContacts })
+  @IsNotEmpty()
+  @ValidateNested()
+  @Type(() => CenterContacts)
+  @ApiProperty()
   contacts?: CenterContacts;
 }

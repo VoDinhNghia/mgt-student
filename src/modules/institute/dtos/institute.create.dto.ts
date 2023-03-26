@@ -1,12 +1,14 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import {
+  ArrayNotEmpty,
   IsArray,
   IsDate,
   IsNotEmpty,
   IsObject,
   IsOptional,
   IsString,
+  ValidateNested,
 } from 'class-validator';
 import { GetCurrentDate } from 'src/utils/get.current-date';
 import { ContactInstituteDto } from './institute.contact.dto';
@@ -42,14 +44,23 @@ export class CreateInstituteDto {
   viceParson?: string;
 
   @IsObject()
-  @ApiProperty({ type: ContactInstituteDto })
+  @IsNotEmpty()
+  @ValidateNested()
+  @Type(() => ContactInstituteDto)
+  @ApiProperty()
   contacts?: ContactInstituteDto;
 
   @IsArray()
+  @ArrayNotEmpty()
+  @ValidateNested({ each: true })
+  @Type(() => FunctionAndTaskInstituteDto)
   @ApiProperty({ type: [FunctionAndTaskInstituteDto] })
   function?: FunctionAndTaskInstituteDto[];
 
   @IsArray()
+  @ArrayNotEmpty()
+  @ValidateNested({ each: true })
+  @Type(() => FunctionAndTaskInstituteDto)
   @ApiProperty({ type: [FunctionAndTaskInstituteDto] })
   task?: FunctionAndTaskInstituteDto[];
 

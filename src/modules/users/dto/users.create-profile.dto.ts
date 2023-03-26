@@ -1,10 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
 import {
   IsArray,
   IsNotEmpty,
   IsObject,
   IsOptional,
   IsString,
+  ValidateNested,
 } from 'class-validator';
 import { EuserGender } from 'src/constants/constant';
 import { GetCurrentDate } from 'src/utils/get.current-date';
@@ -106,12 +108,16 @@ export class UserProfileDto {
 
   @IsOptional()
   @IsObject()
-  @ApiProperty({ type: LocationProfileDto })
+  @ValidateNested()
+  @Type(() => LocationProfileDto)
+  @ApiProperty()
   location?: LocationProfileDto;
 
   @IsOptional()
   @IsObject()
-  @ApiProperty({ type: IdentityCardNumberDto })
+  @ValidateNested()
+  @Type(() => IdentityCardNumberDto)
+  @ApiProperty()
   identityCardNumber?: IdentityCardNumberDto;
 
   @IsOptional()

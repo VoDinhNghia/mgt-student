@@ -21,8 +21,8 @@ export class UnionsService {
   ): Promise<Union> {
     const newDto = await new ValidateDto().union(unionDto);
     const union = await new this.unionSchema({ ...newDto, createdBy }).save();
-    const result = await this.findUnionById(union._id);
-    return result;
+    // const result = await this.findUnionById(union._id); check again lookup
+    return union;
   }
 
   async findUnionById(id: string): Promise<Union> {

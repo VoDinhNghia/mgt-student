@@ -7,6 +7,9 @@ import {
   IsObject,
   IsOptional,
   IsString,
+  Max,
+  Min,
+  ValidateNested,
 } from 'class-validator';
 import { GetCurrentDate } from 'src/utils/get.current-date';
 import { ContactSchoolDto } from './school.contact.dto';
@@ -26,6 +29,8 @@ export class CreateSchoolDto {
 
   @IsNumber()
   @Type(() => Number)
+  @Min(0)
+  @Max(500000)
   @ApiProperty({ default: 40000 })
   numberTotal?: number;
 
@@ -41,16 +46,22 @@ export class CreateSchoolDto {
 
   @IsOptional()
   @IsObject()
-  @ApiProperty({ type: LocationSchoolDto })
+  @ValidateNested()
+  @Type(() => LocationSchoolDto)
+  @ApiProperty()
   location?: LocationSchoolDto;
 
   @IsOptional()
   @IsObject()
+  @ValidateNested()
+  @Type(() => LocationSchoolDto)
   @ApiProperty({ type: ContactSchoolDto })
   contactInfo?: ContactSchoolDto;
 
   @IsOptional()
   @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => PoliCySchoolDto)
   @ApiProperty({ type: [PoliCySchoolDto] })
   policy?: PoliCySchoolDto[];
 

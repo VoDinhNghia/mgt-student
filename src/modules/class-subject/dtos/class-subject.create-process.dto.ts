@@ -5,11 +5,15 @@ import { IsDate, IsNumber, IsString, Max, Min } from 'class-validator';
 export class ProcessSubjectDto {
   @IsNumber()
   @Type(() => Number)
+  @Min(0)
+  @Max(20)
   @ApiProperty({ default: 1 })
   week?: number;
 
   @IsNumber()
   @Type(() => Number)
+  @Min(0)
+  @Max(300)
   @ApiProperty({ default: 60 })
   time?: number;
 
