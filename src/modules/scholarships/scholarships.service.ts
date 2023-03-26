@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable class-methods-use-this */
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
@@ -7,7 +6,6 @@ import { collections } from 'src/constants/collections.name';
 import {
   considerConditionScholarshipPoint,
   EstatusUserProfile,
-  trainningPointDefault,
 } from 'src/constants/constant';
 import { msgNotFound } from 'src/constants/message.response';
 import { CommonException } from 'src/exceptions/exeception.common-error';
@@ -30,7 +28,6 @@ import {
 import { ImatchFindAllScholarship } from './interfaces/scholarship.match.find-all';
 import {
   semesterScholarshipLookup,
-  trainningPointScholarshipLookup,
   userScholarshipLookup,
 } from 'src/utils/lookup.query.service';
 import { skipLimitAndSortPagination } from 'src/utils/page.pagination';
@@ -135,7 +132,7 @@ export class ScholarshipService {
     }
     const results = await this.scholarshipUserSchema.aggregate(aggregate);
     for await (const item of results) {
-      const tuition = await this.getUserPaymentStudyFee(
+      const tuition = await new QueryService().getUserPaymentStudyFee(
         item?.scholarship?.semester,
         item?.user?._id,
       );
@@ -146,22 +143,6 @@ export class ScholarshipService {
       item.rewardMoney = rewardMoney;
     }
     return results;
-  }
-
-  async getUserPaymentStudyFee(
-    semester: string,
-    profile: string,
-  ): Promise<Record<string, any>> {
-    const options = {
-      semester: new Types.ObjectId(semester),
-      user: new Types.ObjectId(profile),
-    };
-    const queryService = new QueryService();
-    const result = await queryService.findOneByOptions(
-      collections.payment_study_fees,
-      options,
-    );
-    return result;
   }
 
   async createUserScholarshipInSemester(
@@ -186,10 +167,13 @@ export class ScholarshipService {
     for await (const item of studyProcessLists) {
       try {
         const { totalAccumalated, totalNumberCredits } =
-          await this.getUserTotalAccumalated(semester, item.user);
+          await new SubjectUserRegister().getUserTotalAccumalated(
+            semester,
+            item.user,
+          );
         const accumalatedPoint =
           totalNumberCredits > 0 ? totalAccumalated / totalNumberCredits : 0;
-        const tranningpoint = await this.getUserTrainningPoint(
+        const tranningpoint = await queryService.getUserTrainningPoint(
           item.user,
           semester,
         );
@@ -247,55 +231,5 @@ export class ScholarshipService {
       isDeleted: false,
     });
     return result;
-  }
-
-  async getUserTotalAccumalated(
-    semester: string,
-    profileId: string,
-  ): Promise<{ totalAccumalated: number; totalNumberCredits: number }> {
-    const service = new SubjectUserRegister();
-    const subjectIds = await service.getSubjectIds(semester);
-    const result = await service.getUserSubjects(profileId, subjectIds);
-    let totalAccumalated = 0;
-    let totalNumberCredits = 0;
-    if (result.length <= 0) {
-      return { totalAccumalated, totalNumberCredits };
-    }
-    for (const item of result) {
-      if (item.subject?.calculateCumulativePoint) {
-        totalAccumalated +=
-          (item?.accumalatedPoint || 0) * item?.subject?.numberCredits;
-        totalNumberCredits += item?.subject?.numberCredits || 0;
-      }
-    }
-    return { totalAccumalated, totalNumberCredits };
-  }
-
-  async getUserTrainningPoint(
-    profileId: string,
-    semesterId: string,
-  ): Promise<number> {
-    const lookup = trainningPointScholarshipLookup();
-    const aggregate = [
-      {
-        $match: {
-          user: new Types.ObjectId(profileId),
-          semester: new Types.ObjectId(semesterId),
-          status: true,
-        },
-      },
-      ...lookup,
-    ];
-    const queryService = new QueryService();
-    const results = await queryService.findByAggregate(
-      collections.trainning_points,
-      aggregate,
-    );
-    const totalTrainningPoint = results.reduce(
-      (x: any, y: any) => (x.program?.point ?? 0) + (y.program?.point ?? 0),
-      0,
-    );
-    const point = totalTrainningPoint + trainningPointDefault;
-    return point > 100 ? 100 : point;
   }
 }
