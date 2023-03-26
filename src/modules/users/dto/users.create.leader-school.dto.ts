@@ -1,5 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsArray, IsNotEmpty, IsString } from 'class-validator';
+import { Type } from 'class-transformer';
+import {
+  ArrayNotEmpty,
+  IsArray,
+  IsNotEmpty,
+  IsString,
+  ValidateNested,
+} from 'class-validator';
 import { TitleLeaDerSchoolDto } from './users.create.leader-school.title.dto';
 
 export class CreateLeaderSchoolDto {
@@ -9,6 +16,9 @@ export class CreateLeaderSchoolDto {
   user?: string;
 
   @IsArray()
+  @ArrayNotEmpty()
+  @ValidateNested({ each: true })
+  @Type(() => TitleLeaDerSchoolDto)
   @ApiProperty({ type: [TitleLeaDerSchoolDto] })
   title?: TitleLeaDerSchoolDto[];
 }

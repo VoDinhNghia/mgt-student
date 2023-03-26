@@ -1,8 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { IsEmail, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 export class BranchContactInfoDto {
-  @IsString()
+  @IsEmail()
   @IsNotEmpty()
   @ApiProperty()
   email: string;

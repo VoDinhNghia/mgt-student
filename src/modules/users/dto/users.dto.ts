@@ -13,9 +13,11 @@ export class UsersDto {
   @ApiProperty()
   email: string;
 
+  @IsString()
+  @IsNotEmpty()
   @MaxLength(20)
   @MinLength(6)
-  @ApiProperty({ required: true })
+  @ApiProperty()
   passWord?: string;
 
   @IsString()

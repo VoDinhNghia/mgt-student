@@ -1,5 +1,13 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsArray, IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { Type } from 'class-transformer';
+import {
+  IsArray,
+  IsEmail,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  ValidateNested,
+} from 'class-validator';
 import { UnionImagesDto } from './unions.images.dto';
 import { UnionMemberDto } from './unions.member.dto';
 
@@ -23,7 +31,7 @@ export class CreateUnionDto {
   @ApiProperty()
   mobile: string;
 
-  @IsString()
+  @IsEmail()
   @IsNotEmpty()
   @ApiProperty()
   email: string;
@@ -40,11 +48,15 @@ export class CreateUnionDto {
 
   @IsOptional()
   @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => UnionImagesDto)
   @ApiProperty({ type: [UnionImagesDto] })
   images: UnionImagesDto[];
 
   @IsOptional()
   @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => UnionMemberDto)
   @ApiProperty({ type: [UnionMemberDto] })
   members: UnionMemberDto[];
 }

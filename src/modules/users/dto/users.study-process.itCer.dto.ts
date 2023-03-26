@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNumber, IsOptional, IsString } from 'class-validator';
+import { Type } from 'class-transformer';
+import { IsNumber, IsOptional, IsString, Max, Min } from 'class-validator';
 
 export class ItCertificateDto {
   @IsOptional()
@@ -9,6 +10,9 @@ export class ItCertificateDto {
 
   @IsOptional()
   @IsNumber()
+  @Type(() => Number)
+  @Min(0)
+  @Max(10)
   @ApiProperty()
   scores: number;
 }

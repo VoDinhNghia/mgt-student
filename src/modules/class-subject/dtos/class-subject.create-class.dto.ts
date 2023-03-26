@@ -1,6 +1,13 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
-import { IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
+import {
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsString,
+  Max,
+  Min,
+} from 'class-validator';
 
 export class CreateClassDto {
   @IsString()
@@ -20,6 +27,8 @@ export class CreateClassDto {
 
   @IsNumber()
   @IsNotEmpty()
+  @Min(0)
+  @Max(500)
   @Type(() => Number)
   @ApiProperty({ default: 50 })
   classSize?: number;

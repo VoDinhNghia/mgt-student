@@ -6,6 +6,9 @@ import {
   IsObject,
   IsOptional,
   IsString,
+  Max,
+  Min,
+  ValidateNested,
 } from 'class-validator';
 import { EroomType } from 'src/constants/constant';
 import { DiviceRoomDto } from './rooms.divice.dto';
@@ -23,12 +26,16 @@ export class CreateRoomDto {
 
   @IsNumber()
   @Type(() => Number)
+  @Min(0)
+  @Max(10000)
   @ApiProperty({ default: 100 })
   capacity?: number;
 
   @IsOptional()
   @IsObject()
-  @ApiProperty({ type: DiviceRoomDto })
+  @ValidateNested()
+  @Type(() => DiviceRoomDto)
+  @ApiProperty()
   divice?: DiviceRoomDto;
 
   @IsOptional()

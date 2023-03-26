@@ -11,9 +11,9 @@ export class TitleLeaDerSchoolDto {
   name: string;
 
   @IsDate()
+  @IsNotEmpty()
   @Type(() => Date)
   @ApiProperty({
-    required: true,
     default: new GetCurrentDate().getYearMonthDate(),
   })
   acceptDate: Date;

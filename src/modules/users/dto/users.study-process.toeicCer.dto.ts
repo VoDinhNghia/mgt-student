@@ -1,6 +1,13 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
-import { IsDate, IsOptional, IsString } from 'class-validator';
+import {
+  IsDate,
+  IsNumber,
+  IsOptional,
+  IsString,
+  Max,
+  Min,
+} from 'class-validator';
 import { GetCurrentDate } from 'src/utils/get.current-date';
 
 export class ToeicCertificateDto {
@@ -10,7 +17,10 @@ export class ToeicCertificateDto {
   attachment: string;
 
   @IsOptional()
-  @IsString()
+  @IsNumber()
+  @Type(() => Number)
+  @Min(0)
+  @Max(990)
   @ApiProperty()
   scores: number;
 
