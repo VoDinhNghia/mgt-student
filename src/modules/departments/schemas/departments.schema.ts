@@ -5,7 +5,7 @@ import { FieldsCommonSchema } from 'src/utils/utils.fields-common.schema';
 
 export type DepartmentsDocument = Departments & Document;
 
-@Schema()
+@Schema({ collection: collections.departments, versionKey: false })
 export class Departments extends FieldsCommonSchema {
   @Prop()
   name?: string;

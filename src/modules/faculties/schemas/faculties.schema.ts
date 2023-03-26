@@ -5,7 +5,7 @@ import { FieldsCommonSchema } from 'src/utils/utils.fields-common.schema';
 
 export type FacultyDocument = Faculty & Document;
 
-@Schema()
+@Schema({ collection: collections.faculties, versionKey: false })
 export class Faculty extends FieldsCommonSchema {
   @Prop({
     type: String,

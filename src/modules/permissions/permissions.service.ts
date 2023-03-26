@@ -12,21 +12,21 @@ import { QueryPermissionDto } from './dtos/permissions.query.dto';
 import { UpdatePermissionDto } from './dtos/permissions.update.dto';
 import { ImatchFindPermission } from './interfaces/permissions.find.match.interface';
 import {
-  Admin_Permission,
+  AdminPermission,
   AdminPermissionDocument,
 } from './schemas/permissions.admin.schema';
 
 @Injectable()
 export class PermissionsService {
   constructor(
-    @InjectModel(Admin_Permission.name)
+    @InjectModel(AdminPermission.name)
     private readonly permissionSchema: Model<AdminPermissionDocument>,
   ) {}
 
   async createAdminPermission(
     permissionDto: CreatePermissionDto,
     createdBy: string,
-  ): Promise<Admin_Permission> {
+  ): Promise<AdminPermission> {
     const { user } = permissionDto;
     await new ValidateDto().fieldId(collections.profiles, user);
     const dto = {
@@ -42,7 +42,7 @@ export class PermissionsService {
     id: string,
     permissionDto: UpdatePermissionDto,
     updatedBy: string,
-  ): Promise<Admin_Permission> {
+  ): Promise<AdminPermission> {
     const dto = {
       ...permissionDto,
       updatedBy,
@@ -54,7 +54,7 @@ export class PermissionsService {
     return result;
   }
 
-  async findAdminPermissionById(id: string): Promise<Admin_Permission> {
+  async findAdminPermissionById(id: string): Promise<AdminPermission> {
     const match = [{ $match: { _id: new Types.ObjectId(id) } }];
     const lookup = permissionLookup();
     const aggregate = [match, ...lookup];
@@ -67,7 +67,7 @@ export class PermissionsService {
 
   async findAllAdminPermissions(
     queryDto: QueryPermissionDto,
-  ): Promise<Admin_Permission[]> {
+  ): Promise<AdminPermission[]> {
     const { limit, page, user, searchKey } = queryDto;
     const match: ImatchFindPermission = { $match: { isDeleted: false } };
     if (user) {

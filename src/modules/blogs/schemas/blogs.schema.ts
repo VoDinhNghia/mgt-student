@@ -5,7 +5,7 @@ import { FieldsCommonSchema } from 'src/utils/utils.fields-common.schema';
 
 export type BlogDocument = Blog & Document;
 
-@Schema()
+@Schema({ collection: collections.blogs, versionKey: false })
 export class Blog extends FieldsCommonSchema {
   @Prop({ required: true })
   title?: string;

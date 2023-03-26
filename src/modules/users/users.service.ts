@@ -13,7 +13,7 @@ import {
 import { UsersFillterDto } from './dto/users.query.dto';
 import { CommonException } from 'src/exceptions/execeptions.common-error';
 import {
-  Leader_Schools,
+  LeaderSchools,
   LeaderSchoolDocument,
 } from './schemas/users.leader-school.schema';
 import { CreateLeaderSchoolDto } from './dto/users.create.leader-school.dto';
@@ -21,7 +21,7 @@ import { QueryLeaderSchoolDto } from './dto/users.query.leader-school.dto';
 import { UpdateLeaderSchoolDto } from './dto/users.update.leader-school.dto';
 import { getRandomCode } from 'src/utils/utils.generate.code-profile';
 import {
-  Study_Processes,
+  StudyProcesses,
   StudyProcessDocument,
 } from './schemas/users.study-process.schema';
 import { CreateStudyProcessDto } from './dto/users.create.study-process.dto';
@@ -29,11 +29,17 @@ import { InitSuperAdminDto } from '../auth/dtos/auth.init-super-admin.dto';
 import { ValidateDto } from 'src/validates/validates.common.dto';
 import { UsersUpdateDto } from './dto/users.update.dto';
 import { collections } from 'src/constants/constants.collections.name';
-import { msgNotFound, msgServerError } from 'src/constants/constants.message.response';
+import {
+  msgNotFound,
+  msgServerError,
+} from 'src/constants/constants.message.response';
 import { ImatchFindAllUser } from './interfaces/users.find.match.interface';
 import { UserProfileDto } from './dto/users.create-profile.dto';
 import { UpdateProfileDto } from './dto/users.update.profile.dto';
-import { profileLookup, userLookup } from 'src/utils/utils.lookup.query.service';
+import {
+  profileLookup,
+  userLookup,
+} from 'src/utils/utils.lookup.query.service';
 import { skipLimitAndSortPagination } from 'src/utils/utils.page.pagination';
 
 @Injectable()
@@ -42,9 +48,9 @@ export class UsersService {
     @InjectModel(Users.name) private readonly userSchema: Model<UsersDocument>,
     @InjectModel(Profile.name)
     private readonly profileSchema: Model<ProfileDocument>,
-    @InjectModel(Leader_Schools.name)
+    @InjectModel(LeaderSchools.name)
     private readonly leaderSchoolSchema: Model<LeaderSchoolDocument>,
-    @InjectModel(Study_Processes.name)
+    @InjectModel(StudyProcesses.name)
     private readonly studyProcessSchema: Model<StudyProcessDocument>,
   ) {}
 
@@ -318,7 +324,7 @@ export class UsersService {
   async createLeaderSchool(
     leaderDto: CreateLeaderSchoolDto,
     createdBy: string,
-  ): Promise<Leader_Schools> {
+  ): Promise<LeaderSchools> {
     const { user } = leaderDto;
     const validate = new ValidateDto();
     await validate.fieldId(collections.profiles, user);
@@ -337,7 +343,7 @@ export class UsersService {
     return result;
   }
 
-  async findLeaderSchoolById(id: string): Promise<Leader_Schools> {
+  async findLeaderSchoolById(id: string): Promise<LeaderSchools> {
     const match = { $match: { _id: new Types.ObjectId(id) } };
     const lookup = profileLookup();
     const aggregate = [match, ...lookup];
@@ -352,7 +358,7 @@ export class UsersService {
     id: string,
     updateLeaderDto: UpdateLeaderSchoolDto,
     updatedBy: string,
-  ): Promise<Leader_Schools> {
+  ): Promise<LeaderSchools> {
     const dto = {
       ...updateLeaderDto,
       updatedBy,
@@ -366,7 +372,7 @@ export class UsersService {
 
   async findAllLeaderSchool(
     queryDto: QueryLeaderSchoolDto,
-  ): Promise<Leader_Schools[]> {
+  ): Promise<LeaderSchools[]> {
     const { user } = queryDto;
     const match: ImatchFindAllUser = { $match: { isDeleted: false } };
     if (user) {

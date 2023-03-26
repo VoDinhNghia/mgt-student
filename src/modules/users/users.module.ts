@@ -5,11 +5,11 @@ import { Users, UsersSchema } from './schemas/users.schema';
 import { UsersController } from './users.controller';
 import { Profile, ProfileSchema } from './schemas/users.profile.schema';
 import {
-  Leader_Schools,
+  LeaderSchools,
   LeaderSchoolSchema,
 } from './schemas/users.leader-school.schema';
 import {
-  Study_Processes,
+  StudyProcesses,
   StudyProcessSchema,
 } from './schemas/users.study-process.schema';
 @Module({
@@ -17,8 +17,8 @@ import {
     MongooseModule.forFeature([
       { name: Users.name, schema: UsersSchema },
       { name: Profile.name, schema: ProfileSchema },
-      { name: Leader_Schools.name, schema: LeaderSchoolSchema },
-      { name: Study_Processes.name, schema: StudyProcessSchema },
+      { name: LeaderSchools.name, schema: LeaderSchoolSchema },
+      { name: StudyProcesses.name, schema: StudyProcessSchema },
     ]),
   ],
   providers: [UsersService],

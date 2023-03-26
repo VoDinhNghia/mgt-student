@@ -6,7 +6,7 @@ import { FieldsCommonSchema } from 'src/utils/utils.fields-common.schema';
 
 export type NewsDocument = News & Document;
 
-@Schema()
+@Schema({ collection: collections.news, versionKey: false })
 export class News extends FieldsCommonSchema {
   @Prop({ required: true })
   title?: string;

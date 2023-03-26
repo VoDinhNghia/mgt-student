@@ -5,7 +5,7 @@ import { FieldsCommonSchema } from 'src/utils/utils.fields-common.schema';
 
 export type AttachmentDocument = Attachment & Document;
 // posible save at difference server or amazon s3 service
-@Schema()
+@Schema({ collection: collections.attachments, versionKey: false })
 export class Attachment extends FieldsCommonSchema {
   @Prop()
   originalname?: string;

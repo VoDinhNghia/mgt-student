@@ -11,7 +11,7 @@ import { CreateMultiStaffDepartmentDto } from './dtos/department.staff.create-mu
 import { CreateDepartmentDto } from './dtos/departments.create.dto';
 import { Departments, DepartmentsDocument } from './schemas/departments.schema';
 import {
-  Department_Staff,
+  DepartmentStaff,
   DepartmentStaffDocument,
 } from './schemas/departments.staff.schema';
 import { unionBy } from 'lodash';
@@ -31,7 +31,7 @@ export class DepartmentsService {
   constructor(
     @InjectModel(Departments.name)
     private readonly deparmentSchema: Model<DepartmentsDocument>,
-    @InjectModel(Department_Staff.name)
+    @InjectModel(DepartmentStaff.name)
     private readonly staffSchema: Model<DepartmentStaffDocument>,
     @InjectModel(Profile.name)
     private readonly profileSchema: Model<ProfileDocument>,
@@ -109,7 +109,7 @@ export class DepartmentsService {
   async createMultiStaffDepartment(
     staffDto: CreateMultiStaffDepartmentDto,
     createdBy: string,
-  ): Promise<Department_Staff[]> {
+  ): Promise<DepartmentStaff[]> {
     const { department, staffs = [] } = staffDto;
     await this.findDepartmentById(department);
     const staffLists = unionBy(staffs, 'staff');
@@ -143,7 +143,7 @@ export class DepartmentsService {
   async createDepartmentStaff(
     staffDto: CreateStaffDepartmentDto,
     createdBy: string,
-  ): Promise<Department_Staff> {
+  ): Promise<DepartmentStaff> {
     const { department, staff } = staffDto;
     await this.findDepartmentById(department);
     const staffInfo = await this.findUserProfile(staff);
@@ -161,7 +161,7 @@ export class DepartmentsService {
     id: string,
     staffDto: UpdateStaffDepartmentDto,
     updatedBy: string,
-  ): Promise<Department_Staff> {
+  ): Promise<DepartmentStaff> {
     const { department, joinDate } = staffDto;
     if (department) {
       await this.findDepartmentById(department);

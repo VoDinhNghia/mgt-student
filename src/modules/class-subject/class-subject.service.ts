@@ -2,7 +2,10 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { collections } from 'src/constants/constants.collections.name';
-import { msgNotFound, msgResponse } from 'src/constants/constants.message.response';
+import {
+  msgNotFound,
+  msgResponse,
+} from 'src/constants/constants.message.response';
 import { CommonException } from 'src/exceptions/execeptions.common-error';
 import { ValidateDto } from 'src/validates/validates.common.dto';
 import { CreateClassDto } from './dtos/class-subject.create-class.dto';
@@ -10,7 +13,7 @@ import { UpdateClassDto } from './dtos/class-subject.update-class.dto';
 import { CreateSubjectDto } from './dtos/class-subject.create-subject.dto';
 import { UpdateSubjectDto } from './dtos/class-subject.update-subject.dto';
 import {
-  Class_Infos,
+  ClassInfos,
   ClassInfosDocument,
 } from './schemas/class-subject.class.schema';
 import {
@@ -18,27 +21,30 @@ import {
   Subjects,
 } from './schemas/class-subject.subject.schema';
 import {
-  Subject_Process,
+  SubjectProcess,
   SubjectProcessDocument,
 } from './schemas/class-subject.subjectProcess';
 import { ImatchFindClassSubject } from './interfaces/class-subject.find.match.interface';
-import { classInfoLookup, subjectLookup } from 'src/utils/utils.lookup.query.service';
+import {
+  classInfoLookup,
+  subjectLookup,
+} from 'src/utils/utils.lookup.query.service';
 
 @Injectable()
 export class ClassSubjectService {
   constructor(
-    @InjectModel(Class_Infos.name)
+    @InjectModel(ClassInfos.name)
     private readonly classSchema: Model<ClassInfosDocument>,
     @InjectModel(Subjects.name)
     private readonly subjectSchema: Model<SubjectDocument>,
-    @InjectModel(Subject_Process.name)
+    @InjectModel(SubjectProcess.name)
     private readonly subjectProcessSchema: Model<SubjectProcessDocument>,
   ) {}
 
   async createClass(
     createClassDto: CreateClassDto,
     createdBy: string,
-  ): Promise<Class_Infos> {
+  ): Promise<ClassInfos> {
     const options = { name: createClassDto.name?.trim() };
     const validate = new ValidateDto();
     await validate.existedByOptions(
@@ -55,7 +61,7 @@ export class ClassSubjectService {
     return result;
   }
 
-  async findClassById(id: string): Promise<Class_Infos> {
+  async findClassById(id: string): Promise<ClassInfos> {
     const match: ImatchFindClassSubject = {
       $match: { _id: new Types.ObjectId(id) },
     };
@@ -72,7 +78,7 @@ export class ClassSubjectService {
     id: string,
     classDto: UpdateClassDto,
     updatedBy: string,
-  ): Promise<Class_Infos> {
+  ): Promise<ClassInfos> {
     await new ValidateDto().subjectClass(classDto);
     const dto = {
       ...classDto,

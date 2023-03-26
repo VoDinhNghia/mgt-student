@@ -1,14 +1,13 @@
-/* eslint-disable @typescript-eslint/naming-convention */
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { Document } from 'mongoose';
 import { collections } from 'src/constants/constants.collections.name';
 import { EtypeLeaderSchool } from 'src/constants/constant';
 import { FieldsCommonSchema } from 'src/utils/utils.fields-common.schema';
 
-export type LeaderSchoolDocument = Leader_Schools & Document;
+export type LeaderSchoolDocument = LeaderSchools & Document;
 
-@Schema()
-export class Leader_Schools extends FieldsCommonSchema {
+@Schema({ collection: collections.leader_schools, versionKey: false })
+export class LeaderSchools extends FieldsCommonSchema {
   @Prop({
     type: mongoose.Schema.Types.ObjectId,
     ref: collections.profiles,
@@ -36,4 +35,4 @@ export class Leader_Schools extends FieldsCommonSchema {
   ];
 }
 
-export const LeaderSchoolSchema = SchemaFactory.createForClass(Leader_Schools);
+export const LeaderSchoolSchema = SchemaFactory.createForClass(LeaderSchools);

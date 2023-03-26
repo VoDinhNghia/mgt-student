@@ -17,6 +17,7 @@ export const collections = {
   departments: 'departments',
   districts: 'districts',
   faculties: 'faculties',
+  faculty_trainning_processes: 'faculty_trainning_processes',
   institudes: 'institudes',
   leader_schools: 'leader_schools',
   majors: 'majors',

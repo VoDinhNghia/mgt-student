@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/naming-convention */
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { Document } from 'mongoose';
 import { collections } from 'src/constants/constants.collections.name';
@@ -6,10 +5,10 @@ import { EstatusPayments, EtypePayments } from 'src/constants/constant';
 import { FieldsCommonSchema } from 'src/utils/utils.fields-common.schema';
 import { getRandomCodeReceiptId } from 'src/utils/utils.generate.code-payment';
 
-export type PaymentStudyFeeDocument = Payment_Study_Fee & Document;
+export type PaymentStudyFeeDocument = PaymentStudyFee & Document;
 
-@Schema()
-export class Payment_Study_Fee extends FieldsCommonSchema {
+@Schema({ collection: collections.payment_study_fees, versionKey: false })
+export class PaymentStudyFee extends FieldsCommonSchema {
   @Prop({
     default: getRandomCodeReceiptId(4),
     required: true,
@@ -53,4 +52,4 @@ export class Payment_Study_Fee extends FieldsCommonSchema {
 }
 
 export const PaymentStudyFeeSchema =
-  SchemaFactory.createForClass(Payment_Study_Fee);
+  SchemaFactory.createForClass(PaymentStudyFee);

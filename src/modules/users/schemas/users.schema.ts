@@ -1,11 +1,12 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
+import { collections } from 'src/constants/constants.collections.name';
 import { FieldsCommonSchema } from 'src/utils/utils.fields-common.schema';
 import { ErolesUser, EstatusUser } from '../../../constants/constant';
 
 export type UsersDocument = Users & Document;
 
-@Schema()
+@Schema({ collection: collections.users, versionKey: false })
 export class Users extends FieldsCommonSchema {
   @Prop({ required: true, unique: true })
   email: string;
