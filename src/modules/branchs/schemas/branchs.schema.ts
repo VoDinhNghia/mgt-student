@@ -5,7 +5,7 @@ import { FieldsCommonSchema } from 'src/utils/utils.fields-common.schema';
 
 export type BranchDocument = Branch & Document;
 
-@Schema()
+@Schema({ collection: collections.branches, versionKey: false })
 export class Branch extends FieldsCommonSchema {
   @Prop({ required: true })
   title?: string;

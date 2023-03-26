@@ -22,7 +22,7 @@ import {
   ScholarshipDocument,
 } from './schemas/scholarships.schema';
 import {
-  Scholarship_User,
+  ScholarshipUser,
   ScholarshipUserDocument,
 } from './schemas/scholarships.user.schema';
 import { ImatchFindAllScholarship } from './interfaces/scholarships.find.match.interface';
@@ -37,7 +37,7 @@ export class ScholarshipService {
   constructor(
     @InjectModel(Scholarship.name)
     private readonly scholarshipSchema: Model<ScholarshipDocument>,
-    @InjectModel(Scholarship_User.name)
+    @InjectModel(ScholarshipUser.name)
     private readonly scholarshipUserSchema: Model<ScholarshipUserDocument>,
   ) {}
 

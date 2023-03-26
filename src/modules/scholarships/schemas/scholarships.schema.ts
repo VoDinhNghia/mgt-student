@@ -6,7 +6,7 @@ import { FieldsCommonSchema } from 'src/utils/utils.fields-common.schema';
 
 export type ScholarshipDocument = Scholarship & Document;
 
-@Schema()
+@Schema({ collection: collections.scholarships, versionKey: false })
 export class Scholarship extends FieldsCommonSchema {
   @Prop({
     type: String,

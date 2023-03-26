@@ -5,7 +5,7 @@ import { FieldsCommonSchema } from 'src/utils/utils.fields-common.schema';
 
 export type UnionDocument = Union & Document;
 
-@Schema()
+@Schema({ collection: collections.unions, versionKey: false })
 export class Union extends FieldsCommonSchema {
   @Prop()
   url?: string;

@@ -5,7 +5,7 @@ import { FieldsCommonSchema } from 'src/utils/utils.fields-common.schema';
 
 export type MajorsDocument = Majors & Document;
 
-@Schema()
+@Schema({ collection: collections.majors, versionKey: false })
 export class Majors extends FieldsCommonSchema {
   @Prop({
     type: mongoose.Schema.Types.ObjectId,

@@ -14,7 +14,10 @@ import { UpdateMajorDto } from './dtos/faculties.major.update.dto';
 import { Faculty, FacultyDocument } from './schemas/faculties.schema';
 import { Majors, MajorsDocument } from './schemas/faculties.major.schema';
 import { ImatchFindFaculty } from './interfaces/faculties.find.match.interface';
-import { facultyLookup, majorLookup } from 'src/utils/utils.lookup.query.service';
+import {
+  facultyLookup,
+  majorLookup,
+} from 'src/utils/utils.lookup.query.service';
 
 @Injectable()
 export class FacultiesService {

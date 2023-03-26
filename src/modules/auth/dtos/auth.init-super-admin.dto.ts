@@ -1,5 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
+import {
+  IsEmail,
+  IsNotEmpty,
+  IsString,
+  MaxLength,
+  MinLength,
+} from 'class-validator';
 
 export class InitSuperAdminDto {
   @IsNotEmpty()
@@ -9,6 +15,8 @@ export class InitSuperAdminDto {
 
   @IsNotEmpty()
   @IsString()
+  @MaxLength(20)
+  @MinLength(6)
   @ApiProperty()
   passWord: string;
 

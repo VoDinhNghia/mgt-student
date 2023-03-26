@@ -7,7 +7,7 @@ import { getRandomCode } from 'src/utils/utils.generate.code-profile';
 
 export type ProfileDocument = Profile & Document;
 
-@Schema()
+@Schema({ collection: collections.profiles, versionKey: false })
 export class Profile extends FieldsCommonSchema {
   @Prop({
     type: mongoose.Schema.Types.ObjectId,

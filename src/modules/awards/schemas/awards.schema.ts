@@ -6,7 +6,7 @@ import { FieldsCommonSchema } from 'src/utils/utils.fields-common.schema';
 
 export type AwardDocument = Award & Document;
 
-@Schema()
+@Schema({ collection: collections.awards, versionKey: false })
 export class Award extends FieldsCommonSchema {
   @Prop({ required: true })
   name?: string;

@@ -5,7 +5,7 @@ import { FieldsCommonSchema } from 'src/utils/utils.fields-common.schema';
 
 export type CenterDocument = Center & Document;
 
-@Schema()
+@Schema({ collection: collections.centers, versionKey: false })
 export class Center extends FieldsCommonSchema {
   @Prop({ required: true })
   name?: string;

@@ -1,13 +1,13 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import { School_Info, SchoolSchema } from './schemas/school.schema';
+import { SchoolInfo, SchoolSchema } from './schemas/school.schema';
 import { SchoolController } from './school.controller';
 import { SchoolService } from './school.service';
 
 @Module({
   imports: [
     MongooseModule.forFeature([
-      { name: School_Info.name, schema: SchoolSchema },
+      { name: SchoolInfo.name, schema: SchoolSchema },
     ]),
   ],
   controllers: [SchoolController],

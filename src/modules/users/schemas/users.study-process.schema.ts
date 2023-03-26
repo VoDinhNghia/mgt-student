@@ -1,14 +1,13 @@
-/* eslint-disable @typescript-eslint/naming-convention */
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { Document } from 'mongoose';
 import { collections } from 'src/constants/constants.collections.name';
 import { EstatusUserProfile } from 'src/constants/constant';
 import { FieldsCommonSchema } from 'src/utils/utils.fields-common.schema';
 
-export type StudyProcessDocument = Study_Processes & Document;
+export type StudyProcessDocument = StudyProcesses & Document;
 
-@Schema()
-export class Study_Processes extends FieldsCommonSchema {
+@Schema({ collection: collections.study_processes, versionKey: false })
+export class StudyProcesses extends FieldsCommonSchema {
   @Prop({
     type: mongoose.Schema.Types.ObjectId,
     ref: collections.profiles,
@@ -47,4 +46,4 @@ export class Study_Processes extends FieldsCommonSchema {
   };
 }
 
-export const StudyProcessSchema = SchemaFactory.createForClass(Study_Processes);
+export const StudyProcessSchema = SchemaFactory.createForClass(StudyProcesses);
