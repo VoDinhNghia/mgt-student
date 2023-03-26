@@ -4,7 +4,6 @@ import { Model, Types } from 'mongoose';
 import { collections } from 'src/constants/collections.name';
 import { msgNotFound } from 'src/constants/message.response';
 import { CommonException } from 'src/exceptions/exeception.common-error';
-import { LookupService } from 'src/utils/lookup.query.service';
 import { ValidateDto } from 'src/validates/validate.common.dto';
 import { CreateFacultyDto } from './dtos/faculties.create.dto';
 import { FacultyQueryDto } from './dtos/faculties.query.dto';
@@ -15,6 +14,7 @@ import { UpdateMajorDto } from './dtos/faculties.major.update.dto';
 import { Faculty, FacultyDocument } from './schemas/faculties.schema';
 import { Majors, MajorsDocument } from './schemas/faculties.major.schema';
 import { ImatchFindFaculty } from './interfaces/faculties.match.find';
+import { facultyLookup, majorLookup } from 'src/utils/lookup.query.service';
 
 @Injectable()
 export class FacultiesService {
@@ -50,7 +50,7 @@ export class FacultiesService {
     const match: ImatchFindFaculty = {
       $match: { _id: new Types.ObjectId(id) },
     };
-    const lookup = new LookupService().faculty();
+    const lookup = facultyLookup();
     const aggregate = [match, ...lookup];
     const result = await this.facultySchema.aggregate(aggregate);
     if (!result[0]) {
@@ -82,7 +82,7 @@ export class FacultiesService {
     if (searchKey) {
       match.$match.name = new RegExp(searchKey);
     }
-    const lookup = new LookupService().faculty();
+    const lookup = facultyLookup();
     const aggregate = [match, ...lookup];
     const results = await this.facultySchema.aggregate(aggregate);
     return results;
@@ -102,7 +102,7 @@ export class FacultiesService {
     const match: ImatchFindFaculty = {
       $match: { _id: new Types.ObjectId(id) },
     };
-    const lookup = new LookupService().major();
+    const lookup = majorLookup();
     const aggregate = [match, ...lookup];
     const result = await this.majorSchema.aggregate(aggregate);
     if (!result[0]) {
@@ -134,7 +134,7 @@ export class FacultiesService {
     if (faculty) {
       match.$match.faculty = new Types.ObjectId(faculty);
     }
-    const lookup = new LookupService().major();
+    const lookup = majorLookup();
     const aggregate = [match, ...lookup];
     const results = await this.majorSchema.aggregate(aggregate);
     return results;

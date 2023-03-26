@@ -1,5 +1,4 @@
-/* eslint-disable class-methods-use-this */
-interface IlookupInterface {
+export interface IlookupInterface {
   from: string;
   localField: string;
   foreignField: string;
@@ -7,23 +6,21 @@ interface IlookupInterface {
   unwind: boolean;
 }
 
-export class LookupCommon {
-  lookup(listFields: IlookupInterface[]) {
-    const results = [];
-    for (const obj of listFields) {
-      const lookup = {
-        $lookup: {
-          from: obj.from,
-          localField: obj.localField,
-          foreignField: obj.foreignField,
-          as: `${obj.as}`,
-        },
-      };
-      results.push(lookup);
-      if (obj.unwind) {
-        results.push({ $unwind: `$${obj.as}` });
-      }
+export function lookupCommon(listFields: IlookupInterface[]) {
+  const results = [];
+  for (const obj of listFields) {
+    const lookup = {
+      $lookup: {
+        from: obj.from,
+        localField: obj.localField,
+        foreignField: obj.foreignField,
+        as: `${obj.as}`,
+      },
+    };
+    results.push(lookup);
+    if (obj.unwind) {
+      results.push({ $unwind: `$${obj.as}` });
     }
-    return results;
   }
+  return results;
 }

@@ -6,7 +6,7 @@ import { Http } from 'src/utils/http.sync-service';
 import { keyAccessLibraryService } from 'src/constants/constant';
 import { GetCurrentDate } from 'src/utils/get.current-date';
 import { ConfigService } from '@nestjs/config';
-import { LookupService } from 'src/utils/lookup.query.service';
+import { syncUserLookup } from 'src/utils/lookup.query.service';
 
 @Injectable()
 export class SyncServiceService {
@@ -27,7 +27,7 @@ export class SyncServiceService {
   }
 
   async getAllUsers(): Promise<Users[]> {
-    const lookup = new LookupService().syncUser();
+    const lookup = syncUserLookup();
     const results = await this.userSchema.aggregate(lookup);
     return results;
   }
@@ -45,7 +45,7 @@ export class SyncServiceService {
         ],
       },
     };
-    const lookup = new LookupService().syncUser();
+    const lookup = syncUserLookup();
     const aggregate = [match, ...lookup];
     const results = await this.userSchema.aggregate(aggregate);
     return results;

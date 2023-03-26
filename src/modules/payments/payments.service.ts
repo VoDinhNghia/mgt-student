@@ -7,7 +7,6 @@ import { EstatusPayments } from 'src/constants/constant';
 import { msgNotFound } from 'src/constants/message.response';
 import { CommonException } from 'src/exceptions/exeception.common-error';
 import { getRandomCodeReceiptId } from 'src/utils/generate.code-payment';
-import { LookupService } from 'src/utils/lookup.query.service';
 import { SubjectUserRegister } from 'src/utils/user.register-subject.query';
 import { ValidateDto } from 'src/validates/validate.common.dto';
 import { CreateMoneyPerCreditMgtDto } from './dtos/payments.mgt-money-per-credit.create.dto';
@@ -23,6 +22,10 @@ import {
   Payment_Study_Fee,
   PaymentStudyFeeDocument,
 } from './schemas/payments.schema';
+import {
+  paymentLookup,
+  userPaymentLookup,
+} from 'src/utils/lookup.query.service';
 
 @Injectable()
 export class PaymentsService {
@@ -81,7 +84,7 @@ export class PaymentsService {
     let aggregate = [
       { $match: { _id: new Types.ObjectId(id), isDeleted: false } },
     ];
-    const lookup = new LookupService().payment();
+    const lookup = paymentLookup();
     aggregate = [...aggregate, ...lookup];
     const result = await this.moneyCreditSchema.aggregate(aggregate);
     if (!result[0]) {
@@ -92,7 +95,7 @@ export class PaymentsService {
 
   async findAllMoneyPerCreditMgt(): Promise<Money_Per_Credit_Mgt[]> {
     const match = { $match: { isDeleted: false } };
-    const lookup = new LookupService().payment();
+    const lookup = paymentLookup();
     const aggregate = [match, ...lookup];
     const results = await this.moneyCreditSchema.aggregate(aggregate);
     return results;
@@ -143,8 +146,8 @@ export class PaymentsService {
 
   async findUserPaymentById(id: string): Promise<Payment_Study_Fee> {
     const match = { $match: { _id: new Types.ObjectId(id) } };
-    const lookupUserPayment = new LookupService().userPayment();
-    const lookupPayment = new LookupService().payment();
+    const lookupUserPayment = userPaymentLookup();
+    const lookupPayment = paymentLookup();
     const aggregate = [match, ...lookupPayment, ...lookupUserPayment];
     const result = await this.paymentSchema.aggregate(aggregate);
     if (!result[0]) {

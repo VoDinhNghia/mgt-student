@@ -3,7 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { msgNotFound } from 'src/constants/message.response';
 import { CommonException } from 'src/exceptions/exeception.common-error';
-import { LookupService } from 'src/utils/lookup.query.service';
+import { unionLookup } from 'src/utils/lookup.query.service';
 import { ValidateDto } from 'src/validates/validate.common.dto';
 import { CreateUnionDto } from './dtos/unions.create.dto';
 import { UpdateUnionDto } from './dtos/unions.update.dto';
@@ -27,7 +27,7 @@ export class UnionsService {
 
   async findUnionById(id: string): Promise<Union> {
     const match = { $match: { _id: new Types.ObjectId(id) } };
-    const lookup = new LookupService().union();
+    const lookup = unionLookup();
     const aggregate = [match, ...lookup];
     const result = await this.unionSchema.aggregate(aggregate);
     if (!result[0]) {
@@ -65,7 +65,7 @@ export class UnionsService {
 
   async findAllUnions(): Promise<Union[]> {
     const match = { $match: { isDeleted: false } };
-    const lookup = new LookupService().union(); // check again
+    const lookup = unionLookup(); // check again
     const aggregate = [match, ...lookup];
     const results = await this.unionSchema.aggregate(aggregate);
     return results;

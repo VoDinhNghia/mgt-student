@@ -6,11 +6,11 @@ import { cryptoPassWord } from 'src/constants/crypto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { EstatusUser } from 'src/constants/constant';
-import { LookupService } from 'src/utils/lookup.query.service';
 import { LoginDto } from './dtos/auth.login.dto';
 import { UserLoginResponseDto } from './dtos/auth.result.login-service.dto';
 import { msgResponse } from 'src/constants/message.response';
 import { ImatchFindAuth } from './interfaces/auth.match.find';
+import { userLookup } from 'src/utils/lookup.query.service';
 
 @Injectable()
 export class AuthService {
@@ -40,7 +40,7 @@ export class AuthService {
     const match: ImatchFindAuth = {
       $match: { email, passWord: password, status: EstatusUser.ACTIVE },
     };
-    const lookup = new LookupService().user();
+    const lookup = userLookup();
     const project = [
       {
         $project: {

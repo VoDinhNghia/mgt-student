@@ -4,7 +4,7 @@ import { Model, Types } from 'mongoose';
 import { collections } from 'src/constants/collections.name';
 import { msgNotFound } from 'src/constants/message.response';
 import { CommonException } from 'src/exceptions/exeception.common-error';
-import { LookupService } from 'src/utils/lookup.query.service';
+import { awardLookup } from 'src/utils/lookup.query.service';
 import { QueryPagination } from 'src/utils/page.pagination';
 import { ValidateDto } from 'src/validates/validate.common.dto';
 import { CreateAwardDto } from './dtos/awards.create.dto';
@@ -39,7 +39,7 @@ export class AwardsService {
 
   async findAwardById(id: string): Promise<Award> {
     const match = { $match: { _id: new Types.ObjectId(id) } };
-    const lookup = new LookupService().award();
+    const lookup = awardLookup();
     const aggregate = [match, ...lookup];
     const result = await this.awardSchema.aggregate(aggregate);
     if (!result[0]) {
@@ -90,7 +90,7 @@ export class AwardsService {
     if (fromDate && !toDate) {
       match.$match.time = { $gte: fromDate, $lte: toDate };
     }
-    const lookup = new LookupService().award();
+    const lookup = awardLookup();
     const aggregatePagi = new QueryPagination().skipLimitAndSort(limit, page);
     const aggregate = [match, ...aggregatePagi, ...lookup];
     const result = await this.awardSchema.aggregate(aggregate);

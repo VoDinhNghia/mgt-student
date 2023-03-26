@@ -4,7 +4,7 @@ import { Model, Types } from 'mongoose';
 import { collections } from 'src/constants/collections.name';
 import { msgNotFound } from 'src/constants/message.response';
 import { CommonException } from 'src/exceptions/exeception.common-error';
-import { LookupService } from 'src/utils/lookup.query.service';
+import { newsLookup } from 'src/utils/lookup.query.service';
 import { QueryPagination } from 'src/utils/page.pagination';
 import { ValidateDto } from 'src/validates/validate.common.dto';
 import { CreateNewDto } from './dtos/news.create.dto';
@@ -43,7 +43,7 @@ export class NewsService {
     const match: ImatchFindNews = {
       $match: { _id: new Types.ObjectId(id) },
     };
-    const lookup = new LookupService().news();
+    const lookup = newsLookup();
     const aggregate = [match, ...lookup];
     const result = await this.newsSchema.aggregate(aggregate);
     if (!result[0]) {
@@ -59,7 +59,7 @@ export class NewsService {
       match.$match.type = type;
     }
     const aggPagination = new QueryPagination().skipLimitAndSort(limit, page);
-    const lookup = new LookupService().news();
+    const lookup = newsLookup();
     const aggregate = [match, ...aggPagination, ...lookup];
     const results = await this.newsSchema.aggregate(aggregate);
     return results;

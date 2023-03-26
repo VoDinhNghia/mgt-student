@@ -4,7 +4,6 @@ import { Model, Types } from 'mongoose';
 import { collections } from 'src/constants/collections.name';
 import { msgNotFound, msgResponse } from 'src/constants/message.response';
 import { CommonException } from 'src/exceptions/exeception.common-error';
-import { LookupService } from 'src/utils/lookup.query.service';
 import { ValidateDto } from 'src/validates/validate.common.dto';
 import { CreateClassDto } from './dtos/class-subject.create-class.dto';
 import { UpdateClassDto } from './dtos/class-subject.update-class.dto';
@@ -23,6 +22,7 @@ import {
   SubjectProcessDocument,
 } from './schemas/class-subject.subjectProcess';
 import { ImatchFindClassSubject } from './interfaces/class-subject.match.find';
+import { classInfoLookup, subjectLookup } from 'src/utils/lookup.query.service';
 
 @Injectable()
 export class ClassSubjectService {
@@ -59,7 +59,7 @@ export class ClassSubjectService {
     const match: ImatchFindClassSubject = {
       $match: { _id: new Types.ObjectId(id) },
     };
-    const lookup = new LookupService().classInfo();
+    const lookup = classInfoLookup();
     const aggregate = [match, ...lookup];
     const result = await this.classSchema.aggregate(aggregate);
     if (!result[0]) {
@@ -120,7 +120,7 @@ export class ClassSubjectService {
     const match: ImatchFindClassSubject = {
       $match: { _id: new Types.ObjectId(id) },
     };
-    const lookup = new LookupService().subject();
+    const lookup = subjectLookup();
     const aggregate = [match, ...lookup];
     const result = await this.subjectSchema.aggregate(aggregate);
     if (!result[0]) {

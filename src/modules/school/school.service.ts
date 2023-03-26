@@ -8,8 +8,8 @@ import { UpdateSchoolDto } from './dtos/school.update.dto';
 import { School_Info, SchoolInfoDocument } from './schemas/school.schema';
 import { ValidateDto } from 'src/validates/validate.common.dto';
 import { collections } from 'src/constants/collections.name';
-import { LookupService } from 'src/utils/lookup.query.service';
 import { msgNotFound } from 'src/constants/message.response';
+import { schoolLookup } from 'src/utils/lookup.query.service';
 
 @Injectable()
 export class SchoolService {
@@ -27,7 +27,7 @@ export class SchoolService {
 
   async findSchoolById(id: string): Promise<School_Info> {
     const match = { $match: { _id: new Types.ObjectId(id) } };
-    const lookup = new LookupService().school();
+    const lookup = schoolLookup();
     const aggregate = [match, ...lookup];
     const results = await this.schoolSchema.aggregate(aggregate);
     if (!results[0]) {
@@ -68,7 +68,7 @@ export class SchoolService {
 
   async findAllSchool(): Promise<School_Info[]> {
     const match = { $match: { isDeleted: false } };
-    const lookup = new LookupService().school();
+    const lookup = schoolLookup();
     const result = await this.schoolSchema.aggregate([match, ...lookup]);
     return result;
   }
