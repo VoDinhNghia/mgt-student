@@ -12,7 +12,6 @@ import {
 } from 'src/constants/constant';
 import { UsersFillterDto } from './dto/users.query.dto';
 import { CommonException } from 'src/exceptions/exeception.common-error';
-import { QueryPagination } from 'src/utils/page.pagination';
 import {
   Leader_Schools,
   LeaderSchoolDocument,
@@ -35,6 +34,7 @@ import { ImatchFindAllUser } from './interfaces/users.match.find-all.interface';
 import { UserProfileDto } from './dto/users.create-profile.dto';
 import { UpdateProfileDto } from './dto/users.update.profile.dto';
 import { profileLookup, userLookup } from 'src/utils/lookup.query.service';
+import { skipLimitAndSortPagination } from 'src/utils/page.pagination';
 
 @Injectable()
 export class UsersService {
@@ -141,7 +141,7 @@ export class UsersService {
         },
       ];
     }
-    const aggPagination = new QueryPagination().skipLimitAndSort(limit, page);
+    const aggPagination = skipLimitAndSortPagination(limit, page);
     const result = await this.userSchema.aggregate([
       ...aggregate,
       ...aggPagination,
