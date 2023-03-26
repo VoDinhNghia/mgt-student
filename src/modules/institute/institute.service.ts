@@ -3,7 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { msgNotFound } from 'src/constants/message.response';
 import { CommonException } from 'src/exceptions/exeception.common-error';
-import { LookupService } from 'src/utils/lookup.query.service';
+import { instituteLookup } from 'src/utils/lookup.query.service';
 import { ValidateDto } from 'src/validates/validate.common.dto';
 import { CreateInstituteDto } from './dtos/institute.create.dto';
 import { UpdateInstituteDto } from './dtos/institute.update.dto';
@@ -54,7 +54,7 @@ export class InstituteService {
     const match: ImatchFindInstitute = {
       $match: { _id: new Types.ObjectId(id) },
     };
-    const lookup = new LookupService().institute();
+    const lookup = instituteLookup();
     const aggregate = [match, ...lookup];
     const result = await this.institutiSchema.aggregate(aggregate);
     if (!result[0]) {
@@ -65,7 +65,7 @@ export class InstituteService {
 
   async findAllInstitudes(): Promise<Institudes[]> {
     const match: ImatchFindInstitute = { $match: { isDeleted: false } };
-    const lookup = new LookupService().institute();
+    const lookup = instituteLookup();
     const aggregate = [match, ...lookup];
     const results = await this.institutiSchema.aggregate(aggregate);
     return results;

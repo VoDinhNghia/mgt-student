@@ -4,7 +4,7 @@ import { Model, Types } from 'mongoose';
 import { collections } from 'src/constants/collections.name';
 import { msgNotFound } from 'src/constants/message.response';
 import { CommonException } from 'src/exceptions/exeception.common-error';
-import { LookupService } from 'src/utils/lookup.query.service';
+import { permissionLookup } from 'src/utils/lookup.query.service';
 import { QueryPagination } from 'src/utils/page.pagination';
 import { ValidateDto } from 'src/validates/validate.common.dto';
 import { CreatePermissionDto } from './dtos/permissions.create.dto';
@@ -56,7 +56,7 @@ export class PermissionsService {
 
   async findAdminPermissionById(id: string): Promise<Admin_Permission> {
     const match = [{ $match: { _id: new Types.ObjectId(id) } }];
-    const lookup = new LookupService().permission();
+    const lookup = permissionLookup();
     const aggregate = [match, ...lookup];
     const result = await this.permissionSchema.aggregate(aggregate);
     if (!result[0]) {
@@ -74,7 +74,7 @@ export class PermissionsService {
       match.$match = { user: new Types.ObjectId(user) };
     }
     let agg = [match];
-    const lookup = new LookupService().permission();
+    const lookup = permissionLookup();
     agg = [...agg, ...lookup];
     if (searchKey) {
       const matchSearchKey: ImatchFindPermission = {

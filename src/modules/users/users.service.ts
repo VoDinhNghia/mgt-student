@@ -30,11 +30,11 @@ import { InitSuperAdminDto } from '../auth/dtos/auth.init-super-admin.dto';
 import { ValidateDto } from 'src/validates/validate.common.dto';
 import { UsersUpdateDto } from './dto/users.update.dto';
 import { collections } from 'src/constants/collections.name';
-import { LookupService } from 'src/utils/lookup.query.service';
 import { msgNotFound, msgServerError } from 'src/constants/message.response';
 import { ImatchFindAllUser } from './interfaces/users.match.find-all.interface';
 import { UserProfileDto } from './dto/users.create-profile.dto';
 import { UpdateProfileDto } from './dto/users.update.profile.dto';
+import { profileLookup, userLookup } from 'src/utils/lookup.query.service';
 
 @Injectable()
 export class UsersService {
@@ -101,7 +101,7 @@ export class UsersService {
 
   async findUserById(id: string): Promise<Users> {
     const match = { $match: { _id: new Types.ObjectId(id) } };
-    const lookup = new LookupService().user();
+    const lookup = userLookup();
     const aggregate = [match, ...lookup];
     const result = await this.userSchema.aggregate(aggregate);
     if (!result[0]) {
@@ -124,7 +124,7 @@ export class UsersService {
     if (status) {
       match.$match.status = status;
     }
-    const lookup = new LookupService().user();
+    const lookup = userLookup();
     let aggregate = [match, ...lookup];
     if (searchKey) {
       aggregate = [
@@ -339,7 +339,7 @@ export class UsersService {
 
   async findLeaderSchoolById(id: string): Promise<Leader_Schools> {
     const match = { $match: { _id: new Types.ObjectId(id) } };
-    const lookup = new LookupService().profile();
+    const lookup = profileLookup();
     const aggregate = [match, ...lookup];
     const result = await this.leaderSchoolSchema.aggregate(aggregate);
     if (!result[0]) {
@@ -372,7 +372,7 @@ export class UsersService {
     if (user) {
       match.$match.user = new Types.ObjectId(user);
     }
-    const lookup = new LookupService().profile();
+    const lookup = profileLookup();
     const aggregate = [match, ...lookup];
     const results = await this.leaderSchoolSchema.aggregate(aggregate);
     return results;

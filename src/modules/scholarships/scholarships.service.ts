@@ -11,7 +11,6 @@ import {
 } from 'src/constants/constant';
 import { msgNotFound } from 'src/constants/message.response';
 import { CommonException } from 'src/exceptions/exeception.common-error';
-import { LookupService } from 'src/utils/lookup.query.service';
 import { QueryPagination } from 'src/utils/page.pagination';
 import { QueryService } from 'src/utils/query.service';
 import { SubjectUserRegister } from 'src/utils/user.register-subject.query';
@@ -30,6 +29,11 @@ import {
   ScholarshipUserDocument,
 } from './schemas/scholarships.user.schema';
 import { ImatchFindAllScholarship } from './interfaces/scholarship.match.find-all';
+import {
+  semesterScholarshipLookup,
+  trainningPointScholarshipLookup,
+  userScholarshipLookup,
+} from 'src/utils/lookup.query.service';
 
 @Injectable()
 export class ScholarshipService {
@@ -74,7 +78,7 @@ export class ScholarshipService {
     const match: ImatchFindAllScholarship = {
       $match: { _id: new Types.ObjectId(id) },
     };
-    const lookup = new LookupService().semesterScholarship();
+    const lookup = semesterScholarshipLookup();
     const aggregate = [match, ...lookup];
     const results = await this.scholarshipSchema.aggregate(aggregate);
     if (!results[0]) {
@@ -97,7 +101,7 @@ export class ScholarshipService {
     if (searchKey) {
       match.$match.$or = [{ name: new RegExp(searchKey) }];
     }
-    const lookup = new LookupService().semesterScholarship();
+    const lookup = semesterScholarshipLookup();
     const aggregate = new QueryPagination().skipLimitAndSort(limit, page);
     const results = await this.scholarshipSchema.aggregate([
       match,
@@ -119,7 +123,7 @@ export class ScholarshipService {
     if (user) {
       matchOne.$match.user = new Types.ObjectId(user);
     }
-    const lookup = new LookupService().userScholarship();
+    const lookup = userScholarshipLookup();
     aggregate = [...aggregate, matchOne, ...lookup];
     if (semester) {
       aggregate = [
@@ -271,7 +275,7 @@ export class ScholarshipService {
     profileId: string,
     semesterId: string,
   ): Promise<number> {
-    const lookup = new LookupService().trainningPointScholarship();
+    const lookup = trainningPointScholarshipLookup();
     const aggregate = [
       {
         $match: {

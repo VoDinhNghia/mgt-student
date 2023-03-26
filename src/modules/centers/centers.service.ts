@@ -7,8 +7,8 @@ import { Center, CenterDocument } from './schemas/centers.schema';
 import { UpdateCenterDto } from './dtos/centers.update.dto';
 import { ValidateDto } from 'src/validates/validate.common.dto';
 import { collections } from 'src/constants/collections.name';
-import { LookupService } from 'src/utils/lookup.query.service';
 import { msgNotFound } from 'src/constants/message.response';
+import { centerLookup } from 'src/utils/lookup.query.service';
 
 @Injectable()
 export class CenterService {
@@ -60,7 +60,7 @@ export class CenterService {
 
   async findCenterById(id: string): Promise<Center> {
     const match = { $match: { _id: new Types.ObjectId(id) } };
-    const lookup = new LookupService().center();
+    const lookup = centerLookup();
     const aggregate = [match, ...lookup];
     const result = await this.centerSchema.aggregate(aggregate);
     if (!result[0]) {
@@ -71,7 +71,7 @@ export class CenterService {
 
   async findAllCenter(): Promise<Center[]> {
     const match = { $match: { isDeleted: false } };
-    const lookup = new LookupService().center();
+    const lookup = centerLookup();
     const aggregate = [match, ...lookup];
     const results = await this.centerSchema.aggregate(aggregate);
     return results;

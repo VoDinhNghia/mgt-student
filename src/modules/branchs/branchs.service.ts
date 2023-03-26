@@ -4,7 +4,7 @@ import { Model, Types } from 'mongoose';
 import { collections } from 'src/constants/collections.name';
 import { msgNotFound } from 'src/constants/message.response';
 import { CommonException } from 'src/exceptions/exeception.common-error';
-import { LookupService } from 'src/utils/lookup.query.service';
+import { branchLookup } from 'src/utils/lookup.query.service';
 import { QueryPagination } from 'src/utils/page.pagination';
 import { ValidateDto } from 'src/validates/validate.common.dto';
 import { BranchCreateDto } from './dtos/branchs.create.dto';
@@ -50,7 +50,7 @@ export class BranchService {
     const match: ImatchFindBranch = {
       $match: { _id: new Types.ObjectId(id) },
     };
-    const lookup = new LookupService().branch();
+    const lookup = branchLookup();
     const aggregate = [match, ...lookup];
     const result = await this.branchSchema.aggregate(aggregate);
     if (!result[0]) {
@@ -66,7 +66,7 @@ export class BranchService {
     if (searchKey) {
       match.$match.name = new RegExp(searchKey);
     }
-    const lookup = new LookupService().branch();
+    const lookup = branchLookup();
     const aggregatePag = new QueryPagination().skipLimitAndSort(limit, page);
     const aggregate = [match, ...aggregatePag, ...lookup];
     const result = await this.branchSchema.aggregate(aggregate);

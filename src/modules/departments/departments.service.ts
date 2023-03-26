@@ -22,9 +22,9 @@ import { Users, UsersDocument } from '../users/schemas/users.schema';
 import { UpdateStaffDepartmentDto } from './dtos/department.staff.update.dto';
 import { ValidateDto } from 'src/validates/validate.common.dto';
 import { collections } from 'src/constants/collections.name';
-import { LookupService } from 'src/utils/lookup.query.service';
 import { msgNotFound } from 'src/constants/message.response';
 import { ImatchFindDeparment } from './interfaces/departments.match.find';
+import { departmentLookup } from 'src/utils/lookup.query.service';
 
 @Injectable()
 export class DepartmentsService {
@@ -89,7 +89,7 @@ export class DepartmentsService {
     const match: ImatchFindDeparment = {
       $match: { _id: new Types.ObjectId(id) },
     };
-    const lookup = new LookupService().department();
+    const lookup = departmentLookup();
     const aggregate = [match, ...lookup];
     const result = await this.deparmentSchema.aggregate(aggregate);
     if (!result[0]) {
@@ -100,7 +100,7 @@ export class DepartmentsService {
 
   async findAllDepartment(): Promise<Departments[]> {
     const match: ImatchFindDeparment = { $match: { isDeleted: false } };
-    const aggregateLookup = new LookupService().department();
+    const aggregateLookup = departmentLookup();
     const aggregate = [match, ...aggregateLookup];
     const results = await this.deparmentSchema.aggregate(aggregate);
     return results;
