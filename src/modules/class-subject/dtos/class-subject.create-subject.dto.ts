@@ -7,6 +7,7 @@ import {
   IsNumber,
   IsObject,
   IsString,
+  ValidateNested,
 } from 'class-validator';
 import { GetCurrentDate } from 'src/utils/get.current-date';
 import { ProcessSubjectDto } from './class-subject.create-process.dto';
@@ -100,14 +101,23 @@ export class CreateSubjectDto {
   calculateCumulativePoint?: boolean;
 
   @IsObject()
-  @ApiProperty({ type: ProcessSubjectDto })
+  @IsNotEmpty()
+  @ValidateNested()
+  @Type(() => ProcessSubjectDto)
+  @ApiProperty()
   midTermTest?: ProcessSubjectDto;
 
   @IsObject()
-  @ApiProperty({ type: ProcessSubjectDto })
+  @IsNotEmpty()
+  @ValidateNested()
+  @Type(() => ProcessSubjectDto)
+  @ApiProperty()
   finalExam?: ProcessSubjectDto;
 
   @IsObject()
-  @ApiProperty({ type: ProcessSubjectDto })
+  @IsNotEmpty()
+  @ValidateNested()
+  @Type(() => ProcessSubjectDto)
+  @ApiProperty()
   studentEssay?: ProcessSubjectDto;
 }
