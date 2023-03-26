@@ -21,7 +21,7 @@ import { RoleGuard } from '../auth/guards/auth.role-auth.guard';
 import { ErolesUser } from 'src/constants/constant';
 import { UpdatePermissionDto } from './dtos/permissions.update.dto';
 import { QueryPermissionDto } from './dtos/permissions.query.dto';
-import { msgResponse } from 'src/constants/message.response';
+import { msgResponse } from 'src/constants/constants.message.response';
 import { UserLoginResponseDto } from '../auth/dtos/auth.result.login-service.dto';
 
 @Controller('api/permissions')

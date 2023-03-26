@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { ObjectId, Types } from 'mongoose';
-import { collections } from 'src/constants/collections.name';
-import { DbConnection } from 'src/constants/db.mongo.connection';
-import { CommonException } from 'src/exceptions/exeception.common-error';
+import { collections } from 'src/constants/constants.collections.name';
+import { DbConnection } from 'src/constants/constants.db.mongo.connection';
+import { CommonException } from 'src/exceptions/execeptions.common-error';
 import { SubjectDocument } from 'src/modules/class-subject/schemas/class-subject.subject.schema';
 
 export class SubjectUserRegister {

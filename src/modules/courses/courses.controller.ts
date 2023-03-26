@@ -18,7 +18,7 @@ import { Response, Request } from 'express';
 import { CoursesService } from './courses.service';
 import { CreateCourseDto } from './dtos/courses.create.dto';
 import { UpdateCourseDto } from './dtos/courses.update.dto';
-import { msgResponse } from 'src/constants/message.response';
+import { msgResponse } from 'src/constants/constants.message.response';
 import { UserLoginResponseDto } from '../auth/dtos/auth.result.login-service.dto';
 
 @Controller('api/courses')

@@ -22,7 +22,7 @@ import { CreateSubjectDto } from './dtos/class-subject.create-subject.dto';
 import { UpdateSubjectDto } from './dtos/class-subject.update-subject.dto';
 import { UpdateClassDto } from './dtos/class-subject.update-class.dto';
 import { ValidatePercentPoint } from 'src/validates/validates.percent-point.subject';
-import { msgResponse } from 'src/constants/message.response';
+import { msgResponse } from 'src/constants/constants.message.response';
 import { UserLoginResponseDto } from '../auth/dtos/auth.result.login-service.dto';
 
 @Controller('api/class-subject')

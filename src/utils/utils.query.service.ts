@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Types } from 'mongoose';
-import { collections } from 'src/constants/collections.name';
+import { collections } from 'src/constants/constants.collections.name';
 import { trainningPointDefault } from 'src/constants/constant';
-import { DbConnection } from 'src/constants/db.mongo.connection';
+import { DbConnection } from 'src/constants/constants.db.mongo.connection';
 import { trainningPointScholarshipLookup } from './utils.lookup.query.service';
 
 export class QueryService {

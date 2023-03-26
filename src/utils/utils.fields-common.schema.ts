@@ -1,6 +1,6 @@
 import { Prop } from '@nestjs/mongoose';
 import mongoose from 'mongoose';
-import { collections } from 'src/constants/collections.name';
+import { collections } from 'src/constants/constants.collections.name';
 
 export class FieldsCommonSchema {
   @Prop({

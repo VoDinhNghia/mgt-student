@@ -22,7 +22,7 @@ import { UpdateStaffDepartmentDto } from './dtos/department.staff.update.dto';
 import { UpdateDepartmentDto } from './dtos/department.update.dto';
 import { CreateDepartmentDto } from './dtos/departments.create.dto';
 import { Response, Request } from 'express';
-import { msgResponse } from 'src/constants/message.response';
+import { msgResponse } from 'src/constants/constants.message.response';
 import { UserLoginResponseDto } from '../auth/dtos/auth.result.login-service.dto';
 
 @Controller('api/departments')

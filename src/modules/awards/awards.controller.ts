@@ -20,7 +20,7 @@ import { ResponseRequest } from 'src/utils/utils.response-api';
 import { CreateAwardDto } from './dtos/awards.create.dto';
 import { UpdateAwardDto } from './dtos/awards.update.dto';
 import { QueryAwardDto } from './dtos/awards.query.dto';
-import { msgResponse } from 'src/constants/message.response';
+import { msgResponse } from 'src/constants/constants.message.response';
 import { UserLoginResponseDto } from '../auth/dtos/auth.result.login-service.dto';
 
 @Controller('api/awards')

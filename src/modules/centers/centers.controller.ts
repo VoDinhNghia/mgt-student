@@ -19,7 +19,7 @@ import { CenterService } from './centers.service';
 import { Response, Request } from 'express';
 import { CreateCenterDto } from './dtos/centers.create.dto';
 import { UpdateCenterDto } from './dtos/centers.update.dto';
-import { msgResponse } from 'src/constants/message.response';
+import { msgResponse } from 'src/constants/constants.message.response';
 import { UserLoginResponseDto } from '../auth/dtos/auth.result.login-service.dto';
 
 @Controller('api/centers')

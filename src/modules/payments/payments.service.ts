@@ -2,10 +2,10 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
-import { collections } from 'src/constants/collections.name';
+import { collections } from 'src/constants/constants.collections.name';
 import { EstatusPayments } from 'src/constants/constant';
-import { msgNotFound } from 'src/constants/message.response';
-import { CommonException } from 'src/exceptions/exeception.common-error';
+import { msgNotFound } from 'src/constants/constants.message.response';
+import { CommonException } from 'src/exceptions/execeptions.common-error';
 import { getRandomCodeReceiptId } from 'src/utils/utils.generate.code-payment';
 import { SubjectUserRegister } from 'src/utils/utils.user.register-subject.query';
 import { ValidateDto } from 'src/validates/validates.common.dto';
