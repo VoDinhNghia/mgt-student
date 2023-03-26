@@ -4,7 +4,7 @@ import { Model } from 'mongoose';
 import { collections } from 'src/constants/collections.name';
 import { msgNotFound } from 'src/constants/message.response';
 import { CommonException } from 'src/exceptions/exeception.common-error';
-import { QueryPagination } from 'src/utils/page.pagination';
+import { skipLimitAndSortPagination } from 'src/utils/page.pagination';
 import { ValidateDto } from 'src/validates/validate.common.dto';
 import { CreateRoomDto } from './dtos/rooms.create.dto';
 import { QueryRoomDto } from './dtos/rooms.query.dto';
@@ -50,7 +50,7 @@ export class RoomsService {
     if (type) {
       match.$match.type = type;
     }
-    const aggregate = new QueryPagination().skipLimitAndSort(limit, page);
+    const aggregate = skipLimitAndSortPagination(limit, page);
     const rooms = await this.roomSchema.aggregate([match, ...aggregate]);
     const countDocuments = await this.roomSchema.countDocuments();
     const results = {

@@ -11,7 +11,6 @@ import {
 } from 'src/constants/constant';
 import { msgNotFound } from 'src/constants/message.response';
 import { CommonException } from 'src/exceptions/exeception.common-error';
-import { QueryPagination } from 'src/utils/page.pagination';
 import { QueryService } from 'src/utils/query.service';
 import { SubjectUserRegister } from 'src/utils/user.register-subject.query';
 import { ValidateDto } from 'src/validates/validate.common.dto';
@@ -34,6 +33,7 @@ import {
   trainningPointScholarshipLookup,
   userScholarshipLookup,
 } from 'src/utils/lookup.query.service';
+import { skipLimitAndSortPagination } from 'src/utils/page.pagination';
 
 @Injectable()
 export class ScholarshipService {
@@ -102,7 +102,7 @@ export class ScholarshipService {
       match.$match.$or = [{ name: new RegExp(searchKey) }];
     }
     const lookup = semesterScholarshipLookup();
-    const aggregate = new QueryPagination().skipLimitAndSort(limit, page);
+    const aggregate = skipLimitAndSortPagination(limit, page);
     const results = await this.scholarshipSchema.aggregate([
       match,
       ...aggregate,

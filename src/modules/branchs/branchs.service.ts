@@ -5,7 +5,7 @@ import { collections } from 'src/constants/collections.name';
 import { msgNotFound } from 'src/constants/message.response';
 import { CommonException } from 'src/exceptions/exeception.common-error';
 import { branchLookup } from 'src/utils/lookup.query.service';
-import { QueryPagination } from 'src/utils/page.pagination';
+import { skipLimitAndSortPagination } from 'src/utils/page.pagination';
 import { ValidateDto } from 'src/validates/validate.common.dto';
 import { BranchCreateDto } from './dtos/branchs.create.dto';
 import { BranchQueryDto } from './dtos/branchs.query.dto';
@@ -67,7 +67,7 @@ export class BranchService {
       match.$match.name = new RegExp(searchKey);
     }
     const lookup = branchLookup();
-    const aggregatePag = new QueryPagination().skipLimitAndSort(limit, page);
+    const aggregatePag = skipLimitAndSortPagination(limit, page);
     const aggregate = [match, ...aggregatePag, ...lookup];
     const result = await this.branchSchema.aggregate(aggregate);
 
