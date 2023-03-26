@@ -36,7 +36,7 @@ import {
   destinationImportUser,
   fileName,
 } from 'src/validates/validates.attachment.upload-file';
-import { getDataFromCsvFileUpload } from 'src/utils/utils.getDataFromCsvUpload';
+import { getDataFromCsvFileUpload } from 'src/utils/utils.get.data-from-csv-upload';
 import { msgResponse } from 'src/constants/constants.message.response';
 import { UserLoginResponseDto } from '../auth/dtos/auth.result.login-service.dto';
 
@@ -81,7 +81,7 @@ export class UsersController {
     @UploadedFile('file') file: Express.Multer.File,
   ): Promise<ResponseRequest> {
     const user: UserLoginResponseDto = req?.user;
-    const createdBy: string = user.profileId;
+    const createdBy: string = user?.profileId;
     const rawData = readFileSync(file.path, 'utf8');
     const csvData = getDataFromCsvFileUpload(rawData);
     const result = await this.service.importUser(createdBy, csvData);

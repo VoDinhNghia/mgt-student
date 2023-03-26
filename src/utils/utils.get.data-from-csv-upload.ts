@@ -1,13 +1,12 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { parse } from 'papaparse';
 
-export const getDataFromCsvFileUpload = (data: any) => {
+export const getDataFromCsvFileUpload = (data: string) => {
   const csvData = [];
   parse(data, {
     header: true,
     worker: true,
     delimiter: ',',
-    step: (row: any) => {
+    step: (row) => {
       csvData.push(row.data);
     },
     complete: () => {
