@@ -9,8 +9,8 @@ import { EstatusUser } from 'src/constants/constant';
 import { LoginDto } from './dtos/auth.login.dto';
 import { UserLoginResponseDto } from './dtos/auth.result.login-service.dto';
 import { msgResponse } from 'src/constants/message.response';
-import { ImatchFindAuth } from './interfaces/auth.match.find';
-import { userLookup } from 'src/utils/lookup.query.service';
+import { ImatchFindAuth } from './interfaces/auth.find.match.interface';
+import { userLookup } from 'src/utils/utils.lookup.query.service';
 
 @Injectable()
 export class AuthService {

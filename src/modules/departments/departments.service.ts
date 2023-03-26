@@ -20,11 +20,11 @@ import { ErolesUser } from 'src/constants/constant';
 import { UpdateDepartmentDto } from './dtos/department.update.dto';
 import { Users, UsersDocument } from '../users/schemas/users.schema';
 import { UpdateStaffDepartmentDto } from './dtos/department.staff.update.dto';
-import { ValidateDto } from 'src/validates/validate.common.dto';
+import { ValidateDto } from 'src/validates/validates.common.dto';
 import { collections } from 'src/constants/collections.name';
 import { msgNotFound } from 'src/constants/message.response';
-import { ImatchFindDeparment } from './interfaces/departments.match.find';
-import { departmentLookup } from 'src/utils/lookup.query.service';
+import { ImatchFindDeparment } from './interfaces/departments.find.match.interface';
+import { departmentLookup } from 'src/utils/utils.lookup.query.service';
 
 @Injectable()
 export class DepartmentsService {

@@ -2,11 +2,11 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Users, UsersDocument } from '../users/schemas/users.schema';
-import { Http } from 'src/utils/http.sync-service';
+import { Http } from 'src/utils/utils.http.sync-service';
 import { keyAccessLibraryService } from 'src/constants/constant';
-import { GetCurrentDate } from 'src/utils/get.current-date';
+import { GetCurrentDate } from 'src/utils/utils.get.current-date';
 import { ConfigService } from '@nestjs/config';
-import { syncUserLookup } from 'src/utils/lookup.query.service';
+import { syncUserLookup } from 'src/utils/utils.lookup.query.service';
 
 @Injectable()
 export class SyncServiceService {

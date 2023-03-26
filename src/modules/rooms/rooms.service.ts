@@ -4,12 +4,12 @@ import { Model } from 'mongoose';
 import { collections } from 'src/constants/collections.name';
 import { msgNotFound } from 'src/constants/message.response';
 import { CommonException } from 'src/exceptions/exeception.common-error';
-import { skipLimitAndSortPagination } from 'src/utils/page.pagination';
-import { ValidateDto } from 'src/validates/validate.common.dto';
+import { skipLimitAndSortPagination } from 'src/utils/utils.page.pagination';
+import { ValidateDto } from 'src/validates/validates.common.dto';
 import { CreateRoomDto } from './dtos/rooms.create.dto';
 import { QueryRoomDto } from './dtos/rooms.query.dto';
 import { UpdateRoomDto } from './dtos/rooms.update.dto';
-import { ImatchFindRoom } from './interfaces/rooms.match.find';
+import { ImatchFindRoom } from './interfaces/rooms.find.match.interface';
 import { Rooms, RoomsDocument } from './schemas/rooms.schema';
 
 @Injectable()

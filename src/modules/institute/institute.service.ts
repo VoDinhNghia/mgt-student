@@ -3,11 +3,11 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { msgNotFound } from 'src/constants/message.response';
 import { CommonException } from 'src/exceptions/exeception.common-error';
-import { instituteLookup } from 'src/utils/lookup.query.service';
-import { ValidateDto } from 'src/validates/validate.common.dto';
+import { instituteLookup } from 'src/utils/utils.lookup.query.service';
+import { ValidateDto } from 'src/validates/validates.common.dto';
 import { CreateInstituteDto } from './dtos/institute.create.dto';
 import { UpdateInstituteDto } from './dtos/institute.update.dto';
-import { ImatchFindInstitute } from './interfaces/institute.match.find';
+import { ImatchFindInstitute } from './interfaces/institute.find.match.interface';
 import { InstitudeDocument, Institudes } from './schemas/institute.schema';
 
 @Injectable()

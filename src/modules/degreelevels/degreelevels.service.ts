@@ -3,7 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { msgNotFound } from 'src/constants/message.response';
 import { CommonException } from 'src/exceptions/exeception.common-error';
-import { ValidateDto } from 'src/validates/validate.common.dto';
+import { ValidateDto } from 'src/validates/validates.common.dto';
 import { CreateDegreeLevelDto } from './dtos/degreelevels.create.dto';
 import { UpdateDegreeLevelDto } from './dtos/degreeLevels.update.dto';
 import {

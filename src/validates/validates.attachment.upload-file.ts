@@ -2,7 +2,7 @@
 /* eslint-disable consistent-return */
 import { HttpException } from '@nestjs/common';
 import { join } from 'path';
-import { GetCurrentDate } from 'src/utils/get.current-date';
+import { GetCurrentDate } from 'src/utils/utils.get.current-date';
 
 export const imageFileFilter = (
   req: Record<any, any>,

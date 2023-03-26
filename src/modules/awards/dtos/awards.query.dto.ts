@@ -1,7 +1,7 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
-import { QueryPagination } from 'src/utils/page.query.pagination.dto';
+import { QueryPagination } from 'src/utils/utils.page.query.pagination.dto';
 import { EtypeAward } from 'src/constants/constant';
-import { GetCurrentDate } from 'src/utils/get.current-date';
+import { GetCurrentDate } from 'src/utils/utils.get.current-date';
 import { IsDate, IsOptional, IsString } from 'class-validator';
 import { Type } from 'class-transformer';
 

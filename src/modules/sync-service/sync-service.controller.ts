@@ -1,12 +1,12 @@
 import { Controller, Get, Post, Res, UseGuards } from '@nestjs/common';
-import { ResponseRequest } from 'src/utils/response-api';
+import { ResponseRequest } from 'src/utils/utils.response-api';
 import { SyncServiceService } from './sync-service.service';
 import { Response } from 'express';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { ErolesUser, keyAccessLibraryService } from 'src/constants/constant';
-import { AuthServiceAccessByKey } from 'src/validates/validate.service.key-access';
-import { RoleGuard } from '../auth/guards/role-auth.guard';
-import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { AuthServiceAccessByKey } from 'src/validates/validates.service.key-access';
+import { RoleGuard } from '../auth/guards/auth.role-auth.guard';
+import { JwtAuthGuard } from '../auth/guards/auth.jwt-auth.guard';
 import { msgResponse } from 'src/constants/message.response';
 
 @Controller('api/sync-service')

@@ -6,10 +6,10 @@ import { schoolId } from 'src/constants/constant';
 import { CreateSchoolDto } from './dtos/school.create.dto';
 import { UpdateSchoolDto } from './dtos/school.update.dto';
 import { School_Info, SchoolInfoDocument } from './schemas/school.schema';
-import { ValidateDto } from 'src/validates/validate.common.dto';
+import { ValidateDto } from 'src/validates/validates.common.dto';
 import { collections } from 'src/constants/collections.name';
 import { msgNotFound } from 'src/constants/message.response';
-import { schoolLookup } from 'src/utils/lookup.query.service';
+import { schoolLookup } from 'src/utils/utils.lookup.query.service';
 
 @Injectable()
 export class SchoolService {

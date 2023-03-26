@@ -5,7 +5,7 @@ import { unlinkSync } from 'fs';
 import { Model, Types } from 'mongoose';
 import { msgServerError, msgResponse } from 'src/constants/message.response';
 import { CommonException } from 'src/exceptions/exeception.common-error';
-import { FileRequestDto } from 'src/utils/file-request.dto';
+import { FileRequestDto } from 'src/utils/utils.file-request.dto';
 import { CreateAttachmentDto } from './dtos/attachments.create.dto';
 import { Attachment, AttachmentDocument } from './schemas/attachments.schema';
 

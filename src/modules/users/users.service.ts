@@ -19,22 +19,22 @@ import {
 import { CreateLeaderSchoolDto } from './dto/users.create.leader-school.dto';
 import { QueryLeaderSchoolDto } from './dto/users.query.leader-school.dto';
 import { UpdateLeaderSchoolDto } from './dto/users.update.leader-school.dto';
-import { getRandomCode } from 'src/utils/generate.code-profile';
+import { getRandomCode } from 'src/utils/utils.generate.code-profile';
 import {
   Study_Processes,
   StudyProcessDocument,
 } from './schemas/users.study-process.schema';
 import { CreateStudyProcessDto } from './dto/users.create.study-process.dto';
 import { InitSuperAdminDto } from '../auth/dtos/auth.init-super-admin.dto';
-import { ValidateDto } from 'src/validates/validate.common.dto';
+import { ValidateDto } from 'src/validates/validates.common.dto';
 import { UsersUpdateDto } from './dto/users.update.dto';
 import { collections } from 'src/constants/collections.name';
 import { msgNotFound, msgServerError } from 'src/constants/message.response';
-import { ImatchFindAllUser } from './interfaces/users.match.find-all.interface';
+import { ImatchFindAllUser } from './interfaces/users.find.match.interface';
 import { UserProfileDto } from './dto/users.create-profile.dto';
 import { UpdateProfileDto } from './dto/users.update.profile.dto';
-import { profileLookup, userLookup } from 'src/utils/lookup.query.service';
-import { skipLimitAndSortPagination } from 'src/utils/page.pagination';
+import { profileLookup, userLookup } from 'src/utils/utils.lookup.query.service';
+import { skipLimitAndSortPagination } from 'src/utils/utils.page.pagination';
 
 @Injectable()
 export class UsersService {

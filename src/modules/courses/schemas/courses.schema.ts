@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
-import { FieldsCommonSchema } from 'src/utils/fields-common.schema';
+import { FieldsCommonSchema } from 'src/utils/utils.fields-common.schema';
 
 export type CourseDocument = Course & Document;
 

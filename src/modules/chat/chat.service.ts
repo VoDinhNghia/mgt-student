@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { JwtStrategy } from '../auth/guards/jwt.strategy';
+import { JwtStrategy } from '../auth/guards/auth.jwt-strategy.guard';
 
 @Injectable()
 export class ChatService {

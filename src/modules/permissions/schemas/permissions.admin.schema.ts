@@ -3,7 +3,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { Document } from 'mongoose';
 import { collections } from 'src/constants/collections.name';
 import { Epermission } from 'src/constants/constant';
-import { FieldsCommonSchema } from 'src/utils/fields-common.schema';
+import { FieldsCommonSchema } from 'src/utils/utils.fields-common.schema';
 
 export type AdminPermissionDocument = Admin_Permission & Document;
 

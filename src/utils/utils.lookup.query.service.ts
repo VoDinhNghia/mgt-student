@@ -1,5 +1,5 @@
 import { collections } from 'src/constants/collections.name';
-import { lookupCommon } from './lookup.query.aggregate-query';
+import { lookupCommon } from './utils.lookup.query.aggregate-query';
 
 export function awardLookup() {
   const lookup = lookupCommon([referenceAttachment()]);

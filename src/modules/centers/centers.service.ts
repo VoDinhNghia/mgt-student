@@ -5,10 +5,10 @@ import { CommonException } from 'src/exceptions/exeception.common-error';
 import { CreateCenterDto } from './dtos/centers.create.dto';
 import { Center, CenterDocument } from './schemas/centers.schema';
 import { UpdateCenterDto } from './dtos/centers.update.dto';
-import { ValidateDto } from 'src/validates/validate.common.dto';
+import { ValidateDto } from 'src/validates/validates.common.dto';
 import { collections } from 'src/constants/collections.name';
 import { msgNotFound } from 'src/constants/message.response';
-import { centerLookup } from 'src/utils/lookup.query.service';
+import { centerLookup } from 'src/utils/utils.lookup.query.service';
 
 @Injectable()
 export class CenterService {
