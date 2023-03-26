@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
-import { IsDate, IsNumber, IsString } from 'class-validator';
+import { IsDate, IsNumber, IsString, Max, Min } from 'class-validator';
 
 export class ProcessSubjectDto {
   @IsNumber()
@@ -19,6 +19,8 @@ export class ProcessSubjectDto {
 
   @IsNumber()
   @Type(() => Number)
+  @Min(0)
+  @Max(100)
   @ApiProperty({ default: 30 })
   percent?: number;
 
