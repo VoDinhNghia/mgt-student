@@ -23,7 +23,7 @@ import { UpdateFacultyDto } from './dtos/faculties.update.dto';
 import { CreateMajorDto } from './dtos/faculties.major.create.dto';
 import { UpdateMajorDto } from './dtos/faculties.major.update.dto';
 import { MajorQueryDto } from './dtos/faculties.major.query.dto';
-import { msgResponse } from 'src/constants/message.response';
+import { msgResponse } from 'src/constants/constants.message.response';
 import { UserLoginResponseDto } from '../auth/dtos/auth.result.login-service.dto';
 
 @Controller('api/faculties')

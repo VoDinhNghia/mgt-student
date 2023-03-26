@@ -2,7 +2,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
-import { CommonException } from 'src/exceptions/exeception.common-error';
+import { CommonException } from 'src/exceptions/execeptions.common-error';
 import {
   Profile,
   ProfileDocument,
@@ -21,8 +21,8 @@ import { UpdateDepartmentDto } from './dtos/department.update.dto';
 import { Users, UsersDocument } from '../users/schemas/users.schema';
 import { UpdateStaffDepartmentDto } from './dtos/department.staff.update.dto';
 import { ValidateDto } from 'src/validates/validates.common.dto';
-import { collections } from 'src/constants/collections.name';
-import { msgNotFound } from 'src/constants/message.response';
+import { collections } from 'src/constants/constants.collections.name';
+import { msgNotFound } from 'src/constants/constants.message.response';
 import { ImatchFindDeparment } from './interfaces/departments.find.match.interface';
 import { departmentLookup } from 'src/utils/utils.lookup.query.service';
 

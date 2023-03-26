@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
-import { collections } from 'src/constants/collections.name';
-import { msgNotFound, msgResponse } from 'src/constants/message.response';
-import { CommonException } from 'src/exceptions/exeception.common-error';
+import { collections } from 'src/constants/constants.collections.name';
+import { msgNotFound, msgResponse } from 'src/constants/constants.message.response';
+import { CommonException } from 'src/exceptions/execeptions.common-error';
 import { ValidateDto } from 'src/validates/validates.common.dto';
 import { CreateClassDto } from './dtos/class-subject.create-class.dto';
 import { UpdateClassDto } from './dtos/class-subject.update-class.dto';

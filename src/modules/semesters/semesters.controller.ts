@@ -19,7 +19,7 @@ import { CreateSemesterDto } from './dtos/semesters.create.dto';
 import { SemestersService } from './semesters.service';
 import { Response, Request } from 'express';
 import { UpdateSemesterDto } from './dtos/semesters.update.dto';
-import { msgResponse } from 'src/constants/message.response';
+import { msgResponse } from 'src/constants/constants.message.response';
 import { UserLoginResponseDto } from '../auth/dtos/auth.result.login-service.dto';
 
 @Controller('api/semesters')

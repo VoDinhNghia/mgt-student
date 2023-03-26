@@ -18,7 +18,7 @@ import { DegreelevelService } from './degreelevels.service';
 import { CreateDegreeLevelDto } from './dtos/degreelevels.create.dto';
 import { Response, Request } from 'express';
 import { UpdateDegreeLevelDto } from './dtos/degreeLevels.update.dto';
-import { msgResponse } from 'src/constants/message.response';
+import { msgResponse } from 'src/constants/constants.message.response';
 import { UserLoginResponseDto } from '../auth/dtos/auth.result.login-service.dto';
 
 @Controller('api/degreelevels')

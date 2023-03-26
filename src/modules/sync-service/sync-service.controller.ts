@@ -7,7 +7,7 @@ import { ErolesUser, keyAccessLibraryService } from 'src/constants/constant';
 import { AuthServiceAccessByKey } from 'src/validates/validates.service.key-access';
 import { RoleGuard } from '../auth/guards/auth.role-auth.guard';
 import { JwtAuthGuard } from '../auth/guards/auth.jwt-auth.guard';
-import { msgResponse } from 'src/constants/message.response';
+import { msgResponse } from 'src/constants/constants.message.response';
 
 @Controller('api/sync-service')
 @ApiTags('sync-service')

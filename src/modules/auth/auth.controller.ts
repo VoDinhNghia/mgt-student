@@ -19,7 +19,7 @@ import { ResponseLoginApiDto } from './dtos/auth.api.login.response.dto';
 import {
   descriptionResponse,
   msgResponse,
-} from 'src/constants/message.response';
+} from 'src/constants/constants.message.response';
 import { UserLoginResponseDto } from './dtos/auth.result.login-service.dto';
 
 @Controller('api/auth')

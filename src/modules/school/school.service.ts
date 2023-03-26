@@ -1,14 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
-import { CommonException } from 'src/exceptions/exeception.common-error';
+import { CommonException } from 'src/exceptions/execeptions.common-error';
 import { schoolId } from 'src/constants/constant';
 import { CreateSchoolDto } from './dtos/school.create.dto';
 import { UpdateSchoolDto } from './dtos/school.update.dto';
 import { School_Info, SchoolInfoDocument } from './schemas/school.schema';
 import { ValidateDto } from 'src/validates/validates.common.dto';
-import { collections } from 'src/constants/collections.name';
-import { msgNotFound } from 'src/constants/message.response';
+import { collections } from 'src/constants/constants.collections.name';
+import { msgNotFound } from 'src/constants/constants.message.response';
 import { schoolLookup } from 'src/utils/utils.lookup.query.service';
 
 @Injectable()

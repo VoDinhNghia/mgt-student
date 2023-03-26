@@ -20,7 +20,7 @@ import { ResponseRequest } from 'src/utils/utils.response-api';
 import { RoleGuard } from '../auth/guards/auth.role-auth.guard';
 import { ErolesUser } from 'src/constants/constant';
 import { ConfigService } from '@nestjs/config';
-import { msgResponse } from 'src/constants/message.response';
+import { msgResponse } from 'src/constants/constants.message.response';
 import { readFileJson } from 'src/utils/utils.file.read-json';
 
 @Controller('api/countries')

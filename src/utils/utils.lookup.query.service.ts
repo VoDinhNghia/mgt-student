@@ -1,4 +1,4 @@
-import { collections } from 'src/constants/collections.name';
+import { collections } from 'src/constants/constants.collections.name';
 import { lookupCommon } from './utils.lookup.query.aggregate-query';
 
 export function awardLookup() {

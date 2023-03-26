@@ -4,14 +4,14 @@ import { Model, Types } from 'mongoose';
 import { CreateUserDto } from './dto/users.create.dto';
 import { Users, UsersDocument } from './schemas/users.schema';
 import { Profile, ProfileDocument } from './schemas/users.profile.schema';
-import { cryptoPassWord } from 'src/constants/crypto';
+import { cryptoPassWord } from 'src/constants/constants.crypto';
 import {
   EstatusUserProfile,
   ErolesUser,
   EstatusUser,
 } from 'src/constants/constant';
 import { UsersFillterDto } from './dto/users.query.dto';
-import { CommonException } from 'src/exceptions/exeception.common-error';
+import { CommonException } from 'src/exceptions/execeptions.common-error';
 import {
   Leader_Schools,
   LeaderSchoolDocument,
@@ -28,8 +28,8 @@ import { CreateStudyProcessDto } from './dto/users.create.study-process.dto';
 import { InitSuperAdminDto } from '../auth/dtos/auth.init-super-admin.dto';
 import { ValidateDto } from 'src/validates/validates.common.dto';
 import { UsersUpdateDto } from './dto/users.update.dto';
-import { collections } from 'src/constants/collections.name';
-import { msgNotFound, msgServerError } from 'src/constants/message.response';
+import { collections } from 'src/constants/constants.collections.name';
+import { msgNotFound, msgServerError } from 'src/constants/constants.message.response';
 import { ImatchFindAllUser } from './interfaces/users.find.match.interface';
 import { UserProfileDto } from './dto/users.create-profile.dto';
 import { UpdateProfileDto } from './dto/users.update.profile.dto';

@@ -21,7 +21,7 @@ import { QueryScholarshipDto } from './dtos/scholarship.query.dto';
 import { QueryUserScholarshipDto } from './dtos/scholarship.user.query.dto';
 import { ScholarshipService } from './scholarships.service';
 import { Response, Request } from 'express';
-import { msgResponse } from 'src/constants/message.response';
+import { msgResponse } from 'src/constants/constants.message.response';
 import { UserLoginResponseDto } from '../auth/dtos/auth.result.login-service.dto';
 
 @Controller('api/scholarships')

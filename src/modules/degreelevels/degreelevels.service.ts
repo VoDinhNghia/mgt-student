@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { msgNotFound } from 'src/constants/message.response';
-import { CommonException } from 'src/exceptions/exeception.common-error';
+import { msgNotFound } from 'src/constants/constants.message.response';
+import { CommonException } from 'src/exceptions/execeptions.common-error';
 import { ValidateDto } from 'src/validates/validates.common.dto';
 import { CreateDegreeLevelDto } from './dtos/degreelevels.create.dto';
 import { UpdateDegreeLevelDto } from './dtos/degreeLevels.update.dto';

@@ -1,11 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Types } from 'mongoose';
-import { DbConnection } from 'src/constants/db.mongo.connection';
-import { CommonException } from 'src/exceptions/exeception.common-error';
+import { DbConnection } from 'src/constants/constants.db.mongo.connection';
+import { CommonException } from 'src/exceptions/execeptions.common-error';
 import { uniq } from 'lodash';
 import { validateEmail } from './validates.email';
-import { msgValidateEmail } from 'src/constants/message.response';
-import { collections } from 'src/constants/collections.name';
+import { msgValidateEmail } from 'src/constants/constants.message.response';
+import { collections } from 'src/constants/constants.collections.name';
 import { CreateInstituteDto } from 'src/modules/institute/dtos/institute.create.dto';
 import { CreateDepartmentDto } from 'src/modules/departments/dtos/departments.create.dto';
 import { EroomType } from 'src/constants/constant';

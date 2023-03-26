@@ -18,7 +18,7 @@ import { UnionsService } from './unions.service';
 import { Response, Request } from 'express';
 import { CreateUnionDto } from './dtos/unions.create.dto';
 import { ResponseRequest } from 'src/utils/utils.response-api';
-import { msgResponse } from 'src/constants/message.response';
+import { msgResponse } from 'src/constants/constants.message.response';
 import { UserLoginResponseDto } from '../auth/dtos/auth.result.login-service.dto';
 import { UpdateUnionDto } from './dtos/unions.update.dto';
 
