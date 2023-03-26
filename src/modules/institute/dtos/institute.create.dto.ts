@@ -10,7 +10,7 @@ import {
   IsString,
   ValidateNested,
 } from 'class-validator';
-import { GetCurrentDate } from 'src/utils/get.current-date';
+import { GetCurrentDate } from 'src/utils/utils.get.current-date';
 import { ContactInstituteDto } from './institute.contact.dto';
 import { FunctionAndTaskInstituteDto } from './institute.function-task.dto';
 

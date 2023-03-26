@@ -8,7 +8,7 @@ import {
   IsString,
 } from 'class-validator';
 import { EtypeAward } from 'src/constants/constant';
-import { GetCurrentDate } from 'src/utils/get.current-date';
+import { GetCurrentDate } from 'src/utils/utils.get.current-date';
 
 export class CreateAwardDto {
   @IsString()

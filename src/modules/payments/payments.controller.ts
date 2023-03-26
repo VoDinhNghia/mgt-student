@@ -11,14 +11,14 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { ResponseRequest } from 'src/utils/response-api';
+import { ResponseRequest } from 'src/utils/utils.response-api';
 import { CreateMoneyPerCreditMgtDto } from './dtos/payments.mgt-money-per-credit.create.dto';
 import { PaymentsService } from './payments.service';
 import { Response, Request } from 'express';
-import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
-import { RoleGuard } from '../auth/guards/role-auth.guard';
+import { JwtAuthGuard } from '../auth/guards/auth.jwt-auth.guard';
+import { RoleGuard } from '../auth/guards/auth.role-auth.guard';
 import { ErolesUser } from 'src/constants/constant';
-import { UpdateMoneyPerCreditMgtDto } from './dtos/payment.mgt-money-per-credit.update.dto';
+import { UpdateMoneyPerCreditMgtDto } from './dtos/payments.mgt-money-per-credit.update.dto';
 import { QueryTuitionUser } from './dtos/payments.query.tuition-user.dto';
 import { CreateUserPaymentDto } from './dtos/payments.users.create.dto';
 import { msgResponse } from 'src/constants/message.response';

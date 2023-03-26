@@ -12,12 +12,12 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { ResponseRequest } from 'src/utils/response-api';
+import { ResponseRequest } from 'src/utils/utils.response-api';
 import { PermissionsService } from './permissions.service';
 import { Response, Request } from 'express';
 import { CreatePermissionDto } from './dtos/permissions.create.dto';
-import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
-import { RoleGuard } from '../auth/guards/role-auth.guard';
+import { JwtAuthGuard } from '../auth/guards/auth.jwt-auth.guard';
+import { RoleGuard } from '../auth/guards/auth.role-auth.guard';
 import { ErolesUser } from 'src/constants/constant';
 import { UpdatePermissionDto } from './dtos/permissions.update.dto';
 import { QueryPermissionDto } from './dtos/permissions.query.dto';

@@ -6,11 +6,11 @@ import { collections } from 'src/constants/collections.name';
 import { EstatusPayments } from 'src/constants/constant';
 import { msgNotFound } from 'src/constants/message.response';
 import { CommonException } from 'src/exceptions/exeception.common-error';
-import { getRandomCodeReceiptId } from 'src/utils/generate.code-payment';
-import { SubjectUserRegister } from 'src/utils/user.register-subject.query';
-import { ValidateDto } from 'src/validates/validate.common.dto';
+import { getRandomCodeReceiptId } from 'src/utils/utils.generate.code-payment';
+import { SubjectUserRegister } from 'src/utils/utils.user.register-subject.query';
+import { ValidateDto } from 'src/validates/validates.common.dto';
 import { CreateMoneyPerCreditMgtDto } from './dtos/payments.mgt-money-per-credit.create.dto';
-import { UpdateMoneyPerCreditMgtDto } from './dtos/payment.mgt-money-per-credit.update.dto';
+import { UpdateMoneyPerCreditMgtDto } from './dtos/payments.mgt-money-per-credit.update.dto';
 import { QueryTuitionUser } from './dtos/payments.query.tuition-user.dto';
 import { CreateUserPaymentDto } from './dtos/payments.users.create.dto';
 import { UpdateUserPaymentDto } from './dtos/payments.users.update.dto';
@@ -25,7 +25,7 @@ import {
 import {
   paymentLookup,
   userPaymentLookup,
-} from 'src/utils/lookup.query.service';
+} from 'src/utils/utils.lookup.query.service';
 
 @Injectable()
 export class PaymentsService {

@@ -1,4 +1,4 @@
-import { GetCurrentDate } from './get.current-date';
+import { GetCurrentDate } from './utils.get.current-date';
 
 export function getRandomCodeReceiptId(length: number) {
   const number = Math.floor(

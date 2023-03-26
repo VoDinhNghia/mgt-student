@@ -12,14 +12,14 @@ import {
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { ErolesUser } from 'src/constants/constant';
-import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
-import { RoleGuard } from '../auth/guards/role-auth.guard';
+import { JwtAuthGuard } from '../auth/guards/auth.jwt-auth.guard';
+import { RoleGuard } from '../auth/guards/auth.role-auth.guard';
 import { BranchService } from './branchs.service';
 import { Response, Request } from 'express';
 import { BranchCreateDto } from './dtos/branchs.create.dto';
 import { BranchQueryDto } from './dtos/branchs.query.dto';
 import { BranchUpdateDto } from './dtos/branchs.update.dto';
-import { ResponseRequest } from 'src/utils/response-api';
+import { ResponseRequest } from 'src/utils/utils.response-api';
 import { msgResponse } from 'src/constants/message.response';
 import { UserLoginResponseDto } from '../auth/dtos/auth.result.login-service.dto';
 

@@ -12,12 +12,12 @@ import {
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { ErolesUser } from 'src/constants/constant';
-import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
-import { RoleGuard } from '../auth/guards/role-auth.guard';
+import { JwtAuthGuard } from '../auth/guards/auth.jwt-auth.guard';
+import { RoleGuard } from '../auth/guards/auth.role-auth.guard';
 import { UnionsService } from './unions.service';
 import { Response, Request } from 'express';
 import { CreateUnionDto } from './dtos/unions.create.dto';
-import { ResponseRequest } from 'src/utils/response-api';
+import { ResponseRequest } from 'src/utils/utils.response-api';
 import { msgResponse } from 'src/constants/message.response';
 import { UserLoginResponseDto } from '../auth/dtos/auth.result.login-service.dto';
 import { UpdateUnionDto } from './dtos/unions.update.dto';

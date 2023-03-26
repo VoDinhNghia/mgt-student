@@ -4,7 +4,7 @@ import { Model, Types } from 'mongoose';
 import { collections } from 'src/constants/collections.name';
 import { msgNotFound, msgResponse } from 'src/constants/message.response';
 import { CommonException } from 'src/exceptions/exeception.common-error';
-import { ValidateDto } from 'src/validates/validate.common.dto';
+import { ValidateDto } from 'src/validates/validates.common.dto';
 import { CreateClassDto } from './dtos/class-subject.create-class.dto';
 import { UpdateClassDto } from './dtos/class-subject.update-class.dto';
 import { CreateSubjectDto } from './dtos/class-subject.create-subject.dto';
@@ -21,8 +21,8 @@ import {
   Subject_Process,
   SubjectProcessDocument,
 } from './schemas/class-subject.subjectProcess';
-import { ImatchFindClassSubject } from './interfaces/class-subject.match.find';
-import { classInfoLookup, subjectLookup } from 'src/utils/lookup.query.service';
+import { ImatchFindClassSubject } from './interfaces/class-subject.find.match.interface';
+import { classInfoLookup, subjectLookup } from 'src/utils/utils.lookup.query.service';
 
 @Injectable()
 export class ClassSubjectService {

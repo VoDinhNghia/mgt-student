@@ -3,7 +3,7 @@ import { Types } from 'mongoose';
 import { collections } from 'src/constants/collections.name';
 import { trainningPointDefault } from 'src/constants/constant';
 import { DbConnection } from 'src/constants/db.mongo.connection';
-import { trainningPointScholarshipLookup } from './lookup.query.service';
+import { trainningPointScholarshipLookup } from './utils.lookup.query.service';
 
 export class QueryService {
   db = new DbConnection();

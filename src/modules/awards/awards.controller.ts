@@ -12,11 +12,11 @@ import {
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { ErolesUser } from 'src/constants/constant';
-import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
-import { RoleGuard } from '../auth/guards/role-auth.guard';
+import { JwtAuthGuard } from '../auth/guards/auth.jwt-auth.guard';
+import { RoleGuard } from '../auth/guards/auth.role-auth.guard';
 import { AwardsService } from './awards.service';
 import { Response, Request } from 'express';
-import { ResponseRequest } from 'src/utils/response-api';
+import { ResponseRequest } from 'src/utils/utils.response-api';
 import { CreateAwardDto } from './dtos/awards.create.dto';
 import { UpdateAwardDto } from './dtos/awards.update.dto';
 import { QueryAwardDto } from './dtos/awards.query.dto';

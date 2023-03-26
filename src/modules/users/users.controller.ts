@@ -18,8 +18,8 @@ import { UsersService } from './users.service';
 import { ApiBearerAuth, ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { ErolesUser } from 'src/constants/constant';
 import { UsersUpdateDto } from './dto/users.update.dto';
-import { RoleGuard } from '../auth/guards/role-auth.guard';
-import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { RoleGuard } from '../auth/guards/auth.role-auth.guard';
+import { JwtAuthGuard } from '../auth/guards/auth.jwt-auth.guard';
 import { Request, Response, Express } from 'express';
 import { UsersFillterDto } from './dto/users.query.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
@@ -27,7 +27,7 @@ import { StorageObjectDto } from './dto/users.file-upload.dto';
 import { diskStorage } from 'multer';
 import { readFileSync } from 'fs';
 import { UpdateProfileDto } from './dto/users.update.profile.dto';
-import { ResponseRequest } from 'src/utils/response-api';
+import { ResponseRequest } from 'src/utils/utils.response-api';
 import { CreateLeaderSchoolDto } from './dto/users.create.leader-school.dto';
 import { UpdateLeaderSchoolDto } from './dto/users.update.leader-school.dto';
 import { QueryLeaderSchoolDto } from './dto/users.query.leader-school.dto';
@@ -35,8 +35,8 @@ import {
   csvFileFilter,
   destinationImportUser,
   fileName,
-} from 'src/validates/validate.attachment.upload-file';
-import { getDataFromCsvFileUpload } from 'src/utils/getDataFromCsvUpload';
+} from 'src/validates/validates.attachment.upload-file';
+import { getDataFromCsvFileUpload } from 'src/utils/utils.getDataFromCsvUpload';
 import { msgResponse } from 'src/constants/message.response';
 import { UserLoginResponseDto } from '../auth/dtos/auth.result.login-service.dto';
 

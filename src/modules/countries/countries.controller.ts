@@ -12,16 +12,16 @@ import {
 import { UpdateCountriesDto } from './dto/countries.update.dto';
 import { CountriesService } from './countries.service';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { JwtAuthGuard } from '../auth/guards/auth.jwt-auth.guard';
 import { Response } from 'express';
 import { QueryPovinceDto } from './dto/countries.query-province.dto';
 import { QueryDistrictDto } from './dto/countries.query-district.dto';
-import { ResponseRequest } from 'src/utils/response-api';
-import { RoleGuard } from '../auth/guards/role-auth.guard';
+import { ResponseRequest } from 'src/utils/utils.response-api';
+import { RoleGuard } from '../auth/guards/auth.role-auth.guard';
 import { ErolesUser } from 'src/constants/constant';
 import { ConfigService } from '@nestjs/config';
 import { msgResponse } from 'src/constants/message.response';
-import { readFileJson } from 'src/utils/file.read-json';
+import { readFileJson } from 'src/utils/utils.file.read-json';
 
 @Controller('api/countries')
 @ApiTags('countries')

@@ -4,13 +4,13 @@ import { Model, Types } from 'mongoose';
 import { collections } from 'src/constants/collections.name';
 import { msgNotFound } from 'src/constants/message.response';
 import { CommonException } from 'src/exceptions/exeception.common-error';
-import { permissionLookup } from 'src/utils/lookup.query.service';
-import { skipLimitAndSortPagination } from 'src/utils/page.pagination';
-import { ValidateDto } from 'src/validates/validate.common.dto';
+import { permissionLookup } from 'src/utils/utils.lookup.query.service';
+import { skipLimitAndSortPagination } from 'src/utils/utils.page.pagination';
+import { ValidateDto } from 'src/validates/validates.common.dto';
 import { CreatePermissionDto } from './dtos/permissions.create.dto';
 import { QueryPermissionDto } from './dtos/permissions.query.dto';
 import { UpdatePermissionDto } from './dtos/permissions.update.dto';
-import { ImatchFindPermission } from './interfaces/permissions.match.find';
+import { ImatchFindPermission } from './interfaces/permissions.find.match.interface';
 import {
   Admin_Permission,
   AdminPermissionDocument,

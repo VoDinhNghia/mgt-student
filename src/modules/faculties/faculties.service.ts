@@ -4,7 +4,7 @@ import { Model, Types } from 'mongoose';
 import { collections } from 'src/constants/collections.name';
 import { msgNotFound } from 'src/constants/message.response';
 import { CommonException } from 'src/exceptions/exeception.common-error';
-import { ValidateDto } from 'src/validates/validate.common.dto';
+import { ValidateDto } from 'src/validates/validates.common.dto';
 import { CreateFacultyDto } from './dtos/faculties.create.dto';
 import { FacultyQueryDto } from './dtos/faculties.query.dto';
 import { UpdateFacultyDto } from './dtos/faculties.update.dto';
@@ -13,8 +13,8 @@ import { MajorQueryDto } from './dtos/faculties.major.query.dto';
 import { UpdateMajorDto } from './dtos/faculties.major.update.dto';
 import { Faculty, FacultyDocument } from './schemas/faculties.schema';
 import { Majors, MajorsDocument } from './schemas/faculties.major.schema';
-import { ImatchFindFaculty } from './interfaces/faculties.match.find';
-import { facultyLookup, majorLookup } from 'src/utils/lookup.query.service';
+import { ImatchFindFaculty } from './interfaces/faculties.find.match.interface';
+import { facultyLookup, majorLookup } from 'src/utils/utils.lookup.query.service';
 
 @Injectable()
 export class FacultiesService {

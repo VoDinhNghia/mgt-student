@@ -1,5 +1,5 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
-import { QueryPagination } from 'src/utils/page.query.pagination.dto';
+import { QueryPagination } from 'src/utils/utils.page.query.pagination.dto';
 import { EstatusUser, ErolesUser } from 'src/constants/constant';
 import { IsOptional, IsString } from 'class-validator';
 

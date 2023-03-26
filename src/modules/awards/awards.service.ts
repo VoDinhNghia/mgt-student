@@ -4,13 +4,13 @@ import { Model, Types } from 'mongoose';
 import { collections } from 'src/constants/collections.name';
 import { msgNotFound } from 'src/constants/message.response';
 import { CommonException } from 'src/exceptions/exeception.common-error';
-import { awardLookup } from 'src/utils/lookup.query.service';
-import { skipLimitAndSortPagination } from 'src/utils/page.pagination';
-import { ValidateDto } from 'src/validates/validate.common.dto';
+import { awardLookup } from 'src/utils/utils.lookup.query.service';
+import { skipLimitAndSortPagination } from 'src/utils/utils.page.pagination';
+import { ValidateDto } from 'src/validates/validates.common.dto';
 import { CreateAwardDto } from './dtos/awards.create.dto';
 import { QueryAwardDto } from './dtos/awards.query.dto';
 import { UpdateAwardDto } from './dtos/awards.update.dto';
-import { ImatchFindAward } from './interfaces/awards.match.find';
+import { ImatchFindAward } from './interfaces/awards.find.match.interface';
 import { Award, AwardDocument } from './schemas/awards.schema';
 
 @Injectable()

@@ -4,13 +4,13 @@ import { Model, Types } from 'mongoose';
 import { collections } from 'src/constants/collections.name';
 import { msgNotFound } from 'src/constants/message.response';
 import { CommonException } from 'src/exceptions/exeception.common-error';
-import { branchLookup } from 'src/utils/lookup.query.service';
-import { skipLimitAndSortPagination } from 'src/utils/page.pagination';
-import { ValidateDto } from 'src/validates/validate.common.dto';
+import { branchLookup } from 'src/utils/utils.lookup.query.service';
+import { skipLimitAndSortPagination } from 'src/utils/utils.page.pagination';
+import { ValidateDto } from 'src/validates/validates.common.dto';
 import { BranchCreateDto } from './dtos/branchs.create.dto';
 import { BranchQueryDto } from './dtos/branchs.query.dto';
 import { BranchUpdateDto } from './dtos/branchs.update.dto';
-import { ImatchFindBranch } from './interfaces/branchs.match.find';
+import { ImatchFindBranch } from './interfaces/branchs.find.match.interface';
 import { Branch, BranchDocument } from './schemas/branchs.schema';
 
 @Injectable()

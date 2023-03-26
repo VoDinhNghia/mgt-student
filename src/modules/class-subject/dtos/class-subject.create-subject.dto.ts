@@ -9,7 +9,7 @@ import {
   IsString,
   ValidateNested,
 } from 'class-validator';
-import { GetCurrentDate } from 'src/utils/get.current-date';
+import { GetCurrentDate } from 'src/utils/utils.get.current-date';
 import { ProcessSubjectDto } from './class-subject.create-process.dto';
 
 export class CreateSubjectDto {

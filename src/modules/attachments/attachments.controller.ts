@@ -14,16 +14,16 @@ import {
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiBearerAuth, ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { diskStorage } from 'multer';
-import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { JwtAuthGuard } from '../auth/guards/auth.jwt-auth.guard';
 import { StorageObjectDto } from '../users/dto/users.file-upload.dto';
 import { AttachmentsService } from './attachments.service';
 import { Request, Response } from 'express';
-import { ResponseRequest } from 'src/utils/response-api';
+import { ResponseRequest } from 'src/utils/utils.response-api';
 import {
   destinationAttachment,
   fileName,
   imageFileFilter,
-} from 'src/validates/validate.attachment.upload-file';
+} from 'src/validates/validates.attachment.upload-file';
 import { msgResponse } from 'src/constants/message.response';
 import { UserLoginResponseDto } from '../auth/dtos/auth.result.login-service.dto';
 @Controller('api/attachments')

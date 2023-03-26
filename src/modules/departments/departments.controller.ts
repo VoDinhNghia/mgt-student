@@ -12,9 +12,9 @@ import {
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { ErolesUser } from 'src/constants/constant';
-import { ResponseRequest } from 'src/utils/response-api';
-import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
-import { RoleGuard } from '../auth/guards/role-auth.guard';
+import { ResponseRequest } from 'src/utils/utils.response-api';
+import { JwtAuthGuard } from '../auth/guards/auth.jwt-auth.guard';
+import { RoleGuard } from '../auth/guards/auth.role-auth.guard';
 import { DepartmentsService } from './departments.service';
 import { CreateMultiStaffDepartmentDto } from './dtos/department.staff.create-multi.dto';
 import { CreateStaffDepartmentDto } from './dtos/department.staff.create.dto';

@@ -12,12 +12,12 @@ import {
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { ErolesUser } from 'src/constants/constant';
-import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
-import { RoleGuard } from '../auth/guards/role-auth.guard';
+import { JwtAuthGuard } from '../auth/guards/auth.jwt-auth.guard';
+import { RoleGuard } from '../auth/guards/auth.role-auth.guard';
 import { CreateFacultyDto } from './dtos/faculties.create.dto';
 import { FacultiesService } from './faculties.service';
 import { Response, Request } from 'express';
-import { ResponseRequest } from 'src/utils/response-api';
+import { ResponseRequest } from 'src/utils/utils.response-api';
 import { FacultyQueryDto } from './dtos/faculties.query.dto';
 import { UpdateFacultyDto } from './dtos/faculties.update.dto';
 import { CreateMajorDto } from './dtos/faculties.major.create.dto';

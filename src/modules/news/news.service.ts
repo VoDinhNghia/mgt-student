@@ -4,13 +4,13 @@ import { Model, Types } from 'mongoose';
 import { collections } from 'src/constants/collections.name';
 import { msgNotFound } from 'src/constants/message.response';
 import { CommonException } from 'src/exceptions/exeception.common-error';
-import { newsLookup } from 'src/utils/lookup.query.service';
-import { skipLimitAndSortPagination } from 'src/utils/page.pagination';
-import { ValidateDto } from 'src/validates/validate.common.dto';
+import { newsLookup } from 'src/utils/utils.lookup.query.service';
+import { skipLimitAndSortPagination } from 'src/utils/utils.page.pagination';
+import { ValidateDto } from 'src/validates/validates.common.dto';
 import { CreateNewDto } from './dtos/news.create.dto';
 import { QueryNewDto } from './dtos/news.query.dto';
 import { UpdateNewDto } from './dtos/news.update.dto';
-import { ImatchFindNews } from './interfaces/news.match.find';
+import { ImatchFindNews } from './interfaces/news.find.match.interface';
 import { News, NewsDocument } from './schemas/news.schema';
 
 @Injectable()

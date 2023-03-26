@@ -9,9 +9,9 @@ import {
 } from 'src/constants/constant';
 import { msgNotFound } from 'src/constants/message.response';
 import { CommonException } from 'src/exceptions/exeception.common-error';
-import { QueryService } from 'src/utils/query.service';
-import { SubjectUserRegister } from 'src/utils/user.register-subject.query';
-import { ValidateDto } from 'src/validates/validate.common.dto';
+import { QueryService } from 'src/utils/utils.query.service';
+import { SubjectUserRegister } from 'src/utils/utils.user.register-subject.query';
+import { ValidateDto } from 'src/validates/validates.common.dto';
 import { CreateScholarshipUser } from './dtos/scholarship.user.create.dto';
 import { CreateScholarshipDto } from './dtos/scholarship.create.dto';
 import { QueryScholarshipDto } from './dtos/scholarship.query.dto';
@@ -25,12 +25,12 @@ import {
   Scholarship_User,
   ScholarshipUserDocument,
 } from './schemas/scholarships.user.schema';
-import { ImatchFindAllScholarship } from './interfaces/scholarship.match.find-all';
+import { ImatchFindAllScholarship } from './interfaces/scholarships.find.match.interface';
 import {
   semesterScholarshipLookup,
   userScholarshipLookup,
-} from 'src/utils/lookup.query.service';
-import { skipLimitAndSortPagination } from 'src/utils/page.pagination';
+} from 'src/utils/utils.lookup.query.service';
+import { skipLimitAndSortPagination } from 'src/utils/utils.page.pagination';
 
 @Injectable()
 export class ScholarshipService {
