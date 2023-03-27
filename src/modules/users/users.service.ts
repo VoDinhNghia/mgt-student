@@ -207,7 +207,10 @@ export class UsersService {
     return result;
   }
 
-  async importUser(createdBy: string, data: IusersImport[]) {
+  async importUser(
+    createdBy: string,
+    data: IusersImport[],
+  ): Promise<IusersImport[]> {
     for await (const item of data) {
       const { email, passWord, role, firstName, lastName } = item;
       if (!email || !passWord || !role || !firstName || !lastName) {

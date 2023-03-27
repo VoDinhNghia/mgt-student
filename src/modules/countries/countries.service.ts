@@ -34,7 +34,7 @@ export class CountriesService {
     private readonly wardSchema: Model<WardDocument>,
   ) {}
 
-  async initCountries(data: CreateCoutriesDto[]) {
+  async initCountries(data: CreateCoutriesDto[]): Promise<CreateCoutriesDto[]> {
     for await (const item of data) {
       try {
         const existed = await this.countrySchema.findOne({
@@ -53,7 +53,7 @@ export class CountriesService {
     return data;
   }
 
-  async initProvinces(data: CreateProvinceDto[]) {
+  async initProvinces(data: CreateProvinceDto[]): Promise<CreateProvinceDto[]> {
     for await (const item of data) {
       try {
         const existedCountry = await this.countrySchema.findById({
@@ -79,7 +79,7 @@ export class CountriesService {
     return data;
   }
 
-  async initDisTricts(data: CreateDistrictDto[]) {
+  async initDisTricts(data: CreateDistrictDto[]): Promise<CreateDistrictDto[]> {
     for await (const item of data) {
       try {
         const existedCountry = await this.countrySchema.findById({
@@ -112,7 +112,7 @@ export class CountriesService {
     return data;
   }
 
-  async initWards(data: CreateWardDto[]) {
+  async initWards(data: CreateWardDto[]): Promise<CreateWardDto[]> {
     for await (const item of data) {
       try {
         const existedCountry = await this.countrySchema.findById({
