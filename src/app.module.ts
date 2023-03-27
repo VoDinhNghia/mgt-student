@@ -41,7 +41,7 @@ import { ThrottlerModule } from '@nestjs/throttler';
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
-      useFactory: async (config: ConfigService) => ({
+      useFactory: (config: ConfigService) => ({
         uri: config.get('MONGO_URL'),
         useNewUrlParser: true,
         useUnifiedTopology: true,

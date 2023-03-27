@@ -36,7 +36,9 @@ export class SchoolController {
         mobile: '0393993939',
       },
     };
-    this.schoolService.createSchool(schoolDto);
+    (async () => {
+      await this.schoolService.createSchool(schoolDto);
+    })();
   }
 
   @Put('/:id')

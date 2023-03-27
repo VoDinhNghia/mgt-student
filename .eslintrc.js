@@ -58,6 +58,8 @@ module.exports = {
     '@typescript-eslint/no-dupe-class-members': 'error',
     '@typescript-eslint/no-duplicate-imports': 'error',
     '@typescript-eslint/return-await': 'error',
-    'sonarjs/no-duplicate-string': 'off'
+    'sonarjs/no-duplicate-string': 'off',
+    "require-await": "error",
+    "@typescript-eslint/no-floating-promises": ["error", { "ignoreIIFE": true, "ignoreVoid": true }],
   }
 };
