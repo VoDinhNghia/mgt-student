@@ -6,7 +6,7 @@ export interface ImatchFindAllUser {
       $ne?: Types.ObjectId;
     };
     isDeleted?: boolean;
-    role?: string;
+    role?: string | { $ne: string };
     status?: string;
     user?: Types.ObjectId;
   };

@@ -122,6 +122,11 @@ export const msgResponse = {
   getByIdUnion: 'Get union by id success',
   deleteUnion: 'Delete union success',
   createUser: 'Create user success',
+  existedProfileUser: 'Profile of user existed already',
+  createUserProcessFailed: 'Can not create study process',
+  userProfileNotFound: 'User profile not found',
+  leaderSchoolExisted: 'Leader school existed already',
+  initSupperAdmin: 'Supper admin existed already',
   getAllUser: 'Get all user success',
   updateUser: 'Update user success',
   getByIdUser: 'Get user by id success',
@@ -143,4 +148,13 @@ export const descriptionResponse = {
   apiUpdateProfile: 'Response data when update user profile success',
   apiGetAllUser: 'Response data when get all user success',
   apiGetUserById: 'Response data when get user by id success',
+};
+
+export const msgImportUser = {
+  validateFields:
+    'email or passWord or role or firstName or lastName must provided.',
+  createUserFailed: 'Can not create user',
+  createProfileFailed: 'Can not create profile',
+  createStudyProcessFailed: 'Can not create study process',
+  statusSuccess: 'Import user success',
 };

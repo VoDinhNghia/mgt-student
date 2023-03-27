@@ -18,7 +18,7 @@ export class Profile extends FieldsCommonSchema {
 
   @Prop({
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'classes',
+    ref: collections.class_infos,
   })
   classId?: mongoose.Types.ObjectId;
 
@@ -51,7 +51,7 @@ export class Profile extends FieldsCommonSchema {
     minlength: 6,
     default: getRandomCode(6),
     unique: true,
-  }) // create function generate
+  })
   code?: string; // student and lecturer code
 
   @Prop()
@@ -121,12 +121,12 @@ export class Profile extends FieldsCommonSchema {
   })
   identityCardNumber?: {
     id?: string;
-    date?: Date; // ngay cap
-    location?: string; // noi cap
+    date?: Date; // Date range
+    location?: string; // place of issue of Id
   };
 
   @Prop()
-  object?: string; // doi tuong chinh sach
+  object?: string; // Policy object
 
   @Prop()
   ethnic?: string;
