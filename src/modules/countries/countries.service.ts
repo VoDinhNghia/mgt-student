@@ -3,6 +3,9 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { msgNotFound } from 'src/constants/constants.message.response';
 import { CommonException } from 'src/exceptions/execeptions.common-error';
+import { CreateCoutriesDto } from './dto/countries.create.dto';
+import { CreateDistrictDto } from './dto/countries.create.district.dto';
+import { CreateProvinceDto } from './dto/countries.create.province.dto';
 import { QueryDistrictDto } from './dto/countries.query-district.dto';
 import { QueryPovinceDto } from './dto/countries.query-province.dto';
 import { UpdateCountriesDto } from './dto/countries.update.dto';
@@ -16,6 +19,7 @@ import {
 } from './schemas/countries.province.schema';
 import { Countries, CountriesDocument } from './schemas/countries.schema';
 import { WardDocument, Wards } from './schemas/countries.ward.schemas';
+import { CreateWardDto } from './dto/countries.create.ward.dto';
 
 @Injectable()
 export class CountriesService {
@@ -30,8 +34,7 @@ export class CountriesService {
     private readonly wardSchema: Model<WardDocument>,
   ) {}
 
-  async initCountries(data = []): Promise<Countries[]> {
-    const result = [];
+  async initCountries(data: CreateCoutriesDto[]): Promise<CreateCoutriesDto[]> {
     for await (const item of data) {
       try {
         const existed = await this.countrySchema.findOne({
@@ -39,22 +42,18 @@ export class CountriesService {
         });
         if (existed) {
           item.status = 'Failed - Country existed already.';
-          result.push(item);
           continue;
         }
         await new this.countrySchema(item).save();
         item.status = 'Create country success.';
-        result.push(item);
       } catch {
         item.status = 'Failed - System error.';
-        result.push(item);
       }
     }
-    return result;
+    return data;
   }
 
-  async initProvinces(data = []): Promise<Provinces[]> {
-    const result = [];
+  async initProvinces(data: CreateProvinceDto[]): Promise<CreateProvinceDto[]> {
     for await (const item of data) {
       try {
         const existedCountry = await this.countrySchema.findById({
@@ -62,7 +61,6 @@ export class CountriesService {
         });
         if (!existedCountry) {
           item.status = 'Failed - Country not found.';
-          result.push(item);
           continue;
         }
         const existed = await this.provinceSchema.findOne({
@@ -70,22 +68,18 @@ export class CountriesService {
         });
         if (existed) {
           item.status = 'Failed - Province name existed.';
-          result.push(item);
           continue;
         }
         await new this.provinceSchema(item).save();
         item.status = 'Create province success.';
-        result.push(item);
       } catch {
         item.status = 'Failed - System error.';
-        result.push(item);
       }
     }
-    return result;
+    return data;
   }
 
-  async initDisTricts(data = []): Promise<Districts[]> {
-    const result = [];
+  async initDisTricts(data: CreateDistrictDto[]): Promise<CreateDistrictDto[]> {
     for await (const item of data) {
       try {
         const existedCountry = await this.countrySchema.findById({
@@ -93,7 +87,6 @@ export class CountriesService {
         });
         if (!existedCountry) {
           item.status = 'Failed - Country not found.';
-          result.push(item);
           continue;
         }
         const existedProvince = await this.provinceSchema.findById({
@@ -101,7 +94,6 @@ export class CountriesService {
         });
         if (!existedProvince) {
           item.status = 'Failed - Province not found.';
-          result.push(item);
           continue;
         }
         const existed = await this.districtSchema.findOne({
@@ -109,22 +101,18 @@ export class CountriesService {
         });
         if (existed) {
           item.status = 'Failed - District name existed.';
-          result.push(item);
           continue;
         }
         await new this.districtSchema(item).save();
         item.status = 'Create District success.';
-        result.push(item);
       } catch {
         item.status = 'Failed - System error.';
-        result.push(item);
       }
     }
-    return result;
+    return data;
   }
 
-  async initWards(data = []): Promise<Wards[]> {
-    const result = [];
+  async initWards(data: CreateWardDto[]): Promise<CreateWardDto[]> {
     for await (const item of data) {
       try {
         const existedCountry = await this.countrySchema.findById({
@@ -132,7 +120,6 @@ export class CountriesService {
         });
         if (!existedCountry) {
           item.status = 'Failed - Country not found.';
-          result.push(item);
           continue;
         }
         const existedProvince = await this.provinceSchema.findById({
@@ -140,7 +127,6 @@ export class CountriesService {
         });
         if (!existedProvince) {
           item.status = 'Failed - Province not found.';
-          result.push(item);
           continue;
         }
         const existedDistrict = await this.districtSchema.findById({
@@ -148,7 +134,6 @@ export class CountriesService {
         });
         if (!existedDistrict) {
           item.status = 'Failed - District not found.';
-          result.push(item);
           continue;
         }
         const existed = await this.wardSchema.findOne({
@@ -156,18 +141,15 @@ export class CountriesService {
         });
         if (existed) {
           item.status = 'Failed - Ward name existed.';
-          result.push(item);
           continue;
         }
         await new this.wardSchema(item).save();
         item.status = 'Create wards success.';
-        result.push(item);
       } catch {
         item.status = 'Failed - System error.';
-        result.push(item);
       }
     }
-    return result;
+    return data;
   }
 
   async findAllCountry(): Promise<Countries[]> {

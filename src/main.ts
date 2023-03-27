@@ -46,5 +46,3 @@ async function bootstrap() {
 (async () => {
   await bootstrap();
 })();
-// void bootstrap();
-// resolve no-floating-promises

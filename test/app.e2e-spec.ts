@@ -1,3 +1,4 @@
+/* eslint-disable require-await */
 import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
@@ -15,7 +16,7 @@ describe('AppController (e2e)', () => {
     await app.init();
   });
 
-  it('/ (GET)', () => {
+  it('/ (GET)', async () => {
     return request(app.getHttpServer())
       .get('/')
       .expect(200)

@@ -15,9 +15,9 @@ import { UpdateUnionDto } from 'src/modules/unions/dtos/unions.update.dto';
 import { UpdateCourseDto } from 'src/modules/courses/dtos/courses.update.dto';
 
 export class ValidateDto {
-  db = new DbConnection();
+  db: any = new DbConnection();
 
-  async idLists(collection: string, ids = []): Promise<string[]> {
+  async idLists(collection: string, ids: string[]): Promise<string[]> {
     if (ids.length === 0) {
       return ids;
     }

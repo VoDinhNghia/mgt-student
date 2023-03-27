@@ -1,23 +1,15 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsString } from 'class-validator';
-export class CountriesDto {
+import { CountriesCommonDto } from './countries.create.common.dto';
+
+export class CreateWardDto extends CountriesCommonDto {
   @IsString()
   @IsNotEmpty()
   @ApiProperty()
-  name: string;
+  provinceId: string;
 
   @IsString()
   @IsNotEmpty()
   @ApiProperty()
-  flag?: string;
-
-  @IsString()
-  @IsNotEmpty()
-  @ApiProperty()
-  countryId: string;
-
-  @IsString()
-  @IsNotEmpty()
-  @ApiProperty()
-  capital: string;
+  districtId: string;
 }

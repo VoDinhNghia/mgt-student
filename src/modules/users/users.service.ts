@@ -41,6 +41,7 @@ import {
   userLookup,
 } from 'src/utils/utils.lookup.query.service';
 import { skipLimitAndSortPagination } from 'src/utils/utils.page.pagination';
+import { IusersImport } from './interfaces/users.import.interface';
 
 @Injectable()
 export class UsersService {
@@ -206,7 +207,10 @@ export class UsersService {
     return result;
   }
 
-  async importUser(createdBy: string, data = []) {
+  async importUser(
+    createdBy: string,
+    data: IusersImport[],
+  ): Promise<IusersImport[]> {
     for await (const item of data) {
       const { email, passWord, role, firstName, lastName } = item;
       if (!email || !passWord || !role || !firstName || !lastName) {

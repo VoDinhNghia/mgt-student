@@ -1,5 +1,5 @@
 export class GetCurrentDate {
-  currentDate = new Date();
+  currentDate: Date = new Date();
 
   getDate() {
     const date = this.currentDate.getDate();

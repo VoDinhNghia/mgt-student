@@ -182,7 +182,7 @@ export class PaymentsService {
   }
 
   async getTotalMoneySubject(
-    subjectList = [],
+    subjectList: Record<string, any>[],
     semester: string,
   ): Promise<Record<string, any>[]> {
     const option = { semester: new Types.ObjectId(semester), isDeleted: false };

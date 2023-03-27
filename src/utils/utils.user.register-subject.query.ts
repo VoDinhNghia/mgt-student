@@ -6,7 +6,7 @@ import { CommonException } from 'src/exceptions/execeptions.common-error';
 import { SubjectDocument } from 'src/modules/class-subject/schemas/class-subject.subject.schema';
 
 export class SubjectUserRegister {
-  db = new DbConnection();
+  db: any = new DbConnection();
 
   async findOneStudyProcess(profile: string) {
     const query = { user: new Types.ObjectId(profile), isDeleted: false };

@@ -65,7 +65,7 @@ export class FacultiesService {
   async updateFaculty(
     id: string,
     facultyDto: UpdateFacultyDto,
-    updatedBy,
+    updatedBy: string,
   ): Promise<Faculty> {
     await new ValidateDto().faculty(facultyDto);
     const dto = {
