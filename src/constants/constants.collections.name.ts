@@ -36,6 +36,8 @@ export const collections = {
   subjects: 'subjects',
   trainning_points: 'trainning_points',
   unions: 'unions',
+  unions_members: 'unions_members',
+  unions_images: 'unions_images',
   voluntee_programs: 'voluntee_programs',
   wards: 'wards',
 };

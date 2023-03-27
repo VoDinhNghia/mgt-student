@@ -1,10 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model, Types } from 'mongoose';
+import { Model } from 'mongoose';
 import { msgNotFound } from 'src/constants/constants.message.response';
 import { CommonException } from 'src/exceptions/execeptions.common-error';
-import { unionLookup } from 'src/utils/utils.lookup.query.service';
-import { ValidateDto } from 'src/validates/validates.common.dto';
 import { CreateUnionDto } from './dtos/unions.create.dto';
 import { UpdateUnionDto } from './dtos/unions.update.dto';
 import { Union, UnionDocument } from './schemas/unions.schema';
@@ -19,21 +17,16 @@ export class UnionsService {
     unionDto: CreateUnionDto,
     createdBy: string,
   ): Promise<Union> {
-    const newDto = await new ValidateDto().union(unionDto);
-    const union = await new this.unionSchema({ ...newDto, createdBy }).save();
-    // const result = await this.findUnionById(union._id); check again lookup
+    const union = await new this.unionSchema({ ...unionDto, createdBy }).save();
     return union;
   }
 
   async findUnionById(id: string): Promise<Union> {
-    const match = { $match: { _id: new Types.ObjectId(id) } };
-    const lookup = unionLookup();
-    const aggregate = [match, ...lookup];
-    const result = await this.unionSchema.aggregate(aggregate);
-    if (!result[0]) {
+    const result = await this.unionSchema.findById(id);
+    if (!result) {
       new CommonException(404, msgNotFound);
     }
-    return result[0];
+    return result;
   }
 
   async updateUnion(
@@ -41,9 +34,8 @@ export class UnionsService {
     unionDto: UpdateUnionDto,
     updatedBy: string,
   ): Promise<Union> {
-    const validateDto = await new ValidateDto().union(unionDto);
     const updateDto = {
-      ...validateDto,
+      ...unionDto,
       updatedBy,
       updatedAt: Date.now(),
     };
@@ -64,10 +56,7 @@ export class UnionsService {
   }
 
   async findAllUnions(): Promise<Union[]> {
-    const match = { $match: { isDeleted: false } };
-    const lookup = unionLookup(); // check again
-    const aggregate = [match, ...lookup];
-    const results = await this.unionSchema.aggregate(aggregate);
+    const results = await this.unionSchema.find({ isDeleted: false });
     return results;
   }
 }

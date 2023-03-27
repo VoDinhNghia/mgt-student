@@ -129,12 +129,6 @@ export class Profile extends FieldsCommonSchema {
   object?: string; // doi tuong chinh sach
 
   @Prop()
-  unionDate?: Date;
-
-  @Prop()
-  communistPartyDay?: Date; // ngay vao dang
-
-  @Prop()
   ethnic?: string;
 
   @Prop()

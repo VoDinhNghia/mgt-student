@@ -109,7 +109,7 @@ export class UsersService {
   async findUserById(id: string): Promise<Users> {
     const match = { $match: { _id: new Types.ObjectId(id) } };
     const lookup = userLookup();
-    const aggregate = [match, ...lookup];
+    const aggregate = [match, ...lookup, { $limit: 1 }];
     const result = await this.userSchema.aggregate(aggregate);
     if (!result[0]) {
       new CommonException(404, msgNotFound);
