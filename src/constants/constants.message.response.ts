@@ -117,6 +117,10 @@ export const msgResponse = {
   migrateUsersLibrary: 'Sync data success',
   getAllUserSyncLibrary: 'Get all users success',
   createUnion: 'Create union success',
+  createUnionMember: 'Create union member success',
+  unionNotFound: 'Union not found',
+  unionMemberNotFound: 'Union member not found',
+  unionImageNotFound: 'Union image not found',
   getAllUnion: 'Get all unions success',
   updateUnion: 'Update union success',
   getByIdUnion: 'Get union by id success',
@@ -138,6 +142,7 @@ export const msgResponse = {
   updateLeaderSchool: 'Update leader school success',
   getByIdLeaderSchool: 'Get leader school by id success',
   deleteLeaderSchool: 'Delete leader school success',
+  leaderSchoolNotFound: 'Leader school not found',
 };
 
 export const descriptionResponse = {

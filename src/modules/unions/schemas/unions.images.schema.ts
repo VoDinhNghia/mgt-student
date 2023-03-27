@@ -3,10 +3,10 @@ import mongoose, { Document } from 'mongoose';
 import { collections } from 'src/constants/constants.collections.name';
 import { FieldsCommonSchema } from 'src/utils/utils.fields-common.schema';
 
-export type UnionMemberDocument = UnionMembers & Document;
+export type UnionImageDocument = UnionImages & Document;
 
 @Schema({ collection: collections.unions_images, versionKey: false })
-export class UnionMembers extends FieldsCommonSchema {
+export class UnionImages extends FieldsCommonSchema {
   @Prop({
     type: mongoose.Schema.Types.ObjectId,
     ref: collections.unions,
@@ -24,4 +24,4 @@ export class UnionMembers extends FieldsCommonSchema {
   description?: string;
 }
 
-export const UnionMemberSchema = SchemaFactory.createForClass(UnionMembers);
+export const UnionImageSchema = SchemaFactory.createForClass(UnionImages);

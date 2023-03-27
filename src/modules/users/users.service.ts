@@ -180,6 +180,7 @@ export class UsersService {
     updatedBy: string,
   ): Promise<Users> {
     const { email, passWord } = payload;
+    await this.findUserById(id);
     if (email) {
       await new ValidateDto().email(email);
     }
@@ -203,6 +204,10 @@ export class UsersService {
     updatedBy: string,
   ): Promise<Profile> {
     const { award = [] } = profileDto;
+    const profileInfo = await this.profileSchema.findById(id);
+    if (!profileInfo) {
+      new CommonException(404, msgResponse.userProfileNotFound);
+    }
     const validate = new ValidateDto();
     await validate.profileDto(profileDto);
     const profileValidate = await validate.awards(profileDto, award);
@@ -358,7 +363,7 @@ export class UsersService {
     const aggregate = [match, ...lookup];
     const result = await this.leaderSchoolSchema.aggregate(aggregate);
     if (!result[0]) {
-      new CommonException(404, msgNotFound);
+      new CommonException(404, msgResponse.leaderSchoolNotFound);
     }
     return result[0];
   }
@@ -368,6 +373,7 @@ export class UsersService {
     updateLeaderDto: UpdateLeaderSchoolDto,
     updatedBy: string,
   ): Promise<LeaderSchools> {
+    await this.findLeaderSchoolById(id);
     const dto = {
       ...updateLeaderDto,
       updatedBy,
@@ -405,6 +411,7 @@ export class UsersService {
   }
 
   async deleteLeaderSchool(id: string, deletedBy: string): Promise<void> {
+    await this.findLeaderSchoolById(id);
     const dto = {
       deletedBy,
       isDeleted: true,
@@ -414,6 +421,7 @@ export class UsersService {
   }
 
   async deleteUser(id: string, deletedBy: string): Promise<void> {
+    await this.findUserById(id);
     const dto = {
       deletedBy,
       status: EstatusUser.INACTIVE,
