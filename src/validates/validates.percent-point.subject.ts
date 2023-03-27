@@ -5,7 +5,7 @@ import { CreateSubjectDto } from 'src/modules/class-subject/dtos/class-subject.c
 import { CommonException } from '../exceptions/execeptions.common-error';
 
 export class ValidatePercentPoint implements NestInterceptor {
-  async intercept(context: ExecutionContext, next: CallHandler) {
+  intercept(context: ExecutionContext, next: CallHandler) {
     const request = context.switchToHttp().getRequest<Headers>();
     const { midTermTest, finalExam, studentEssay }: CreateSubjectDto =
       request['body'];
@@ -16,7 +16,6 @@ export class ValidatePercentPoint implements NestInterceptor {
     if (total === 100) {
       return next.handle();
     }
-
     return of([
       new CommonException(
         400,

@@ -43,4 +43,8 @@ async function bootstrap() {
   await app.listen(port);
   console.log(`Server running on port ${port}`);
 }
-bootstrap();
+(async () => {
+  await bootstrap();
+})();
+// void bootstrap();
+// resolve no-floating-promises
