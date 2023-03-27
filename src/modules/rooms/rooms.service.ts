@@ -63,7 +63,7 @@ export class RoomsService {
   async updateRoom(
     id: string,
     updateDto: UpdateRoomDto,
-    updatedBy,
+    updatedBy: string,
   ): Promise<Rooms> {
     await this.findRoomById(id);
     const dto = {

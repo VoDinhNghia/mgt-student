@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
-export class CreateCoutriesDto {
+export class CountriesCommonDto {
   @IsString()
   @IsNotEmpty()
   @ApiProperty()
@@ -10,7 +10,7 @@ export class CreateCoutriesDto {
   @IsString()
   @IsNotEmpty()
   @ApiProperty()
-  flag?: string;
+  code?: string;
 
   @IsString()
   @IsNotEmpty()
@@ -18,9 +18,14 @@ export class CreateCoutriesDto {
   countryId: string;
 
   @IsString()
+  @IsOptional()
+  @ApiProperty()
+  phoneCode?: string;
+
+  @IsString()
   @IsNotEmpty()
   @ApiProperty()
-  capital: string;
+  codename?: string;
 
   @IsString()
   @IsOptional()

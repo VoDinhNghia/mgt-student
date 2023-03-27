@@ -2,7 +2,7 @@
 import { HttpService } from '@nestjs/axios';
 
 export class Http {
-  private http = new HttpService();
+  private http: any = new HttpService();
 
   async get(
     url: string,

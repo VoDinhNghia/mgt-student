@@ -6,7 +6,7 @@ import { DbConnection } from 'src/constants/constants.db.mongo.connection';
 import { trainningPointScholarshipLookup } from './utils.lookup.query.service';
 
 export class QueryService {
-  db = new DbConnection();
+  db: any = new DbConnection();
 
   async findOneByOptions(
     collection: string,
@@ -29,7 +29,7 @@ export class QueryService {
 
   async findByAggregate(
     collection: string,
-    agg = [],
+    agg: Record<string, any>[],
   ): Promise<Record<string, any>[]> {
     const match = { $match: { isDeleted: false } };
     const aggregate = [match, ...agg];
