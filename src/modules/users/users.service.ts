@@ -9,6 +9,7 @@ import {
   EstatusUserProfile,
   ErolesUser,
   EstatusUser,
+  passwordDefault,
 } from 'src/constants/constant';
 import { UsersFillterDto } from './dto/users.query.dto';
 import { CommonException } from 'src/exceptions/execeptions.common-error';
@@ -28,9 +29,10 @@ import { CreateStudyProcessDto } from './dto/users.create.study-process.dto';
 import { InitSuperAdminDto } from '../auth/dtos/auth.init-super-admin.dto';
 import { ValidateDto } from 'src/validates/validates.common.dto';
 import { UsersUpdateDto } from './dto/users.update.dto';
-import { collections } from 'src/constants/constants.collections.name';
 import {
+  msgImportUser,
   msgNotFound,
+  msgResponse,
   msgServerError,
 } from 'src/constants/constants.message.response';
 import { ImatchFindAllUser } from './interfaces/users.find.match.interface';
@@ -78,7 +80,7 @@ export class UsersService {
         createdBy,
       );
       if (!isCreate) {
-        new CommonException(500, 'Can not create study process');
+        new CommonException(500, msgResponse.createUserProcessFailed);
       }
     }
     const result = this.findUserById(user._id);
@@ -117,12 +119,16 @@ export class UsersService {
     return result[0];
   }
 
-  async findAllUsers(query: UsersFillterDto, userId: string): Promise<Users[]> {
+  async findAllUsers(
+    query: UsersFillterDto,
+    userId: string,
+  ): Promise<{ results: Users[]; total: number }> {
     const { searchKey, limit, page, role, status } = query;
     const match: ImatchFindAllUser = {
       $match: {
         _id: { $ne: new Types.ObjectId(userId) },
         isDeleted: false,
+        role: { $ne: ErolesUser.SUPPER_ADMIN },
       },
     };
     if (role) {
@@ -140,20 +146,32 @@ export class UsersService {
           $match: {
             $or: [
               {
-                'user.firstName': new RegExp(searchKey),
-                'user.lastName': new RegExp(searchKey),
+                'profile.firstName': new RegExp(searchKey, 'i'),
+              },
+              {
+                'profile.lastName': new RegExp(searchKey, 'i'),
+              },
+              {
+                'profile.middleName': new RegExp(searchKey, 'i'),
               },
             ],
           },
         },
       ];
     }
-    const aggPagination = skipLimitAndSortPagination(limit, page);
-    const result = await this.userSchema.aggregate([
+    const pagination = skipLimitAndSortPagination(limit, page);
+    const results = await this.userSchema.aggregate([
       ...aggregate,
-      ...aggPagination,
+      ...pagination,
     ]);
-    return result;
+    const total = await this.userSchema.aggregate([
+      ...aggregate,
+      { $count: 'total' },
+    ]);
+    return {
+      results,
+      total: total[0]?.total ?? 0,
+    };
   }
 
   async updateUser(
@@ -214,8 +232,7 @@ export class UsersService {
     for await (const item of data) {
       const { email, passWord, role, firstName, lastName } = item;
       if (!email || !passWord || !role || !firstName || !lastName) {
-        item.statusImport =
-          'email || passWord || role || firstName || lastName must provided.';
+        item.statusImport = msgImportUser.validateFields;
         continue;
       }
       let user = null;
@@ -223,19 +240,19 @@ export class UsersService {
       try {
         const userDto = {
           ...item,
-          passWord: cryptoPassWord(passWord || '123Code#'),
+          passWord: cryptoPassWord(passWord || passwordDefault),
           createdBy,
         };
         user = await new this.userSchema(userDto).save();
       } catch {
-        item.statusImport = 'Can not create user.';
+        item.statusImport = msgImportUser.createUserFailed;
         continue;
       }
       const existedProfile = await this.profileSchema.findOne({
         user: user._id,
       });
       if (existedProfile || !user) {
-        item.statusImport = 'Can not create profile.';
+        item.statusImport = msgImportUser.createProfileFailed;
         continue;
       }
       try {
@@ -247,7 +264,7 @@ export class UsersService {
         };
         profile = await new this.profileSchema(profileDto).save();
       } catch {
-        item.statusImport = 'Can not create profile.';
+        item.statusImport = msgImportUser.createProfileFailed;
         await this.userSchema.findByIdAndDelete(user._id);
         continue;
       }
@@ -258,11 +275,11 @@ export class UsersService {
           createdBy,
         );
         if (!isCreate) {
-          item.statusImport = 'Can not create study process.';
+          item.statusImport = msgImportUser.createStudyProcessFailed;
           continue;
         }
       }
-      item.statusImport = 'Import user success.';
+      item.statusImport = msgImportUser.statusSuccess;
     }
     return data;
   }
@@ -270,14 +287,13 @@ export class UsersService {
   async initSupperAdmin(superAdminDto: InitSuperAdminDto): Promise<Users> {
     const { email, passWord, firstName, lastName } = superAdminDto;
     const option = { role: ErolesUser.SUPPER_ADMIN };
-    await new ValidateDto().existedByOptions(
-      collections.users,
-      option,
-      'Supper Admin',
-    );
+    const existedRoleSa = await this.userSchema.findOne(option);
+    if (existedRoleSa) {
+      new CommonException(409, msgResponse.initSupperAdmin);
+    }
     const supperAdminDto = {
       email,
-      passWord: cryptoPassWord(passWord || '123Code#'),
+      passWord: cryptoPassWord(passWord || passwordDefault),
       status: EstatusUser.ACTIVE,
       statusLogin: false,
       role: ErolesUser.SUPPER_ADMIN,
@@ -294,28 +310,16 @@ export class UsersService {
     return result;
   }
 
-  async validateNumberAdmin(): Promise<boolean> {
-    const result = await this.userSchema.find({
-      role: ErolesUser.ADMIN,
-    });
-    if (result.length > 5) {
-      return false;
-    }
-    return true;
-  }
-
   async createUserProfile(
     profileDto: UserProfileDto,
   ): Promise<ProfileDocument> {
     let result = null;
     try {
-      const validate = new ValidateDto();
       const option = { user: profileDto.user };
-      await validate.existedByOptions(
-        collections.profiles,
-        option,
-        'User profile',
-      );
+      const existedProfile = await this.profileSchema.findOne(option);
+      if (existedProfile) {
+        new CommonException(409, msgResponse.existedProfileUser);
+      }
       result = await new this.profileSchema(profileDto).save();
     } catch (error) {
       await this.userSchema.findByIdAndDelete(profileDto.user);
@@ -330,14 +334,15 @@ export class UsersService {
     createdBy: string,
   ): Promise<LeaderSchools> {
     const { user } = leaderDto;
-    const validate = new ValidateDto();
-    await validate.fieldId(collections.profiles, user);
+    const userProfile = await this.profileSchema.findById(user);
+    if (!userProfile) {
+      new CommonException(404, msgResponse.userProfileNotFound);
+    }
     const option = { user: new Types.ObjectId(user) };
-    await validate.existedByOptions(
-      collections.leader_schools,
-      option,
-      'Leader school',
-    );
+    const existedLeader = await this.leaderSchoolSchema.findOne(option);
+    if (existedLeader) {
+      new CommonException(409, msgResponse.leaderSchoolExisted);
+    }
     const dto = {
       ...leaderDto,
       createdBy,
@@ -376,16 +381,27 @@ export class UsersService {
 
   async findAllLeaderSchool(
     queryDto: QueryLeaderSchoolDto,
-  ): Promise<LeaderSchools[]> {
-    const { user } = queryDto;
+  ): Promise<{ results: LeaderSchools[]; total: number }> {
+    const { user, limit, page } = queryDto;
     const match: ImatchFindAllUser = { $match: { isDeleted: false } };
     if (user) {
       match.$match.user = new Types.ObjectId(user);
     }
     const lookup = profileLookup();
     const aggregate = [match, ...lookup];
-    const results = await this.leaderSchoolSchema.aggregate(aggregate);
-    return results;
+    const pagination = skipLimitAndSortPagination(limit, page);
+    const results = await this.leaderSchoolSchema.aggregate([
+      ...aggregate,
+      ...pagination,
+    ]);
+    const total = await this.leaderSchoolSchema.aggregate([
+      ...aggregate,
+      { $count: 'total' },
+    ]);
+    return {
+      results,
+      total: total[0]?.total ?? 0,
+    };
   }
 
   async deleteLeaderSchool(id: string, deletedBy: string): Promise<void> {
