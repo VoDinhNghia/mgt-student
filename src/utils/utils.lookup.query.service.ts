@@ -234,26 +234,6 @@ export function syncUserLookup() {
   return userAndSyncLookup();
 }
 
-export function unionLookup() {
-  const lookup = lookupCommon([
-    {
-      from: collections.profiles,
-      localField: 'members.user',
-      foreignField: '_id',
-      as: 'user',
-      unwind: true,
-    },
-    {
-      from: collections.attachments,
-      localField: 'images.attachment',
-      foreignField: '_id',
-      as: 'attachment',
-      unwind: true,
-    },
-  ]);
-  return lookup;
-}
-
 export function userLookup() {
   return userAndSyncLookup();
 }

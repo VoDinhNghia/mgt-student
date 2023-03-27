@@ -11,7 +11,6 @@ import { CreateDepartmentDto } from 'src/modules/departments/dtos/departments.cr
 import { EroomType } from 'src/constants/constant';
 import { CreateCenterDto } from 'src/modules/centers/dtos/centers.create.dto';
 import { CreateScholarshipDto } from 'src/modules/scholarships/dtos/scholarship.create.dto';
-import { UpdateUnionDto } from 'src/modules/unions/dtos/unions.update.dto';
 import { UpdateCourseDto } from 'src/modules/courses/dtos/courses.update.dto';
 
 export class ValidateDto {
@@ -123,37 +122,6 @@ export class ValidateDto {
       profileDto.award = awardIds;
     }
     return profileDto;
-  }
-
-  async union(unionDto: UpdateUnionDto): Promise<Record<string, any>> {
-    const { images = [], members = [] } = unionDto;
-    if (images.length > 0) {
-      const imageLists = [];
-      for await (const item of images) {
-        const options = { _id: new Types.ObjectId(item.attachment) };
-        const result = await this.db
-          .collection(collections.attachments)
-          .findOne({ ...options, isDeleted: false });
-        if (result) {
-          imageLists.push(item);
-        }
-      }
-      unionDto.images = imageLists;
-    }
-    if (members.length > 0) {
-      const memberLists = [];
-      for await (const item of members) {
-        const options = { _id: new Types.ObjectId(item.user) };
-        const result = await this.db
-          .collection(collections.profiles)
-          .findOne({ ...options, isDeleted: false });
-        if (result) {
-          memberLists.push(item);
-        }
-      }
-      unionDto.members = memberLists;
-    }
-    return unionDto;
   }
 
   async school(schoolDto: Record<string, any>): Promise<void> {
