@@ -6,6 +6,7 @@ import {
   Param,
   Post,
   Put,
+  Query,
   Req,
   Res,
   UseGuards,
@@ -26,6 +27,9 @@ import { CreateUnionImagesDto } from './dtos/unions.create.images.dto';
 import { UpdateUnionMember } from './dtos/unions.update.member.dto';
 import { UpdateUnionImage } from './dtos/unions.update.image.dto';
 import { unionController } from 'src/constants/constants.controller.name-tag';
+import { QueryUnionDto } from './dtos/unions.query.dto';
+import { QueryUnionMemberDto } from './dtos/unions.query.member.dto';
+import { QueryUnionImageDto } from './dtos/unions.query.image.dto';
 
 @Controller(unionController.name)
 @ApiTags(unionController.tag)
@@ -154,10 +158,65 @@ export class UnionsController {
     return new ResponseRequest(res, true, unionMsg.delete);
   }
 
+  @Delete('/member/:id')
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
+  async deleteUnionMember(
+    @Param('id') id: string,
+    @Res() res: ResponseRequest,
+    @Req() req: Request,
+  ): Promise<ResponseRequest> {
+    const user: UserLoginResponseDto = req?.user;
+    const deletedBy: string = user.profileId;
+    await this.unionService.deleteUnionMember(id, deletedBy);
+    return new ResponseRequest(res, true, unionMsg.deleteMember);
+  }
+
+  @Delete('/image/:id')
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
+  async deleteUnionImage(
+    @Param('id') id: string,
+    @Res() res: ResponseRequest,
+    @Req() req: Request,
+  ): Promise<ResponseRequest> {
+    const user: UserLoginResponseDto = req?.user;
+    const deletedBy: string = user.profileId;
+    await this.unionService.deleteUnionImage(id, deletedBy);
+    return new ResponseRequest(res, true, unionMsg.deleteImage);
+  }
+
   @Get()
-  async getAllUnion(@Res() res: ResponseRequest): Promise<ResponseRequest> {
-    const results = await this.unionService.findAllUnions();
+  async getAllUnion(
+    @Query() queryDto: QueryUnionDto,
+    @Res() res: ResponseRequest,
+  ): Promise<ResponseRequest> {
+    const results = await this.unionService.findAllUnions(queryDto);
     return new ResponseRequest(res, results, unionMsg.getAll);
+  }
+
+  @Get('/members')
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  async getAllUnionMembers(
+    @Query() queryDto: QueryUnionMemberDto,
+    @Res() res: ResponseRequest,
+  ): Promise<ResponseRequest> {
+    const results = await this.unionService.findAllUnionMembers(queryDto);
+    return new ResponseRequest(res, results, unionMsg.getAllMembers);
+  }
+
+  @Get('/images')
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  async getAllUnionImages(
+    @Query() queryDto: QueryUnionImageDto,
+    @Res() res: ResponseRequest,
+  ): Promise<ResponseRequest> {
+    const results = await this.unionService.findAllUnionImages(queryDto);
+    return new ResponseRequest(res, results, unionMsg.getAllImages);
   }
 
   @Get('/member/:id')
