@@ -270,10 +270,11 @@ export class UnionsService {
         'attachment',
         ['url', 'originalname', 'filename'],
         this.attachmentSchema,
+        { isDeleted: false },
       )
-      .populate('union', ['nameUnit'], this.unionSchema)
       .skip(limit && page ? Number(limit) * Number(page) - Number(limit) : null)
       .limit(limit ? Number(limit) : null)
+      .populate('union', ['nameUnit'], this.unionSchema, { isDeleted: false })
       .sort({ createdAt: -1 })
       .lean();
     const total = await this.unionImageSchema.find(query).count();
@@ -304,10 +305,11 @@ export class UnionsService {
         'user',
         ['firstName', 'lastName', 'middleName', 'user', '_id'],
         this.profileSchema,
+        { isDeleted: false },
       )
-      .populate('union', ['nameUnit'], this.unionSchema)
       .skip(limit && page ? Number(limit) * Number(page) - Number(limit) : null)
       .limit(limit ? Number(limit) : null)
+      .populate('union', ['nameUnit'], this.unionSchema, { isDeleted: false })
       .sort({ createdAt: -1 })
       .lean();
     const total = await this.unionMemberSchema.find(query).count();
