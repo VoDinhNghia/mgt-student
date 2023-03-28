@@ -2,6 +2,71 @@ export const msgServerError = 'Server interval';
 export const msgNotFound = 'The document not found';
 export const msgValidateEmail = 'Email not correct format';
 
+export const userMsg = {
+  create: 'Create user success',
+  createLeaderSchool: 'Create leader school success',
+  createUserProcessFailed: 'Can not create study process',
+  getAll: 'Get all user success',
+  getAllLeaderSchools: 'Get all leader school success',
+  getByIdLeaderSchools: 'Get leader school by id success',
+  getById: 'Get user by id success',
+  update: 'Update user success',
+  updateUserProfile: 'Update profile success',
+  updateLeaderSchool: 'Update leader school success',
+  delete: 'Delete user success',
+  deleteLeaderSchool: 'Delete leader school success',
+  notFoundUser: 'User not found',
+  notFoundeaderSchool: 'Leader school not found',
+  notFoundProfile: 'User profile not found',
+  importUser: 'Import multi user success',
+  importValidate:
+    'email or passWord or role or firstName or lastName must provided.',
+  importCreateUserFailed: 'Can not create user',
+  importCreateProfileFailed: 'Can not create profile',
+  importCreateStudyProcessFailed: 'Can not create study process',
+  importStatus: 'Import user success',
+  profileUserExisted: 'Profile of user existed already',
+  leaderSchoolExisted: 'Leader school existed already',
+  supperAdminExisted: 'Supper admin existed already',
+};
+
+export const unionMsg = {
+  create: 'Create union success',
+  createMember: 'Create union member success',
+  createImage: 'Create union member success',
+  notFound: 'Union not found',
+  notFoundMember: 'Union member not found',
+  notFoundImage: 'Union image not found',
+  getAll: 'Get all unions success',
+  getAllMembers: 'Get all union members success',
+  getAllImages: 'Get all union images success',
+  getById: 'Get union by id success',
+  getByIdMember: 'Get union member by id success',
+  getByIdImage: 'Get union image by id success',
+  update: 'Update union success',
+  updateMember: 'Update union member success',
+  updateImage: 'Update union image success',
+  delete: 'Delete union success',
+  deleteMember: 'Delete union member success',
+  deleteImage: 'Delete union image success',
+};
+
+export const attachmentMsg = {
+  create: 'Create attachment success',
+  getById: 'Get attachment success',
+  delete: 'Delete attachment success',
+  notFound: 'Attachment not found',
+};
+
+export const semesterMsg = {
+  create: 'Create semester success',
+  getAll: 'Get all semester success',
+  update: 'Update semester success',
+  getById: 'Get semester by id success',
+  delete: 'Delete semester success',
+  notFound: 'Semester not found',
+};
+
 export const msgResponse = {
   initSupperAdminAuth: 'Create supper admin success',
   loginAuth: 'Login sucess',
@@ -105,69 +170,8 @@ export const msgResponse = {
   updateSchool: 'Update school success',
   getByIdSchool: 'Get school by id success',
   deleteSchool: 'Delete school success',
-  createSemester: 'Create semester success',
-  getAllSemester: 'Get all semester success',
-  updateSemester: 'Update semester success',
-  getByIdSemester: 'Get semester by id success',
-  deleteSemester: 'Delete semester success',
   migrateUsersLibrary: 'Sync data success',
   getAllUserSyncLibrary: 'Get all users success',
-};
-
-export const userMsg = {
-  create: 'Create user success',
-  createLeaderSchool: 'Create leader school success',
-  createUserProcessFailed: 'Can not create study process',
-  getAll: 'Get all user success',
-  getAllLeaderSchools: 'Get all leader school success',
-  getByIdLeaderSchools: 'Get leader school by id success',
-  getById: 'Get user by id success',
-  update: 'Update user success',
-  updateUserProfile: 'Update profile success',
-  updateLeaderSchool: 'Update leader school success',
-  delete: 'Delete user success',
-  deleteLeaderSchool: 'Delete leader school success',
-  notFoundUser: 'User not found',
-  notFoundeaderSchool: 'Leader school not found',
-  notFoundProfile: 'User profile not found',
-  importUser: 'Import multi user success',
-  importValidate:
-    'email or passWord or role or firstName or lastName must provided.',
-  importCreateUserFailed: 'Can not create user',
-  importCreateProfileFailed: 'Can not create profile',
-  importCreateStudyProcessFailed: 'Can not create study process',
-  importStatus: 'Import user success',
-  profileUserExisted: 'Profile of user existed already',
-  leaderSchoolExisted: 'Leader school existed already',
-  supperAdminExisted: 'Supper admin existed already',
-};
-
-export const unionMsg = {
-  create: 'Create union success',
-  createMember: 'Create union member success',
-  createImage: 'Create union member success',
-  notFound: 'Union not found',
-  notFoundMember: 'Union member not found',
-  notFoundImage: 'Union image not found',
-  getAll: 'Get all unions success',
-  getAllMembers: 'Get all union members success',
-  getAllImages: 'Get all union images success',
-  getById: 'Get union by id success',
-  getByIdMember: 'Get union member by id success',
-  getByIdImage: 'Get union image by id success',
-  update: 'Update union success',
-  updateMember: 'Update union member success',
-  updateImage: 'Update union image success',
-  delete: 'Delete union success',
-  deleteMember: 'Delete union member success',
-  deleteImage: 'Delete union image success',
-};
-
-export const attachmentMsg = {
-  create: 'Create attachment success',
-  getById: 'Get attachment success',
-  delete: 'Delete attachment success',
-  notFound: 'Attachment not found',
 };
 
 export const descriptionResponse = {
