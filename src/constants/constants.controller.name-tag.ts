@@ -17,3 +17,8 @@ export const semesterController = {
   name: 'api/semesters',
   tag: 'semesters',
 };
+
+export const schoolController = {
+  name: 'api/school',
+  tag: 'school',
+};

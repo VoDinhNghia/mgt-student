@@ -8,6 +8,7 @@ import {
 } from 'src/constants/constants.message.response';
 import { CommonException } from 'src/exceptions/execeptions.common-error';
 import { Igroup } from 'src/utils/utils.interface';
+import { selectAttachment, selectUnion } from 'src/utils/utils.populate';
 import {
   Attachment,
   AttachmentDocument,
@@ -178,19 +179,28 @@ export class UnionsService {
     return result;
   }
 
-  async findUnionById(id: string): Promise<Union> {
-    const result = await this.unionSchema.findById(id);
+  async findUnionById(id: string): Promise<IunionFindAll> {
+    const result: IunionFindAll = await this.unionSchema.findById(id).lean();
     if (!result) {
       new CommonException(404, unionMsg.notFound);
     }
-    return result;
+    const groupMember = await this.groupMember(result._id);
+    const imageList = await this.findAllUnionImages({
+      union: String(result._id),
+    });
+    return { ...result, groupMember, imageList: imageList.results };
   }
 
   async findUnionMemberById(id: string): Promise<UnionMembers> {
     const result = await this.unionMemberSchema
       .findById(id)
-      .populate('union', '', this.unionSchema, { isDeleted: false })
-      .populate('user', '', this.profileSchema, { isDeleted: false })
+      .select(selectUnion.member)
+      .populate('union', selectUnion.union, this.unionSchema, {
+        isDeleted: false,
+      })
+      .populate('user', selectUnion.user, this.profileSchema, {
+        isDeleted: false,
+      })
       .exec();
     if (!result) {
       new CommonException(404, unionMsg.notFoundMember);
@@ -201,8 +211,13 @@ export class UnionsService {
   async findUnionImageById(id: string): Promise<UnionImages> {
     const result = await this.unionImageSchema
       .findById(id)
-      .populate('union', '', this.unionSchema, { isDeleted: false })
-      .populate('attachment', '', this.attachmentSchema, { isDeleted: false })
+      .select(selectUnion.image)
+      .populate('union', selectUnion.union, this.unionSchema, {
+        isDeleted: false,
+      })
+      .populate('attachment', selectAttachment, this.attachmentSchema, {
+        isDeleted: false,
+      })
       .exec();
     if (!result) {
       new CommonException(404, unionMsg.notFoundMember);
@@ -265,16 +280,15 @@ export class UnionsService {
     }
     const results = await this.unionImageSchema
       .find(query)
-      .select(['_id', 'attachment', 'description'])
-      .populate(
-        'attachment',
-        ['url', 'originalname', 'filename'],
-        this.attachmentSchema,
-        { isDeleted: false },
-      )
+      .select(selectUnion.image)
+      .populate('attachment', selectAttachment, this.attachmentSchema, {
+        isDeleted: false,
+      })
       .skip(limit && page ? Number(limit) * Number(page) - Number(limit) : null)
       .limit(limit ? Number(limit) : null)
-      .populate('union', ['nameUnit'], this.unionSchema, { isDeleted: false })
+      .populate('union', selectUnion.union, this.unionSchema, {
+        isDeleted: false,
+      })
       .sort({ createdAt: -1 })
       .lean();
     const total = await this.unionImageSchema.find(query).count();
@@ -300,16 +314,15 @@ export class UnionsService {
     }
     const results = await this.unionMemberSchema
       .find(query)
-      .select(['_id', 'attachment', 'position'])
-      .populate(
-        'user',
-        ['firstName', 'lastName', 'middleName', 'user', '_id'],
-        this.profileSchema,
-        { isDeleted: false },
-      )
+      .select(selectUnion.member)
+      .populate('user', selectUnion.user, this.profileSchema, {
+        isDeleted: false,
+      })
       .skip(limit && page ? Number(limit) * Number(page) - Number(limit) : null)
       .limit(limit ? Number(limit) : null)
-      .populate('union', ['nameUnit'], this.unionSchema, { isDeleted: false })
+      .populate('union', selectUnion.union, this.unionSchema, {
+        isDeleted: false,
+      })
       .sort({ createdAt: -1 })
       .lean();
     const total = await this.unionMemberSchema.find(query).count();

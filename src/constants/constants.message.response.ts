@@ -67,6 +67,12 @@ export const semesterMsg = {
   notFound: 'Semester not found',
 };
 
+export const schoolMsg = {
+  getSchoolInfo: 'Get all school success',
+  update: 'Update school success',
+  notFound: 'School not found',
+};
+
 export const msgResponse = {
   initSupperAdminAuth: 'Create supper admin success',
   loginAuth: 'Login sucess',
@@ -165,11 +171,6 @@ export const msgResponse = {
   createUserScholarship: 'Create user scholarship success',
   getAllUserScholarship: 'Get all user scholarship success',
   getByIdScholarship: 'Get scholarship by id success',
-  createSchool: 'Create school success',
-  getAllSchool: 'Get all school success',
-  updateSchool: 'Update school success',
-  getByIdSchool: 'Get school by id success',
-  deleteSchool: 'Delete school success',
   migrateUsersLibrary: 'Sync data success',
   getAllUserSyncLibrary: 'Get all users success',
 };
