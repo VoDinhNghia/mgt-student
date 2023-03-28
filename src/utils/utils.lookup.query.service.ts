@@ -264,34 +264,6 @@ export function userAndSyncLookup() {
   return lookup;
 }
 
-export function unionMemberLookup() {
-  const lookup = lookupCommon([
-    referenceUnion(),
-    {
-      from: collections.profiles,
-      localField: '_id',
-      foreignField: 'user',
-      as: 'user',
-      unwind: true,
-    },
-  ]);
-  return lookup;
-}
-
-export function unionImageLookup() {
-  const lookup = lookupCommon([
-    referenceUnion(),
-    {
-      from: collections.attachments,
-      localField: '_id',
-      foreignField: 'attachment',
-      as: 'attachment',
-      unwind: true,
-    },
-  ]);
-  return lookup;
-}
-
 export function locationBranchAndSchoolLookup() {
   const lookup = lookupCommon([
     {
@@ -324,16 +296,6 @@ export function locationBranchAndSchoolLookup() {
     },
   ]);
   return lookup;
-}
-
-export function referenceUnion() {
-  return {
-    from: collections.unions,
-    localField: '_id',
-    foreignField: 'union',
-    as: 'union',
-    unwind: true,
-  };
 }
 
 export function referenceAttachment() {
