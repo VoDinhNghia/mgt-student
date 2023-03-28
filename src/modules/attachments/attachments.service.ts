@@ -5,7 +5,7 @@ import { unlinkSync } from 'fs';
 import { Model, Types } from 'mongoose';
 import {
   msgServerError,
-  msgResponse,
+  attachmentMsg,
 } from 'src/constants/constants.message.response';
 import { CommonException } from 'src/exceptions/execeptions.common-error';
 import { FileRequestDto } from 'src/utils/utils.file-request.dto';
@@ -36,7 +36,7 @@ export class AttachmentsService {
   async getAttachmentById(id: string): Promise<Attachment> {
     const result = await this.attachmentSchema.findById(id);
     if (!result) {
-      new CommonException(404, msgResponse.notFoundAttachment);
+      new CommonException(404, attachmentMsg.notFound);
     }
     return result;
   }
@@ -47,7 +47,7 @@ export class AttachmentsService {
       uploadBy: new Types.ObjectId(profileId),
     });
     if (!result) {
-      new CommonException(404, msgResponse.notFoundAttachment);
+      new CommonException(404, attachmentMsg.notFound);
     }
     try {
       await this.attachmentSchema.findByIdAndDelete(id);

@@ -1,5 +1,10 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
+import {
+  Attachment,
+  AttachmentlSchema,
+} from '../attachments/schemas/attachments.schema';
+import { Profile, ProfileSchema } from '../users/schemas/users.profile.schema';
 import { UnionImages, UnionImageSchema } from './schemas/unions.images.schema';
 import {
   UnionMembers,
@@ -23,6 +28,14 @@ import { UnionsService } from './unions.service';
       {
         name: UnionImages.name,
         schema: UnionImageSchema,
+      },
+      {
+        name: Profile.name,
+        schema: ProfileSchema,
+      },
+      {
+        name: Attachment.name,
+        schema: AttachmentlSchema,
       },
     ]),
   ],

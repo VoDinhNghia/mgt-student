@@ -30,9 +30,7 @@ import { InitSuperAdminDto } from '../auth/dtos/auth.init-super-admin.dto';
 import { ValidateDto } from 'src/validates/validates.common.dto';
 import { UsersUpdateDto } from './dto/users.update.dto';
 import {
-  msgImportUser,
-  msgNotFound,
-  msgResponse,
+  userMsg,
   msgServerError,
 } from 'src/constants/constants.message.response';
 import { ImatchFindAllUser } from './interfaces/users.find.match.interface';
@@ -80,7 +78,7 @@ export class UsersService {
         createdBy,
       );
       if (!isCreate) {
-        new CommonException(500, msgResponse.createUserProcessFailed);
+        new CommonException(500, userMsg.createUserProcessFailed);
       }
     }
     const result = this.findUserById(user._id);
@@ -114,7 +112,7 @@ export class UsersService {
     const aggregate = [match, ...lookup, { $limit: 1 }];
     const result = await this.userSchema.aggregate(aggregate);
     if (!result[0]) {
-      new CommonException(404, msgNotFound);
+      new CommonException(404, userMsg.notFoundUser);
     }
     return result[0];
   }
@@ -206,7 +204,7 @@ export class UsersService {
     const { award = [] } = profileDto;
     const profileInfo = await this.profileSchema.findById(id);
     if (!profileInfo) {
-      new CommonException(404, msgResponse.userProfileNotFound);
+      new CommonException(404, userMsg.notFoundProfile);
     }
     const validate = new ValidateDto();
     await validate.profileDto(profileDto);
@@ -237,7 +235,7 @@ export class UsersService {
     for await (const item of data) {
       const { email, passWord, role, firstName, lastName } = item;
       if (!email || !passWord || !role || !firstName || !lastName) {
-        item.statusImport = msgImportUser.validateFields;
+        item.statusImport = userMsg.importValidate;
         continue;
       }
       let user = null;
@@ -250,14 +248,14 @@ export class UsersService {
         };
         user = await new this.userSchema(userDto).save();
       } catch {
-        item.statusImport = msgImportUser.createUserFailed;
+        item.statusImport = userMsg.importCreateUserFailed;
         continue;
       }
       const existedProfile = await this.profileSchema.findOne({
         user: user._id,
       });
       if (existedProfile || !user) {
-        item.statusImport = msgImportUser.createProfileFailed;
+        item.statusImport = userMsg.importCreateProfileFailed;
         continue;
       }
       try {
@@ -269,7 +267,7 @@ export class UsersService {
         };
         profile = await new this.profileSchema(profileDto).save();
       } catch {
-        item.statusImport = msgImportUser.createProfileFailed;
+        item.statusImport = userMsg.importCreateProfileFailed;
         await this.userSchema.findByIdAndDelete(user._id);
         continue;
       }
@@ -280,11 +278,11 @@ export class UsersService {
           createdBy,
         );
         if (!isCreate) {
-          item.statusImport = msgImportUser.createStudyProcessFailed;
+          item.statusImport = userMsg.importCreateStudyProcessFailed;
           continue;
         }
       }
-      item.statusImport = msgImportUser.statusSuccess;
+      item.statusImport = userMsg.importStatus;
     }
     return data;
   }
@@ -294,7 +292,7 @@ export class UsersService {
     const option = { role: ErolesUser.SUPPER_ADMIN };
     const existedRoleSa = await this.userSchema.findOne(option);
     if (existedRoleSa) {
-      new CommonException(409, msgResponse.initSupperAdmin);
+      new CommonException(409, userMsg.supperAdminExisted);
     }
     const supperAdminDto = {
       email,
@@ -323,7 +321,7 @@ export class UsersService {
       const option = { user: profileDto.user };
       const existedProfile = await this.profileSchema.findOne(option);
       if (existedProfile) {
-        new CommonException(409, msgResponse.existedProfileUser);
+        new CommonException(409, userMsg.profileUserExisted);
       }
       result = await new this.profileSchema(profileDto).save();
     } catch (error) {
@@ -341,12 +339,12 @@ export class UsersService {
     const { user } = leaderDto;
     const userProfile = await this.profileSchema.findById(user);
     if (!userProfile) {
-      new CommonException(404, msgResponse.userProfileNotFound);
+      new CommonException(404, userMsg.notFoundProfile);
     }
     const option = { user: new Types.ObjectId(user) };
     const existedLeader = await this.leaderSchoolSchema.findOne(option);
     if (existedLeader) {
-      new CommonException(409, msgResponse.leaderSchoolExisted);
+      new CommonException(409, userMsg.leaderSchoolExisted);
     }
     const dto = {
       ...leaderDto,
@@ -363,7 +361,7 @@ export class UsersService {
     const aggregate = [match, ...lookup];
     const result = await this.leaderSchoolSchema.aggregate(aggregate);
     if (!result[0]) {
-      new CommonException(404, msgResponse.leaderSchoolNotFound);
+      new CommonException(404, userMsg.notFoundeaderSchool);
     }
     return result[0];
   }

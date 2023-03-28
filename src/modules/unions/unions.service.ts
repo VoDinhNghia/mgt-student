@@ -2,13 +2,25 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { collections } from 'src/constants/constants.collections.name';
-import { msgResponse } from 'src/constants/constants.message.response';
+import {
+  attachmentMsg,
+  unionMsg,
+  userMsg,
+} from 'src/constants/constants.message.response';
 import { CommonException } from 'src/exceptions/execeptions.common-error';
 import {
   unionImageLookup,
   unionMemberLookup,
 } from 'src/utils/utils.lookup.query.service';
 import { ValidateDto } from 'src/validates/validates.common.dto';
+import {
+  Attachment,
+  AttachmentDocument,
+} from '../attachments/schemas/attachments.schema';
+import {
+  Profile,
+  ProfileDocument,
+} from '../users/schemas/users.profile.schema';
 import { CreateUnionDto } from './dtos/unions.create.dto';
 import { CreateUnionImagesDto } from './dtos/unions.create.images.dto';
 import { CreateUnionMemberDto } from './dtos/unions.create.member.dto';
@@ -27,6 +39,10 @@ export class UnionsService {
     private readonly unionMemberSchema: Model<UnionMembers>,
     @InjectModel(UnionImages.name)
     private readonly unionImageSchema: Model<UnionImages>,
+    @InjectModel(Profile.name)
+    private readonly profileSchema: Model<ProfileDocument>,
+    @InjectModel(Attachment.name)
+    private readonly attachmentSchema: Model<AttachmentDocument>,
   ) {}
 
   async createUnion(
@@ -43,7 +59,10 @@ export class UnionsService {
   ): Promise<UnionMembers> {
     const { union, user } = memberDto;
     await this.findUnionById(union);
-    await new ValidateDto().fieldId(collections.profiles, user);
+    const userProfile = await this.profileSchema.findById(user);
+    if (!userProfile) {
+      new CommonException(404, userMsg.notFoundProfile);
+    }
     const newMemberDto = {
       ...memberDto,
       createdBy,
@@ -58,7 +77,10 @@ export class UnionsService {
   ): Promise<UnionImages> {
     const { union, attachment } = imageDto;
     await this.findUnionById(union);
-    await new ValidateDto().fieldId(collections.attachments, attachment);
+    const attachmentInfo = await this.attachmentSchema.findById(attachment);
+    if (!attachmentInfo) {
+      new CommonException(404, attachmentMsg.notFound);
+    }
     const newImageDto = {
       ...imageDto,
       createdBy,
@@ -72,6 +94,7 @@ export class UnionsService {
     unionDto: UpdateUnionDto,
     updatedBy: string,
   ): Promise<Union> {
+    await this.findUnionById(id);
     const updateDto = {
       ...unionDto,
       updatedBy,
@@ -89,12 +112,14 @@ export class UnionsService {
     updatedBy: string,
   ): Promise<UnionMembers> {
     const { union, user } = memberDto;
-    await this.findUnionMemberById(id);
     if (union) {
       await this.findUnionById(union);
     }
     if (user) {
-      await new ValidateDto().fieldId(collections.profiles, user);
+      const userProfile = await this.profileSchema.findById(user);
+      if (!userProfile) {
+        new CommonException(404, userMsg.notFoundProfile);
+      }
     }
     const updateMemberDto = {
       ...memberDto,
@@ -115,21 +140,20 @@ export class UnionsService {
     updatedBy: string,
   ): Promise<UnionMembers> {
     const { union, attachment } = imageDto;
-    await this.findUnionImageById(id);
     if (union) {
       await this.findUnionById(union);
     }
     if (attachment) {
       await new ValidateDto().fieldId(collections.attachments, attachment);
     }
-    const updateMemberDto = {
+    const updateImageDto = {
       ...imageDto,
       updatedBy,
       updatedAt: Date.now(),
     };
     const result = await this.unionImageSchema.findByIdAndUpdate(
       id,
-      updateMemberDto,
+      updateImageDto,
       { new: true },
     );
     return result;
@@ -138,7 +162,7 @@ export class UnionsService {
   async findUnionById(id: string): Promise<Union> {
     const result = await this.unionSchema.findById(id);
     if (!result) {
-      new CommonException(404, msgResponse.unionNotFound);
+      new CommonException(404, unionMsg.notFound);
     }
     return result;
   }
@@ -152,7 +176,7 @@ export class UnionsService {
       { $limit: 1 },
     ]);
     if (!result[0]) {
-      new CommonException(404, msgResponse.unionMemberNotFound);
+      new CommonException(404, unionMsg.notFoundMember);
     }
     return result[0];
   }
@@ -166,7 +190,7 @@ export class UnionsService {
       { $limit: 1 },
     ]);
     if (!result[0]) {
-      new CommonException(404, msgResponse.unionImageNotFound);
+      new CommonException(404, unionMsg.notFoundImage);
     }
     return result[0];
   }

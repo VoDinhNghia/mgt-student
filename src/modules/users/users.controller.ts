@@ -37,11 +37,12 @@ import {
   fileName,
 } from 'src/validates/validates.attachment.upload-file';
 import { getDataFromCsvFileUpload } from 'src/utils/utils.get.data-from-csv-upload';
-import { msgResponse } from 'src/constants/constants.message.response';
+import { userMsg } from 'src/constants/constants.message.response';
 import { UserLoginResponseDto } from '../auth/dtos/auth.result.login-service.dto';
+import { userController } from 'src/constants/constants.controller.name-tag';
 
-@Controller('api/users')
-@ApiTags('users')
+@Controller(userController.name)
+@ApiTags(userController.tag)
 export class UsersController {
   constructor(private readonly service: UsersService) {}
 
@@ -57,10 +58,10 @@ export class UsersController {
     const user: UserLoginResponseDto = req?.user;
     const createdBy: string = user.profileId;
     const result = await this.service.createUser(userDto, createdBy);
-    return new ResponseRequest(res, result, msgResponse.createUser);
+    return new ResponseRequest(res, result, userMsg.create);
   }
 
-  @Post('import')
+  @Post('/import-user')
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
@@ -85,7 +86,7 @@ export class UsersController {
     const rawData = readFileSync(file.path, 'utf8');
     const csvData = getDataFromCsvFileUpload(rawData);
     const result = await this.service.importUser(createdBy, csvData);
-    return new ResponseRequest(res, result, msgResponse.importUser);
+    return new ResponseRequest(res, result, userMsg.importUser);
   }
 
   @Put('/:id')
@@ -101,7 +102,7 @@ export class UsersController {
     const user: UserLoginResponseDto = req?.user;
     const updatedBy: string = user.profileId;
     const result = await this.service.updateUser(id, updateDto, updatedBy);
-    return new ResponseRequest(res, result, msgResponse.updateUser);
+    return new ResponseRequest(res, result, userMsg.update);
   }
 
   @Put('/profile/:id')
@@ -120,7 +121,7 @@ export class UsersController {
       updateProfileDto,
       updatedBy,
     );
-    return new ResponseRequest(res, result, msgResponse.updateUserProfile);
+    return new ResponseRequest(res, result, userMsg.updateUserProfile);
   }
 
   @Post('/leader-school')
@@ -138,7 +139,7 @@ export class UsersController {
       leaderSchoolDto,
       createdBy,
     );
-    return new ResponseRequest(res, result, msgResponse.createLeaderSchool);
+    return new ResponseRequest(res, result, userMsg.createLeaderSchool);
   }
 
   @Put('/leader-school/:id')
@@ -158,7 +159,7 @@ export class UsersController {
       updateLeaderDto,
       updatedBy,
     );
-    return new ResponseRequest(res, result, msgResponse.updateLeaderSchool);
+    return new ResponseRequest(res, result, userMsg.updateLeaderSchool);
   }
 
   @Get('/leader-school')
@@ -167,7 +168,7 @@ export class UsersController {
     @Res() res: Response,
   ): Promise<ResponseRequest> {
     const results = await this.service.findAllLeaderSchool(queryLeaderDto);
-    return new ResponseRequest(res, results, msgResponse.getAllLeaderSchool);
+    return new ResponseRequest(res, results, userMsg.getAllLeaderSchools);
   }
 
   @Get('/leader-school/:id')
@@ -176,7 +177,7 @@ export class UsersController {
     @Res() res: Response,
   ): Promise<ResponseRequest> {
     const result = await this.service.findLeaderSchoolById(id);
-    return new ResponseRequest(res, result, msgResponse.getByIdLeaderSchool);
+    return new ResponseRequest(res, result, userMsg.getByIdLeaderSchools);
   }
 
   @Delete('/leader-school/:id')
@@ -191,7 +192,7 @@ export class UsersController {
     const user: UserLoginResponseDto = req?.user;
     const deletedBy: string = user.profileId;
     await this.service.deleteLeaderSchool(id, deletedBy);
-    return new ResponseRequest(res, true, msgResponse.deleteLeaderSchool);
+    return new ResponseRequest(res, true, userMsg.deleteLeaderSchool);
   }
 
   @Get()
@@ -205,7 +206,7 @@ export class UsersController {
   ): Promise<ResponseRequest> {
     const user: UserLoginResponseDto = req?.user;
     const result = await this.service.findAllUsers(queryDto, user._id);
-    return new ResponseRequest(res, result, msgResponse.getAllUser);
+    return new ResponseRequest(res, result, userMsg.getAll);
   }
 
   @Delete('/:id')
@@ -220,7 +221,7 @@ export class UsersController {
     const user: UserLoginResponseDto = req?.user;
     const deletedBy: string = user.profileId;
     await this.service.deleteUser(id, deletedBy);
-    return new ResponseRequest(res, true, msgResponse.deleteUser);
+    return new ResponseRequest(res, true, userMsg.delete);
   }
 
   @Get('/:id')
@@ -232,6 +233,6 @@ export class UsersController {
     @Res() res: Response,
   ): Promise<ResponseRequest> {
     const result = await this.service.findUserById(id);
-    return new ResponseRequest(res, result, msgResponse.getByIdUser);
+    return new ResponseRequest(res, result, userMsg.getById);
   }
 }
