@@ -160,6 +160,30 @@ export class UnionsController {
     return new ResponseRequest(res, results, unionMsg.getAll);
   }
 
+  @Get('/member/:id')
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
+  async getUnionMemberById(
+    @Param('id') id: string,
+    @Res() res: ResponseRequest,
+  ): Promise<ResponseRequest> {
+    const result = await this.unionService.findUnionMemberById(id);
+    return new ResponseRequest(res, result, unionMsg.getByIdMember);
+  }
+
+  @Get('/image/:id')
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
+  async getUnionImageById(
+    @Param('id') id: string,
+    @Res() res: ResponseRequest,
+  ): Promise<ResponseRequest> {
+    const result = await this.unionService.findUnionImageById(id);
+    return new ResponseRequest(res, result, unionMsg.getByIdImage);
+  }
+
   @Get('/:id')
   async getUnionById(
     @Param('id') id: string,

@@ -1,18 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
-import { collections } from 'src/constants/constants.collections.name';
 import {
   attachmentMsg,
   unionMsg,
   userMsg,
 } from 'src/constants/constants.message.response';
 import { CommonException } from 'src/exceptions/execeptions.common-error';
-import {
-  unionImageLookup,
-  unionMemberLookup,
-} from 'src/utils/utils.lookup.query.service';
-import { ValidateDto } from 'src/validates/validates.common.dto';
 import {
   Attachment,
   AttachmentDocument,
@@ -27,6 +21,10 @@ import { CreateUnionMemberDto } from './dtos/unions.create.member.dto';
 import { UpdateUnionDto } from './dtos/unions.update.dto';
 import { UpdateUnionImage } from './dtos/unions.update.image.dto';
 import { UpdateUnionMember } from './dtos/unions.update.member.dto';
+import {
+  Igroup,
+  IunionFindAll,
+} from './interfaces/unions.find.response.interface';
 import { UnionImages } from './schemas/unions.images.schema';
 import { UnionMembers } from './schemas/unions.members.schema';
 import { Union, UnionDocument } from './schemas/unions.schema';
@@ -59,7 +57,10 @@ export class UnionsService {
   ): Promise<UnionMembers> {
     const { union, user } = memberDto;
     await this.findUnionById(union);
-    const userProfile = await this.profileSchema.findById(user);
+    const userProfile = await this.profileSchema.findOne({
+      _id: new Types.ObjectId(user),
+      isDeleted: false,
+    });
     if (!userProfile) {
       new CommonException(404, userMsg.notFoundProfile);
     }
@@ -77,7 +78,10 @@ export class UnionsService {
   ): Promise<UnionImages> {
     const { union, attachment } = imageDto;
     await this.findUnionById(union);
-    const attachmentInfo = await this.attachmentSchema.findById(attachment);
+    const attachmentInfo = await this.attachmentSchema.findOne({
+      _id: new Types.ObjectId(attachment),
+      isDeleted: false,
+    });
     if (!attachmentInfo) {
       new CommonException(404, attachmentMsg.notFound);
     }
@@ -116,7 +120,10 @@ export class UnionsService {
       await this.findUnionById(union);
     }
     if (user) {
-      const userProfile = await this.profileSchema.findById(user);
+      const userProfile = await this.profileSchema.findOne({
+        _id: new Types.ObjectId(user),
+        isDeleted: false,
+      });
       if (!userProfile) {
         new CommonException(404, userMsg.notFoundProfile);
       }
@@ -144,7 +151,13 @@ export class UnionsService {
       await this.findUnionById(union);
     }
     if (attachment) {
-      await new ValidateDto().fieldId(collections.attachments, attachment);
+      const attachmentInfo = await this.attachmentSchema.findOne({
+        _id: new Types.ObjectId(attachment),
+        isDeleted: false,
+      });
+      if (!attachmentInfo) {
+        new CommonException(404, attachmentMsg.notFound);
+      }
     }
     const updateImageDto = {
       ...imageDto,
@@ -168,35 +181,68 @@ export class UnionsService {
   }
 
   async findUnionMemberById(id: string): Promise<UnionMembers> {
-    const match = { $match: { _id: new Types.ObjectId(id) } };
-    const lookup = unionMemberLookup();
-    const result = await this.unionMemberSchema.aggregate([
-      match,
-      ...lookup,
-      { $limit: 1 },
-    ]);
-    if (!result[0]) {
+    const result = await this.unionMemberSchema
+      .findById(id)
+      .populate('union', '', this.unionSchema)
+      .populate('user', '', this.profileSchema)
+      .exec();
+    if (!result) {
       new CommonException(404, unionMsg.notFoundMember);
     }
-    return result[0];
+    return result;
   }
 
   async findUnionImageById(id: string): Promise<UnionImages> {
-    const match = { $match: { _id: new Types.ObjectId(id) } };
-    const lookup = unionImageLookup();
-    const result = await this.unionImageSchema.aggregate([
-      match,
-      ...lookup,
-      { $limit: 1 },
-    ]);
-    if (!result[0]) {
-      new CommonException(404, unionMsg.notFoundImage);
+    const result = await this.unionImageSchema
+      .findById(id)
+      .populate('union', '', this.unionSchema)
+      .populate('attachment', '', this.attachmentSchema)
+      .exec();
+    if (!result) {
+      new CommonException(404, unionMsg.notFoundMember);
     }
-    return result[0];
+    return result;
   }
 
-  async findAllUnions(): Promise<Union[]> {
-    const results = await this.unionSchema.find({ isDeleted: false });
+  async findAllUnions(): Promise<IunionFindAll[]> {
+    const results: IunionFindAll[] = await this.unionSchema
+      .find({
+        isDeleted: false,
+      })
+      .lean();
+    const data = [];
+    for await (const union of results) {
+      const groupMember = await this.groupMember(union._id);
+      const imageList = await this.findAllUnionImages(union._id);
+      data.push({ ...union, groupMember, imageList });
+    }
+    return data;
+  }
+
+  async groupMember(unionId: Types.ObjectId): Promise<Igroup[]> {
+    const groupMember = await this.unionMemberSchema.aggregate([
+      { $match: { union: unionId, isDeleted: false } },
+      {
+        $group: {
+          _id: '$position',
+          count: { $count: {} },
+        },
+      },
+    ]);
+    return groupMember;
+  }
+
+  // update code again when use api findUnionImage => unionId move queryDto
+  async findAllUnionImages(unionId: Types.ObjectId): Promise<UnionImages[]> {
+    const results = await this.unionImageSchema
+      .find({ union: unionId, isDeleted: false })
+      .select(['_id', 'attachment', 'description'])
+      .populate(
+        'attachment',
+        ['url', 'originalname', 'filename'],
+        this.attachmentSchema,
+      )
+      .exec();
     return results;
   }
 
