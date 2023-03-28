@@ -7,11 +7,13 @@ import {
   considerConditionScholarshipPoint,
   EstatusUserProfile,
 } from 'src/constants/constant';
-import { msgNotFound } from 'src/constants/constants.message.response';
+import {
+  scholarshipMsg,
+  semesterMsg,
+} from 'src/constants/constants.message.response';
 import { CommonException } from 'src/exceptions/execeptions.common-error';
 import { QueryService } from 'src/utils/utils.query.service';
 import { SubjectUserRegister } from 'src/utils/utils.user.register-subject.query';
-import { ValidateDto } from 'src/validates/validates.common.dto';
 import { CreateScholarshipUser } from './dtos/scholarship.user.create.dto';
 import { CreateScholarshipDto } from './dtos/scholarship.create.dto';
 import { QueryScholarshipDto } from './dtos/scholarship.query.dto';
@@ -31,6 +33,14 @@ import {
   userScholarshipLookup,
 } from 'src/utils/utils.lookup.query.service';
 import { skipLimitAndSortPagination } from 'src/utils/utils.page.pagination';
+import {
+  Attachment,
+  AttachmentDocument,
+} from '../attachments/schemas/attachments.schema';
+import {
+  Semester,
+  SemesterDocument,
+} from '../semesters/schemas/semesters.schema';
 
 @Injectable()
 export class ScholarshipService {
@@ -39,18 +49,37 @@ export class ScholarshipService {
     private readonly scholarshipSchema: Model<ScholarshipDocument>,
     @InjectModel(ScholarshipUser.name)
     private readonly scholarshipUserSchema: Model<ScholarshipUserDocument>,
+    @InjectModel(Attachment.name)
+    private readonly attachmentSchema: Model<AttachmentDocument>,
+    @InjectModel(Semester.name)
+    private readonly semesterSchema: Model<SemesterDocument>,
   ) {}
 
   async createScholarship(
     scholarshipDto: CreateScholarshipDto,
     createdBy: string,
   ): Promise<Scholarship> {
-    await new ValidateDto().scholarShip(scholarshipDto);
-    const dto = {
+    const { semester, name } = scholarshipDto;
+    const semesterInfo = await this.semesterSchema.findOne({
+      semester: new Types.ObjectId(semester),
+      isDeleted: false,
+    });
+    if (!semesterInfo) {
+      new CommonException(404, semesterMsg.notFound);
+    }
+    const options = {
+      semester: new Types.ObjectId(semester),
+      name: name.trim(),
+      isDeleted: false,
+    };
+    const existedName = await this.scholarshipSchema.findOne(options);
+    if (existedName) {
+      new CommonException(409, scholarshipMsg.existedName);
+    }
+    const result = await new this.scholarshipSchema({
       ...scholarshipDto,
       createdBy,
-    };
-    const result = await new this.scholarshipSchema(dto).save();
+    }).save();
     return result;
   }
 
@@ -59,15 +88,32 @@ export class ScholarshipService {
     scholarshipDto: UpdateScholarshipDto,
     updatedBy: string,
   ): Promise<Scholarship> {
-    await new ValidateDto().scholarShip(scholarshipDto);
-    const dto = {
+    const { semester } = scholarshipDto;
+    const scholarship = await this.scholarshipSchema.findById(id);
+    if (!scholarship) {
+      new CommonException(404, scholarshipMsg.notFound);
+    }
+    if (semester) {
+      const semesterInfo = await this.semesterSchema.findOne({
+        semester: new Types.ObjectId(semester),
+        isDeleted: false,
+      });
+      if (!semesterInfo) {
+        new CommonException(404, semesterMsg.notFound);
+      }
+    }
+    const updateScholarshipDto = {
       ...scholarshipDto,
       updatedBy,
       updatedAt: Date.now(),
     };
-    const result = await this.scholarshipSchema.findByIdAndUpdate(id, dto, {
-      new: true,
-    });
+    const result = await this.scholarshipSchema.findByIdAndUpdate(
+      id,
+      updateScholarshipDto,
+      {
+        new: true,
+      },
+    );
     return result;
   }
 
@@ -79,7 +125,7 @@ export class ScholarshipService {
     const aggregate = [match, ...lookup];
     const results = await this.scholarshipSchema.aggregate(aggregate);
     if (!results[0]) {
-      new CommonException(404, msgNotFound);
+      new CommonException(404, scholarshipMsg.notFound);
     }
     return results[0];
   }
