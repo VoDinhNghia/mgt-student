@@ -387,24 +387,21 @@ export class UsersService {
     queryDto: QueryLeaderSchoolDto,
   ): Promise<{ results: LeaderSchools[]; total: number }> {
     const { user, limit, page } = queryDto;
-    const match: ImatchFindAllUser = { $match: { isDeleted: false } };
+    const query: ImatchFindAllUser = { $match: { isDeleted: false } };
     if (user) {
-      match.$match.user = new Types.ObjectId(user);
+      query.$match.user = new Types.ObjectId(user);
     }
-    const lookup = profileLookup();
-    const aggregate = [match, ...lookup];
-    const pagination = skipLimitAndSortPagination(limit, page);
-    const results = await this.leaderSchoolSchema.aggregate([
-      ...aggregate,
-      ...pagination,
-    ]);
-    const total = await this.leaderSchoolSchema.aggregate([
-      ...aggregate,
-      { $count: 'total' },
-    ]);
+    const results = await this.leaderSchoolSchema
+      .find(query)
+      .skip(limit && page ? Number(limit) * Number(page) - Number(limit) : null)
+      .limit(limit ? Number(limit) : null)
+      .populate('user', '', this.profileSchema, { isDeleted: false })
+      .sort({ createdAt: -1 })
+      .exec();
+    const total = await this.leaderSchoolSchema.find(query).count();
     return {
       results,
-      total: total[0]?.total ?? 0,
+      total,
     };
   }
 
@@ -422,7 +419,6 @@ export class UsersService {
     await this.findUserById(id);
     const dto = {
       deletedBy,
-      status: EstatusUser.INACTIVE,
       isDeleted: true,
       deletedAt: Date.now(),
     };
