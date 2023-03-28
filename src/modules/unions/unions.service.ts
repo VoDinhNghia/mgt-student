@@ -189,8 +189,8 @@ export class UnionsService {
   async findUnionMemberById(id: string): Promise<UnionMembers> {
     const result = await this.unionMemberSchema
       .findById(id)
-      .populate('union', '', this.unionSchema)
-      .populate('user', '', this.profileSchema)
+      .populate('union', '', this.unionSchema, { isDeleted: false })
+      .populate('user', '', this.profileSchema, { isDeleted: false })
       .exec();
     if (!result) {
       new CommonException(404, unionMsg.notFoundMember);
@@ -201,8 +201,8 @@ export class UnionsService {
   async findUnionImageById(id: string): Promise<UnionImages> {
     const result = await this.unionImageSchema
       .findById(id)
-      .populate('union', '', this.unionSchema)
-      .populate('attachment', '', this.attachmentSchema)
+      .populate('union', '', this.unionSchema, { isDeleted: false })
+      .populate('attachment', '', this.attachmentSchema, { isDeleted: false })
       .exec();
     if (!result) {
       new CommonException(404, unionMsg.notFoundMember);

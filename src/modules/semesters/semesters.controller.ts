@@ -6,6 +6,7 @@ import {
   Param,
   Post,
   Put,
+  Query,
   Req,
   Res,
   UseGuards,
@@ -19,11 +20,13 @@ import { CreateSemesterDto } from './dtos/semesters.create.dto';
 import { SemestersService } from './semesters.service';
 import { Response, Request } from 'express';
 import { UpdateSemesterDto } from './dtos/semesters.update.dto';
-import { msgResponse } from 'src/constants/constants.message.response';
+import { semesterMsg } from 'src/constants/constants.message.response';
 import { UserLoginResponseDto } from '../auth/dtos/auth.result.login-service.dto';
+import { semesterController } from 'src/constants/constants.controller.name-tag';
+import { QuerySemesterDto } from './dtos/semesters.query.dto';
 
-@Controller('api/semesters')
-@ApiTags('semesters')
+@Controller(semesterController.name)
+@ApiTags(semesterController.tag)
 export class SemestersController {
   constructor(private readonly semesterService: SemestersService) {}
 
@@ -42,7 +45,7 @@ export class SemestersController {
       semesterDto,
       createdBy,
     );
-    return new ResponseRequest(res, result, msgResponse.createSemester);
+    return new ResponseRequest(res, result, semesterMsg.create);
   }
 
   @Put('/:id')
@@ -62,7 +65,7 @@ export class SemestersController {
       updateDto,
       updatedBy,
     );
-    return new ResponseRequest(res, result, msgResponse.updateSemester);
+    return new ResponseRequest(res, result, semesterMsg.update);
   }
 
   @Delete('/:id')
@@ -77,13 +80,16 @@ export class SemestersController {
     const user: UserLoginResponseDto = req?.user;
     const deletedBy: string = user.profileId;
     await this.semesterService.deleteSemester(id, deletedBy);
-    return new ResponseRequest(res, true, msgResponse.deleteSemester);
+    return new ResponseRequest(res, true, semesterMsg.delete);
   }
 
   @Get()
-  async getAllSemester(@Res() res: Response): Promise<ResponseRequest> {
-    const results = await this.semesterService.findAllSemesters();
-    return new ResponseRequest(res, results, msgResponse.getAllSemester);
+  async getAllSemester(
+    @Query() queryDto: QuerySemesterDto,
+    @Res() res: Response,
+  ): Promise<ResponseRequest> {
+    const results = await this.semesterService.findAllSemesters(queryDto);
+    return new ResponseRequest(res, results, semesterMsg.getAll);
   }
 
   @Get('/:id')
@@ -92,6 +98,6 @@ export class SemestersController {
     @Res() res: Response,
   ): Promise<ResponseRequest> {
     const result = await this.semesterService.findSemesterById(id);
-    return new ResponseRequest(res, result, msgResponse.getByIdSemester);
+    return new ResponseRequest(res, result, semesterMsg.getById);
   }
 }

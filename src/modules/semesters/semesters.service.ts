@@ -1,10 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { msgNotFound } from 'src/constants/constants.message.response';
+import { semesterMsg } from 'src/constants/constants.message.response';
 import { CommonException } from 'src/exceptions/execeptions.common-error';
 import { CreateSemesterDto } from './dtos/semesters.create.dto';
+import { QuerySemesterDto } from './dtos/semesters.query.dto';
 import { UpdateSemesterDto } from './dtos/semesters.update.dto';
+import { IsemesterQuery } from './interfaces/semesters.find.interface';
 import { Semester, SemesterDocument } from './schemas/semesters.schema';
 
 @Injectable()
@@ -29,7 +31,7 @@ export class SemestersService {
   async findSemesterById(id: string): Promise<Semester> {
     const result = await this.semesterSchema.findById(id);
     if (!result) {
-      new CommonException(404, msgNotFound);
+      new CommonException(404, semesterMsg.notFound);
     }
     return result;
   }
@@ -50,9 +52,24 @@ export class SemestersService {
     return result;
   }
 
-  async findAllSemesters(): Promise<Semester[]> {
-    const results = await this.semesterSchema.find({ isDeleted: false });
-    return results;
+  async findAllSemesters(
+    queryDto: QuerySemesterDto,
+  ): Promise<{ results: Semester[]; total: number }> {
+    const { limit, page, searchKey } = queryDto;
+    const query: IsemesterQuery = { isDeleted: false };
+    if (searchKey) {
+      query.name = new RegExp(searchKey, 'i');
+    }
+    const results = await this.semesterSchema
+      .find(query)
+      .skip(limit && page ? Number(limit) * Number(page) - Number(limit) : null)
+      .limit(limit ? Number(limit) : null)
+      .exec();
+    const total = await this.semesterSchema.find(query).count();
+    return {
+      results,
+      total,
+    };
   }
 
   async deleteSemester(id: string, deletedBy: string): Promise<void> {

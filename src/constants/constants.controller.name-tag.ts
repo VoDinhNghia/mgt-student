@@ -12,3 +12,8 @@ export const userController = {
   name: 'api/users',
   tag: 'users',
 };
+
+export const semesterController = {
+  name: 'api/semesters',
+  tag: 'semesters',
+};
