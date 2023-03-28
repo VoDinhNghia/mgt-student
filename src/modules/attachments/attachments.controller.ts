@@ -24,10 +24,11 @@ import {
   fileName,
   imageFileFilter,
 } from 'src/validates/validates.attachment.upload-file';
-import { msgResponse } from 'src/constants/constants.message.response';
+import { attachmentMsg } from 'src/constants/constants.message.response';
 import { UserLoginResponseDto } from '../auth/dtos/auth.result.login-service.dto';
-@Controller('api/attachments')
-@ApiTags('attachments')
+import { attachmentController } from 'src/constants/constants.controller.name-tag';
+@Controller(attachmentController.name)
+@ApiTags(attachmentController.tag)
 export class AttachmentsController {
   constructor(private readonly attachmentService: AttachmentsService) {}
 
@@ -56,7 +57,7 @@ export class AttachmentsController {
       file,
       profileId,
     );
-    return new ResponseRequest(res, result, msgResponse.createAttachment);
+    return new ResponseRequest(res, result, attachmentMsg.create);
   }
 
   @Delete('/:id')
@@ -69,7 +70,7 @@ export class AttachmentsController {
   ): Promise<ResponseRequest> {
     const user: UserLoginResponseDto = req?.user;
     await this.attachmentService.deleteAttachment(id, user.profileId);
-    return new ResponseRequest(res, true, msgResponse.deleteAttachment);
+    return new ResponseRequest(res, true, attachmentMsg.delete);
   }
 
   @Get('/:id')
@@ -80,6 +81,6 @@ export class AttachmentsController {
     @Res() res: Response,
   ): Promise<ResponseRequest> {
     const result = await this.attachmentService.getAttachmentById(id);
-    return new ResponseRequest(res, result, msgResponse.getByIdAttachment);
+    return new ResponseRequest(res, result, attachmentMsg.getById);
   }
 }

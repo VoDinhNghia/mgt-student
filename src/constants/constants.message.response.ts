@@ -3,10 +3,6 @@ export const msgNotFound = 'The document not found';
 export const msgValidateEmail = 'Email not correct format';
 
 export const msgResponse = {
-  createAttachment: 'Create attachment success',
-  getByIdAttachment: 'Get attachment success',
-  deleteAttachment: 'Delete attachment success',
-  notFoundAttachment: 'Attachment not found',
   initSupperAdminAuth: 'Create supper admin success',
   loginAuth: 'Login sucess',
   getMeAuth: 'Get me success',
@@ -116,50 +112,64 @@ export const msgResponse = {
   deleteSemester: 'Delete semester success',
   migrateUsersLibrary: 'Sync data success',
   getAllUserSyncLibrary: 'Get all users success',
-  createUnion: 'Create union success',
-  createUnionMember: 'Create union member success',
-  unionNotFound: 'Union not found',
-  unionMemberNotFound: 'Union member not found',
-  unionImageNotFound: 'Union image not found',
-  getAllUnion: 'Get all unions success',
-  updateUnion: 'Update union success',
-  getByIdUnion: 'Get union by id success',
-  deleteUnion: 'Delete union success',
-  createUser: 'Create user success',
-  existedProfileUser: 'Profile of user existed already',
-  createUserProcessFailed: 'Can not create study process',
-  userProfileNotFound: 'User profile not found',
-  leaderSchoolExisted: 'Leader school existed already',
-  initSupperAdmin: 'Supper admin existed already',
-  getAllUser: 'Get all user success',
-  updateUser: 'Update user success',
-  getByIdUser: 'Get user by id success',
-  deleteUser: 'Delete user success',
-  importUser: 'Import multi user success',
-  updateUserProfile: 'Update profile success',
+};
+
+export const userMsg = {
+  create: 'Create user success',
   createLeaderSchool: 'Create leader school success',
-  getAllLeaderSchool: 'Get all leader school success',
+  createUserProcessFailed: 'Can not create study process',
+  getAll: 'Get all user success',
+  getAllLeaderSchools: 'Get all leader school success',
+  getByIdLeaderSchools: 'Get leader school by id success',
+  getById: 'Get user by id success',
+  update: 'Update user success',
+  updateUserProfile: 'Update profile success',
   updateLeaderSchool: 'Update leader school success',
-  getByIdLeaderSchool: 'Get leader school by id success',
+  delete: 'Delete user success',
   deleteLeaderSchool: 'Delete leader school success',
-  leaderSchoolNotFound: 'Leader school not found',
+  notFoundUser: 'User not found',
+  notFoundeaderSchool: 'Leader school not found',
+  notFoundProfile: 'User profile not found',
+  importUser: 'Import multi user success',
+  importValidate:
+    'email or passWord or role or firstName or lastName must provided.',
+  importCreateUserFailed: 'Can not create user',
+  importCreateProfileFailed: 'Can not create profile',
+  importCreateStudyProcessFailed: 'Can not create study process',
+  importStatus: 'Import user success',
+  profileUserExisted: 'Profile of user existed already',
+  leaderSchoolExisted: 'Leader school existed already',
+  supperAdminExisted: 'Supper admin existed already',
+};
+
+export const unionMsg = {
+  create: 'Create union success',
+  createMember: 'Create union member success',
+  createImage: 'Create union member success',
+  notFound: 'Union not found',
+  notFoundMember: 'Union member not found',
+  notFoundImage: 'Union image not found',
+  getAll: 'Get all unions success',
+  getAllMembers: 'Get all union members success',
+  getAllImages: 'Get all union images success',
+  getById: 'Get union by id success',
+  getByIdMember: 'Get union member by id success',
+  getByIdImage: 'Get union image by id success',
+  update: 'Update union success',
+  updateMember: 'Update union member success',
+  updateImage: 'Update union image success',
+  delete: 'Delete union success',
+  deleteMember: 'Delete union member success',
+  deleteImage: 'Delete union image success',
+};
+
+export const attachmentMsg = {
+  create: 'Create attachment success',
+  getById: 'Get attachment success',
+  delete: 'Delete attachment success',
+  notFound: 'Attachment not found',
 };
 
 export const descriptionResponse = {
   apiLogin: 'Response data when login success',
-  apiGetMe: 'Response data when get me success',
-  apiInitAdmin: 'Response data when create supper admin success',
-  apiUpdateUser: 'Response data when create update user success',
-  apiUpdateProfile: 'Response data when update user profile success',
-  apiGetAllUser: 'Response data when get all user success',
-  apiGetUserById: 'Response data when get user by id success',
-};
-
-export const msgImportUser = {
-  validateFields:
-    'email or passWord or role or firstName or lastName must provided.',
-  createUserFailed: 'Can not create user',
-  createProfileFailed: 'Can not create profile',
-  createStudyProcessFailed: 'Can not create study process',
-  statusSuccess: 'Import user success',
 };

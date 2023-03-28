@@ -18,12 +18,17 @@ import { UnionsService } from './unions.service';
 import { Response, Request } from 'express';
 import { CreateUnionDto } from './dtos/unions.create.dto';
 import { ResponseRequest } from 'src/utils/utils.response-api';
-import { msgResponse } from 'src/constants/constants.message.response';
+import { unionMsg } from 'src/constants/constants.message.response';
 import { UserLoginResponseDto } from '../auth/dtos/auth.result.login-service.dto';
 import { UpdateUnionDto } from './dtos/unions.update.dto';
+import { CreateUnionMemberDto } from './dtos/unions.create.member.dto';
+import { CreateUnionImagesDto } from './dtos/unions.create.images.dto';
+import { UpdateUnionMember } from './dtos/unions.update.member.dto';
+import { UpdateUnionImage } from './dtos/unions.update.image.dto';
+import { unionController } from 'src/constants/constants.controller.name-tag';
 
-@Controller('api/unions')
-@ApiTags('unions')
+@Controller(unionController.name)
+@ApiTags(unionController.tag)
 export class UnionsController {
   constructor(private readonly unionService: UnionsService) {}
 
@@ -31,7 +36,7 @@ export class UnionsController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
-  async create(
+  async createUnion(
     @Body() unionDto: CreateUnionDto,
     @Res() res: Response,
     @Req() req: Request,
@@ -39,7 +44,43 @@ export class UnionsController {
     const user: UserLoginResponseDto = req?.user;
     const createdBy: string = user.profileId;
     const result = await this.unionService.createUnion(unionDto, createdBy);
-    return new ResponseRequest(res, result, msgResponse.createUnion);
+    return new ResponseRequest(res, result, unionMsg.create);
+  }
+
+  @Post('/member')
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
+  async createUnionMember(
+    @Body() memberDto: CreateUnionMemberDto,
+    @Res() res: Response,
+    @Req() req: Request,
+  ): Promise<ResponseRequest> {
+    const user: UserLoginResponseDto = req?.user;
+    const createdBy: string = user.profileId;
+    const result = await this.unionService.createUnionMember(
+      memberDto,
+      createdBy,
+    );
+    return new ResponseRequest(res, result, unionMsg.createMember);
+  }
+
+  @Post('/image')
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
+  async createUnionImage(
+    @Body() imageDto: CreateUnionImagesDto,
+    @Res() res: Response,
+    @Req() req: Request,
+  ): Promise<ResponseRequest> {
+    const user: UserLoginResponseDto = req?.user;
+    const createdBy: string = user.profileId;
+    const result = await this.unionService.createUnionImage(
+      imageDto,
+      createdBy,
+    );
+    return new ResponseRequest(res, result, unionMsg.createImage);
   }
 
   @Put('/:id')
@@ -55,7 +96,47 @@ export class UnionsController {
     const user: UserLoginResponseDto = req?.user;
     const updatedBy: string = user.profileId;
     const result = await this.unionService.updateUnion(id, unionDto, updatedBy);
-    return new ResponseRequest(res, result, msgResponse.updateUnion);
+    return new ResponseRequest(res, result, unionMsg.update);
+  }
+
+  @Put('/member/:id')
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
+  async updateUnionMember(
+    @Param('id') id: string,
+    @Body() memberDto: UpdateUnionMember,
+    @Res() res: ResponseRequest,
+    @Req() req: Request,
+  ): Promise<ResponseRequest> {
+    const user: UserLoginResponseDto = req?.user;
+    const updatedBy: string = user.profileId;
+    const result = await this.unionService.updateUnionMember(
+      id,
+      memberDto,
+      updatedBy,
+    );
+    return new ResponseRequest(res, result, unionMsg.updateMember);
+  }
+
+  @Put('/image/:id')
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
+  async updateUnionImage(
+    @Param('id') id: string,
+    @Body() imageDto: UpdateUnionImage,
+    @Res() res: ResponseRequest,
+    @Req() req: Request,
+  ): Promise<ResponseRequest> {
+    const user: UserLoginResponseDto = req?.user;
+    const updatedBy: string = user.profileId;
+    const result = await this.unionService.updateUnionImage(
+      id,
+      imageDto,
+      updatedBy,
+    );
+    return new ResponseRequest(res, result, unionMsg.updateImage);
   }
 
   @Delete('/:id')
@@ -70,13 +151,13 @@ export class UnionsController {
     const user: UserLoginResponseDto = req?.user;
     const deletedBy: string = user.profileId;
     await this.unionService.deleteUnion(id, deletedBy);
-    return new ResponseRequest(res, true, msgResponse.deleteUnion);
+    return new ResponseRequest(res, true, unionMsg.delete);
   }
 
   @Get()
   async getAllUnion(@Res() res: ResponseRequest): Promise<ResponseRequest> {
     const results = await this.unionService.findAllUnions();
-    return new ResponseRequest(res, results, msgResponse.getAllUnion);
+    return new ResponseRequest(res, results, unionMsg.getAll);
   }
 
   @Get('/:id')
@@ -85,6 +166,6 @@ export class UnionsController {
     @Res() res: ResponseRequest,
   ): Promise<ResponseRequest> {
     const result = await this.unionService.findUnionById(id);
-    return new ResponseRequest(res, result, msgResponse.getByIdUnion);
+    return new ResponseRequest(res, result, unionMsg.getById);
   }
 }
