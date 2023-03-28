@@ -18,11 +18,12 @@ import { Response, Request } from 'express';
 import { ResponseRequest } from 'src/utils/utils.response-api';
 import { ErolesUser } from 'src/constants/constant';
 import { GetCurrentDate } from 'src/utils/utils.get.current-date';
-import { msgResponse } from 'src/constants/constants.message.response';
+import { schoolMsg } from 'src/constants/constants.message.response';
 import { UserLoginResponseDto } from '../auth/dtos/auth.result.login-service.dto';
+import { schoolController } from 'src/constants/constants.controller.name-tag';
 
-@Controller('api/school')
-@ApiTags('school')
+@Controller(schoolController.name)
+@ApiTags(schoolController.tag)
 export class SchoolController {
   constructor(private readonly schoolService: SchoolService) {
     const schoolDto: CreateSchoolDto = {
@@ -58,21 +59,12 @@ export class SchoolController {
       schoolDto,
       updatedBy,
     );
-    return new ResponseRequest(res, result, msgResponse.updateSchool);
+    return new ResponseRequest(res, result, schoolMsg.update);
   }
 
   @Get()
   async getAllSchool(@Res() res: Response): Promise<ResponseRequest> {
-    const result = await this.schoolService.findAllSchool();
-    return new ResponseRequest(res, result, msgResponse.getAllSchool);
-  }
-
-  @Get('/:id')
-  async getSchool(
-    @Param('id') id: string,
-    @Res() res: Response,
-  ): Promise<ResponseRequest> {
-    const result = await this.schoolService.findSchoolById(id);
-    return new ResponseRequest(res, result, msgResponse.getByIdSchool);
+    const result = await this.schoolService.findSchoolInfo();
+    return new ResponseRequest(res, result, schoolMsg.getSchoolInfo);
   }
 }

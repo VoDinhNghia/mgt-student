@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model, Types } from 'mongoose';
+import { Model } from 'mongoose';
 import { CommonException } from 'src/exceptions/execeptions.common-error';
 import { schoolId } from 'src/constants/constant';
 import { CreateSchoolDto } from './dtos/school.create.dto';
@@ -8,32 +8,44 @@ import { UpdateSchoolDto } from './dtos/school.update.dto';
 import { SchoolInfo, SchoolInfoDocument } from './schemas/school.schema';
 import { ValidateDto } from 'src/validates/validates.common.dto';
 import { collections } from 'src/constants/constants.collections.name';
-import { msgNotFound } from 'src/constants/constants.message.response';
-import { schoolLookup } from 'src/utils/utils.lookup.query.service';
+import { schoolMsg } from 'src/constants/constants.message.response';
+import {
+  Attachment,
+  AttachmentDocument,
+} from '../attachments/schemas/attachments.schema';
+import { Award, AwardDocument } from '../awards/schemas/awards.schema';
+import { selectAttachment } from 'src/utils/utils.populate';
 
 @Injectable()
 export class SchoolService {
   constructor(
     @InjectModel(SchoolInfo.name)
     private readonly schoolSchema: Model<SchoolInfoDocument>,
+    @InjectModel(Attachment.name)
+    private readonly attachmentSchema: Model<AttachmentDocument>,
+    @InjectModel(Award.name)
+    private readonly awardSchema: Model<AwardDocument>,
   ) {}
 
   async createSchool(schoolDto: CreateSchoolDto): Promise<void> {
-    const school = await this.schoolSchema.findOne({ schoolId: schoolId });
+    const school = await this.schoolSchema.findOne({ schoolId });
     if (!school) {
       await new this.schoolSchema(schoolDto).save();
     }
   }
 
-  async findSchoolById(id: string): Promise<SchoolInfo> {
-    const match = { $match: { _id: new Types.ObjectId(id) } };
-    const lookup = schoolLookup();
-    const aggregate = [match, ...lookup];
-    const results = await this.schoolSchema.aggregate(aggregate);
-    if (!results[0]) {
-      new CommonException(404, msgNotFound);
+  async findSchoolInfo(): Promise<SchoolInfo> {
+    const results = await this.schoolSchema
+      .findOne({ schoolId })
+      .populate('image', selectAttachment, this.attachmentSchema, {
+        isDeleted: false,
+      })
+      .populate('award', '', this.awardSchema, { isDeleted: false })
+      .exec();
+    if (!results) {
+      new CommonException(404, schoolMsg.notFound);
     }
-    return results[0];
+    return results;
   }
 
   async updateSchool(
@@ -63,13 +75,6 @@ export class SchoolService {
     const result = await this.schoolSchema.findByIdAndUpdate(id, dto, {
       new: true,
     });
-    return result;
-  }
-
-  async findAllSchool(): Promise<SchoolInfo[]> {
-    const match = { $match: { isDeleted: false } };
-    const lookup = schoolLookup();
-    const result = await this.schoolSchema.aggregate([match, ...lookup]);
     return result;
   }
 }

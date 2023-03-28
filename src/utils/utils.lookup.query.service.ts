@@ -209,27 +209,6 @@ export function userScholarshipLookup() {
   return lookup;
 }
 
-export function schoolLookup() {
-  const lookup = lookupCommon([
-    {
-      from: collections.attachments,
-      localField: 'image',
-      foreignField: '_id',
-      as: 'image',
-      unwind: false,
-    },
-    referenceAward(),
-    {
-      from: collections.attachments,
-      localField: 'policy.attachment',
-      foreignField: '_id',
-      as: 'attachmentPolicy',
-      unwind: false,
-    },
-  ]);
-  return [...lookup, ...locationBranchAndSchoolLookup()];
-}
-
 export function syncUserLookup() {
   return userAndSyncLookup();
 }
