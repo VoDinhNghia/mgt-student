@@ -22,3 +22,13 @@ export const schoolController = {
   name: 'api/school',
   tag: 'school',
 };
+
+export const syncServiceController = {
+  name: 'api/sync-service',
+  tag: 'sync-service',
+};
+
+export const scholarshipController = {
+  name: 'api/scholarships',
+  tag: 'scholarships',
+};

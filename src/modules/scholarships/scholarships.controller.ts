@@ -21,11 +21,12 @@ import { QueryScholarshipDto } from './dtos/scholarship.query.dto';
 import { QueryUserScholarshipDto } from './dtos/scholarship.user.query.dto';
 import { ScholarshipService } from './scholarships.service';
 import { Response, Request } from 'express';
-import { msgResponse } from 'src/constants/constants.message.response';
+import { scholarshipMsg } from 'src/constants/constants.message.response';
 import { UserLoginResponseDto } from '../auth/dtos/auth.result.login-service.dto';
+import { scholarshipController } from 'src/constants/constants.controller.name-tag';
 
-@Controller('api/scholarships')
-@ApiTags('scholarships')
+@Controller(scholarshipController.name)
+@ApiTags(scholarshipController.tag)
 export class ScholarshipController {
   constructor(private readonly service: ScholarshipService) {}
 
@@ -44,7 +45,7 @@ export class ScholarshipController {
       scholarshipDto,
       createdBy,
     );
-    return new ResponseRequest(res, result, msgResponse.createScholarship);
+    return new ResponseRequest(res, result, scholarshipMsg.create);
   }
 
   @Put('/:id')
@@ -60,7 +61,7 @@ export class ScholarshipController {
     const user: UserLoginResponseDto = req?.user;
     const updatedBy: string = user.profileId;
     const result = await this.service.updateScholarship(id, dto, updatedBy);
-    return new ResponseRequest(res, result, msgResponse.updateScholarship);
+    return new ResponseRequest(res, result, scholarshipMsg.update);
   }
 
   @Get()
@@ -69,7 +70,7 @@ export class ScholarshipController {
     @Res() res: Response,
   ): Promise<ResponseRequest> {
     const result = await this.service.findAllScholarship(queryDto);
-    return new ResponseRequest(res, result, msgResponse.getAllScholarship);
+    return new ResponseRequest(res, result, scholarshipMsg.getAll);
   }
 
   @Post('/user')
@@ -87,7 +88,7 @@ export class ScholarshipController {
       dto.semester,
       createdBy,
     );
-    return new ResponseRequest(res, result, msgResponse.createUserScholarship);
+    return new ResponseRequest(res, result, scholarshipMsg.createUser);
   }
 
   @Get('/user')
@@ -98,7 +99,7 @@ export class ScholarshipController {
     @Res() res: Response,
   ): Promise<ResponseRequest> {
     const result = await this.service.findAllUserScholarShip(dto);
-    return new ResponseRequest(res, result, msgResponse.getAllUserScholarship);
+    return new ResponseRequest(res, result, scholarshipMsg.getAllUsers);
   }
 
   @Get('/:id')
@@ -107,6 +108,6 @@ export class ScholarshipController {
     @Res() res: Response,
   ): Promise<ResponseRequest> {
     const result = await this.service.findScholarshipById(id);
-    return new ResponseRequest(res, result, msgResponse.getByIdScholarship);
+    return new ResponseRequest(res, result, scholarshipMsg.getById);
   }
 }

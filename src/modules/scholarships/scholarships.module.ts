@@ -1,5 +1,13 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
+import {
+  Attachment,
+  AttachmentlSchema,
+} from '../attachments/schemas/attachments.schema';
+import {
+  Semester,
+  SemesterSchema,
+} from '../semesters/schemas/semesters.schema';
 import { Scholarship, ScholarshipSchema } from './schemas/scholarships.schema';
 import {
   ScholarshipUser,
@@ -18,6 +26,14 @@ import { ScholarshipService } from './scholarships.service';
       {
         name: ScholarshipUser.name,
         schema: ScholarshipUserSchema,
+      },
+      {
+        name: Attachment.name,
+        schema: AttachmentlSchema,
+      },
+      {
+        name: Semester.name,
+        schema: SemesterSchema,
       },
     ]),
   ],

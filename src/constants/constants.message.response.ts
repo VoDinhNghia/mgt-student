@@ -73,6 +73,22 @@ export const schoolMsg = {
   notFound: 'School not found',
 };
 
+export const syncServiceMsg = {
+  migrateUsersLibrary: 'Sync data success',
+  getAllUserSyncLibrary: 'Get all users success',
+};
+
+export const scholarshipMsg = {
+  create: 'Create sholarship success',
+  update: 'Update scholarship success',
+  getAll: 'Get all scholarship success',
+  createUser: 'Create user scholarship success',
+  getAllUsers: 'Get all user scholarship success',
+  getById: 'Get scholarship by id success',
+  notFound: 'Scholarship not found',
+  existedName: 'Scholarship name existed in semester already',
+};
+
 export const msgResponse = {
   initSupperAdminAuth: 'Create supper admin success',
   loginAuth: 'Login sucess',
@@ -165,14 +181,6 @@ export const msgResponse = {
   updateRoom: 'Update room success',
   getByIdRoom: 'Get room by id success',
   deleteRoom: 'Delete room success',
-  createScholarship: 'Create sholarship success',
-  updateScholarship: 'Update scholarship success',
-  getAllScholarship: 'Get all scholarship success',
-  createUserScholarship: 'Create user scholarship success',
-  getAllUserScholarship: 'Get all user scholarship success',
-  getByIdScholarship: 'Get scholarship by id success',
-  migrateUsersLibrary: 'Sync data success',
-  getAllUserSyncLibrary: 'Get all users success',
 };
 
 export const descriptionResponse = {

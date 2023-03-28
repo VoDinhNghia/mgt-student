@@ -10,7 +10,6 @@ import { CreateInstituteDto } from 'src/modules/institute/dtos/institute.create.
 import { CreateDepartmentDto } from 'src/modules/departments/dtos/departments.create.dto';
 import { EroomType } from 'src/constants/constant';
 import { CreateCenterDto } from 'src/modules/centers/dtos/centers.create.dto';
-import { CreateScholarshipDto } from 'src/modules/scholarships/dtos/scholarship.create.dto';
 import { UpdateCourseDto } from 'src/modules/courses/dtos/courses.update.dto';
 
 export class ValidateDto {
@@ -244,24 +243,6 @@ export class ValidateDto {
     }
     if (office) {
       await this.fieldId(collections.rooms, office);
-    }
-  }
-
-  async scholarShip(scholarshipDto: CreateScholarshipDto): Promise<void> {
-    const { semester, name } = scholarshipDto;
-    if (semester) {
-      await this.fieldId(collections.semesters, semester);
-    }
-    if (name) {
-      const options = {
-        semester: new Types.ObjectId(semester),
-        name: name.trim(),
-      };
-      await this.existedByOptions(
-        collections.scholarships,
-        options,
-        'Scholarship',
-      );
     }
   }
 }
