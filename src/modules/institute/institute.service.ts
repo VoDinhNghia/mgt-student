@@ -1,13 +1,16 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model, Types } from 'mongoose';
+import { Model } from 'mongoose';
 import {
   instituteMsg,
-  msgNotFound,
   roomMsg,
 } from 'src/constants/constants.message.response';
 import { CommonException } from 'src/exceptions/execeptions.common-error';
-import { instituteLookup } from 'src/utils/utils.lookup.query.service';
+import {
+  selectAttachment,
+  selectRoom,
+  selectUser,
+} from 'src/utils/utils.populate';
 import { ValidFields } from 'src/validates/validates.fields-id-dto';
 import {
   Attachment,
@@ -19,8 +22,9 @@ import {
   ProfileDocument,
 } from '../users/schemas/users.profile.schema';
 import { CreateInstituteDto } from './dtos/institute.create.dto';
+import { QueryIntituteDto } from './dtos/institute.query.dto';
 import { UpdateInstituteDto } from './dtos/institute.update.dto';
-import { ImatchFindInstitute } from './interfaces/institute.find.match.interface';
+import { IqueryInstitute } from './interfaces/institute.find.match.interface';
 import { InstitudeDocument, Institudes } from './schemas/institute.schema';
 
 @Injectable()
@@ -102,24 +106,54 @@ export class InstituteService {
   }
 
   async findInstituteById(id: string): Promise<Institudes> {
-    const match: ImatchFindInstitute = {
-      $match: { _id: new Types.ObjectId(id) },
-    };
-    const lookup = instituteLookup();
-    const aggregate = [match, ...lookup];
-    const result = await this.institutiSchema.aggregate(aggregate);
-    if (!result[0]) {
-      new CommonException(404, msgNotFound);
+    const result = await this.institutiSchema
+      .findById(id)
+      .populate('attachment', selectAttachment, this.attachmentSchema, {
+        isDeleted: false,
+      })
+      .populate('parson', selectUser, this.profileSchema, {
+        isDeleted: false,
+      })
+      .populate('viceParson', selectUser, this.profileSchema, {
+        isDeleted: false,
+      })
+      .populate('contacts.office', selectRoom, this.roomSchema, {
+        isDeleted: false,
+      })
+      .exec();
+    if (!result) {
+      new CommonException(404, instituteMsg.notFound);
     }
-    return result[0];
+    return result;
   }
 
-  async findAllInstitudes(): Promise<Institudes[]> {
-    const match: ImatchFindInstitute = { $match: { isDeleted: false } };
-    const lookup = instituteLookup();
-    const aggregate = [match, ...lookup];
-    const results = await this.institutiSchema.aggregate(aggregate);
-    return results;
+  async findAllInstitudes(
+    queryDto: QueryIntituteDto,
+  ): Promise<{ results: Institudes[]; total: number }> {
+    const { limit, page, searchKey } = queryDto;
+    const query: IqueryInstitute = { isDeleted: false };
+    if (searchKey) {
+      query.unitName = new RegExp(searchKey, 'i');
+    }
+    const results = await this.institutiSchema
+      .find(query)
+      .skip(limit && page ? Number(limit) * Number(page) - Number(limit) : null)
+      .limit(limit ? Number(limit) : null)
+      .populate('attachment', selectAttachment, this.attachmentSchema, {
+        isDeleted: false,
+      })
+      .populate('parson', selectUser, this.profileSchema, {
+        isDeleted: false,
+      })
+      .populate('viceParson', selectUser, this.profileSchema, {
+        isDeleted: false,
+      })
+      .populate('contacts.office', selectRoom, this.roomSchema, {
+        isDeleted: false,
+      })
+      .exec();
+    const total = await this.institutiSchema.find(query).count();
+    return { results, total };
   }
 
   async deleteInstitude(id: string, deletedBy: string): Promise<void> {

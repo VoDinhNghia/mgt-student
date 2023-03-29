@@ -135,28 +135,6 @@ export function majorLookup() {
   return [...facultyLookup(), ...lookup];
 }
 
-export function instituteLookup() {
-  const lookup = lookupCommon([
-    {
-      from: collections.profiles,
-      localField: 'parson',
-      foreignField: '_id',
-      as: 'parson',
-      unwind: true,
-    },
-    {
-      from: collections.profiles,
-      localField: 'viceParson',
-      foreignField: '_id',
-      as: 'viceParson',
-      unwind: true,
-    },
-    referenceOffice(),
-    referenceAttachment(),
-  ]);
-  return lookup;
-}
-
 export function trainningPointScholarshipLookup() {
   const lookup = lookupCommon([
     {

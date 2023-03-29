@@ -38,3 +38,13 @@ export const selectScholarship = {
 };
 
 export const selectSemester = ['_id', 'name', 'year', 'isDeleted'];
+
+export const selectRoom = [
+  '_id',
+  'name',
+  'type',
+  'isDeleted',
+  'status',
+  'capacity',
+  'divice',
+];
