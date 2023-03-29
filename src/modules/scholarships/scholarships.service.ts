@@ -328,4 +328,24 @@ export class ScholarshipService {
     });
     return result;
   }
+
+  async deleteScholarship(id: string, deletedBy: string): Promise<void> {
+    await this.findScholarshipById(id);
+    const deleteDto = {
+      deletedBy,
+      isDeleted: true,
+      deletedAt: Date.now(),
+    };
+    await this.scholarshipSchema.findByIdAndUpdate(id, deleteDto);
+  }
+
+  async deleteUserScholarship(id: string, deletedBy: string): Promise<void> {
+    await this.findScholarshipById(id);
+    const deleteDto = {
+      deletedBy,
+      isDeleted: true,
+      deletedAt: Date.now(),
+    };
+    await this.scholarshipUserSchema.findByIdAndUpdate(id, deleteDto);
+  }
 }

@@ -9,6 +9,7 @@ import {
   Param,
   Put,
   Req,
+  Delete,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { ErolesUser } from 'src/constants/constant';
@@ -67,6 +68,36 @@ export class ScholarshipController {
       updatedBy,
     );
     return new ResponseRequest(res, result, scholarshipMsg.update);
+  }
+
+  @Delete('/:id')
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
+  async deleteScholarship(
+    @Param('id') id: string,
+    @Res() res: Response,
+    @Req() req: Request,
+  ): Promise<ResponseRequest> {
+    const user: UserLoginResponseDto = req?.user;
+    const deletedBy: string = user.profileId;
+    const result = await this.service.deleteScholarship(id, deletedBy);
+    return new ResponseRequest(res, result, scholarshipMsg.delete);
+  }
+
+  @Delete('/user/:id')
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
+  async deleteUserScholarship(
+    @Param('id') id: string,
+    @Res() res: Response,
+    @Req() req: Request,
+  ): Promise<ResponseRequest> {
+    const user: UserLoginResponseDto = req?.user;
+    const deletedBy: string = user.profileId;
+    const result = await this.service.deleteUserScholarship(id, deletedBy);
+    return new ResponseRequest(res, result, scholarshipMsg.deleteUser);
   }
 
   @Get()

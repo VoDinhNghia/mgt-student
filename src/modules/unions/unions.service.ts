@@ -340,16 +340,6 @@ export class UnionsService {
       deletedAt: Date.now(),
     };
     await this.unionSchema.findByIdAndUpdate(id, deleteDto);
-    await this.unionMemberSchema
-      .find({
-        union: new Types.ObjectId(id),
-      })
-      .update(deleteDto);
-    await this.unionImageSchema
-      .find({
-        union: new Types.ObjectId(id),
-      })
-      .update(deleteDto);
   }
 
   async deleteUnionImage(id: string, deletedBy: string): Promise<void> {
