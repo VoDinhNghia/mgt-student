@@ -1,8 +1,6 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
-import { collections } from 'src/constants/constants.collections.name';
 import {
   considerConditionScholarshipPoint,
   EstatusUserProfile,
@@ -27,12 +25,11 @@ import {
   ScholarshipUser,
   ScholarshipUserDocument,
 } from './schemas/scholarships.user.schema';
-import { ImatchFindAllScholarship } from './interfaces/scholarships.find.match.interface';
 import {
-  semesterScholarshipLookup,
-  userScholarshipLookup,
-} from 'src/utils/utils.lookup.query.service';
-import { skipLimitAndSortPagination } from 'src/utils/utils.page.pagination';
+  ImatchScholarshipUser,
+  IsemesterQueryScholarship,
+} from './interfaces/scholarships.find.interface';
+import { userScholarshipLookup } from 'src/utils/utils.lookup.query.service';
 import {
   Attachment,
   AttachmentDocument,
@@ -41,6 +38,11 @@ import {
   Semester,
   SemesterDocument,
 } from '../semesters/schemas/semesters.schema';
+import { selectAttachment, selectScholarship } from 'src/utils/utils.populate';
+import {
+  StudyProcessDocument,
+  StudyProcesses,
+} from '../users/schemas/users.study-process.schema';
 
 @Injectable()
 export class ScholarshipService {
@@ -53,6 +55,8 @@ export class ScholarshipService {
     private readonly attachmentSchema: Model<AttachmentDocument>,
     @InjectModel(Semester.name)
     private readonly semesterSchema: Model<SemesterDocument>,
+    @InjectModel(StudyProcesses.name)
+    private readonly studyprocessSchema: Model<StudyProcessDocument>,
   ) {}
 
   async createScholarship(
@@ -118,48 +122,59 @@ export class ScholarshipService {
   }
 
   async findScholarshipById(id: string): Promise<Scholarship> {
-    const match: ImatchFindAllScholarship = {
-      $match: { _id: new Types.ObjectId(id) },
-    };
-    const lookup = semesterScholarshipLookup();
-    const aggregate = [match, ...lookup];
-    const results = await this.scholarshipSchema.aggregate(aggregate);
-    if (!results[0]) {
+    const result = await this.scholarshipSchema
+      .findById(id)
+      .populate('semester', selectScholarship.semester, this.semesterSchema, {
+        isDeleted: false,
+      })
+      .populate('attachment', selectAttachment, this.attachmentSchema, {
+        isDeleted: false,
+      })
+      .exec();
+    if (!result) {
       new CommonException(404, scholarshipMsg.notFound);
     }
-    return results[0];
+    return result;
   }
 
   async findAllScholarship(
     queryDto: QueryScholarshipDto,
-  ): Promise<Scholarship[]> {
+  ): Promise<{ results: Scholarship[]; total: number }> {
     const { semester, type, limit, page, searchKey } = queryDto;
-    const match: ImatchFindAllScholarship = { $match: { isDeleted: false } };
+    const query: IsemesterQueryScholarship = { isDeleted: false };
     if (semester) {
-      match.$match.semester = new Types.ObjectId(semester);
+      query.semester = new Types.ObjectId(semester);
     }
     if (type) {
-      match.$match.type = type.trim();
+      query.type = type.trim();
     }
     if (searchKey) {
-      match.$match.$or = [{ name: new RegExp(searchKey) }];
+      query.$or = [
+        { name: new RegExp(searchKey, 'i') },
+        { year: new RegExp(searchKey, 'i') },
+      ];
     }
-    const lookup = semesterScholarshipLookup();
-    const aggregate = skipLimitAndSortPagination(limit, page);
-    const results = await this.scholarshipSchema.aggregate([
-      match,
-      ...aggregate,
-      ...lookup,
-    ]);
-    return results;
+    const results = await this.scholarshipSchema
+      .find(query)
+      .skip(limit && page ? Number(limit) * Number(page) - Number(limit) : null)
+      .limit(limit ? Number(limit) : null)
+      .populate('semester', selectScholarship.semester, this.semesterSchema, {
+        isDeleted: false,
+      })
+      .populate('attachment', selectAttachment, this.attachmentSchema, {
+        isDeleted: false,
+      })
+      .exec();
+    const total = await this.scholarshipSchema.find(query).count();
+    return { results, total };
   }
 
   async findAllUserScholarShip(
     queryDto: QueryUserScholarshipDto,
-  ): Promise<Record<string, any>[]> {
+  ): Promise<ScholarshipUser[]> {
     const { scholarship, user, semester } = queryDto;
     let aggregate = [];
-    const matchOne: ImatchFindAllScholarship = { $match: { isDeleted: false } };
+    const matchOne: ImatchScholarshipUser = { $match: { isDeleted: false } };
     if (scholarship) {
       matchOne.$match.scholarship = new Types.ObjectId(scholarship);
     }
@@ -194,38 +209,51 @@ export class ScholarshipService {
   async createUserScholarshipInSemester(
     semester: string,
     createdBy: string,
-  ): Promise<Record<string, any>[]> {
-    const queryService = new QueryService();
-    const optionFindOne = { _id: new Types.ObjectId(semester) };
-    const semesterInfo = await queryService.findOneByOptions(
-      collections.semesters,
-      optionFindOne,
-    );
+  ): Promise<ScholarshipUser[]> {
+    const semesterInfo = await this.semesterSchema.findOne({
+      _id: new Types.ObjectId(semester),
+      isDeleted: false,
+    });
     if (!semesterInfo) {
-      new CommonException(404, 'Semester not found.');
+      new CommonException(404, semesterMsg.notFound);
     }
-    const optionFind = { status: EstatusUserProfile.STUDYING };
-    const studyProcessLists = await queryService.findByOptions(
-      collections.study_processes,
-      optionFind,
+    const studyProcessLists = await this.studyprocessSchema.find({
+      status: EstatusUserProfile.STUDYING,
+      isDeleted: false,
+    });
+    if (studyProcessLists.length === 0) {
+      return [];
+    }
+    const data = this.createUserScholarship(
+      studyProcessLists,
+      semester,
+      createdBy,
     );
-    const data = [];
+    return data;
+  }
+
+  async createUserScholarship(
+    studyProcessLists: StudyProcesses[],
+    semester: string,
+    createdBy: string,
+  ): Promise<ScholarshipUser[]> {
+    const listDto = [];
     for await (const item of studyProcessLists) {
       try {
         const { totalAccumalated, totalNumberCredits } =
           await new SubjectUserRegister().getUserTotalAccumalated(
             semester,
-            item.user,
+            String(item.user),
           );
         const accumalatedPoint =
           totalNumberCredits > 0 ? totalAccumalated / totalNumberCredits : 0;
-        const tranningpoint = await queryService.getUserTrainningPoint(
-          item.user,
-          semester,
-        );
         if (accumalatedPoint < considerConditionScholarshipPoint) {
           continue;
         }
+        const tranningpoint = await new QueryService().getUserTrainningPoint(
+          String(item.user),
+          semester,
+        );
         const getCondition = await this.considerConditions(
           accumalatedPoint,
           tranningpoint,
@@ -235,15 +263,6 @@ export class ScholarshipService {
         if (!getCondition) {
           continue;
         }
-        const userscholarshipDto: CreateScholarshipUser & {
-          createdBy: string;
-        } = {
-          scholarship: getCondition._id,
-          user: item.user,
-          accumalatedPoint: accumalatedPoint,
-          trainningPoint: tranningpoint,
-          createdBy,
-        };
         const existed = await this.scholarshipUserSchema.findOne({
           scholarship: getCondition._id,
           user: item.user,
@@ -251,14 +270,22 @@ export class ScholarshipService {
         if (existed) {
           continue;
         }
-        data.push(
-          await new this.scholarshipUserSchema(userscholarshipDto).save(),
-        );
+        const userscholarshipDto: CreateScholarshipUser & {
+          createdBy: string;
+        } = {
+          scholarship: getCondition._id,
+          user: String(item.user),
+          accumalatedPoint: accumalatedPoint,
+          trainningPoint: tranningpoint,
+          createdBy,
+        };
+        listDto.push(userscholarshipDto);
       } catch (error) {
-        // console.log(error);
+        console.log(error);
         continue;
       }
     }
+    const data = await this.scholarshipUserSchema.insertMany(listDto);
     return data;
   }
 
@@ -270,10 +297,10 @@ export class ScholarshipService {
   ): Promise<ScholarshipDocument> {
     const result = await this.scholarshipSchema.findOne({
       semester: new Types.ObjectId(semester),
-      minimunPoints: { $lt: accumalatedPoint },
-      maximunPoints: { $gt: accumalatedPoint },
-      trainningPoints: { $lt: tranningpoint },
-      numberCredit: { $lt: numberCredit },
+      minimunPoints: { $lte: accumalatedPoint },
+      maximunPoints: { $gte: accumalatedPoint },
+      trainningPoints: { $lte: tranningpoint },
+      numberCredit: { $lte: numberCredit },
       isDeleted: false,
     });
     return result;

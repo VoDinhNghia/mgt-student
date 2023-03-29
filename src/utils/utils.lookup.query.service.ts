@@ -177,11 +177,6 @@ export function permissionLookup() {
   return lookup;
 }
 
-export function semesterScholarshipLookup() {
-  const lookup = lookupCommon([referenceSemester()]);
-  return lookup;
-}
-
 export function trainningPointScholarshipLookup() {
   const lookup = lookupCommon([
     {

@@ -28,19 +28,19 @@ export class Scholarship extends FieldsCommonSchema {
   @Prop()
   content?: string;
 
-  @Prop({ default: 8.0 })
+  @Prop({ default: 8.0, min: 0, max: 10 })
   minimunPoints?: number;
 
-  @Prop({ default: 8.9 })
+  @Prop({ default: 8.9, min: 0, max: 10 })
   maximunPoints?: number;
 
-  @Prop({ default: 65 })
+  @Prop({ default: 65, min: 0, max: 100 })
   trainningPoints?: number;
 
-  @Prop({ default: 12 })
+  @Prop({ default: 12, min: 0, max: 50 })
   numberCredit?: number;
 
-  @Prop({ default: 80 })
+  @Prop({ default: 80, min: 0, max: 100 })
   percentTuition?: number;
 
   @Prop({
