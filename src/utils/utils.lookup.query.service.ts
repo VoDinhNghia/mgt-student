@@ -190,20 +190,6 @@ export function trainningPointScholarshipLookup() {
   return lookup;
 }
 
-export function userScholarshipLookup() {
-  const lookup = lookupCommon([
-    {
-      from: collections.scholarships,
-      localField: 'scholarship',
-      foreignField: '_id',
-      as: 'scholarship',
-      unwind: true,
-    },
-    referenceUser(),
-  ]);
-  return lookup;
-}
-
 export function syncUserLookup() {
   return userAndSyncLookup();
 }

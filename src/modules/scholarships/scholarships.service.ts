@@ -26,10 +26,10 @@ import {
   ScholarshipUserDocument,
 } from './schemas/scholarships.user.schema';
 import {
-  ImatchScholarshipUser,
+  IgetUserScholarship,
+  IqueryUserScholarship,
   IsemesterQueryScholarship,
 } from './interfaces/scholarships.find.interface';
-import { userScholarshipLookup } from 'src/utils/utils.lookup.query.service';
 import {
   Attachment,
   AttachmentDocument,
@@ -43,6 +43,14 @@ import {
   StudyProcessDocument,
   StudyProcesses,
 } from '../users/schemas/users.study-process.schema';
+import {
+  Profile,
+  ProfileDocument,
+} from '../users/schemas/users.profile.schema';
+import {
+  PaymentStudyFee,
+  PaymentStudyFeeDocument,
+} from '../payments/schemas/payments.schema';
 
 @Injectable()
 export class ScholarshipService {
@@ -57,6 +65,10 @@ export class ScholarshipService {
     private readonly semesterSchema: Model<SemesterDocument>,
     @InjectModel(StudyProcesses.name)
     private readonly studyprocessSchema: Model<StudyProcessDocument>,
+    @InjectModel(Profile.name)
+    private readonly profileSchema: Model<ProfileDocument>,
+    @InjectModel(PaymentStudyFee.name)
+    private readonly paymentStudyFeeSchema: Model<PaymentStudyFeeDocument>,
   ) {}
 
   async createScholarship(
@@ -149,10 +161,7 @@ export class ScholarshipService {
       query.type = type.trim();
     }
     if (searchKey) {
-      query.$or = [
-        { name: new RegExp(searchKey, 'i') },
-        { year: new RegExp(searchKey, 'i') },
-      ];
+      query.$or = [{ name: new RegExp(searchKey, 'i') }];
     }
     const results = await this.scholarshipSchema
       .find(query)
@@ -171,39 +180,53 @@ export class ScholarshipService {
 
   async findAllUserScholarShip(
     queryDto: QueryUserScholarshipDto,
-  ): Promise<ScholarshipUser[]> {
+  ): Promise<IgetUserScholarship[]> {
     const { scholarship, user, semester } = queryDto;
-    let aggregate = [];
-    const matchOne: ImatchScholarshipUser = { $match: { isDeleted: false } };
+    const query: IqueryUserScholarship = { isDeleted: false };
     if (scholarship) {
-      matchOne.$match.scholarship = new Types.ObjectId(scholarship);
+      query.scholarship = new Types.ObjectId(scholarship);
     }
     if (user) {
-      matchOne.$match.user = new Types.ObjectId(user);
+      query.user = new Types.ObjectId(user);
     }
-    const lookup = userScholarshipLookup();
-    aggregate = [...aggregate, matchOne, ...lookup];
-    if (semester) {
-      aggregate = [
-        ...aggregate,
+    const results: IgetUserScholarship[] = await this.scholarshipUserSchema
+      .find(query)
+      .populate(
+        'scholarship',
+        selectScholarship.scholarship,
+        this.scholarshipSchema,
         {
-          $match: { 'scholarship.semester': new Types.ObjectId(semester) },
+          isDeleted: false,
         },
-      ];
-    }
-    const results = await this.scholarshipUserSchema.aggregate(aggregate);
+      )
+      .populate('user', selectScholarship.user, this.profileSchema, {
+        isDeleted: false,
+      })
+      .lean();
+    const listUserTuitition = await this.paymentStudyFeeSchema.find({
+      isDeleted: false,
+    });
+    const data = [];
     for await (const item of results) {
-      const tuition = await new QueryService().getUserPaymentStudyFee(
-        item?.scholarship?.semester,
-        item?.user?._id,
-      );
-      const rewardMoney =
-        ((tuition?.totalMoney || 0) *
-          (item?.scholarship?.percentTuition || 0)) /
-        100;
-      item.rewardMoney = rewardMoney;
+      let objUserScholarship = item;
+      if (semester && semester !== String(item?.scholarship?.semester)) {
+        objUserScholarship = null;
+      }
+      if (objUserScholarship) {
+        const tuition = listUserTuitition.find(
+          (fee: PaymentStudyFee) =>
+            String(fee?.semester) === String(item?.scholarship?.semester) &&
+            String(fee?.user) === String(item?.user?._id),
+        );
+        const rewardMoney =
+          ((tuition?.totalMoney || 0) *
+            (item?.scholarship?.percentTuition || 0)) /
+          100;
+        item.rewardMoney = rewardMoney;
+        data.push(item);
+      }
     }
-    return results;
+    return data;
   }
 
   async createUserScholarshipInSemester(
