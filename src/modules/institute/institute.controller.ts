@@ -19,11 +19,12 @@ import { Response, Request } from 'express';
 import { CreateInstituteDto } from './dtos/institute.create.dto';
 import { UpdateInstituteDto } from './dtos/institute.update.dto';
 import { Delete } from '@nestjs/common/decorators/http/request-mapping.decorator';
-import { msgResponse } from 'src/constants/constants.message.response';
+import { instituteMsg } from 'src/constants/constants.message.response';
 import { UserLoginResponseDto } from '../auth/dtos/auth.result.login-service.dto';
+import { instituteController } from 'src/constants/constants.controller.name-tag';
 
-@Controller('api/institutes')
-@ApiTags('institutes')
+@Controller(instituteController.name)
+@ApiTags(instituteController.tag)
 export class InstituteController {
   constructor(private readonly instutiteService: InstituteService) {}
 
@@ -42,7 +43,7 @@ export class InstituteController {
       instituteDto,
       createdBy,
     );
-    return new ResponseRequest(res, result, msgResponse.createInstitute);
+    return new ResponseRequest(res, result, instituteMsg.create);
   }
 
   @Put('/:id')
@@ -57,12 +58,8 @@ export class InstituteController {
   ): Promise<ResponseRequest> {
     const user: UserLoginResponseDto = req?.user;
     const updatedBy: string = user.profileId;
-    const result = await this.instutiteService.updateInstitute(
-      id,
-      instituteDto,
-      updatedBy,
-    );
-    return new ResponseRequest(res, result, msgResponse.updateInstitute);
+    await this.instutiteService.updateInstitute(id, instituteDto, updatedBy);
+    return new ResponseRequest(res, true, instituteMsg.update);
   }
 
   @Delete('/:id')
@@ -77,13 +74,13 @@ export class InstituteController {
     const user: UserLoginResponseDto = req?.user;
     const deletedBy: string = user.profileId;
     await this.instutiteService.deleteInstitude(id, deletedBy);
-    return new ResponseRequest(res, true, msgResponse.deleteInstitute);
+    return new ResponseRequest(res, true, instituteMsg.delete);
   }
 
   @Get()
   async getAllInstitute(@Res() res: ResponseRequest): Promise<ResponseRequest> {
     const result = await this.instutiteService.findAllInstitudes();
-    return new ResponseRequest(res, result, msgResponse.getAllInstitute);
+    return new ResponseRequest(res, result, instituteMsg.getAll);
   }
 
   @Get('/:id')
@@ -92,6 +89,6 @@ export class InstituteController {
     @Res() res: ResponseRequest,
   ): Promise<ResponseRequest> {
     const result = await this.instutiteService.findInstituteById(id);
-    return new ResponseRequest(res, result, msgResponse.getByIdInstitute);
+    return new ResponseRequest(res, result, instituteMsg.getById);
   }
 }

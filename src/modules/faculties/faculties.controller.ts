@@ -23,7 +23,7 @@ import { UpdateFacultyDto } from './dtos/faculties.update.dto';
 import { CreateMajorDto } from './dtos/faculties.major.create.dto';
 import { UpdateMajorDto } from './dtos/faculties.major.update.dto';
 import { MajorQueryDto } from './dtos/faculties.major.query.dto';
-import { msgResponse } from 'src/constants/constants.message.response';
+import { facultiesMsg } from 'src/constants/constants.message.response';
 import { UserLoginResponseDto } from '../auth/dtos/auth.result.login-service.dto';
 
 @Controller('api/faculties')
@@ -46,7 +46,7 @@ export class FacultiesController {
       createFacultyDto,
       createdBy,
     );
-    return new ResponseRequest(res, result, msgResponse.createFaculty);
+    return new ResponseRequest(res, result, facultiesMsg.create);
   }
 
   @Put('/:id')
@@ -66,7 +66,7 @@ export class FacultiesController {
       updateFacultyDto,
       updatedBy,
     );
-    return new ResponseRequest(res, result, msgResponse.updateFaculty);
+    return new ResponseRequest(res, result, facultiesMsg.update);
   }
 
   @Get()
@@ -78,7 +78,7 @@ export class FacultiesController {
     @Res() res: Response,
   ): Promise<ResponseRequest> {
     const result = await this.facultyService.findAllFaculties(facultyQueryDto);
-    return new ResponseRequest(res, result, msgResponse.getAllFaculty);
+    return new ResponseRequest(res, result, facultiesMsg.getAll);
   }
 
   @Post('/major')
@@ -96,7 +96,7 @@ export class FacultiesController {
       createMajorDto,
       createdBy,
     );
-    return new ResponseRequest(res, result, msgResponse.createMajor);
+    return new ResponseRequest(res, result, facultiesMsg.createMajor);
   }
 
   @Put('/major/:id')
@@ -116,7 +116,7 @@ export class FacultiesController {
       updateMajorDto,
       updatedBy,
     );
-    return new ResponseRequest(res, result, msgResponse.updateMajor);
+    return new ResponseRequest(res, result, facultiesMsg.updateMajor);
   }
 
   @Get('/major/:id')
@@ -128,7 +128,7 @@ export class FacultiesController {
     @Res() res: Response,
   ): Promise<ResponseRequest> {
     const result = await this.facultyService.findMajorById(id);
-    return new ResponseRequest(res, result, msgResponse.getByIdMajor);
+    return new ResponseRequest(res, result, facultiesMsg.getByIdMajor);
   }
 
   @Get('/major')
@@ -140,7 +140,7 @@ export class FacultiesController {
     @Res() res: Response,
   ): Promise<ResponseRequest> {
     const result = await this.facultyService.findAllMajors(queryDto);
-    return new ResponseRequest(res, result, msgResponse.getAllMajor);
+    return new ResponseRequest(res, result, facultiesMsg.getAllMajor);
   }
 
   @Get('/:id')
@@ -152,6 +152,6 @@ export class FacultiesController {
     @Res() res: Response,
   ): Promise<ResponseRequest> {
     const result = await this.facultyService.findFacultyById(id);
-    return new ResponseRequest(res, result, msgResponse.getByIdFaculty);
+    return new ResponseRequest(res, result, facultiesMsg.getById);
   }
 }

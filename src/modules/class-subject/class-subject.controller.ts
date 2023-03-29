@@ -22,7 +22,7 @@ import { CreateSubjectDto } from './dtos/class-subject.create-subject.dto';
 import { UpdateSubjectDto } from './dtos/class-subject.update-subject.dto';
 import { UpdateClassDto } from './dtos/class-subject.update-class.dto';
 import { ValidatePercentPoint } from 'src/validates/validates.percent-point.subject';
-import { msgResponse } from 'src/constants/constants.message.response';
+import { classMsg } from 'src/constants/constants.message.response';
 import { UserLoginResponseDto } from '../auth/dtos/auth.result.login-service.dto';
 
 @Controller('api/class-subject')
@@ -45,7 +45,7 @@ export class ClassSubjectController {
       createClassDto,
       createdBy,
     );
-    return new ResponseRequest(res, result, msgResponse.createClass);
+    return new ResponseRequest(res, result, classMsg.create);
   }
 
   @Post('/subject')
@@ -64,7 +64,7 @@ export class ClassSubjectController {
       subjectDto,
       createdBy,
     );
-    return new ResponseRequest(res, result, msgResponse.createSubject);
+    return new ResponseRequest(res, result, classMsg.createSubject);
   }
 
   @Put('/subject/:id')
@@ -84,7 +84,7 @@ export class ClassSubjectController {
       subjectDto,
       updatedBy,
     );
-    return new ResponseRequest(res, result, msgResponse.updateSubject);
+    return new ResponseRequest(res, result, classMsg.updateSubject);
   }
 
   @Put('/class/:id')
@@ -104,7 +104,7 @@ export class ClassSubjectController {
       classDto,
       updatedBy,
     );
-    return new ResponseRequest(res, result, msgResponse.updateClass);
+    return new ResponseRequest(res, result, classMsg.update);
   }
 
   @Get('/class/:id')
@@ -113,7 +113,7 @@ export class ClassSubjectController {
     @Res() res: Response,
   ): Promise<ResponseRequest> {
     const result = await this.classSubjectService.findClassById(id);
-    return new ResponseRequest(res, result, msgResponse.getByIdClass);
+    return new ResponseRequest(res, result, classMsg.getById);
   }
 
   @Get('/subject/:id')
@@ -122,6 +122,6 @@ export class ClassSubjectController {
     @Res() res: Response,
   ): Promise<ResponseRequest> {
     const result = await this.classSubjectService.findSubjectById(id);
-    return new ResponseRequest(res, result, msgResponse.getByIdSubject);
+    return new ResponseRequest(res, result, classMsg.getByIdSubject);
   }
 }

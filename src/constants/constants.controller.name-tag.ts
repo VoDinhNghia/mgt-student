@@ -52,3 +52,8 @@ export const newController = {
   name: 'api/news',
   tag: 'news',
 };
+
+export const instituteController = {
+  name: 'api/institutes',
+  tag: 'institutes',
+};

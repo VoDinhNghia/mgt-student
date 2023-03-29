@@ -35,6 +35,7 @@ import {
   ProfileDocument,
 } from '../users/schemas/users.profile.schema';
 import { IuserRegisterResponse } from './interfaces/payments.find.user-tuition.interface';
+import { ValidFields } from 'src/validates/validates.fields-id-dto';
 
 @Injectable()
 export class PaymentsService {
@@ -54,13 +55,8 @@ export class PaymentsService {
     createdBy: string,
   ): Promise<MoneyPerCreditMgt> {
     const { semester } = creditMgtDto;
-    const semesterInfo = await this.semesterSchema.findOne({
-      _id: new Types.ObjectId(semester),
-      isSelected: false,
-    });
-    if (!semesterInfo) {
-      new CommonException(404, semesterMsg.notFound);
-    }
+    const valid = new ValidFields();
+    await valid.id(this.semesterSchema, semester, semesterMsg.notFound);
     const option = { semester: new Types.ObjectId(semester), isDeleted: false };
     const existedMoneyCredit = await this.moneyCreditSchema.findOne(option);
     if (existedMoneyCredit) {
@@ -81,13 +77,8 @@ export class PaymentsService {
   ): Promise<MoneyPerCreditMgt> {
     const { semester } = creditMgtDto;
     if (semester) {
-      const semesterInfo = await this.semesterSchema.findOne({
-        _id: new Types.ObjectId(semester),
-        isSelected: false,
-      });
-      if (!semesterInfo) {
-        new CommonException(404, semesterMsg.notFound);
-      }
+      const valid = new ValidFields();
+      await valid.id(this.semesterSchema, semester, semesterMsg.notFound);
     }
     const dto = {
       ...creditMgtDto,
@@ -141,20 +132,9 @@ export class PaymentsService {
     createdBy: string,
   ): Promise<PaymentStudyFee> {
     const { user, semester } = paymentDto;
-    const profile = await this.profileSchema.findOne({
-      _id: new Types.ObjectId(user),
-      isDeleted: false,
-    });
-    if (!profile) {
-      new CommonException(404, userMsg.notFoundProfile);
-    }
-    const semesterInfo = await this.semesterSchema.findOne({
-      _id: new Types.ObjectId(semester),
-      isSelected: false,
-    });
-    if (!semesterInfo) {
-      new CommonException(404, semesterMsg.notFound);
-    }
+    const valid = new ValidFields();
+    await valid.id(this.profileSchema, user, userMsg.notFoundProfile);
+    await valid.id(this.semesterSchema, semester, semesterMsg.notFound);
     const newPaymentDto: CreateUserPaymentDto & {
       receiptId: string;
       createdBy: string;
@@ -174,13 +154,8 @@ export class PaymentsService {
   ): Promise<PaymentStudyFee> {
     const { semester } = paymentDto;
     if (semester) {
-      const semesterInfo = await this.semesterSchema.findOne({
-        _id: new Types.ObjectId(semester),
-        isSelected: false,
-      });
-      if (!semesterInfo) {
-        new CommonException(404, semesterMsg.notFound);
-      }
+      const valid = new ValidFields();
+      await valid.id(this.semesterSchema, semester, semesterMsg.notFound);
     }
     const dto = {
       ...paymentDto,
@@ -212,13 +187,12 @@ export class PaymentsService {
   ): Promise<{ subjects: IuserRegisterResponse[]; tuitionStatus: string }> {
     const { semester, profile } = queryDto;
     if (semester) {
-      const semesterInfo = await this.semesterSchema.findOne({
-        _id: new Types.ObjectId(semester),
-        isSelected: false,
-      });
-      if (!semesterInfo) {
-        new CommonException(404, semesterMsg.notFound);
-      }
+      const valid = new ValidFields();
+      await valid.id(this.semesterSchema, semester, semesterMsg.notFound);
+    }
+    if (profile) {
+      const valid = new ValidFields();
+      await valid.id(this.profileSchema, profile, userMsg.notFoundProfile);
     }
     const options = {
       user: new Types.ObjectId(profile),
