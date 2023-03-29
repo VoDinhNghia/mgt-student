@@ -1,12 +1,16 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
-import { collections } from 'src/constants/constants.collections.name';
-import { msgNotFound } from 'src/constants/constants.message.response';
+import {
+  permissionMsg,
+  userMsg,
+} from 'src/constants/constants.message.response';
 import { CommonException } from 'src/exceptions/execeptions.common-error';
-import { permissionLookup } from 'src/utils/utils.lookup.query.service';
-import { skipLimitAndSortPagination } from 'src/utils/utils.page.pagination';
-import { ValidateDto } from 'src/validates/validates.common.dto';
+import { selectUser } from 'src/utils/utils.populate';
+import {
+  Profile,
+  ProfileDocument,
+} from '../users/schemas/users.profile.schema';
 import { CreatePermissionDto } from './dtos/permissions.create.dto';
 import { QueryPermissionDto } from './dtos/permissions.query.dto';
 import { UpdatePermissionDto } from './dtos/permissions.update.dto';
@@ -21,6 +25,8 @@ export class PermissionsService {
   constructor(
     @InjectModel(AdminPermission.name)
     private readonly permissionSchema: Model<AdminPermissionDocument>,
+    @InjectModel(Profile.name)
+    private readonly profileSchema: Model<ProfileDocument>,
   ) {}
 
   async createAdminPermission(
@@ -28,14 +34,16 @@ export class PermissionsService {
     createdBy: string,
   ): Promise<AdminPermission> {
     const { user } = permissionDto;
-    await new ValidateDto().fieldId(collections.profiles, user);
+    const profile = await this.profileSchema.findById(user);
+    if (!profile) {
+      new CommonException(404, userMsg.notFoundProfile);
+    }
     const dto = {
       ...permissionDto,
       createdBy,
     };
     const permission = await new this.permissionSchema(dto).save();
-    const result = await this.findAdminPermissionById(permission._id);
-    return result;
+    return permission;
   }
 
   async updateAdminPermission(
@@ -43,6 +51,13 @@ export class PermissionsService {
     permissionDto: UpdatePermissionDto,
     updatedBy: string,
   ): Promise<AdminPermission> {
+    const { user } = permissionDto;
+    if (user) {
+      const profile = await this.profileSchema.findById(user);
+      if (!profile) {
+        new CommonException(404, userMsg.notFoundProfile);
+      }
+    }
     const dto = {
       ...permissionDto,
       updatedBy,
@@ -55,45 +70,34 @@ export class PermissionsService {
   }
 
   async findAdminPermissionById(id: string): Promise<AdminPermission> {
-    const match = [{ $match: { _id: new Types.ObjectId(id) } }];
-    const lookup = permissionLookup();
-    const aggregate = [match, ...lookup];
-    const result = await this.permissionSchema.aggregate(aggregate);
-    if (!result[0]) {
-      new CommonException(404, msgNotFound);
+    const result = await this.permissionSchema
+      .findById(id)
+      .populate('user', selectUser, this.profileSchema)
+      .exec();
+    if (!result) {
+      new CommonException(404, permissionMsg.notFound);
     }
-    return result[0];
+    return result;
   }
 
   async findAllAdminPermissions(
     queryDto: QueryPermissionDto,
-  ): Promise<AdminPermission[]> {
+  ): Promise<{ results: AdminPermission[]; total: number }> {
     const { limit, page, user, searchKey } = queryDto;
-    const match: ImatchFindPermission = { $match: { isDeleted: false } };
+    const query: ImatchFindPermission = { isDeleted: false };
     if (user) {
-      match.$match = { user: new Types.ObjectId(user) };
+      query.user = new Types.ObjectId(user);
     }
-    let agg = [match];
-    const lookup = permissionLookup();
-    agg = [...agg, ...lookup];
     if (searchKey) {
-      const matchSearchKey: ImatchFindPermission = {
-        $match: {
-          $or: [
-            { moduleName: new RegExp(searchKey) },
-            { 'user.firstName': new RegExp(searchKey) },
-            { 'user.lastName': new RegExp(searchKey) },
-          ],
-        },
-      };
-      agg = [...agg, matchSearchKey];
+      query.moduleName = new RegExp(searchKey, 'i');
     }
-    const aggregate = skipLimitAndSortPagination(limit, page);
-    const results = await this.permissionSchema.aggregate([
-      ...agg,
-      ...aggregate,
-    ]);
-    return results;
+    const results = await this.permissionSchema
+      .find(query)
+      .skip(limit && page ? Number(limit) * Number(page) - Number(limit) : null)
+      .limit(limit ? Number(limit) : null)
+      .exec();
+    const total = await this.permissionSchema.find(query).count();
+    return { results, total };
   }
 
   async deleteAdminPermission(id: string, deletedBy: string): Promise<void> {

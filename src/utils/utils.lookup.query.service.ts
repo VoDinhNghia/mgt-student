@@ -172,11 +172,6 @@ export function paymentLookup() {
   return lookup;
 }
 
-export function permissionLookup() {
-  const lookup = lookupCommon([referenceUser()]);
-  return lookup;
-}
-
 export function trainningPointScholarshipLookup() {
   const lookup = lookupCommon([
     {
