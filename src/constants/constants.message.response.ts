@@ -80,11 +80,13 @@ export const syncServiceMsg = {
 
 export const scholarshipMsg = {
   create: 'Create sholarship success',
+  createUser: 'Create user scholarship success',
   update: 'Update scholarship success',
   getAll: 'Get all scholarship success',
-  createUser: 'Create user scholarship success',
   getAllUsers: 'Get all user scholarship success',
   getById: 'Get scholarship by id success',
+  delete: 'Delete scholarship success',
+  deleteUser: 'Delete scholarship user success',
   notFound: 'Scholarship not found',
   existedName: 'Scholarship name existed in semester already',
 };
