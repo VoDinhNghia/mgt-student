@@ -103,7 +103,9 @@ export class PaymentsService {
   async findByIdMoneyPerCreditMgt(id: string): Promise<MoneyPerCreditMgt> {
     const result = await this.moneyCreditSchema
       .findById(id)
-      .populate('semester', selectSemester, this.semesterSchema)
+      .populate('semester', selectSemester, this.semesterSchema, {
+        isDeleted: false,
+      })
       .exec();
     if (!result) {
       new CommonException(404, paymentMsg.notFound);
@@ -126,7 +128,9 @@ export class PaymentsService {
       .find(query)
       .skip(limit && page ? Number(limit) * Number(page) - Number(limit) : null)
       .limit(limit ? Number(limit) : null)
-      .populate('semester', selectSemester, this.semesterSchema)
+      .populate('semester', selectSemester, this.semesterSchema, {
+        isDeleted: false,
+      })
       .lean();
     const total = await this.moneyCreditSchema.find(query).count();
     return { results, total };
@@ -192,8 +196,10 @@ export class PaymentsService {
   async findUserPaymentById(id: string): Promise<PaymentStudyFee> {
     const result = await this.paymentSchema
       .findById(id)
-      .populate('user', selectUser, this.profileSchema)
-      .populate('semester', selectSemester, this.semesterSchema)
+      .populate('user', selectUser, this.profileSchema, { isDeleted: false })
+      .populate('semester', selectSemester, this.semesterSchema, {
+        isDeleted: false,
+      })
       .exec();
     if (!result) {
       new CommonException(404, paymentMsg.notFoundUserPayment);

@@ -47,3 +47,8 @@ export const paymentController = {
   name: 'api/payments',
   tag: 'payments',
 };
+
+export const newController = {
+  name: 'api/news',
+  tag: 'news',
+};

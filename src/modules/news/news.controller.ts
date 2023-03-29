@@ -21,11 +21,12 @@ import { Response, Request } from 'express';
 import { UpdateNewDto } from './dtos/news.update.dto';
 import { QueryNewDto } from './dtos/news.query.dto';
 import { ResponseRequest } from 'src/utils/utils.response-api';
-import { msgResponse } from 'src/constants/constants.message.response';
+import { newsMsg } from 'src/constants/constants.message.response';
 import { UserLoginResponseDto } from '../auth/dtos/auth.result.login-service.dto';
+import { newController } from 'src/constants/constants.controller.name-tag';
 
-@Controller('api/news')
-@ApiTags('news')
+@Controller(newController.name)
+@ApiTags(newController.tag)
 export class NewsController {
   constructor(private readonly newService: NewsService) {}
 
@@ -41,7 +42,7 @@ export class NewsController {
     const user: UserLoginResponseDto = req?.user;
     const createdBy: string = user.profileId;
     const result = await this.newService.createNews(createNewDto, createdBy);
-    return new ResponseRequest(res, result, msgResponse.createNews);
+    return new ResponseRequest(res, result, newsMsg.create);
   }
 
   @Get('/:id')
@@ -53,7 +54,7 @@ export class NewsController {
     @Res() res: Response,
   ): Promise<ResponseRequest> {
     const result = await this.newService.findNewsById(id);
-    return new ResponseRequest(res, result, msgResponse.getByIdNews);
+    return new ResponseRequest(res, result, newsMsg.getById);
   }
 
   @Put('/:id')
@@ -73,7 +74,7 @@ export class NewsController {
       updateNewDto,
       updatedBy,
     );
-    return new ResponseRequest(res, result, msgResponse.updateNews);
+    return new ResponseRequest(res, result, newsMsg.update);
   }
 
   @Get()
@@ -85,7 +86,7 @@ export class NewsController {
     @Res() res: Response,
   ): Promise<ResponseRequest> {
     const result = await this.newService.findAllNews(queryNewDto);
-    return new ResponseRequest(res, result, msgResponse.getAllNews);
+    return new ResponseRequest(res, result, newsMsg.getAll);
   }
 
   @Delete('/:id')
@@ -100,6 +101,6 @@ export class NewsController {
     const user: UserLoginResponseDto = req?.user;
     const deletedBy: string = user.profileId;
     await this.newService.deleteNews(id, deletedBy);
-    return new ResponseRequest(res, true, msgResponse.deleteNews);
+    return new ResponseRequest(res, true, newsMsg.delete);
   }
 }
