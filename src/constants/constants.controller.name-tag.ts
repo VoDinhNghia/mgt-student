@@ -32,3 +32,8 @@ export const scholarshipController = {
   name: 'api/scholarships',
   tag: 'scholarships',
 };
+
+export const roomController = {
+  name: 'api/rooms',
+  tag: 'rooms',
+};

@@ -1,11 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { collections } from 'src/constants/constants.collections.name';
-import { msgNotFound } from 'src/constants/constants.message.response';
+import { roomMsg } from 'src/constants/constants.message.response';
 import { CommonException } from 'src/exceptions/execeptions.common-error';
-import { skipLimitAndSortPagination } from 'src/utils/utils.page.pagination';
-import { ValidateDto } from 'src/validates/validates.common.dto';
 import { CreateRoomDto } from './dtos/rooms.create.dto';
 import { QueryRoomDto } from './dtos/rooms.query.dto';
 import { UpdateRoomDto } from './dtos/rooms.update.dto';
@@ -22,42 +19,48 @@ export class RoomsService {
   async createRoom(roomDto: CreateRoomDto, createdBy: string): Promise<Rooms> {
     const { name } = roomDto;
     const option = { name: name?.trim() };
-    await new ValidateDto().existedByOptions(collections.rooms, option, 'Room');
-    const dto = {
+    const existedName = await this.roomSchema.findOne(option);
+    if (existedName) {
+      new CommonException(409, roomMsg.existedName);
+    }
+    const createRoomDto = {
       ...roomDto,
       createdBy,
     };
-    const result = await new this.roomSchema(dto).save();
+    const result = await new this.roomSchema(createRoomDto).save();
     return result;
   }
 
   async findRoomById(id: string): Promise<Rooms> {
     const result = await this.roomSchema.findById(id);
     if (!result) {
-      new CommonException(404, msgNotFound);
+      new CommonException(404, roomMsg.notFound);
     }
     return result;
   }
 
   async findAllRooms(
     queryRoomDto: QueryRoomDto,
-  ): Promise<{ data: Rooms[]; countTotal: number }> {
+  ): Promise<{ results: Rooms[]; total: number }> {
     const { limit, page, searchKey, type } = queryRoomDto;
-    const match: ImatchFindRoom = { $match: { isDeleted: false } };
+    const query: ImatchFindRoom = { isDeleted: false };
     if (searchKey) {
-      match.$match.name = RegExp(searchKey);
+      query.name = RegExp(searchKey, 'i');
     }
     if (type) {
-      match.$match.type = type;
+      query.type = type;
     }
-    const aggregate = skipLimitAndSortPagination(limit, page);
-    const rooms = await this.roomSchema.aggregate([match, ...aggregate]);
-    const countDocuments = await this.roomSchema.countDocuments();
-    const results = {
-      data: rooms,
-      countTotal: countDocuments ?? 0,
+    const rooms = await this.roomSchema
+      .find(query)
+      .skip(limit && page ? Number(limit) * Number(page) - Number(limit) : null)
+      .limit(limit ? Number(limit) : null)
+      .exec();
+    const total = await this.roomSchema.find(query).count();
+    const data = {
+      results: rooms,
+      total,
     };
-    return results;
+    return data;
   }
 
   async updateRoom(

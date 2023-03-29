@@ -21,11 +21,12 @@ import { Response, Request } from 'express';
 import { QueryRoomDto } from './dtos/rooms.query.dto';
 import { UpdateRoomDto } from './dtos/rooms.update.dto';
 import { Delete } from '@nestjs/common/decorators';
-import { msgResponse } from 'src/constants/constants.message.response';
+import { roomMsg } from 'src/constants/constants.message.response';
 import { UserLoginResponseDto } from '../auth/dtos/auth.result.login-service.dto';
+import { roomController } from 'src/constants/constants.controller.name-tag';
 
-@Controller('api/rooms')
-@ApiTags('rooms')
+@Controller(roomController.name)
+@ApiTags(roomController.tag)
 export class RoomsController {
   constructor(private readonly roomService: RoomsService) {}
 
@@ -41,7 +42,7 @@ export class RoomsController {
     const user: UserLoginResponseDto = req?.user;
     const createdBy: string = user.profileId;
     const result = await this.roomService.createRoom(createRoomDto, createdBy);
-    return new ResponseRequest(res, result, msgResponse.createRoom);
+    return new ResponseRequest(res, result, roomMsg.create);
   }
 
   @Get()
@@ -52,7 +53,7 @@ export class RoomsController {
     @Res() res: Response,
   ): Promise<ResponseRequest> {
     const result = await this.roomService.findAllRooms(queryRoomDto);
-    return new ResponseRequest(res, result, msgResponse.getAllRoom);
+    return new ResponseRequest(res, result, roomMsg.getAll);
   }
 
   @Put('/:id')
@@ -72,7 +73,7 @@ export class RoomsController {
       updateRoomDto,
       updatedBy,
     );
-    return new ResponseRequest(res, result, msgResponse.updateRoom);
+    return new ResponseRequest(res, result, roomMsg.update);
   }
 
   @Delete('/:id')
@@ -86,8 +87,8 @@ export class RoomsController {
   ): Promise<ResponseRequest> {
     const user: UserLoginResponseDto = req?.user;
     const deletedBy: string = user.profileId;
-    const result = await this.roomService.deleteRoom(id, deletedBy);
-    return new ResponseRequest(res, result, msgResponse.deleteRoom);
+    await this.roomService.deleteRoom(id, deletedBy);
+    return new ResponseRequest(res, true, roomMsg.delete);
   }
 
   @Get('/:id')
@@ -98,6 +99,6 @@ export class RoomsController {
     @Res() res: Response,
   ): Promise<ResponseRequest> {
     const result = await this.roomService.findRoomById(id);
-    return new ResponseRequest(res, result, msgResponse.getByIdRoom);
+    return new ResponseRequest(res, result, roomMsg.getById);
   }
 }

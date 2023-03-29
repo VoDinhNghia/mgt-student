@@ -91,6 +91,16 @@ export const scholarshipMsg = {
   existedName: 'Scholarship name existed in semester already',
 };
 
+export const roomMsg = {
+  create: 'Create room success',
+  getAll: 'Get all room success',
+  update: 'Update room success',
+  getById: 'Get room by id success',
+  delete: 'Delete room success',
+  notFound: 'Room not found',
+  existedName: 'Room name existed already',
+};
+
 export const msgResponse = {
   initSupperAdminAuth: 'Create supper admin success',
   loginAuth: 'Login sucess',
@@ -178,11 +188,6 @@ export const msgResponse = {
   updatePermission: 'Update permission success',
   getByIdPermission: 'Get permission by id success',
   deletePermission: 'Delete permission success',
-  createRoom: 'Create room success',
-  getAllRoom: 'Get all room success',
-  updateRoom: 'Update room success',
-  getByIdRoom: 'Get room by id success',
-  deleteRoom: 'Delete room success',
 };
 
 export const descriptionResponse = {
