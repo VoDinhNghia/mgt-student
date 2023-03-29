@@ -81,8 +81,8 @@ export class ScholarshipController {
   ): Promise<ResponseRequest> {
     const user: UserLoginResponseDto = req?.user;
     const deletedBy: string = user.profileId;
-    const result = await this.service.deleteScholarship(id, deletedBy);
-    return new ResponseRequest(res, result, scholarshipMsg.delete);
+    await this.service.deleteScholarship(id, deletedBy);
+    return new ResponseRequest(res, true, scholarshipMsg.delete);
   }
 
   @Delete('/user/:id')
@@ -96,8 +96,8 @@ export class ScholarshipController {
   ): Promise<ResponseRequest> {
     const user: UserLoginResponseDto = req?.user;
     const deletedBy: string = user.profileId;
-    const result = await this.service.deleteUserScholarship(id, deletedBy);
-    return new ResponseRequest(res, result, scholarshipMsg.deleteUser);
+    await this.service.deleteUserScholarship(id, deletedBy);
+    return new ResponseRequest(res, true, scholarshipMsg.deleteUser);
   }
 
   @Get()

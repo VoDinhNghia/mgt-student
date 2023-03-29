@@ -1,11 +1,12 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 import { EroomType } from 'src/constants/constant';
+import { collections } from 'src/constants/constants.collections.name';
 import { FieldsCommonSchema } from 'src/utils/utils.fields-common.schema';
 
 export type RoomsDocument = Rooms & Document;
 
-@Schema()
+@Schema({ collection: collections.rooms, versionKey: false })
 export class Rooms extends FieldsCommonSchema {
   @Prop({
     type: String,
