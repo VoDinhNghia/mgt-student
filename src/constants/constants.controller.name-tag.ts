@@ -37,3 +37,8 @@ export const roomController = {
   name: 'api/rooms',
   tag: 'rooms',
 };
+
+export const permissionController = {
+  name: 'api/permissions',
+  tag: 'permissions',
+};

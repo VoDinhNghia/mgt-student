@@ -21,11 +21,12 @@ import { RoleGuard } from '../auth/guards/auth.role-auth.guard';
 import { ErolesUser } from 'src/constants/constant';
 import { UpdatePermissionDto } from './dtos/permissions.update.dto';
 import { QueryPermissionDto } from './dtos/permissions.query.dto';
-import { msgResponse } from 'src/constants/constants.message.response';
+import { permissionMsg } from 'src/constants/constants.message.response';
 import { UserLoginResponseDto } from '../auth/dtos/auth.result.login-service.dto';
+import { permissionController } from 'src/constants/constants.controller.name-tag';
 
-@Controller('api/permissions')
-@ApiTags('permissions')
+@Controller(permissionController.name)
+@ApiTags(permissionController.tag)
 export class PermissionsController {
   constructor(private readonly service: PermissionsService) {}
 
@@ -44,7 +45,7 @@ export class PermissionsController {
       permissionDto,
       createdBy,
     );
-    return new ResponseRequest(res, result, msgResponse.createPermission);
+    return new ResponseRequest(res, result, permissionMsg.create);
   }
 
   @Put('/:id')
@@ -64,7 +65,7 @@ export class PermissionsController {
       permissionDto,
       updatedBy,
     );
-    return new ResponseRequest(res, result, msgResponse.updatePermission);
+    return new ResponseRequest(res, result, permissionMsg.update);
   }
 
   @Delete('/:id')
@@ -79,7 +80,7 @@ export class PermissionsController {
     const user: UserLoginResponseDto = req?.user;
     const deletedBy: string = user.profileId;
     await this.service.deleteAdminPermission(id, deletedBy);
-    return new ResponseRequest(res, true, msgResponse.deletePermission);
+    return new ResponseRequest(res, true, permissionMsg.delete);
   }
 
   @Get()
@@ -91,7 +92,7 @@ export class PermissionsController {
     @Res() res: Response,
   ) {
     const results = await this.service.findAllAdminPermissions(queryDto);
-    return new ResponseRequest(res, results, msgResponse.getAllPermission);
+    return new ResponseRequest(res, results, permissionMsg.getAll);
   }
 
   @Get('/:id')
@@ -100,6 +101,6 @@ export class PermissionsController {
   @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
   async getAdminPermissionById(@Param('id') id: string, @Res() res: Response) {
     const result = await this.service.findAdminPermissionById(id);
-    return new ResponseRequest(res, result, msgResponse.getByIdPermission);
+    return new ResponseRequest(res, result, permissionMsg.getById);
   }
 }

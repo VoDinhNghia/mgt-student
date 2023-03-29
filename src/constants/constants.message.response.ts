@@ -101,6 +101,15 @@ export const roomMsg = {
   existedName: 'Room name existed already',
 };
 
+export const permissionMsg = {
+  create: 'Create permission success',
+  getAll: 'Get all permission success',
+  update: 'Update permission success',
+  getById: 'Get permission by id success',
+  delete: 'Delete permission success',
+  notFound: 'Permission not found',
+};
+
 export const msgResponse = {
   initSupperAdminAuth: 'Create supper admin success',
   loginAuth: 'Login sucess',
@@ -183,11 +192,6 @@ export const msgResponse = {
   getByIdMoneyCreditMgt: 'Get amount credit by id success',
   createUserTuition: 'Create user tuition success',
   getAllUserTuition: 'Get user tuition success',
-  createPermission: 'Create permission success',
-  getAllPermission: 'Get all permission success',
-  updatePermission: 'Update permission success',
-  getByIdPermission: 'Get permission by id success',
-  deletePermission: 'Delete permission success',
 };
 
 export const descriptionResponse = {
