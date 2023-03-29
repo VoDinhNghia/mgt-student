@@ -7,6 +7,7 @@ import {
   Put,
   Res,
   Req,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
@@ -22,6 +23,7 @@ import { Delete } from '@nestjs/common/decorators/http/request-mapping.decorator
 import { instituteMsg } from 'src/constants/constants.message.response';
 import { UserLoginResponseDto } from '../auth/dtos/auth.result.login-service.dto';
 import { instituteController } from 'src/constants/constants.controller.name-tag';
+import { QueryIntituteDto } from './dtos/institute.query.dto';
 
 @Controller(instituteController.name)
 @ApiTags(instituteController.tag)
@@ -58,8 +60,12 @@ export class InstituteController {
   ): Promise<ResponseRequest> {
     const user: UserLoginResponseDto = req?.user;
     const updatedBy: string = user.profileId;
-    await this.instutiteService.updateInstitute(id, instituteDto, updatedBy);
-    return new ResponseRequest(res, true, instituteMsg.update);
+    const result = await this.instutiteService.updateInstitute(
+      id,
+      instituteDto,
+      updatedBy,
+    );
+    return new ResponseRequest(res, result, instituteMsg.update);
   }
 
   @Delete('/:id')
@@ -78,8 +84,11 @@ export class InstituteController {
   }
 
   @Get()
-  async getAllInstitute(@Res() res: ResponseRequest): Promise<ResponseRequest> {
-    const result = await this.instutiteService.findAllInstitudes();
+  async getAllInstitute(
+    @Query() queryDto: QueryIntituteDto,
+    @Res() res: ResponseRequest,
+  ): Promise<ResponseRequest> {
+    const result = await this.instutiteService.findAllInstitudes(queryDto);
     return new ResponseRequest(res, result, instituteMsg.getAll);
   }
 
