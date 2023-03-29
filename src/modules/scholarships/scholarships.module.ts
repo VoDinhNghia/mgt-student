@@ -5,9 +5,14 @@ import {
   AttachmentlSchema,
 } from '../attachments/schemas/attachments.schema';
 import {
+  PaymentStudyFee,
+  PaymentStudyFeeSchema,
+} from '../payments/schemas/payments.schema';
+import {
   Semester,
   SemesterSchema,
 } from '../semesters/schemas/semesters.schema';
+import { Profile, ProfileSchema } from '../users/schemas/users.profile.schema';
 import {
   StudyProcesses,
   StudyProcessSchema,
@@ -42,6 +47,14 @@ import { ScholarshipService } from './scholarships.service';
       {
         name: StudyProcesses.name,
         schema: StudyProcessSchema,
+      },
+      {
+        name: Profile.name,
+        schema: ProfileSchema,
+      },
+      {
+        name: PaymentStudyFee.name,
+        schema: PaymentStudyFeeSchema,
       },
     ]),
   ],

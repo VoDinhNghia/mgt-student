@@ -52,7 +52,7 @@ export class PaymentsService {
       'Money per credit',
     );
     const dto = {
-      creditMgtDto,
+      ...creditMgtDto,
       createdBy,
     };
     const result = await new this.moneyCreditSchema(dto).save();
