@@ -75,7 +75,7 @@ export class PermissionsService {
   async findAdminPermissionById(id: string): Promise<AdminPermission> {
     const result = await this.permissionSchema
       .findById(id)
-      .populate('user', selectUser, this.profileSchema)
+      .populate('user', selectUser, this.profileSchema, { isDeleted: false })
       .exec();
     if (!result) {
       new CommonException(404, permissionMsg.notFound);
@@ -98,6 +98,7 @@ export class PermissionsService {
       .find(query)
       .skip(limit && page ? Number(limit) * Number(page) - Number(limit) : null)
       .limit(limit ? Number(limit) : null)
+      .populate('user', selectUser, this.profileSchema, { isDeleted: false })
       .exec();
     const total = await this.permissionSchema.find(query).count();
     return { results, total };

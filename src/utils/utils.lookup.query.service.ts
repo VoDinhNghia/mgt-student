@@ -157,11 +157,6 @@ export function instituteLookup() {
   return lookup;
 }
 
-export function newsLookup() {
-  const lookup = lookupCommon([referenceAttachment()]);
-  return lookup;
-}
-
 export function trainningPointScholarshipLookup() {
   const lookup = lookupCommon([
     {

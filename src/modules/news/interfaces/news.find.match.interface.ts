@@ -1,9 +1,8 @@
 import { Types } from 'mongoose';
 
-export interface ImatchFindNews {
-  $match?: {
-    isDeleted?: boolean;
-    type?: string;
-    _id?: Types.ObjectId;
-  };
+export interface IqueryNews {
+  isDeleted?: boolean;
+  type?: string;
+  _id?: Types.ObjectId;
+  title?: RegExp;
 }

@@ -122,6 +122,15 @@ export const paymentMsg = {
   existedMoneyCreditMgt: 'Amount credit existed already',
 };
 
+export const newsMsg = {
+  create: 'Create news success',
+  getAll: 'Get all news success',
+  update: 'Update news success',
+  getById: 'Get news by id success',
+  delete: 'Delete news success',
+  notFound: 'News not found',
+};
+
 export const msgResponse = {
   initSupperAdminAuth: 'Create supper admin success',
   loginAuth: 'Login sucess',
@@ -193,11 +202,6 @@ export const msgResponse = {
   updateInstitute: 'Update institute success',
   getByIdInstitute: 'Get institute by id success',
   deleteInstitute: 'Delete institute success',
-  createNews: 'Create news success',
-  getAllNews: 'Get all news success',
-  updateNews: 'Update news success',
-  getByIdNews: 'Get news by id success',
-  deleteNews: 'Delete news success',
 };
 
 export const descriptionResponse = {
