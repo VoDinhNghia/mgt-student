@@ -162,16 +162,6 @@ export function newsLookup() {
   return lookup;
 }
 
-export function userPaymentLookup() {
-  const lookup = lookupCommon([referenceUser()]);
-  return [...paymentLookup(), ...lookup];
-}
-
-export function paymentLookup() {
-  const lookup = lookupCommon([referenceSemester()]);
-  return lookup;
-}
-
 export function trainningPointScholarshipLookup() {
   const lookup = lookupCommon([
     {

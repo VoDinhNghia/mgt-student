@@ -21,11 +21,13 @@ import { ErolesUser } from 'src/constants/constant';
 import { UpdateMoneyPerCreditMgtDto } from './dtos/payments.mgt-money-per-credit.update.dto';
 import { QueryTuitionUser } from './dtos/payments.query.tuition-user.dto';
 import { CreateUserPaymentDto } from './dtos/payments.users.create.dto';
-import { msgResponse } from 'src/constants/constants.message.response';
+import { paymentMsg } from 'src/constants/constants.message.response';
 import { UserLoginResponseDto } from '../auth/dtos/auth.result.login-service.dto';
+import { paymentController } from 'src/constants/constants.controller.name-tag';
+import { QueryMgtMoneyPerCreditDto } from './dtos/payments.query.mgt-money-per-credit.dto';
 
-@Controller('api/payments')
-@ApiTags('payments')
+@Controller(paymentController.name)
+@ApiTags(paymentController.tag)
 export class PaymentsController {
   constructor(private readonly paymentService: PaymentsService) {}
 
@@ -44,7 +46,7 @@ export class PaymentsController {
       createCreditmgtDto,
       createdBy,
     );
-    return new ResponseRequest(res, result, msgResponse.createMoneyCreditMgt);
+    return new ResponseRequest(res, result, paymentMsg.createMoneyCreditMgt);
   }
 
   @Put('/mgt-money-per-credit/:id')
@@ -64,15 +66,16 @@ export class PaymentsController {
       updateCreditmgtDto,
       updatedBy,
     );
-    return new ResponseRequest(res, result, msgResponse.updateMoneyCreditMgt);
+    return new ResponseRequest(res, result, paymentMsg.updateMoneyCreditMgt);
   }
 
   @Get('/mgt-money-per-credit')
   async getAllMoneyPerCreditMgt(
+    @Query() queryDto: QueryMgtMoneyPerCreditDto,
     @Res() res: Response,
   ): Promise<ResponseRequest> {
-    const result = await this.paymentService.findAllMoneyPerCreditMgt();
-    return new ResponseRequest(res, result, msgResponse.getAllMoneyCreditMgt);
+    const result = await this.paymentService.findAllMoneyPerCreditMgt(queryDto);
+    return new ResponseRequest(res, result, paymentMsg.getAllMoneyCreditMgt);
   }
 
   @Get('/mgt-money-per-credit/:id')
@@ -81,7 +84,7 @@ export class PaymentsController {
     @Res() res: Response,
   ): Promise<ResponseRequest> {
     const result = await this.paymentService.findByIdMoneyPerCreditMgt(id);
-    return new ResponseRequest(res, result, msgResponse.getByIdMoneyCreditMgt);
+    return new ResponseRequest(res, result, paymentMsg.getByIdMoneyCreditMgt);
   }
 
   @Get('/user-tuition/')
@@ -95,7 +98,7 @@ export class PaymentsController {
     const result = await this.paymentService.findTuitionUserInSemester(
       queryDto,
     );
-    return new ResponseRequest(res, result, msgResponse.getAllUserTuition);
+    return new ResponseRequest(res, result, paymentMsg.getAllUserTuition);
   }
 
   @Post('/user-tuition')
@@ -113,6 +116,6 @@ export class PaymentsController {
       userPaymentDto,
       createdBy,
     );
-    return new ResponseRequest(res, result, msgResponse.createUserTuition);
+    return new ResponseRequest(res, result, paymentMsg.createUserTuition);
   }
 }

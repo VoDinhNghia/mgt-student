@@ -36,3 +36,5 @@ export const selectScholarship = {
   ],
   user: selectUser,
 };
+
+export const selectSemester = ['_id', 'name', 'year', 'isDeleted'];
