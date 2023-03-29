@@ -7,6 +7,7 @@ import {
 } from 'src/constants/constants.message.response';
 import { CommonException } from 'src/exceptions/execeptions.common-error';
 import { selectUser } from 'src/utils/utils.populate';
+import { ValidFields } from 'src/validates/validates.fields-id-dto';
 import {
   Profile,
   ProfileDocument,
@@ -34,10 +35,8 @@ export class PermissionsService {
     createdBy: string,
   ): Promise<AdminPermission> {
     const { user } = permissionDto;
-    const profile = await this.profileSchema.findById(user);
-    if (!profile) {
-      new CommonException(404, userMsg.notFoundProfile);
-    }
+    const valid = new ValidFields();
+    await valid.id(this.profileSchema, user, userMsg.notFoundProfile);
     const dto = {
       ...permissionDto,
       createdBy,
@@ -53,13 +52,8 @@ export class PermissionsService {
   ): Promise<AdminPermission> {
     const { user } = permissionDto;
     if (user) {
-      const profile = await this.profileSchema.findOne({
-        _id: new Types.ObjectId(user),
-        isDeleted: false,
-      });
-      if (!profile) {
-        new CommonException(404, userMsg.notFoundProfile);
-      }
+      const valid = new ValidFields();
+      await valid.id(this.profileSchema, user, userMsg.notFoundProfile);
     }
     const dto = {
       ...permissionDto,

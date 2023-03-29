@@ -18,7 +18,7 @@ import { Response, Request } from 'express';
 import { CoursesService } from './courses.service';
 import { CreateCourseDto } from './dtos/courses.create.dto';
 import { UpdateCourseDto } from './dtos/courses.update.dto';
-import { msgResponse } from 'src/constants/constants.message.response';
+import { courseMsg } from 'src/constants/constants.message.response';
 import { UserLoginResponseDto } from '../auth/dtos/auth.result.login-service.dto';
 
 @Controller('api/courses')
@@ -38,7 +38,7 @@ export class CoursesController {
     const user: UserLoginResponseDto = req?.user;
     const createdBy: string = user.profileId;
     const result = await this.courseService.createCourse(courseDto, createdBy);
-    return new ResponseRequest(res, result, msgResponse.createCourse);
+    return new ResponseRequest(res, result, courseMsg.create);
   }
 
   @Put('/:id')
@@ -58,7 +58,7 @@ export class CoursesController {
       courseDto,
       updatedBy,
     );
-    return new ResponseRequest(res, result, msgResponse.updateCourse);
+    return new ResponseRequest(res, result, courseMsg.update);
   }
 
   @Get('/:id')
@@ -70,7 +70,7 @@ export class CoursesController {
     @Res() res: Response,
   ): Promise<ResponseRequest> {
     const result = await this.courseService.findCourseById(id);
-    return new ResponseRequest(res, result, msgResponse.getByIdCourse);
+    return new ResponseRequest(res, result, courseMsg.getById);
   }
 
   @Get()
@@ -78,6 +78,6 @@ export class CoursesController {
   @UseGuards(JwtAuthGuard)
   async getListFaculties(@Res() res: Response): Promise<ResponseRequest> {
     const result = await this.courseService.findAllCourses();
-    return new ResponseRequest(res, result, msgResponse.getAllCourse);
+    return new ResponseRequest(res, result, courseMsg.getAll);
   }
 }

@@ -6,7 +6,6 @@ import { uniq } from 'lodash';
 import { validateEmail } from './validates.email';
 import { msgValidateEmail } from 'src/constants/constants.message.response';
 import { collections } from 'src/constants/constants.collections.name';
-import { CreateInstituteDto } from 'src/modules/institute/dtos/institute.create.dto';
 import { CreateDepartmentDto } from 'src/modules/departments/dtos/departments.create.dto';
 import { EroomType } from 'src/constants/constant';
 import { CreateCenterDto } from 'src/modules/centers/dtos/centers.create.dto';
@@ -93,25 +92,6 @@ export class ValidateDto {
     await this.existedByOptions(collections.users, { email }, 'Email');
   }
 
-  async profileDto(fields: Record<string, any>): Promise<void> {
-    const { major, faculty, course, degreeLevel, classId } = fields;
-    if (major) {
-      await this.fieldId(collections.majors, major);
-    }
-    if (faculty) {
-      await this.fieldId(collections.faculties, faculty);
-    }
-    if (course) {
-      await this.fieldId(collections.courses, course);
-    }
-    if (degreeLevel) {
-      await this.fieldId(collections.degreelevels, degreeLevel);
-    }
-    if (classId) {
-      await this.fieldId(collections.class_infos, classId);
-    }
-  }
-
   async awards(
     profileDto: Record<string, any>,
     award: string[],
@@ -121,37 +101,6 @@ export class ValidateDto {
       profileDto.award = awardIds;
     }
     return profileDto;
-  }
-
-  async school(schoolDto: Record<string, any>): Promise<void> {
-    const { location = {} } = schoolDto;
-    const { country, province, district, ward } = location;
-    if (country) {
-      await this.fieldId(collections.countries, country);
-    }
-    if (province) {
-      await this.fieldId('province', province);
-    }
-    if (district) {
-      await this.fieldId(collections.districts, district);
-    }
-    if (ward) {
-      await this.fieldId(collections.wards, ward);
-    }
-  }
-
-  async institute(dtos: CreateInstituteDto): Promise<void> {
-    const { parson, viceParson, contacts = {} } = dtos;
-    const { office } = contacts;
-    if (parson) {
-      await this.fieldId(collections.profiles, parson);
-    }
-    if (viceParson) {
-      await this.fieldId(collections.profiles, viceParson);
-    }
-    if (office) {
-      await this.fieldId(collections.rooms, office);
-    }
   }
 
   async faculty(dtos: Record<string, any>): Promise<void> {

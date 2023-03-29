@@ -131,6 +131,79 @@ export const newsMsg = {
   notFound: 'News not found',
 };
 
+export const instituteMsg = {
+  create: 'Create institute success',
+  getAll: 'Get all institutes success',
+  update: 'Update institute success',
+  getById: 'Get institute by id success',
+  delete: 'Delete institute success',
+  notFound: 'Institute not found',
+  notFoundParson: 'Parson not found',
+  notFoundViceParson: 'ViceParson not found',
+};
+
+export const countriesMsg = {
+  initCountries: 'Import multi countries success',
+  getAllCountries: 'Get all countries success',
+  getByIdCountry: 'Get country by id success',
+  updateCountry: 'Update country success',
+  initProvince: 'Import multi provinces success',
+  getAllProvince: 'Get all provinces success',
+  getAllDistrict: 'Get all districts success',
+  initDistrict: 'Import multi districts success',
+  initWard: 'Import multi wards success',
+  getAllWard: 'Get all wards success',
+  notfound: 'Country not found',
+  notfoundProvince: 'Province not found',
+  notfoundDistrict: 'District not found',
+  notfoundWard: 'Ward not found',
+};
+
+export const facultiesMsg = {
+  create: 'Create faculty success',
+  getAll: 'Get all faculties success',
+  update: 'Update faculty success',
+  getById: 'Get faculty by id success',
+  delete: 'Delete faculty success',
+  createMajor: 'Create major success',
+  getAllMajor: 'Get all majors success',
+  updateMajor: 'Update major success',
+  getByIdMajor: 'Get major by id success',
+  notFound: 'Faculty not found',
+  notFoundMajor: 'Major not found',
+};
+
+export const courseMsg = {
+  create: 'Create course success',
+  getAll: 'Get all courses success',
+  update: 'Update course success',
+  getById: 'Get course by id success',
+  delete: 'Delete course success',
+  notFound: 'Course not found',
+};
+
+export const classMsg = {
+  create: 'Create class success',
+  update: 'Update class success',
+  getById: 'Get class by id success',
+  getAll: 'Get all classes success',
+  createSubject: 'Create subject success',
+  updateSubject: 'Update subject success',
+  getByIdSubject: 'Get subject by id success',
+  createSubjectProcessError: 'Can not create subject process',
+  notFoud: 'Class not found',
+  notFoundSubject: 'Subject not found',
+};
+
+export const degreeLevelMsg = {
+  create: 'Create degreelevel success',
+  getAll: 'Get all degreelevels success',
+  update: 'Update degreelevel success',
+  getById: 'Get degreelevel by id success',
+  delete: 'Delete degreelevel success',
+  notFound: 'Degreelevel not found',
+};
+
 export const msgResponse = {
   initSupperAdminAuth: 'Create supper admin success',
   loginAuth: 'Login sucess',
@@ -149,34 +222,6 @@ export const msgResponse = {
   updateCenter: 'Update center success',
   getByIdCenter: 'Get center by id success',
   deleteCenter: 'Delete center success',
-  createClass: 'Create class success',
-  updateClass: 'Update class success',
-  getByIdClass: 'Get class by id success',
-  getAllClass: 'Get all classes success',
-  createSubject: 'Create subject success',
-  updateSubject: 'Update subject success',
-  getByIdSubject: 'Get subject by id success',
-  createSubjectProcessError: 'Can not create subject process',
-  initCountries: 'Import multi countries success',
-  getAllCountries: 'Get all countries success',
-  getByIdCountry: 'Get country by id success',
-  updateCountry: 'Update country success',
-  initProvince: 'Import multi provinces success',
-  getAllProvince: 'Get all provinces success',
-  getAllDistrict: 'Get all districts success',
-  initDistrict: 'Import multi districts success',
-  initWard: 'Import multi wards success',
-  getAllWard: 'Get all wards success',
-  createCourse: 'Create course success',
-  getAllCourse: 'Get all courses success',
-  updateCourse: 'Update course success',
-  getByIdCourse: 'Get course by id success',
-  deleteCourse: 'Delete course success',
-  createDegreelevel: 'Create degreelevel success',
-  getAllDegreelevel: 'Get all degreelevels success',
-  updateDegreelevel: 'Update degreelevel success',
-  getByIdDegreelevel: 'Get degreelevel by id success',
-  deleteDegreelevel: 'Delete degreelevel success',
   createDepartment: 'Create department success',
   getAllDepartment: 'Get all departments success',
   updateDepartment: 'Update department success',
@@ -188,20 +233,6 @@ export const msgResponse = {
   updateDepartmentStaff: 'Update department staff success',
   getByIdDepartmentStaff: 'Get department staff by id success',
   deleteDepartmentStaff: 'Delete department staff success',
-  createFaculty: 'Create faculty success',
-  getAllFaculty: 'Get all faculties success',
-  updateFaculty: 'Update faculty success',
-  getByIdFaculty: 'Get faculty by id success',
-  deleteFaculty: 'Delete faculty success',
-  createMajor: 'Create major success',
-  getAllMajor: 'Get all majors success',
-  updateMajor: 'Update major success',
-  getByIdMajor: 'Get major by id success',
-  createInstitute: 'Create institute success',
-  getAllInstitute: 'Get all institutes success',
-  updateInstitute: 'Update institute success',
-  getByIdInstitute: 'Get institute by id success',
-  deleteInstitute: 'Delete institute success',
 };
 
 export const descriptionResponse = {

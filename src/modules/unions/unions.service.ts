@@ -9,6 +9,7 @@ import {
 import { CommonException } from 'src/exceptions/execeptions.common-error';
 import { Igroup } from 'src/utils/utils.interface';
 import { selectAttachment, selectUnion } from 'src/utils/utils.populate';
+import { ValidFields } from 'src/validates/validates.fields-id-dto';
 import {
   Attachment,
   AttachmentDocument,
@@ -64,13 +65,8 @@ export class UnionsService {
   ): Promise<UnionMembers> {
     const { union, user } = memberDto;
     await this.findUnionById(union);
-    const userProfile = await this.profileSchema.findOne({
-      _id: new Types.ObjectId(user),
-      isDeleted: false,
-    });
-    if (!userProfile) {
-      new CommonException(404, userMsg.notFoundProfile);
-    }
+    const valid = new ValidFields();
+    await valid.id(this.profileSchema, user, userMsg.notFoundProfile);
     const newMemberDto = {
       ...memberDto,
       createdBy,
@@ -85,13 +81,8 @@ export class UnionsService {
   ): Promise<UnionImages> {
     const { union, attachment } = imageDto;
     await this.findUnionById(union);
-    const attachmentInfo = await this.attachmentSchema.findOne({
-      _id: new Types.ObjectId(attachment),
-      isDeleted: false,
-    });
-    if (!attachmentInfo) {
-      new CommonException(404, attachmentMsg.notFound);
-    }
+    const valid = new ValidFields();
+    await valid.id(this.attachmentSchema, attachment, attachmentMsg.notFound);
     const newImageDto = {
       ...imageDto,
       createdBy,
@@ -127,13 +118,8 @@ export class UnionsService {
       await this.findUnionById(union);
     }
     if (user) {
-      const userProfile = await this.profileSchema.findOne({
-        _id: new Types.ObjectId(user),
-        isDeleted: false,
-      });
-      if (!userProfile) {
-        new CommonException(404, userMsg.notFoundProfile);
-      }
+      const valid = new ValidFields();
+      await valid.id(this.profileSchema, user, userMsg.notFoundProfile);
     }
     const updateMemberDto = {
       ...memberDto,
@@ -158,13 +144,8 @@ export class UnionsService {
       await this.findUnionById(union);
     }
     if (attachment) {
-      const attachmentInfo = await this.attachmentSchema.findOne({
-        _id: new Types.ObjectId(attachment),
-        isDeleted: false,
-      });
-      if (!attachmentInfo) {
-        new CommonException(404, attachmentMsg.notFound);
-      }
+      const valid = new ValidFields();
+      await valid.id(this.attachmentSchema, attachment, attachmentMsg.notFound);
     }
     const updateImageDto = {
       ...imageDto,

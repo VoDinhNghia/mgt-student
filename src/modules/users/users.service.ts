@@ -27,11 +27,14 @@ import {
 } from './schemas/users.study-process.schema';
 import { CreateStudyProcessDto } from './dto/users.create.study-process.dto';
 import { InitSuperAdminDto } from '../auth/dtos/auth.init-super-admin.dto';
-import { ValidateDto } from 'src/validates/validates.common.dto';
 import { UsersUpdateDto } from './dto/users.update.dto';
 import {
   userMsg,
   msgServerError,
+  facultiesMsg,
+  courseMsg,
+  degreeLevelMsg,
+  classMsg,
 } from 'src/constants/constants.message.response';
 import { ImatchFindAllUser } from './interfaces/users.find.match.interface';
 import { UserProfileDto } from './dto/users.create-profile.dto';
@@ -42,6 +45,25 @@ import {
 } from 'src/utils/utils.lookup.query.service';
 import { skipLimitAndSortPagination } from 'src/utils/utils.page.pagination';
 import { IusersImport } from './interfaces/users.import.interface';
+import { ValidFields } from 'src/validates/validates.fields-id-dto';
+import { Award, AwardDocument } from '../awards/schemas/awards.schema';
+import {
+  Faculty,
+  FacultyDocument,
+} from '../faculties/schemas/faculties.schema';
+import {
+  DegreeLevel,
+  DegreeLevelDocument,
+} from '../degreelevels/schemas/degreelevels.schema';
+import {
+  Majors,
+  MajorsDocument,
+} from '../faculties/schemas/faculties.major.schema';
+import {
+  ClassInfos,
+  ClassInfosDocument,
+} from '../class-subject/schemas/class-subject.class.schema';
+import { Course, CourseDocument } from '../courses/schemas/courses.schema';
 
 @Injectable()
 export class UsersService {
@@ -53,11 +75,21 @@ export class UsersService {
     private readonly leaderSchoolSchema: Model<LeaderSchoolDocument>,
     @InjectModel(StudyProcesses.name)
     private readonly studyProcessSchema: Model<StudyProcessDocument>,
+    @InjectModel(Award.name)
+    private readonly awardSchema: Model<AwardDocument>,
+    @InjectModel(Faculty.name)
+    private readonly facultySchema: Model<FacultyDocument>,
+    @InjectModel(DegreeLevel.name)
+    private readonly degreeLevelSchema: Model<DegreeLevelDocument>,
+    @InjectModel(Majors.name)
+    private readonly majorSchema: Model<MajorsDocument>,
+    @InjectModel(ClassInfos.name)
+    private readonly classInfoSchema: Model<ClassInfosDocument>,
+    @InjectModel(Course.name)
+    private readonly courseSchema: Model<CourseDocument>,
   ) {}
 
   async createUser(usersDto: CreateUserDto, createdBy: string): Promise<Users> {
-    const validate = new ValidateDto();
-    await validate.profileDto(usersDto);
     usersDto.passWord = cryptoPassWord(usersDto.passWord);
     const newDto = {
       ...usersDto,
@@ -177,11 +209,8 @@ export class UsersService {
     payload: UsersUpdateDto,
     updatedBy: string,
   ): Promise<Users> {
-    const { email, passWord } = payload;
+    const { passWord } = payload;
     await this.findUserById(id);
-    if (email) {
-      await new ValidateDto().email(email);
-    }
     if (passWord) {
       payload.passWord = cryptoPassWord(passWord);
     }
@@ -201,16 +230,41 @@ export class UsersService {
     profileDto: UpdateProfileDto,
     updatedBy: string,
   ): Promise<Profile> {
-    const { award = [] } = profileDto;
-    const profileInfo = await this.profileSchema.findById(id);
-    if (!profileInfo) {
-      new CommonException(404, userMsg.notFoundProfile);
+    const {
+      major,
+      faculty,
+      course,
+      degreeLevel,
+      classId,
+      award = [],
+    } = profileDto;
+    const valid = new ValidFields();
+    await valid.id(this.profileSchema, id, userMsg.notFoundProfile);
+    if (award.length > 0) {
+      const ids = await valid.idList(this.awardSchema, award);
+      profileDto.award = ids;
     }
-    const validate = new ValidateDto();
-    await validate.profileDto(profileDto);
-    const profileValidate = await validate.awards(profileDto, award);
+    if (major) {
+      await valid.id(this.majorSchema, major, facultiesMsg.notFoundMajor);
+    }
+    if (faculty) {
+      await valid.id(this.facultySchema, faculty, facultiesMsg.notFound);
+    }
+    if (course) {
+      await valid.id(this.courseSchema, course, courseMsg.notFound);
+    }
+    if (degreeLevel) {
+      await valid.id(
+        this.degreeLevelSchema,
+        degreeLevel,
+        degreeLevelMsg.notFound,
+      );
+    }
+    if (classId) {
+      await valid.id(this.classInfoSchema, classId, classMsg.notFoud);
+    }
     const updateProfileDto = {
-      ...profileValidate,
+      ...profileDto,
       updatedBy,
       updatedAt: Date.now(),
     };

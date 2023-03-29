@@ -1,11 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { collections } from 'src/constants/constants.collections.name';
 import { newsMsg } from 'src/constants/constants.message.response';
 import { CommonException } from 'src/exceptions/execeptions.common-error';
 import { selectAttachment } from 'src/utils/utils.populate';
-import { ValidateDto } from 'src/validates/validates.common.dto';
+import { ValidFields } from 'src/validates/validates.fields-id-dto';
 import {
   Attachment,
   AttachmentDocument,
@@ -30,13 +29,15 @@ export class NewsService {
     createdBy: string,
   ): Promise<News> {
     const { attachment = [] } = createNewDto;
-    const attachmentIds = await new ValidateDto().idLists(
-      collections.attachments,
-      attachment,
-    );
+    if (attachment.length > 0) {
+      const ids = await new ValidFields().idList(
+        this.attachmentSchema,
+        attachment,
+      );
+      createNewDto.attachment = ids;
+    }
     const dto = {
       ...createNewDto,
-      attachment: attachmentIds,
       createdBy,
     };
     const result = await new this.newsSchema(dto).save();
@@ -86,11 +87,11 @@ export class NewsService {
   ): Promise<News> {
     const { attachment = [] } = updateDto;
     if (attachment.length > 0) {
-      const attachmentIds = await new ValidateDto().idLists(
-        collections.attachments,
+      const ids = await new ValidFields().idList(
+        this.attachmentSchema,
         attachment,
       );
-      updateDto.attachment = attachmentIds;
+      updateDto.attachment = ids;
     }
     const dto = {
       ...updateDto,

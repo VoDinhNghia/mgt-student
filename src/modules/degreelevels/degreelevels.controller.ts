@@ -18,7 +18,7 @@ import { DegreelevelService } from './degreelevels.service';
 import { CreateDegreeLevelDto } from './dtos/degreelevels.create.dto';
 import { Response, Request } from 'express';
 import { UpdateDegreeLevelDto } from './dtos/degreeLevels.update.dto';
-import { msgResponse } from 'src/constants/constants.message.response';
+import { degreeLevelMsg } from 'src/constants/constants.message.response';
 import { UserLoginResponseDto } from '../auth/dtos/auth.result.login-service.dto';
 
 @Controller('api/degreelevels')
@@ -41,7 +41,7 @@ export class DegreelevelController {
       degreeLevelDto,
       createdBy,
     );
-    return new ResponseRequest(res, result, msgResponse.createDegreelevel);
+    return new ResponseRequest(res, result, degreeLevelMsg.create);
   }
 
   @Put('/:id')
@@ -61,13 +61,13 @@ export class DegreelevelController {
       degreeLevelDto,
       updatedBy,
     );
-    return new ResponseRequest(res, result, msgResponse.updateDegreelevel);
+    return new ResponseRequest(res, result, degreeLevelMsg.update);
   }
 
   @Get()
   async getAllDegreeLevel(@Res() res: Response): Promise<ResponseRequest> {
     const result = await this.degreeLevelService.findAllDegreeLevels();
-    return new ResponseRequest(res, result, msgResponse.getAllDegreelevel);
+    return new ResponseRequest(res, result, degreeLevelMsg.getAll);
   }
 
   @Get('/:id')
@@ -76,6 +76,6 @@ export class DegreelevelController {
     @Res() res: Response,
   ): Promise<ResponseRequest> {
     const result = await this.degreeLevelService.findDegreeLevelById(id);
-    return new ResponseRequest(res, result, msgResponse.getByIdDegreelevel);
+    return new ResponseRequest(res, result, degreeLevelMsg.getById);
   }
 }

@@ -2,10 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { collections } from 'src/constants/constants.collections.name';
-import {
-  msgNotFound,
-  msgResponse,
-} from 'src/constants/constants.message.response';
+import { classMsg } from 'src/constants/constants.message.response';
 import { CommonException } from 'src/exceptions/execeptions.common-error';
 import { ValidateDto } from 'src/validates/validates.common.dto';
 import { CreateClassDto } from './dtos/class-subject.create-class.dto';
@@ -69,7 +66,7 @@ export class ClassSubjectService {
     const aggregate = [match, ...lookup];
     const result = await this.classSchema.aggregate(aggregate);
     if (!result[0]) {
-      new CommonException(404, msgNotFound);
+      new CommonException(404, classMsg.notFoud);
     }
     return result[0];
   }
@@ -118,7 +115,7 @@ export class ClassSubjectService {
     } catch (error) {
       console.log(error);
       await this.subjectSchema.findByIdAndDelete(subjectId);
-      new CommonException(500, msgResponse.createSubjectProcessError);
+      new CommonException(500, classMsg.createSubjectProcessError);
     }
   }
 
@@ -130,7 +127,7 @@ export class ClassSubjectService {
     const aggregate = [match, ...lookup];
     const result = await this.subjectSchema.aggregate(aggregate);
     if (!result[0]) {
-      new CommonException(404, msgNotFound);
+      new CommonException(404, classMsg.notFoundSubject);
     }
     return result[0];
   }

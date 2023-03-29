@@ -51,6 +51,7 @@ import {
   PaymentStudyFee,
   PaymentStudyFeeDocument,
 } from '../payments/schemas/payments.schema';
+import { ValidFields } from 'src/validates/validates.fields-id-dto';
 
 @Injectable()
 export class ScholarshipService {
@@ -76,13 +77,8 @@ export class ScholarshipService {
     createdBy: string,
   ): Promise<Scholarship> {
     const { semester, name } = scholarshipDto;
-    const semesterInfo = await this.semesterSchema.findOne({
-      semester: new Types.ObjectId(semester),
-      isDeleted: false,
-    });
-    if (!semesterInfo) {
-      new CommonException(404, semesterMsg.notFound);
-    }
+    const valid = new ValidFields();
+    await valid.id(this.semesterSchema, semester, semesterMsg.notFound);
     const options = {
       semester: new Types.ObjectId(semester),
       name: name.trim(),
@@ -105,18 +101,9 @@ export class ScholarshipService {
     updatedBy: string,
   ): Promise<Scholarship> {
     const { semester } = scholarshipDto;
-    const scholarship = await this.scholarshipSchema.findById(id);
-    if (!scholarship) {
-      new CommonException(404, scholarshipMsg.notFound);
-    }
     if (semester) {
-      const semesterInfo = await this.semesterSchema.findOne({
-        semester: new Types.ObjectId(semester),
-        isDeleted: false,
-      });
-      if (!semesterInfo) {
-        new CommonException(404, semesterMsg.notFound);
-      }
+      const valid = new ValidFields();
+      await valid.id(this.semesterSchema, semester, semesterMsg.notFound);
     }
     const updateScholarshipDto = {
       ...scholarshipDto,
@@ -233,13 +220,8 @@ export class ScholarshipService {
     semester: string,
     createdBy: string,
   ): Promise<ScholarshipUser[]> {
-    const semesterInfo = await this.semesterSchema.findOne({
-      _id: new Types.ObjectId(semester),
-      isDeleted: false,
-    });
-    if (!semesterInfo) {
-      new CommonException(404, semesterMsg.notFound);
-    }
+    const valid = new ValidFields();
+    await valid.id(this.semesterSchema, semester, semesterMsg.notFound);
     const studyProcessLists = await this.studyprocessSchema.find({
       status: EstatusUserProfile.STUDYING,
       isDeleted: false,
