@@ -423,9 +423,10 @@ export class UsersService {
       deletedAt: Date.now(),
     };
     await this.userSchema.findByIdAndUpdate(id, dto);
-    await this.profileSchema.findOneAndUpdate(
+    const profile = await this.profileSchema.findOneAndUpdate(
       { user: new Types.ObjectId(id) },
       dto,
     );
+    await this.studyProcessSchema.findOneAndUpdate({ user: profile._id }, dto);
   }
 }

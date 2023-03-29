@@ -24,6 +24,7 @@ import { Response, Request } from 'express';
 import { scholarshipMsg } from 'src/constants/constants.message.response';
 import { UserLoginResponseDto } from '../auth/dtos/auth.result.login-service.dto';
 import { scholarshipController } from 'src/constants/constants.controller.name-tag';
+import { UpdateScholarshipDto } from './dtos/scholarship.update.dto';
 
 @Controller(scholarshipController.name)
 @ApiTags(scholarshipController.tag)
@@ -54,13 +55,17 @@ export class ScholarshipController {
   @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
   async updateScholarship(
     @Param('id') id: string,
-    @Body() dto: CreateScholarshipDto,
+    @Body() updateScholarshipDto: UpdateScholarshipDto,
     @Res() res: Response,
     @Req() req: Request,
   ): Promise<ResponseRequest> {
     const user: UserLoginResponseDto = req?.user;
     const updatedBy: string = user.profileId;
-    const result = await this.service.updateScholarship(id, dto, updatedBy);
+    const result = await this.service.updateScholarship(
+      id,
+      updateScholarshipDto,
+      updatedBy,
+    );
     return new ResponseRequest(res, result, scholarshipMsg.update);
   }
 

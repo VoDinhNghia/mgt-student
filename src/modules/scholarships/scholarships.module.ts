@@ -8,6 +8,10 @@ import {
   Semester,
   SemesterSchema,
 } from '../semesters/schemas/semesters.schema';
+import {
+  StudyProcesses,
+  StudyProcessSchema,
+} from '../users/schemas/users.study-process.schema';
 import { Scholarship, ScholarshipSchema } from './schemas/scholarships.schema';
 import {
   ScholarshipUser,
@@ -34,6 +38,10 @@ import { ScholarshipService } from './scholarships.service';
       {
         name: Semester.name,
         schema: SemesterSchema,
+      },
+      {
+        name: StudyProcesses.name,
+        schema: StudyProcessSchema,
       },
     ]),
   ],
