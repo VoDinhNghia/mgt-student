@@ -18,7 +18,7 @@ export class RoomsService {
 
   async createRoom(roomDto: CreateRoomDto, createdBy: string): Promise<Rooms> {
     const { name } = roomDto;
-    const option = { name: name?.trim() };
+    const option = { name: name?.trim(), isDeleted: false };
     const existedName = await this.roomSchema.findOne(option);
     if (existedName) {
       new CommonException(409, roomMsg.existedName);

@@ -110,6 +110,18 @@ export const permissionMsg = {
   notFound: 'Permission not found',
 };
 
+export const paymentMsg = {
+  createMoneyCreditMgt: 'Create amount credit success',
+  getAllMoneyCreditMgt: 'Get all amount credit success',
+  updateMoneyCreditMgt: 'Update amount credit success',
+  getByIdMoneyCreditMgt: 'Get amount credit by id success',
+  createUserTuition: 'Create user tuition success',
+  getAllUserTuition: 'Get user tuition success',
+  notFound: 'Payment not found',
+  notFoundUserPayment: 'User tuition not found',
+  existedMoneyCreditMgt: 'Amount credit existed already',
+};
+
 export const msgResponse = {
   initSupperAdminAuth: 'Create supper admin success',
   loginAuth: 'Login sucess',
@@ -186,12 +198,6 @@ export const msgResponse = {
   updateNews: 'Update news success',
   getByIdNews: 'Get news by id success',
   deleteNews: 'Delete news success',
-  createMoneyCreditMgt: 'Create amount credit success',
-  getAllMoneyCreditMgt: 'Get all amount credit success',
-  updateMoneyCreditMgt: 'Update amount credit success',
-  getByIdMoneyCreditMgt: 'Get amount credit by id success',
-  createUserTuition: 'Create user tuition success',
-  getAllUserTuition: 'Get user tuition success',
 };
 
 export const descriptionResponse = {

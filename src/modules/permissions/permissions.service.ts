@@ -53,7 +53,10 @@ export class PermissionsService {
   ): Promise<AdminPermission> {
     const { user } = permissionDto;
     if (user) {
-      const profile = await this.profileSchema.findById(user);
+      const profile = await this.profileSchema.findOne({
+        _id: new Types.ObjectId(user),
+        isDeleted: false,
+      });
       if (!profile) {
         new CommonException(404, userMsg.notFoundProfile);
       }

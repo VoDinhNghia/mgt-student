@@ -42,3 +42,8 @@ export const permissionController = {
   name: 'api/permissions',
   tag: 'permissions',
 };
+
+export const paymentController = {
+  name: 'api/payments',
+  tag: 'payments',
+};

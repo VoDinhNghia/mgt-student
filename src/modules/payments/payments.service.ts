@@ -1,14 +1,15 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
-import { collections } from 'src/constants/constants.collections.name';
 import { EstatusPayments } from 'src/constants/constant';
-import { msgNotFound } from 'src/constants/constants.message.response';
+import {
+  paymentMsg,
+  semesterMsg,
+  userMsg,
+} from 'src/constants/constants.message.response';
 import { CommonException } from 'src/exceptions/execeptions.common-error';
 import { getRandomCodeReceiptId } from 'src/utils/utils.generate.code-payment';
 import { SubjectUserRegister } from 'src/utils/utils.user.register-subject.query';
-import { ValidateDto } from 'src/validates/validates.common.dto';
 import { CreateMoneyPerCreditMgtDto } from './dtos/payments.mgt-money-per-credit.create.dto';
 import { UpdateMoneyPerCreditMgtDto } from './dtos/payments.mgt-money-per-credit.update.dto';
 import { QueryTuitionUser } from './dtos/payments.query.tuition-user.dto';
@@ -23,9 +24,17 @@ import {
   PaymentStudyFeeDocument,
 } from './schemas/payments.schema';
 import {
-  paymentLookup,
-  userPaymentLookup,
-} from 'src/utils/utils.lookup.query.service';
+  Semester,
+  SemesterDocument,
+} from '../semesters/schemas/semesters.schema';
+import { selectSemester, selectUser } from 'src/utils/utils.populate';
+import { QueryMgtMoneyPerCreditDto } from './dtos/payments.query.mgt-money-per-credit.dto';
+import { IqueryMgtMoneyPerCredit } from './interfaces/payments.query.mgt-money-per-credit.interface';
+import {
+  Profile,
+  ProfileDocument,
+} from '../users/schemas/users.profile.schema';
+import { IuserRegisterResponse } from './interfaces/payments.find.user-tuition.interface';
 
 @Injectable()
 export class PaymentsService {
@@ -34,6 +43,10 @@ export class PaymentsService {
     private readonly moneyCreditSchema: Model<MoneyPerCreditManagementDocument>,
     @InjectModel(PaymentStudyFee.name)
     private readonly paymentSchema: Model<PaymentStudyFeeDocument>,
+    @InjectModel(Semester.name)
+    private readonly semesterSchema: Model<SemesterDocument>,
+    @InjectModel(Profile.name)
+    private readonly profileSchema: Model<ProfileDocument>,
   ) {}
 
   async createMoneyPerCreditMgt(
@@ -41,16 +54,18 @@ export class PaymentsService {
     createdBy: string,
   ): Promise<MoneyPerCreditMgt> {
     const { semester } = creditMgtDto;
-    const validate = new ValidateDto();
-    if (semester) {
-      await validate.fieldId(collections.semesters, semester);
+    const semesterInfo = await this.semesterSchema.findOne({
+      _id: new Types.ObjectId(semester),
+      isSelected: false,
+    });
+    if (!semesterInfo) {
+      new CommonException(404, semesterMsg.notFound);
     }
     const option = { semester: new Types.ObjectId(semester), isDeleted: false };
-    await new ValidateDto().existedByOptions(
-      collections.money_per_credit_mgts,
-      option,
-      'Money per credit',
-    );
+    const existedMoneyCredit = await this.moneyCreditSchema.findOne(option);
+    if (existedMoneyCredit) {
+      new CommonException(409, paymentMsg.existedMoneyCreditMgt);
+    }
     const dto = {
       ...creditMgtDto,
       createdBy,
@@ -65,9 +80,14 @@ export class PaymentsService {
     updatedBy: string,
   ): Promise<MoneyPerCreditMgt> {
     const { semester } = creditMgtDto;
-    const validate = new ValidateDto();
     if (semester) {
-      await validate.fieldId(collections.semesters, semester);
+      const semesterInfo = await this.semesterSchema.findOne({
+        _id: new Types.ObjectId(semester),
+        isSelected: false,
+      });
+      if (!semesterInfo) {
+        new CommonException(404, semesterMsg.notFound);
+      }
     }
     const dto = {
       ...creditMgtDto,
@@ -81,24 +101,35 @@ export class PaymentsService {
   }
 
   async findByIdMoneyPerCreditMgt(id: string): Promise<MoneyPerCreditMgt> {
-    let aggregate = [
-      { $match: { _id: new Types.ObjectId(id), isDeleted: false } },
-    ];
-    const lookup = paymentLookup();
-    aggregate = [...aggregate, ...lookup];
-    const result = await this.moneyCreditSchema.aggregate(aggregate);
-    if (!result[0]) {
-      new CommonException(404, msgNotFound);
+    const result = await this.moneyCreditSchema
+      .findById(id)
+      .populate('semester', selectSemester, this.semesterSchema)
+      .exec();
+    if (!result) {
+      new CommonException(404, paymentMsg.notFound);
     }
-    return result[0];
+    return result;
   }
 
-  async findAllMoneyPerCreditMgt(): Promise<MoneyPerCreditMgt[]> {
-    const match = { $match: { isDeleted: false } };
-    const lookup = paymentLookup();
-    const aggregate = [match, ...lookup];
-    const results = await this.moneyCreditSchema.aggregate(aggregate);
-    return results;
+  async findAllMoneyPerCreditMgt(
+    queryDto: QueryMgtMoneyPerCreditDto,
+  ): Promise<{ results: MoneyPerCreditMgt[]; total: number }> {
+    const { limit, page, searchKey, semester } = queryDto;
+    const query: IqueryMgtMoneyPerCredit = { isDeleted: false };
+    if (semester) {
+      query.semester = new Types.ObjectId(semester);
+    }
+    if (searchKey) {
+      query.name = new RegExp(searchKey, 'i');
+    }
+    const results = await this.moneyCreditSchema
+      .find(query)
+      .skip(limit && page ? Number(limit) * Number(page) - Number(limit) : null)
+      .limit(limit ? Number(limit) : null)
+      .populate('semester', selectSemester, this.semesterSchema)
+      .lean();
+    const total = await this.moneyCreditSchema.find(query).count();
+    return { results, total };
   }
 
   async createUserPayment(
@@ -106,10 +137,19 @@ export class PaymentsService {
     createdBy: string,
   ): Promise<PaymentStudyFee> {
     const { user, semester } = paymentDto;
-    await new ValidateDto().fieldId(collections.profiles, user);
-    const validate = new ValidateDto();
-    if (semester) {
-      await validate.fieldId(collections.semesters, semester);
+    const profile = await this.profileSchema.findOne({
+      _id: new Types.ObjectId(user),
+      isDeleted: false,
+    });
+    if (!profile) {
+      new CommonException(404, userMsg.notFoundProfile);
+    }
+    const semesterInfo = await this.semesterSchema.findOne({
+      _id: new Types.ObjectId(semester),
+      isSelected: false,
+    });
+    if (!semesterInfo) {
+      new CommonException(404, semesterMsg.notFound);
     }
     const newPaymentDto: CreateUserPaymentDto & {
       receiptId: string;
@@ -119,8 +159,7 @@ export class PaymentsService {
       receiptId: getRandomCodeReceiptId(4),
       createdBy,
     };
-    const userPayment = await new this.paymentSchema(newPaymentDto).save();
-    const result = await this.findUserPaymentById(userPayment._id);
+    const result = await new this.paymentSchema(newPaymentDto).save();
     return result;
   }
 
@@ -130,39 +169,50 @@ export class PaymentsService {
     updatedBy: string,
   ): Promise<PaymentStudyFee> {
     const { semester } = paymentDto;
-    const validate = new ValidateDto();
     if (semester) {
-      await validate.fieldId(collections.semesters, semester);
+      const semesterInfo = await this.semesterSchema.findOne({
+        _id: new Types.ObjectId(semester),
+        isSelected: false,
+      });
+      if (!semesterInfo) {
+        new CommonException(404, semesterMsg.notFound);
+      }
     }
     const dto = {
       ...paymentDto,
       updatedBy,
       updatedAt: Date.now(),
     };
-    await this.paymentSchema.findByIdAndUpdate(id, dto);
-    const result = await this.findUserPaymentById(id);
+    const result = await this.paymentSchema.findByIdAndUpdate(id, dto, {
+      new: true,
+    });
     return result;
   }
 
   async findUserPaymentById(id: string): Promise<PaymentStudyFee> {
-    const match = { $match: { _id: new Types.ObjectId(id) } };
-    const lookupUserPayment = userPaymentLookup();
-    const lookupPayment = paymentLookup();
-    const aggregate = [match, ...lookupPayment, ...lookupUserPayment];
-    const result = await this.paymentSchema.aggregate(aggregate);
-    if (!result[0]) {
-      new CommonException(404, msgNotFound);
+    const result = await this.paymentSchema
+      .findById(id)
+      .populate('user', selectUser, this.profileSchema)
+      .populate('semester', selectSemester, this.semesterSchema)
+      .exec();
+    if (!result) {
+      new CommonException(404, paymentMsg.notFoundUserPayment);
     }
-    return result[0];
+    return result;
   }
 
   async findTuitionUserInSemester(
     queryDto: QueryTuitionUser,
-  ): Promise<{ subjects: Record<string, any>; tuitionStatus: string }> {
+  ): Promise<{ subjects: IuserRegisterResponse[]; tuitionStatus: string }> {
     const { semester, profile } = queryDto;
-    const validate = new ValidateDto();
     if (semester) {
-      await validate.fieldId(collections.semesters, semester);
+      const semesterInfo = await this.semesterSchema.findOne({
+        _id: new Types.ObjectId(semester),
+        isSelected: false,
+      });
+      if (!semesterInfo) {
+        new CommonException(404, semesterMsg.notFound);
+      }
     }
     const options = {
       user: new Types.ObjectId(profile),
@@ -182,13 +232,13 @@ export class PaymentsService {
   }
 
   async getTotalMoneySubject(
-    subjectList: Record<string, any>[],
+    subjectList: IuserRegisterResponse[],
     semester: string,
-  ): Promise<Record<string, any>[]> {
+  ): Promise<IuserRegisterResponse[]> {
     const option = { semester: new Types.ObjectId(semester), isDeleted: false };
     const creditMgt = await this.moneyCreditSchema.findOne(option);
     if (!creditMgt) {
-      new CommonException(404, msgNotFound);
+      new CommonException(404, paymentMsg.notFound);
     }
     const { moneyPerCredit } = creditMgt;
     for (const item of subjectList) {
