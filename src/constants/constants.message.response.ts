@@ -181,6 +181,7 @@ export const courseMsg = {
   getById: 'Get course by id success',
   delete: 'Delete course success',
   notFound: 'Course not found',
+  existedName: 'Course name existed already',
 };
 
 export const classMsg = {

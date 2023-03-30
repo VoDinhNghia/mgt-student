@@ -122,6 +122,7 @@ export class PaymentsService {
       .populate('semester', selectSemester, this.semesterSchema, {
         isDeleted: false,
       })
+      .sort({ createdAt: -1 })
       .lean();
     const total = await this.moneyCreditSchema.find(query).count();
     return { results, total };

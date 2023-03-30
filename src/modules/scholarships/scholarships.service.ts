@@ -189,6 +189,7 @@ export class ScholarshipService {
       .populate('user', selectScholarship.user, this.profileSchema, {
         isDeleted: false,
       })
+      .sort({ createdAt: -1 })
       .lean();
     const listUserTuitition = await this.paymentStudyFeeSchema.find({
       isDeleted: false,

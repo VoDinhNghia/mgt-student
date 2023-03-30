@@ -7,7 +7,6 @@ import { validateEmail } from './validates.email';
 import { msgValidateEmail } from 'src/constants/constants.message.response';
 import { collections } from 'src/constants/constants.collections.name';
 import { CreateCenterDto } from 'src/modules/centers/dtos/centers.create.dto';
-import { UpdateCourseDto } from 'src/modules/courses/dtos/courses.update.dto';
 
 export class ValidateDto {
   db: any = new DbConnection();
@@ -111,14 +110,6 @@ export class ValidateDto {
     }
     if (faculty) {
       await this.fieldId(collections.faculties, faculty);
-    }
-  }
-
-  async courseName(courseDto: UpdateCourseDto): Promise<void> {
-    const { name } = courseDto;
-    if (name) {
-      const options = { name: name.trim() };
-      await this.existedByOptions(collections.courses, options, 'Course name');
     }
   }
 

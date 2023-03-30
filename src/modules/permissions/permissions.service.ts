@@ -93,6 +93,7 @@ export class PermissionsService {
       .skip(limit && page ? Number(limit) * Number(page) - Number(limit) : null)
       .limit(limit ? Number(limit) : null)
       .populate('user', selectUser, this.profileSchema, { isDeleted: false })
+      .sort({ createdAt: -1 })
       .exec();
     const total = await this.permissionSchema.find(query).count();
     return { results, total };
