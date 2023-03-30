@@ -1,6 +1,6 @@
 [
     {
-        "countryId": "63d0ebf5bd6ba52c4b6ee1b8",
+        "countryId": "vn",
         "name": "Hồ Chí Minh",
         "code": "70000",
         "phoneCode": "0084",
@@ -8,7 +8,7 @@
         "capital": "Hồ Chí Minh"
     },
     {
-        "countryId": "63d0ebf5bd6ba52c4b6ee1b8",
+        "countryId": "vn",
         "name": "Quảng Ngãi",
         "code": "70000",
         "phoneCode": "055",
@@ -16,7 +16,7 @@
         "capital": "Thành Phố Quảng Ngãi"
     },
     {
-        "countryId": "63d0ebf5bd6ba52c4b6ee1b8",
+        "countryId": "vn",
         "name": "Thanh Hóa",
         "code": "70000",
         "phoneCode": "055",

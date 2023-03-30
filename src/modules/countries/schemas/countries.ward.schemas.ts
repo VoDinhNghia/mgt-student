@@ -5,7 +5,7 @@ import { FieldsCommonSchema } from 'src/utils/utils.fields-common.schema';
 
 export type WardDocument = Wards & Document;
 
-@Schema()
+@Schema({ collection: collections.wards, versionKey: false })
 export class Wards extends FieldsCommonSchema {
   @Prop({ required: true })
   name: string;
@@ -34,7 +34,7 @@ export class Wards extends FieldsCommonSchema {
   @Prop()
   phoneCode?: string;
 
-  @Prop()
+  @Prop({ required: true, unique: true })
   codename?: string;
 
   @Prop()

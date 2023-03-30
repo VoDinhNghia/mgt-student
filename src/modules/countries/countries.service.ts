@@ -1,7 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
-import { msgNotFound } from 'src/constants/constants.message.response';
+import {
+  countriesMsg,
+  msgNotFound,
+} from 'src/constants/constants.message.response';
 import { CommonException } from 'src/exceptions/execeptions.common-error';
 import { CreateCoutriesDto } from './dto/countries.create.dto';
 import { CreateDistrictDto } from './dto/countries.create.district.dto';
@@ -20,6 +23,21 @@ import {
 import { Countries, CountriesDocument } from './schemas/countries.schema';
 import { WardDocument, Wards } from './schemas/countries.ward.schemas';
 import { CreateWardDto } from './dto/countries.create.ward.dto';
+import { collections } from 'src/constants/constants.collections.name';
+import { QueryCountriesDto } from './dto/countries.query.dto';
+import {
+  IqueryCountries,
+  IqueryDistricts,
+  IqueryProvinces,
+  IqueryWards,
+} from './interfaces/countries.interface';
+import {
+  selectCountry,
+  selectDistrict,
+  selectProvince,
+} from 'src/utils/utils.populate';
+import { ConfigService } from '@nestjs/config';
+import { QueryWardDto } from './dto/countries.query-ward.dto';
 
 @Injectable()
 export class CountriesService {
@@ -32,174 +50,253 @@ export class CountriesService {
     private readonly districtSchema: Model<DistrictDocument>,
     @InjectModel(Wards.name)
     private readonly wardSchema: Model<WardDocument>,
+    private readonly configService: ConfigService,
   ) {}
 
-  async initCountries(data: CreateCoutriesDto[]): Promise<CreateCoutriesDto[]> {
+  async initCountries(
+    data: CreateCoutriesDto[],
+    createdBy: string,
+  ): Promise<Countries[]> {
+    try {
+      await this.countrySchema.db.dropCollection(collections.countries);
+      await this.countrySchema.db.dropCollection(collections.provinces);
+      await this.countrySchema.db.dropCollection(collections.districts);
+      await this.countrySchema.db.dropCollection(collections.wards);
+    } catch (error) {
+      console.log(error);
+    }
     for await (const item of data) {
+      const { countryId, name, flag, capital } = item;
+      if (!countryId || !name || !flag || !capital) {
+        item.status = countriesMsg.invalidFieldsInitCountry;
+        continue;
+      }
       try {
-        const existed = await this.countrySchema.findOne({
-          countryId: item.countryId,
-        });
-        if (existed) {
-          item.status = 'Failed - Country existed already.';
-          continue;
-        }
-        await new this.countrySchema(item).save();
-        item.status = 'Create country success.';
+        item.flag = `${this.configService.get('PREFIX_URL_FLAG')}${item.flag}`;
+        await new this.countrySchema({ ...item, createdBy }).save();
+        item.status = countriesMsg.createSuccess;
       } catch {
-        item.status = 'Failed - System error.';
+        item.status = countriesMsg.systemError;
+        continue;
       }
     }
     return data;
   }
 
-  async initProvinces(data: CreateProvinceDto[]): Promise<CreateProvinceDto[]> {
+  async initProvinces(
+    data: CreateProvinceDto[],
+    createdBy: string,
+  ): Promise<CreateProvinceDto[]> {
+    try {
+      await this.countrySchema.db.dropCollection(collections.provinces);
+      await this.countrySchema.db.dropCollection(collections.districts);
+      await this.countrySchema.db.dropCollection(collections.wards);
+    } catch (error) {
+      console.log(error);
+    }
+    const countries = await this.countrySchema.find({ isDeleted: false });
     for await (const item of data) {
       try {
-        const existedCountry = await this.countrySchema.findById({
-          _id: item.countryId,
-        });
-        if (!existedCountry) {
-          item.status = 'Failed - Country not found.';
+        const country = countries.find(
+          (cou: Countries) => String(cou.countryId) === String(item.countryId),
+        );
+        if (!country) {
+          item.status = countriesMsg.validCountry;
           continue;
         }
-        const existed = await this.provinceSchema.findOne({
-          name: item?.name?.trim(),
-        });
-        if (existed) {
-          item.status = 'Failed - Province name existed.';
-          continue;
-        }
-        await new this.provinceSchema(item).save();
-        item.status = 'Create province success.';
+        item.countryId = country._id;
+        await new this.provinceSchema({ ...item, createdBy }).save();
+        item.status = countriesMsg.createProvinceSuccess;
       } catch {
-        item.status = 'Failed - System error.';
+        item.status = countriesMsg.systemError;
       }
     }
     return data;
   }
 
-  async initDisTricts(data: CreateDistrictDto[]): Promise<CreateDistrictDto[]> {
+  async initDisTricts(
+    data: CreateDistrictDto[],
+    createdBy: string,
+  ): Promise<CreateDistrictDto[]> {
+    try {
+      await this.countrySchema.db.dropCollection(collections.districts);
+      await this.countrySchema.db.dropCollection(collections.wards);
+    } catch (error) {
+      console.log(error);
+    }
+    const countries = await this.countrySchema.find({ isDeleted: false });
+    const provinces = await this.provinceSchema.find({ isDeleted: false });
     for await (const item of data) {
       try {
-        const existedCountry = await this.countrySchema.findById({
-          _id: item.countryId,
-        });
-        if (!existedCountry) {
-          item.status = 'Failed - Country not found.';
+        const country = countries.find(
+          (cou: Countries) => String(cou.countryId) === String(item.countryId),
+        );
+        if (!country) {
+          item.status = countriesMsg.validCountry;
           continue;
         }
-        const existedProvince = await this.provinceSchema.findById({
-          _id: item.provinceId,
-        });
-        if (!existedProvince) {
-          item.status = 'Failed - Province not found.';
+        const province = provinces.find(
+          (pro: Provinces) => String(pro.codename) === String(item.provinceId),
+        );
+        if (!province) {
+          item.status = countriesMsg.validProvince;
           continue;
         }
-        const existed = await this.districtSchema.findOne({
-          name: item?.name?.trim(),
-        });
-        if (existed) {
-          item.status = 'Failed - District name existed.';
-          continue;
-        }
-        await new this.districtSchema(item).save();
-        item.status = 'Create District success.';
+        item.countryId = country._id;
+        item.provinceId = province._id;
+        await new this.districtSchema({ ...item, createdBy }).save();
+        item.status = countriesMsg.createDistrictSuccess;
       } catch {
-        item.status = 'Failed - System error.';
+        item.status = countriesMsg.systemError;
       }
     }
     return data;
   }
 
-  async initWards(data: CreateWardDto[]): Promise<CreateWardDto[]> {
+  async initWards(
+    data: CreateWardDto[],
+    createdBy: string,
+  ): Promise<CreateWardDto[]> {
+    try {
+      await this.countrySchema.db.dropCollection(collections.wards);
+    } catch (error) {
+      console.log(error);
+    }
+    const countries = await this.countrySchema.find({ isDeleted: false });
+    const provinces = await this.provinceSchema.find({ isDeleted: false });
+    const districts = await this.districtSchema.find({ isDeleted: false });
     for await (const item of data) {
       try {
-        const existedCountry = await this.countrySchema.findById({
-          _id: item.countryId,
-        });
-        if (!existedCountry) {
-          item.status = 'Failed - Country not found.';
+        const country = countries.find(
+          (cou: Countries) => String(cou.countryId) === String(item.countryId),
+        );
+        if (!country) {
+          item.status = countriesMsg.validCountry;
           continue;
         }
-        const existedProvince = await this.provinceSchema.findById({
-          _id: item.provinceId,
-        });
-        if (!existedProvince) {
-          item.status = 'Failed - Province not found.';
+        const province = provinces.find(
+          (pro: Provinces) => String(pro.codename) === String(item.provinceId),
+        );
+        if (!province) {
+          item.status = countriesMsg.validProvince;
           continue;
         }
-        const existedDistrict = await this.districtSchema.findById({
-          _id: item.districtId,
-        });
-        if (!existedDistrict) {
-          item.status = 'Failed - District not found.';
+        const district = districts.find(
+          (dis: Districts) => String(dis.codename) === String(item.districtId),
+        );
+        if (!district) {
+          item.status = countriesMsg.validDistrict;
           continue;
         }
-        const existed = await this.wardSchema.findOne({
-          name: item?.name?.trim(),
-        });
-        if (existed) {
-          item.status = 'Failed - Ward name existed.';
-          continue;
-        }
-        await new this.wardSchema(item).save();
-        item.status = 'Create wards success.';
+        item.countryId = country._id;
+        item.provinceId = province._id;
+        item.districtId = district._id;
+        await new this.wardSchema({ ...item, createdBy }).save();
+        item.status = countriesMsg.createWardSuccess;
       } catch {
-        item.status = 'Failed - System error.';
+        item.status = countriesMsg.systemError;
       }
     }
     return data;
   }
 
-  async findAllCountry(): Promise<Countries[]> {
-    const result = await this.countrySchema.find().exec();
-    return result;
+  async findAllCountry(
+    queryDto: QueryCountriesDto,
+  ): Promise<{ results: Countries[]; total: number }> {
+    const { limit, page, searchKey } = queryDto;
+    const query: IqueryCountries = { isDeleted: false };
+    if (searchKey) {
+      query.name = new RegExp(searchKey, 'i');
+    }
+    const results = await this.countrySchema
+      .find(query)
+      .skip(limit && page ? Number(limit) * Number(page) - Number(limit) : null)
+      .limit(limit ? Number(limit) : null)
+      .sort({ createdAt: -1 })
+      .exec();
+    const total = await this.countrySchema.find(query).count();
+    return { results, total };
   }
 
   async findAllProvinces(
     queryPovinceDto: QueryPovinceDto,
-  ): Promise<Provinces[]> {
-    let query = {};
-    if (queryPovinceDto.countryId) {
-      query = {
-        countryId: new Types.ObjectId(queryPovinceDto.countryId),
-      };
+  ): Promise<{ results: Provinces[]; total: number }> {
+    const { countryId, searchKey, limit, page } = queryPovinceDto;
+    const query: IqueryProvinces = { isDeleted: false };
+    if (countryId) {
+      query.countryId = new Types.ObjectId(countryId);
     }
-    const result = await this.provinceSchema
+    if (searchKey) {
+      query.name = new RegExp(searchKey, 'i');
+    }
+    const results = await this.provinceSchema
       .find(query)
-      .populate('countryId', '', this.countrySchema)
+      .skip(limit && page ? Number(limit) * Number(page) - Number(limit) : null)
+      .limit(limit ? Number(limit) : null)
+      .populate('countryId', selectCountry, this.countrySchema, {
+        isDeleted: false,
+      })
+      .sort({ createdAt: -1 })
       .exec();
-
-    return result;
+    const total = await this.provinceSchema.find(query).count();
+    return { results, total };
   }
 
   async findAllDistricts(
-    queryPovinceDto: QueryDistrictDto,
-  ): Promise<Districts[]> {
-    let query = {};
-    if (queryPovinceDto.provinceId) {
-      query = {
-        countryId: new Types.ObjectId(queryPovinceDto.provinceId),
-      };
+    queryDto: QueryDistrictDto,
+  ): Promise<{ results: Districts[]; total: number }> {
+    const { provinceId, searchKey, limit, page } = queryDto;
+    const query: IqueryDistricts = { isDeleted: false };
+    if (provinceId) {
+      query.provinceId = new Types.ObjectId(provinceId);
     }
-    const result = await this.districtSchema
+    if (searchKey) {
+      query.name = new RegExp(searchKey, 'i');
+    }
+    const results = await this.districtSchema
       .find(query)
-      .populate('countryId', '', this.countrySchema)
-      .populate('provinceId', '', this.provinceSchema)
+      .skip(limit && page ? Number(limit) * Number(page) - Number(limit) : null)
+      .limit(limit ? Number(limit) : null)
+      .populate('countryId', selectCountry, this.countrySchema, {
+        isDeleted: false,
+      })
+      .populate('provinceId', selectProvince, this.provinceSchema, {
+        isDeleted: false,
+      })
+      .sort({ createdAt: -1 })
       .exec();
-
-    return result;
+    const total = await this.districtSchema.find(query).count();
+    return { results, total };
   }
 
-  async findAllWards(): Promise<Wards[]> {
-    const result = await this.wardSchema
-      .find()
-      .populate('provinceId', '', this.provinceSchema)
-      .populate('districtId', '', this.districtSchema)
+  async findAllWards(
+    queryDto: QueryWardDto,
+  ): Promise<{ results: Wards[]; total: number }> {
+    const { districtId, searchKey, limit, page } = queryDto;
+    const query: IqueryWards = { isDeleted: false };
+    if (districtId) {
+      query.districtId = new Types.ObjectId(districtId);
+    }
+    if (searchKey) {
+      query.name = new RegExp(searchKey, 'i');
+    }
+    const results = await this.wardSchema
+      .find(query)
+      .skip(limit && page ? Number(limit) * Number(page) - Number(limit) : null)
+      .limit(limit ? Number(limit) : null)
+      .populate('countryId', selectCountry, this.countrySchema, {
+        isDeleted: false,
+      })
+      .populate('provinceId', selectProvince, this.provinceSchema, {
+        isDeleted: false,
+      })
+      .populate('districtId', selectDistrict, this.districtSchema, {
+        isDeleted: false,
+      })
+      .sort({ createdAt: -1 })
       .exec();
-
-    return result;
+    const total = await this.wardSchema.find(query).count();
+    return { results, total };
   }
 
   async findOneCountry(id: string): Promise<Countries> {
