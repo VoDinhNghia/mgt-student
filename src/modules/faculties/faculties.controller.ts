@@ -25,9 +25,10 @@ import { UpdateMajorDto } from './dtos/faculties.major.update.dto';
 import { MajorQueryDto } from './dtos/faculties.major.query.dto';
 import { facultiesMsg } from 'src/constants/constants.message.response';
 import { UserLoginResponseDto } from '../auth/dtos/auth.result.login-service.dto';
+import { facultyController } from 'src/constants/constants.controller.name-tag';
 
-@Controller('api/faculties')
-@ApiTags('faculties')
+@Controller(facultyController.name)
+@ApiTags(facultyController.tag)
 export class FacultiesController {
   constructor(private readonly facultyService: FacultiesService) {}
 

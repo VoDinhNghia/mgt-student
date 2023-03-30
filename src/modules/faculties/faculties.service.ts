@@ -1,10 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
-import { collections } from 'src/constants/constants.collections.name';
-import { msgNotFound } from 'src/constants/constants.message.response';
 import { CommonException } from 'src/exceptions/execeptions.common-error';
-import { ValidateDto } from 'src/validates/validates.common.dto';
 import { CreateFacultyDto } from './dtos/faculties.create.dto';
 import { FacultyQueryDto } from './dtos/faculties.query.dto';
 import { UpdateFacultyDto } from './dtos/faculties.update.dto';
@@ -13,11 +10,25 @@ import { MajorQueryDto } from './dtos/faculties.major.query.dto';
 import { UpdateMajorDto } from './dtos/faculties.major.update.dto';
 import { Faculty, FacultyDocument } from './schemas/faculties.schema';
 import { Majors, MajorsDocument } from './schemas/faculties.major.schema';
-import { ImatchFindFaculty } from './interfaces/faculties.find.match.interface';
 import {
-  facultyLookup,
-  majorLookup,
-} from 'src/utils/utils.lookup.query.service';
+  IqueryFaculty,
+  IqueryMajor,
+} from './interfaces/faculties.find.interface';
+import {
+  facultiesMsg,
+  userMsg,
+} from 'src/constants/constants.message.response';
+import {
+  Profile,
+  ProfileDocument,
+} from '../users/schemas/users.profile.schema';
+import { Award, AwardDocument } from '../awards/schemas/awards.schema';
+import { ValidFields } from 'src/validates/validates.fields-id-dto';
+import {
+  selectAward,
+  selectFaculty,
+  selectUser,
+} from 'src/utils/utils.populate';
 
 @Injectable()
 export class FacultiesService {
@@ -26,40 +37,44 @@ export class FacultiesService {
     private readonly facultySchema: Model<FacultyDocument>,
     @InjectModel(Majors.name)
     private readonly majorSchema: Model<MajorsDocument>,
+    @InjectModel(Profile.name)
+    private readonly profileSchema: Model<ProfileDocument>,
+    @InjectModel(Award.name)
+    private readonly awardSchema: Model<AwardDocument>,
   ) {}
 
   async createFaculty(
     createFacultyDto: CreateFacultyDto,
     createdBy: string,
   ): Promise<Faculty> {
-    const { name, award = [] } = createFacultyDto;
-    const validate = new ValidateDto();
-    const option = { name: name?.trim() };
-    await new ValidateDto().faculty(createFacultyDto);
-    if (award.length > 0) {
-      const awardIds = await validate.idLists(collections.awards, award);
-      createFacultyDto.award = awardIds;
+    const { name } = createFacultyDto;
+    await this.validateDto(createFacultyDto);
+    const existed = await this.facultySchema.findOne({ name: name?.trim() });
+    if (existed) {
+      new CommonException(409, facultiesMsg.existedName);
     }
-    await validate.existedByOptions(collections.faculties, option, 'Faculty');
-    const faculty = await new this.facultySchema({
+    const result = await new this.facultySchema({
       ...createFacultyDto,
       createdBy,
     }).save();
-    const result = await this.findFacultyById(faculty._id);
     return result;
   }
 
   async findFacultyById(id: string): Promise<Faculty> {
-    const match: ImatchFindFaculty = {
-      $match: { _id: new Types.ObjectId(id) },
-    };
-    const lookup = facultyLookup();
-    const aggregate = [match, ...lookup];
-    const result = await this.facultySchema.aggregate(aggregate);
-    if (!result[0]) {
-      new CommonException(404, msgNotFound);
+    const result = await this.facultySchema
+      .findById(id)
+      .populate('headOfSection', selectUser, this.profileSchema, {
+        isDeleted: false,
+      })
+      .populate('eputeHead', selectUser, this.profileSchema, {
+        isDeleted: false,
+      })
+      .populate('award', selectAward, this.awardSchema, { isDeleted: false })
+      .exec();
+    if (!result) {
+      new CommonException(404, facultiesMsg.notFound);
     }
-    return result[0];
+    return result;
   }
 
   async updateFaculty(
@@ -67,51 +82,83 @@ export class FacultiesService {
     facultyDto: UpdateFacultyDto,
     updatedBy: string,
   ): Promise<Faculty> {
-    await new ValidateDto().faculty(facultyDto);
-    const dto = {
+    await this.validateDto(facultyDto);
+    const updateDto = {
       ...facultyDto,
       updatedBy,
       updatedAt: Date.now(),
     };
-    const result = await this.facultySchema.findByIdAndUpdate(id, dto, {
+    const result = await this.facultySchema.findByIdAndUpdate(id, updateDto, {
       new: true,
     });
     return result;
   }
 
-  async findAllFaculties(facultyQueryDto: FacultyQueryDto): Promise<Faculty[]> {
-    const { searchKey } = facultyQueryDto;
-    const match: ImatchFindFaculty = { $match: { isDeleted: false } };
-    if (searchKey) {
-      match.$match.name = new RegExp(searchKey);
+  async findAllFaculties(
+    facultyQueryDto: FacultyQueryDto,
+  ): Promise<{ results: Faculty[]; total: number }> {
+    const { limit, page, searchKey, type } = facultyQueryDto;
+    const query: IqueryFaculty = { isDeleted: false };
+    if (type) {
+      query.type = type;
     }
-    const lookup = facultyLookup();
-    const aggregate = [match, ...lookup];
-    const results = await this.facultySchema.aggregate(aggregate);
-    return results;
+    if (searchKey) {
+      query.name = new RegExp(searchKey, 'i');
+    }
+    const results = await this.facultySchema
+      .find(query)
+      .skip(limit && page ? Number(limit) * Number(page) - Number(limit) : null)
+      .limit(limit ? Number(limit) : null)
+      .populate('headOfSection', selectUser, this.profileSchema, {
+        isDeleted: false,
+      })
+      .populate('eputeHead', selectUser, this.profileSchema, {
+        isDeleted: false,
+      })
+      .populate('award', selectAward, this.awardSchema, { isDeleted: false })
+      .exec();
+    const total = await this.facultySchema.find(query).count();
+    return { results, total };
   }
 
   async createMajor(
     majorDto: CreateMajorDto,
     createdBy: string,
   ): Promise<Majors> {
-    await new ValidateDto().faculty(majorDto);
-    const major = await new this.majorSchema({ ...majorDto, createdBy }).save();
-    const result = await this.findMajorById(major._id);
+    const { faculty } = majorDto;
+    const facultyInfo = await this.facultySchema.findOne({
+      _id: new Types.ObjectId(faculty),
+      isDeleted: false,
+    });
+    if (!facultyInfo) {
+      new CommonException(404, facultiesMsg.notFound);
+    }
+    await this.validateDto(majorDto);
+    const result = await new this.majorSchema({
+      ...majorDto,
+      createdBy,
+    }).save();
     return result;
   }
 
   async findMajorById(id: string): Promise<Majors> {
-    const match: ImatchFindFaculty = {
-      $match: { _id: new Types.ObjectId(id) },
-    };
-    const lookup = majorLookup();
-    const aggregate = [match, ...lookup];
-    const result = await this.majorSchema.aggregate(aggregate);
-    if (!result[0]) {
-      new CommonException(404, msgNotFound);
+    const result = await this.majorSchema
+      .findById(id)
+      .populate('faculty', selectFaculty, this.facultySchema, {
+        isDeleted: false,
+      })
+      .populate('headOfSection', selectUser, this.profileSchema, {
+        isDeleted: false,
+      })
+      .populate('eputeHead', selectUser, this.profileSchema, {
+        isDeleted: false,
+      })
+      .populate('award', selectAward, this.awardSchema, { isDeleted: false })
+      .exec();
+    if (!result) {
+      new CommonException(404, facultiesMsg.notFoundMajor);
     }
-    return result[0];
+    return result;
   }
 
   async updateMajor(
@@ -119,27 +166,71 @@ export class FacultiesService {
     majorDto: UpdateMajorDto,
     updatedBy: string,
   ): Promise<Majors> {
-    await new ValidateDto().faculty(majorDto);
-    const dto = {
+    const { faculty } = majorDto;
+    if (faculty) {
+      const facultyInfo = await this.facultySchema.findOne({
+        _id: new Types.ObjectId(faculty),
+        isDeleted: false,
+      });
+      if (!facultyInfo) {
+        new CommonException(404, facultiesMsg.notFound);
+      }
+    }
+    const updateDto = {
       ...majorDto,
       updatedBy,
       updatedAt: Date.now(),
     };
-    const result = await this.majorSchema.findByIdAndUpdate(id, dto, {
+    const result = await this.majorSchema.findByIdAndUpdate(id, updateDto, {
       new: true,
     });
     return result;
   }
 
-  async findAllMajors(queryDto: MajorQueryDto): Promise<Majors[]> {
-    const { faculty } = queryDto;
-    const match: ImatchFindFaculty = { $match: { isDeleted: false } };
+  async findAllMajors(
+    queryDto: MajorQueryDto,
+  ): Promise<{ results: Majors[]; total: number }> {
+    const { faculty, searchKey } = queryDto;
+    const query: IqueryMajor = { isDeleted: false };
     if (faculty) {
-      match.$match.faculty = new Types.ObjectId(faculty);
+      query.faculty = new Types.ObjectId(faculty);
     }
-    const lookup = majorLookup();
-    const aggregate = [match, ...lookup];
-    const results = await this.majorSchema.aggregate(aggregate);
-    return results;
+    if (searchKey) {
+      query.name = new RegExp(searchKey, 'i');
+    }
+    const results = await this.majorSchema
+      .find(query)
+      .populate('faculty', selectFaculty, this.facultySchema, {
+        isDeleted: false,
+      })
+      .populate('headOfSection', selectUser, this.profileSchema, {
+        isDeleted: false,
+      })
+      .populate('eputeHead', selectUser, this.profileSchema, {
+        isDeleted: false,
+      })
+      .populate('award', selectAward, this.awardSchema, { isDeleted: false })
+      .exec();
+    const total = await this.majorSchema.find(query).count();
+    return { results, total };
+  }
+
+  async validateDto(facultyDto: CreateFacultyDto): Promise<void> {
+    const { award = [], headOfSection, eputeHead } = facultyDto;
+    const valid = new ValidFields();
+    if (headOfSection) {
+      await valid.id(
+        this.profileSchema,
+        headOfSection,
+        userMsg.notFoundProfile,
+      );
+    }
+    if (eputeHead) {
+      await valid.id(this.profileSchema, eputeHead, userMsg.notFoundProfile);
+    }
+    if (award.length > 0) {
+      const awardIds = await valid.idList(this.awardSchema, award);
+      facultyDto.award = awardIds;
+    }
   }
 }

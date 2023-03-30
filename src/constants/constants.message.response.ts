@@ -171,6 +171,7 @@ export const facultiesMsg = {
   getByIdMajor: 'Get major by id success',
   notFound: 'Faculty not found',
   notFoundMajor: 'Major not found',
+  existedName: 'Faculty name existed already',
 };
 
 export const courseMsg = {
