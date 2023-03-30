@@ -3,8 +3,6 @@ import { Types } from 'mongoose';
 import { DbConnection } from 'src/constants/constants.db.mongo.connection';
 import { CommonException } from 'src/exceptions/execeptions.common-error';
 import { uniq } from 'lodash';
-import { validateEmail } from './validates.email';
-import { msgValidateEmail } from 'src/constants/constants.message.response';
 import { collections } from 'src/constants/constants.collections.name';
 import { CreateCenterDto } from 'src/modules/centers/dtos/centers.create.dto';
 
@@ -82,13 +80,6 @@ export class ValidateDto {
     }
   }
 
-  async email(email: string): Promise<void> {
-    if (!validateEmail(email)) {
-      new CommonException(400, msgValidateEmail);
-    }
-    await this.existedByOptions(collections.users, { email }, 'Email');
-  }
-
   async awards(
     profileDto: Record<string, any>,
     award: string[],
@@ -98,52 +89,6 @@ export class ValidateDto {
       profileDto.award = awardIds;
     }
     return profileDto;
-  }
-
-  async faculty(dtos: Record<string, any>): Promise<void> {
-    const { headOfSection, eputeHead, faculty } = dtos;
-    if (headOfSection) {
-      await this.fieldId(collections.profiles, headOfSection);
-    }
-    if (eputeHead) {
-      await this.fieldId(collections.profiles, eputeHead);
-    }
-    if (faculty) {
-      await this.fieldId(collections.faculties, faculty);
-    }
-  }
-
-  async subjectClass(dtos: Record<string, any>): Promise<void> {
-    const {
-      course,
-      degreeLevel,
-      major,
-      homeroomteacher,
-      semester,
-      faculty,
-      lecturer,
-    } = dtos;
-    if (course) {
-      await this.fieldId(collections.courses, course);
-    }
-    if (homeroomteacher) {
-      await this.fieldId(collections.profiles, homeroomteacher);
-    }
-    if (lecturer) {
-      await this.fieldId(collections.profiles, lecturer);
-    }
-    if (semester) {
-      await this.fieldId(collections.semesters, semester);
-    }
-    if (faculty) {
-      await this.fieldId(collections.faculties, faculty);
-    }
-    if (major) {
-      await this.fieldId(collections.majors, major);
-    }
-    if (degreeLevel) {
-      await this.fieldId(collections.degreelevels, degreeLevel);
-    }
   }
 
   async center(centerDto: CreateCenterDto): Promise<void> {
