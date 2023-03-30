@@ -88,3 +88,15 @@ export const selectDistrict = [
 export const selectProvince = [...selectDistrict, 'capital'];
 
 export const selectWard = [...selectDistrict];
+
+export const selectMajor = [
+  '_id',
+  'name',
+  'introduction',
+  'foundYear',
+  'isDeleted',
+];
+
+export const selectDegreelevel = ['_id', 'name', 'description', 'isDeleted'];
+
+export const selectCourse = ['_id', 'name', 'year', 'total', 'isDeleted'];

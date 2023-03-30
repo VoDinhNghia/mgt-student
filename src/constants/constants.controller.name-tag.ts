@@ -82,3 +82,8 @@ export const countriesController = {
   name: 'api/countries',
   tag: 'countries',
 };
+
+export const classSubjectController = {
+  name: 'api/class-subject',
+  tag: 'class-subject',
+};

@@ -35,14 +35,15 @@ import {
   courseMsg,
   degreeLevelMsg,
   classMsg,
+  msgEmailExisted,
 } from 'src/constants/constants.message.response';
-import { ImatchFindAllUser } from './interfaces/users.find.match.interface';
+import {
+  ImatchFindAllUser,
+  IqueryLeaderSchool,
+} from './interfaces/users.find.match.interface';
 import { UserProfileDto } from './dto/users.create-profile.dto';
 import { UpdateProfileDto } from './dto/users.update.profile.dto';
-import {
-  profileLookup,
-  userLookup,
-} from 'src/utils/utils.lookup.query.service';
+import { userLookup } from 'src/utils/utils.lookup.query.service';
 import { skipLimitAndSortPagination } from 'src/utils/utils.page.pagination';
 import { IusersImport } from './interfaces/users.import.interface';
 import { ValidFields } from 'src/validates/validates.fields-id-dto';
@@ -90,6 +91,8 @@ export class UsersService {
   ) {}
 
   async createUser(usersDto: CreateUserDto, createdBy: string): Promise<Users> {
+    const { email } = usersDto;
+    await this.validateEmail(email);
     usersDto.passWord = cryptoPassWord(usersDto.passWord);
     const newDto = {
       ...usersDto,
@@ -209,8 +212,10 @@ export class UsersService {
     payload: UsersUpdateDto,
     updatedBy: string,
   ): Promise<Users> {
-    const { passWord } = payload;
-    await this.findUserById(id);
+    const { passWord, email } = payload;
+    if (email) {
+      await this.validateEmail(email);
+    }
     if (passWord) {
       payload.passWord = cryptoPassWord(passWord);
     }
@@ -292,6 +297,7 @@ export class UsersService {
         item.statusImport = userMsg.importValidate;
         continue;
       }
+      await this.validateEmail(email);
       let user = null;
       let profile = null;
       try {
@@ -410,14 +416,14 @@ export class UsersService {
   }
 
   async findLeaderSchoolById(id: string): Promise<LeaderSchools> {
-    const match = { $match: { _id: new Types.ObjectId(id) } };
-    const lookup = profileLookup();
-    const aggregate = [match, ...lookup];
-    const result = await this.leaderSchoolSchema.aggregate(aggregate);
-    if (!result[0]) {
+    const result = await this.leaderSchoolSchema
+      .findById(id)
+      .populate('user', '', this.profileSchema, { isDeleted: false })
+      .exec();
+    if (!result) {
       new CommonException(404, userMsg.notFoundeaderSchool);
     }
-    return result[0];
+    return result;
   }
 
   async updateLeaderSchool(
@@ -441,9 +447,9 @@ export class UsersService {
     queryDto: QueryLeaderSchoolDto,
   ): Promise<{ results: LeaderSchools[]; total: number }> {
     const { user, limit, page } = queryDto;
-    const query: ImatchFindAllUser = { $match: { isDeleted: false } };
+    const query: IqueryLeaderSchool = { isDeleted: false };
     if (user) {
-      query.$match.user = new Types.ObjectId(user);
+      query.user = new Types.ObjectId(user);
     }
     const results = await this.leaderSchoolSchema
       .find(query)
@@ -482,5 +488,12 @@ export class UsersService {
       dto,
     );
     await this.studyProcessSchema.findOneAndUpdate({ user: profile._id }, dto);
+  }
+
+  async validateEmail(email: string): Promise<void> {
+    const result = await this.userSchema.findOne({ email });
+    if (result) {
+      new CommonException(409, msgEmailExisted);
+    }
   }
 }

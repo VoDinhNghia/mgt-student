@@ -25,26 +25,6 @@ export function centerLookup() {
   return lookup;
 }
 
-export function classInfoLookup() {
-  const lookup = lookupCommon([
-    {
-      from: collections.degreelevels,
-      localField: 'degreeLevel',
-      foreignField: '_id',
-      as: 'degreeLevel',
-      unwind: true,
-    },
-    {
-      from: collections.profiles,
-      localField: 'homeroomteacher',
-      foreignField: '_id',
-      as: 'homeroomteacher',
-      unwind: true,
-    },
-  ]);
-  return [...classSubjectCommon(), ...lookup];
-}
-
 export function subjectLookup() {
   const lookup = lookupCommon([
     referenceSemester(),
@@ -62,12 +42,6 @@ export function subjectLookup() {
       as: 'process',
       unwind: true,
     },
-  ]);
-  return [...classSubjectCommon(), ...lookup];
-}
-
-export function classSubjectCommon() {
-  const lookup = lookupCommon([
     {
       from: collections.courses,
       localField: 'course',
@@ -80,6 +54,13 @@ export function classSubjectCommon() {
       localField: 'major',
       foreignField: '_id',
       as: 'major',
+      unwind: true,
+    },
+    {
+      from: collections.degreelevels,
+      localField: 'degreeLevel',
+      foreignField: '_id',
+      as: 'degreeLevel',
       unwind: true,
     },
   ]);

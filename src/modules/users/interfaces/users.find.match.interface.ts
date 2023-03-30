@@ -11,3 +11,8 @@ export interface ImatchFindAllUser {
     user?: Types.ObjectId;
   };
 }
+
+export interface IqueryLeaderSchool {
+  isDeleted?: boolean;
+  user?: Types.ObjectId;
+}

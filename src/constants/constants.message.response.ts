@@ -1,6 +1,7 @@
 export const msgServerError = 'Server interval';
 export const msgNotFound = 'The document not found';
 export const msgValidateEmail = 'Email not correct format';
+export const msgEmailExisted = 'This email existed already';
 
 export const userMsg = {
   create: 'Create user success',
@@ -199,12 +200,17 @@ export const classMsg = {
   update: 'Update class success',
   getById: 'Get class by id success',
   getAll: 'Get all classes success',
+  getAllSubject: 'Get all subject success',
   createSubject: 'Create subject success',
   updateSubject: 'Update subject success',
+  deleteSubject: 'Delete subject success',
   getByIdSubject: 'Get subject by id success',
   createSubjectProcessError: 'Can not create subject process',
   notFoud: 'Class not found',
   notFoundSubject: 'Subject not found',
+  existedClassName: 'Class name existed already',
+  validateTotalPercent:
+    '[Validate] - Total of midTermTest, finalExam, studentEssay percent must eqal 100',
 };
 
 export const degreeLevelMsg = {
