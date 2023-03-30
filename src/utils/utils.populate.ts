@@ -66,3 +66,25 @@ export const selectFaculty = [
   'foundYear',
   'isDeleted',
 ];
+
+export const selectCountry = [
+  '_id',
+  'name',
+  'flag',
+  'countryId',
+  'capital',
+  'isDeleted',
+];
+
+export const selectDistrict = [
+  '_id',
+  'name',
+  'phoneCode',
+  'codename',
+  'code',
+  'isDeleted',
+];
+
+export const selectProvince = [...selectDistrict, 'capital'];
+
+export const selectWard = [...selectDistrict];

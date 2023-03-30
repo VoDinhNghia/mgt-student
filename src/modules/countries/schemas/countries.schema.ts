@@ -1,10 +1,11 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
+import { collections } from 'src/constants/constants.collections.name';
 import { FieldsCommonSchema } from 'src/utils/utils.fields-common.schema';
 
 export type CountriesDocument = Countries & Document;
 
-@Schema()
+@Schema({ collection: collections.countries, versionKey: false })
 export class Countries extends FieldsCommonSchema {
   @Prop({ required: true })
   name: string;
@@ -12,7 +13,7 @@ export class Countries extends FieldsCommonSchema {
   @Prop()
   flag?: string;
 
-  @Prop({ required: true }) // example VN, ...
+  @Prop({ required: true, unique: true }) // example vn, ...
   countryId: string;
 
   @Prop()

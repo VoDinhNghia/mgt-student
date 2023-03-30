@@ -5,7 +5,7 @@ import { FieldsCommonSchema } from 'src/utils/utils.fields-common.schema';
 
 export type ProvinceDocument = Provinces & Document;
 
-@Schema()
+@Schema({ collection: collections.provinces, versionKey: false })
 export class Provinces extends FieldsCommonSchema {
   @Prop({ required: true })
   name: string;
@@ -23,7 +23,7 @@ export class Provinces extends FieldsCommonSchema {
   @Prop()
   phoneCode?: string;
 
-  @Prop()
+  @Prop({ required: true, unique: true })
   codename?: string;
 
   @Prop()

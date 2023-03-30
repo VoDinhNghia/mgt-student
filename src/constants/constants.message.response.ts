@@ -157,6 +157,16 @@ export const countriesMsg = {
   notfoundProvince: 'Province not found',
   notfoundDistrict: 'District not found',
   notfoundWard: 'Ward not found',
+  invalidFieldsInitCountry:
+    'Failed - countryId or name or flag or capital must provided',
+  createSuccess: 'Create country success',
+  systemError: 'Failed - System error',
+  validCountry: 'Failed - Country not found',
+  validProvince: 'Failed - Province not found',
+  validDistrict: 'Failed - District not found',
+  createProvinceSuccess: 'Create province success',
+  createDistrictSuccess: 'Create District success',
+  createWardSuccess: 'Create wards success',
 };
 
 export const facultiesMsg = {

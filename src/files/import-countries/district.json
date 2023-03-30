@@ -1,498 +1,498 @@
 [
     {
-        "countryId": "63d0ebf5bd6ba52c4b6ee1b8",
+        "countryId": "vn",
         "name": "Quận 1",
         "code": "70000",
         "phoneCode": "0084",
         "codename": "Quan_1",
-        "provinceId": "63df2fb5df73dec8dc4c38a1"
+        "provinceId": "HCM"
     },
     {
-        "countryId": "63d0ebf5bd6ba52c4b6ee1b8",
+        "countryId": "vn",
         "name": "Thành Phố Thủ Đức",
         "code": "70000",
         "phoneCode": "055",
         "codename": "Thu_Duc",
-        "provinceId": "63df2fb5df73dec8dc4c38a1"
+        "provinceId": "HCM"
     },
     {
-        "countryId": "63d0ebf5bd6ba52c4b6ee1b8",
+        "countryId": "vn",
         "name": "Quận 3",
         "code": "70000",
         "phoneCode": "055",
         "codename": "Quan_3",
-        "provinceId": "63df2fb5df73dec8dc4c38a1"
+        "provinceId": "HCM"
     },
     {
-        "countryId": "63d0ebf5bd6ba52c4b6ee1b8",
+        "countryId": "vn",
         "name": "Quận 4",
         "code": "70000",
         "phoneCode": "0084",
         "codename": "Quan_4",
-        "provinceId": "63df2fb5df73dec8dc4c38a1"
+        "provinceId": "HCM"
     },
     {
-        "countryId": "63d0ebf5bd6ba52c4b6ee1b8",
+        "countryId": "vn",
         "name": "Quận 5",
         "code": "70000",
         "phoneCode": "055",
         "codename": "Quan_5",
-        "provinceId": "63df2fb5df73dec8dc4c38a1"
+        "provinceId": "HCM"
     },
     {
-        "countryId": "63d0ebf5bd6ba52c4b6ee1b8",
+        "countryId": "vn",
         "name": "Quận 6",
         "code": "70000",
         "phoneCode": "055",
         "codename": "Quan_6",
-        "provinceId": "63df2fb5df73dec8dc4c38a1"
+        "provinceId": "HCM"
     },
     {
-        "countryId": "63d0ebf5bd6ba52c4b6ee1b8",
+        "countryId": "vn",
         "name": "Quận 7",
         "code": "70000",
         "phoneCode": "0084",
         "codename": "Quan_7",
-        "provinceId": "63df2fb5df73dec8dc4c38a1"
+        "provinceId": "HCM"
     },
     {
-        "countryId": "63d0ebf5bd6ba52c4b6ee1b8",
+        "countryId": "vn",
         "name": "Quận 8",
         "code": "70000",
         "phoneCode": "055",
         "codename": "Quan_8",
-        "provinceId": "63df2fb5df73dec8dc4c38a1"
+        "provinceId": "HCM"
     },
     {
-        "countryId": "63d0ebf5bd6ba52c4b6ee1b8",
+        "countryId": "vn",
         "name": "Quận 10",
         "code": "70000",
         "phoneCode": "055",
         "codename": "Quan_10",
-        "provinceId": "63df2fb5df73dec8dc4c38a1"
+        "provinceId": "HCM"
     },
     {
-        "countryId": "63d0ebf5bd6ba52c4b6ee1b8",
+        "countryId": "vn",
         "name": "Quận 11",
         "code": "70000",
         "phoneCode": "0084",
         "codename": "Quan_11",
-        "provinceId": "63df2fb5df73dec8dc4c38a1"
+        "provinceId": "HCM"
     },
     {
-        "countryId": "63d0ebf5bd6ba52c4b6ee1b8",
+        "countryId": "vn",
         "name": "Quận 12",
         "code": "70000",
         "phoneCode": "055",
         "codename": "Quan_12",
-        "provinceId": "63df2fb5df73dec8dc4c38a1"
+        "provinceId": "HCM"
     },
     {
-        "countryId": "63d0ebf5bd6ba52c4b6ee1b8",
+        "countryId": "vn",
         "name": "Quận Gò Vấp",
         "code": "70000",
         "phoneCode": "055",
         "codename": "Go_vap",
-        "provinceId": "63df2fb5df73dec8dc4c38a1"
+        "provinceId": "HCM"
     },
     {
-        "countryId": "63d0ebf5bd6ba52c4b6ee1b8",
+        "countryId": "vn",
         "name": "Quận Phú Nhuận",
         "code": "70000",
         "phoneCode": "0084",
         "codename": "Phu_Nhuan",
-        "provinceId": "63df2fb5df73dec8dc4c38a1"
+        "provinceId": "HCM"
     },
     {
-        "countryId": "63d0ebf5bd6ba52c4b6ee1b8",
+        "countryId": "vn",
         "name": "Quận Tân Bình",
         "code": "70000",
         "phoneCode": "055",
         "codename": "Tan_Binh",
-        "provinceId": "63df2fb5df73dec8dc4c38a1"
+        "provinceId": "HCM"
     },
     {
-        "countryId": "63d0ebf5bd6ba52c4b6ee1b8",
+        "countryId": "vn",
         "name": "Bình Thạnh",
         "code": "70000",
         "phoneCode": "055",
         "codename": "Binh_Thanh",
-        "provinceId": "63df2fb5df73dec8dc4c38a1"
+        "provinceId": "HCM"
     },
     {
-        "countryId": "63d0ebf5bd6ba52c4b6ee1b8",
+        "countryId": "vn",
         "name": "Quận Tân Phú",
         "code": "70000",
         "phoneCode": "0084",
         "codename": "Tan_Phu",
-        "provinceId": "63df2fb5df73dec8dc4c38a1"
+        "provinceId": "HCM"
     },
     {
-        "countryId": "63d0ebf5bd6ba52c4b6ee1b8",
+        "countryId": "vn",
         "name": "Quận Bình Tân",
         "code": "70000",
         "phoneCode": "055",
         "codename": "Binh_Tan",
-        "provinceId": "63df2fb5df73dec8dc4c38a1"
+        "provinceId": "HCM"
     },
     {
-        "countryId": "63d0ebf5bd6ba52c4b6ee1b8",
+        "countryId": "vn",
         "name": "Huyện Bình Chánh",
         "code": "70000",
         "phoneCode": "055",
         "codename": "Binh_Chanh",
-        "provinceId": "63df2fb5df73dec8dc4c38a1"
+        "provinceId": "HCM"
     },
     {
-        "countryId": "63d0ebf5bd6ba52c4b6ee1b8",
+        "countryId": "vn",
         "name": "Huyện Nhà Bè",
         "code": "70000",
         "phoneCode": "0084",
         "codename": "Nha_Be",
-        "provinceId": "63df2fb5df73dec8dc4c38a1"
+        "provinceId": "HCM"
     },
     {
-        "countryId": "63d0ebf5bd6ba52c4b6ee1b8",
+        "countryId": "vn",
         "name": "Huyện Hóc Môn",
         "code": "70000",
         "phoneCode": "055",
         "codename": "Hoc_Mon",
-        "provinceId": "63df2fb5df73dec8dc4c38a1"
+        "provinceId": "HCM"
     },
     {
-        "countryId": "63d0ebf5bd6ba52c4b6ee1b8",
+        "countryId": "vn",
         "name": "Huyện Củ Chi",
         "code": "70000",
         "phoneCode": "055",
         "codename": "Cu_Chi",
-        "provinceId": "63df2fb5df73dec8dc4c38a1"
+        "provinceId": "HCM"
     },
     {
-        "countryId": "63d0ebf5bd6ba52c4b6ee1b8",
+        "countryId": "vn",
         "name": "Huyện Cần Giờ",
         "code": "70000",
         "phoneCode": "055",
         "codename": "Can_Gio",
-        "provinceId": "63df2fb5df73dec8dc4c38a1"
+        "provinceId": "HCM"
     },
     {
-        "countryId": "63d0ebf5bd6ba52c4b6ee1b8",
+        "countryId": "vn",
         "name": "Thành Phố Quảng Ngãi",
         "code": "70000",
         "phoneCode": "055",
         "codename": "Thanh_Pho_Quang_Ngai",
-        "provinceId": "63df2fb5df73dec8dc4c38a5"
+        "provinceId": "Quang_Ngai"
     },
     {
-        "countryId": "63d0ebf5bd6ba52c4b6ee1b8",
+        "countryId": "vn",
         "name": "Thị Xã Đức Phổ",
         "code": "70000",
         "phoneCode": "055",
         "codename": "Thi_Xa_Duc_Pho",
-        "provinceId": "63df2fb5df73dec8dc4c38a5"
+        "provinceId": "Quang_Ngai"
     },
     {
-        "countryId": "63d0ebf5bd6ba52c4b6ee1b8",
+        "countryId": "vn",
         "name": "Huyện Ba Tơ",
         "code": "70000",
         "phoneCode": "055",
         "codename": "Ba_To",
-        "provinceId": "63df2fb5df73dec8dc4c38a5"
+        "provinceId": "Quang_Ngai"
     },
     {
-        "countryId": "63d0ebf5bd6ba52c4b6ee1b8",
+        "countryId": "vn",
         "name": "Huyện Bình Sơn",
         "code": "70000",
         "phoneCode": "055",
         "codename": "Binh_Son",
-        "provinceId": "63df2fb5df73dec8dc4c38a5"
+        "provinceId": "Quang_Ngai"
     },
     {
-        "countryId": "63d0ebf5bd6ba52c4b6ee1b8",
+        "countryId": "vn",
         "name": "Huyện Lý Sơn",
         "code": "70000",
         "phoneCode": "055",
         "codename": "Ly_Son",
-        "provinceId": "63df2fb5df73dec8dc4c38a5"
+        "provinceId": "Quang_Ngai"
     },
     {
-        "countryId": "63d0ebf5bd6ba52c4b6ee1b8",
+        "countryId": "vn",
         "name": "Huyện Minh Long",
         "code": "70000",
         "phoneCode": "055",
         "codename": "Minh_Long",
-        "provinceId": "63df2fb5df73dec8dc4c38a5"
+        "provinceId": "Quang_Ngai"
     },
     {
-        "countryId": "63d0ebf5bd6ba52c4b6ee1b8",
+        "countryId": "vn",
         "name": "Huyện Mộ Đức",
         "code": "70000",
         "phoneCode": "055",
         "codename": "Mo_Duc",
-        "provinceId": "63df2fb5df73dec8dc4c38a5"
+        "provinceId": "Quang_Ngai"
     },
     {
-        "countryId": "63d0ebf5bd6ba52c4b6ee1b8",
+        "countryId": "vn",
         "name": "Huyện Nghĩa Hành",
         "code": "70000",
         "phoneCode": "055",
         "codename": "Nghia_Hanh",
-        "provinceId": "63df2fb5df73dec8dc4c38a5"
+        "provinceId": "Quang_Ngai"
     },
     {
-        "countryId": "63d0ebf5bd6ba52c4b6ee1b8",
+        "countryId": "vn",
         "name": "Huyện Sơn Hà",
         "code": "70000",
         "phoneCode": "055",
         "codename": "Son_Ha",
-        "provinceId": "63df2fb5df73dec8dc4c38a5"
+        "provinceId": "Quang_Ngai"
     },
     {
-        "countryId": "63d0ebf5bd6ba52c4b6ee1b8",
+        "countryId": "vn",
         "name": "Huyện Sơn Tây",
         "code": "70000",
         "phoneCode": "055",
         "codename": "Son_Tay",
-        "provinceId": "63df2fb5df73dec8dc4c38a5"
+        "provinceId": "Quang_Ngai"
     },
     {
-        "countryId": "63d0ebf5bd6ba52c4b6ee1b8",
+        "countryId": "vn",
         "name": "Huyện Sơn Tịnh",
         "code": "70000",
         "phoneCode": "055",
         "codename": "Son_Tinh",
-        "provinceId": "63df2fb5df73dec8dc4c38a5"
+        "provinceId": "Quang_Ngai"
     },
     {
-        "countryId": "63d0ebf5bd6ba52c4b6ee1b8",
+        "countryId": "vn",
         "name": "Huyện Trà Bồng",
         "code": "70000",
         "phoneCode": "055",
         "codename": "Tra_Bong",
-        "provinceId": "63df2fb5df73dec8dc4c38a5"
+        "provinceId": "Quang_Ngai"
     },
     {
-        "countryId": "63d0ebf5bd6ba52c4b6ee1b8",
+        "countryId": "vn",
         "name": "Huyện Tư Nghĩa",
         "code": "70000",
         "phoneCode": "055",
         "codename": "Tu_Nghia",
-        "provinceId": "63df2fb5df73dec8dc4c38a5"
+        "provinceId": "Quang_Ngai"
     },
     {
-        "countryId": "63d0ebf5bd6ba52c4b6ee1b8",
+        "countryId": "vn",
         "name": "Thành Phố Sầm Sơn",
         "code": "70000",
         "phoneCode": "055",
         "codename": "Thanh_Pho_Sam_Son",
-        "provinceId": "63df2fb5df73dec8dc4c38a9"
+        "provinceId": "Thanh_Hoa"
     },
     {
-        "countryId": "63d0ebf5bd6ba52c4b6ee1b8",
+        "countryId": "vn",
         "name": "Thành Phố Thanh Hóa",
         "code": "70000",
         "phoneCode": "055",
         "codename": "Thanh_Hoa",
-        "provinceId": "63df2fb5df73dec8dc4c38a9"
+        "provinceId": "Thanh_Hoa"
     },
     {
-        "countryId": "63d0ebf5bd6ba52c4b6ee1b8",
+        "countryId": "vn",
         "name": "Thị Xã Bỉm Sơn",
         "code": "70000",
         "phoneCode": "055",
         "codename": "Bim_Son",
-        "provinceId": "63df2fb5df73dec8dc4c38a9"
+        "provinceId": "Thanh_Hoa"
     },
     {
-        "countryId": "63d0ebf5bd6ba52c4b6ee1b8",
+        "countryId": "vn",
         "name": "Thị Xã Nghi Sơn",
         "code": "70000",
         "phoneCode": "055",
         "codename": "Nghi_Son",
-        "provinceId": "63df2fb5df73dec8dc4c38a9"
+        "provinceId": "Thanh_Hoa"
     },
     {
-        "countryId": "63d0ebf5bd6ba52c4b6ee1b8",
+        "countryId": "vn",
         "name": "Huyện Bá Thước",
         "code": "70000",
         "phoneCode": "055",
         "codename": "Ba_Thuoc",
-        "provinceId": "63df2fb5df73dec8dc4c38a9"
+        "provinceId": "Thanh_Hoa"
     },
     {
-        "countryId": "63d0ebf5bd6ba52c4b6ee1b8",
+        "countryId": "vn",
         "name": "Huyện Cẩm Thủy",
         "code": "70000",
         "phoneCode": "055",
         "codename": "Cam_Thuy",
-        "provinceId": "63df2fb5df73dec8dc4c38a9"
+        "provinceId": "Thanh_Hoa"
     },
     {
-        "countryId": "63d0ebf5bd6ba52c4b6ee1b8",
+        "countryId": "vn",
         "name": "Huyện Đông Sơn",
         "code": "70000",
         "phoneCode": "055",
         "codename": "Dong_Son",
-        "provinceId": "63df2fb5df73dec8dc4c38a9"
+        "provinceId": "Thanh_Hoa"
     },
     {
-        "countryId": "63d0ebf5bd6ba52c4b6ee1b8",
+        "countryId": "vn",
         "name": "Huyện Hà Trung",
         "code": "70000",
         "phoneCode": "055",
         "codename": "Ha_Trung",
-        "provinceId": "63df2fb5df73dec8dc4c38a9"
+        "provinceId": "Thanh_Hoa"
     },
     {
-        "countryId": "63d0ebf5bd6ba52c4b6ee1b8",
+        "countryId": "vn",
         "name": "Huyện Hậu Lộc",
         "code": "70000",
         "phoneCode": "055",
         "codename": "Hau_Loc",
-        "provinceId": "63df2fb5df73dec8dc4c38a9"
+        "provinceId": "Thanh_Hoa"
     },
     {
-        "countryId": "63d0ebf5bd6ba52c4b6ee1b8",
+        "countryId": "vn",
         "name": "Huyện Hoằng Hóa",
         "code": "70000",
         "phoneCode": "055",
         "codename": "Hoang_Hoa",
-        "provinceId": "63df2fb5df73dec8dc4c38a9"
+        "provinceId": "Thanh_Hoa"
     },
     {
-        "countryId": "63d0ebf5bd6ba52c4b6ee1b8",
+        "countryId": "vn",
         "name": "Huyện Lang Chánh",
         "code": "70000",
         "phoneCode": "055",
         "codename": "Lang_Chanh",
-        "provinceId": "63df2fb5df73dec8dc4c38a9"
+        "provinceId": "Thanh_Hoa"
     },
     {
-        "countryId": "63d0ebf5bd6ba52c4b6ee1b8",
+        "countryId": "vn",
         "name": "Huyện Mường Lát",
         "code": "70000",
         "phoneCode": "055",
         "codename": "Muong_Lat",
-        "provinceId": "63df2fb5df73dec8dc4c38a9"
+        "provinceId": "Thanh_Hoa"
     },
     {
-        "countryId": "63d0ebf5bd6ba52c4b6ee1b8",
+        "countryId": "vn",
         "name": "Huyện Nga Sơn",
         "code": "70000",
         "phoneCode": "055",
         "codename": "Nga_Son",
-        "provinceId": "63df2fb5df73dec8dc4c38a9"
+        "provinceId": "Thanh_Hoa"
     },
     {
-        "countryId": "63d0ebf5bd6ba52c4b6ee1b8",
+        "countryId": "vn",
         "name": "Huyện Ngọc Lặc",
         "code": "70000",
         "phoneCode": "055",
         "codename": "Ngoc_Lac",
-        "provinceId": "63df2fb5df73dec8dc4c38a9"
+        "provinceId": "Thanh_Hoa"
     },
     {
-        "countryId": "63d0ebf5bd6ba52c4b6ee1b8",
+        "countryId": "vn",
         "name": "Huyện Như Thanh",
         "code": "70000",
         "phoneCode": "055",
         "codename": "Nhu_Thanh",
-        "provinceId": "63df2fb5df73dec8dc4c38a9"
+        "provinceId": "Thanh_Hoa"
     },
     {
-        "countryId": "63d0ebf5bd6ba52c4b6ee1b8",
+        "countryId": "vn",
         "name": "Huyện Như Xuân",
         "code": "70000",
         "phoneCode": "055",
         "codename": "Nhu_Xuan",
-        "provinceId": "63df2fb5df73dec8dc4c38a9"
+        "provinceId": "Thanh_Hoa"
     },
     {
-        "countryId": "63d0ebf5bd6ba52c4b6ee1b8",
+        "countryId": "vn",
         "name": "Huyện Nông Cống",
         "code": "70000",
         "phoneCode": "055",
         "codename": "Nong_Cong",
-        "provinceId": "63df2fb5df73dec8dc4c38a9"
+        "provinceId": "Thanh_Hoa"
     },
     {
-        "countryId": "63d0ebf5bd6ba52c4b6ee1b8",
+        "countryId": "vn",
         "name": "Huyện Quan Hóa",
         "code": "70000",
         "phoneCode": "055",
         "codename": "Quan_Hoa",
-        "provinceId": "63df2fb5df73dec8dc4c38a9"
+        "provinceId": "Thanh_Hoa"
     },
     {
-        "countryId": "63d0ebf5bd6ba52c4b6ee1b8",
+        "countryId": "vn",
         "name": "Huyện Quan Sơn",
         "code": "70000",
         "phoneCode": "055",
         "codename": "Quan_Son",
-        "provinceId": "63df2fb5df73dec8dc4c38a9"
+        "provinceId": "Thanh_Hoa"
     },
     {
-        "countryId": "63d0ebf5bd6ba52c4b6ee1b8",
+        "countryId": "vn",
         "name": "Huyện Quảng Xương",
         "code": "70000",
         "phoneCode": "055",
         "codename": "Quang_Xuong",
-        "provinceId": "63df2fb5df73dec8dc4c38a9"
+        "provinceId": "Thanh_Hoa"
     },
     {
-        "countryId": "63d0ebf5bd6ba52c4b6ee1b8",
+        "countryId": "vn",
         "name": "Huyện Thạch Thành",
         "code": "70000",
         "phoneCode": "055",
         "codename": "Thach_Thanh",
-        "provinceId": "63df2fb5df73dec8dc4c38a9"
+        "provinceId": "Thanh_Hoa"
     },
     {
-        "countryId": "63d0ebf5bd6ba52c4b6ee1b8",
+        "countryId": "vn",
         "name": "Huyện Thiệu Hóa",
         "code": "70000",
         "phoneCode": "055",
         "codename": "Thieu_Hoa",
-        "provinceId": "63df2fb5df73dec8dc4c38a9"
+        "provinceId": "Thanh_Hoa"
     },
     {
-        "countryId": "63d0ebf5bd6ba52c4b6ee1b8",
+        "countryId": "vn",
         "name": "Huyện Thọ Xuân",
         "code": "70000",
         "phoneCode": "055",
         "codename": "Tho_Xuan",
-        "provinceId": "63df2fb5df73dec8dc4c38a9"
+        "provinceId": "Thanh_Hoa"
     },
     {
-        "countryId": "63d0ebf5bd6ba52c4b6ee1b8",
+        "countryId": "vn",
         "name": "Huyện Thường Xuân",
         "code": "70000",
         "phoneCode": "055",
         "codename": "Thuong_Xuan",
-        "provinceId": "63df2fb5df73dec8dc4c38a9"
+        "provinceId": "Thanh_Hoa"
     },
     {
-        "countryId": "63d0ebf5bd6ba52c4b6ee1b8",
+        "countryId": "vn",
         "name": "Huyện Triệu Sơn",
         "code": "70000",
         "phoneCode": "055",
         "codename": "Trieu_Son",
-        "provinceId": "63df2fb5df73dec8dc4c38a9"
+        "provinceId": "Thanh_Hoa"
     },
     {
-        "countryId": "63d0ebf5bd6ba52c4b6ee1b8",
+        "countryId": "vn",
         "name": "Huyện Vĩnh Lộc",
         "code": "70000",
         "phoneCode": "055",
         "codename": "Vinh_Loc",
-        "provinceId": "63df2fb5df73dec8dc4c38a9"
+        "provinceId": "Thanh_Hoa"
     },
     {
-        "countryId": "63d0ebf5bd6ba52c4b6ee1b8",
+        "countryId": "vn",
         "name": "Huyện Yên Định",
         "code": "70000",
         "phoneCode": "055",
         "codename": "Yen_Dinh",
-        "provinceId": "63df2fb5df73dec8dc4c38a9"
+        "provinceId": "Thanh_Hoa"
     }
 ]

@@ -77,3 +77,8 @@ export const courseController = {
   name: 'api/courses',
   tag: 'courses',
 };
+
+export const countriesController = {
+  name: 'api/countries',
+  tag: 'countries',
+};
