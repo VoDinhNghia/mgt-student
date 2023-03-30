@@ -62,3 +62,8 @@ export const facultyController = {
   name: 'api/faculties',
   tag: 'faculties',
 };
+
+export const departmentController = {
+  name: 'api/departments',
+  tag: 'departments',
+};

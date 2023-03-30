@@ -205,6 +205,22 @@ export const degreeLevelMsg = {
   notFound: 'Degreelevel not found',
 };
 
+export const departmentMsg = {
+  create: 'Create department success',
+  getAll: 'Get all departments success',
+  update: 'Update department success',
+  getById: 'Get department by id success',
+  delete: 'Delete department success',
+  createStaff: 'Create department staff success',
+  createMultiStaff: 'Create department multi staff success',
+  getAllStaff: 'Get all departments staff success',
+  updateStaff: 'Update department staff success',
+  getByIdStaff: 'Get department staff by id success',
+  deleteStaff: 'Delete department staff success',
+  notFound: 'Department not found',
+  notFoundStaff: 'Staff not found',
+};
+
 export const msgResponse = {
   initSupperAdminAuth: 'Create supper admin success',
   loginAuth: 'Login sucess',
@@ -223,17 +239,6 @@ export const msgResponse = {
   updateCenter: 'Update center success',
   getByIdCenter: 'Get center by id success',
   deleteCenter: 'Delete center success',
-  createDepartment: 'Create department success',
-  getAllDepartment: 'Get all departments success',
-  updateDepartment: 'Update department success',
-  getByIdDepartment: 'Get department by id success',
-  deleteDepartment: 'Delete department success',
-  createDepartmentStaff: 'Create department staff success',
-  createMultiStaff: 'Create department multi staff success',
-  getAllDepartmentStaff: 'Get all departments staff success',
-  updateDepartmentStaff: 'Update department staff success',
-  getByIdDepartmentStaff: 'Get department staff by id success',
-  deleteDepartmentStaff: 'Delete department staff success',
 };
 
 export const descriptionResponse = {

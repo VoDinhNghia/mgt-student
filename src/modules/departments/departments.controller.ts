@@ -7,6 +7,7 @@ import {
   Post,
   Put,
   Req,
+  Query,
   Res,
   UseGuards,
 } from '@nestjs/common';
@@ -22,11 +23,13 @@ import { UpdateStaffDepartmentDto } from './dtos/department.staff.update.dto';
 import { UpdateDepartmentDto } from './dtos/department.update.dto';
 import { CreateDepartmentDto } from './dtos/departments.create.dto';
 import { Response, Request } from 'express';
-import { msgResponse } from 'src/constants/constants.message.response';
+import { departmentMsg } from 'src/constants/constants.message.response';
 import { UserLoginResponseDto } from '../auth/dtos/auth.result.login-service.dto';
+import { departmentController } from 'src/constants/constants.controller.name-tag';
+import { QueryDepartmentDto } from './dtos/department.query.dto';
 
-@Controller('api/departments')
-@ApiTags('departments')
+@Controller(departmentController.name)
+@ApiTags(departmentController.tag)
 export class DepartmentsController {
   constructor(private readonly service: DepartmentsService) {}
 
@@ -45,7 +48,7 @@ export class DepartmentsController {
       departmentDto,
       createdBy,
     );
-    return new ResponseRequest(res, result, msgResponse.createDepartment);
+    return new ResponseRequest(res, result, departmentMsg.create);
   }
 
   @Put('/:id')
@@ -65,7 +68,7 @@ export class DepartmentsController {
       departmentDto,
       updatedBy,
     );
-    return new ResponseRequest(res, result, msgResponse.updateDepartment);
+    return new ResponseRequest(res, result, departmentMsg.update);
   }
 
   @Post('/staff/multi')
@@ -83,7 +86,7 @@ export class DepartmentsController {
       staffDto,
       createdBy,
     );
-    return new ResponseRequest(res, result, msgResponse.createMultiStaff);
+    return new ResponseRequest(res, result, departmentMsg.createMultiStaff);
   }
 
   @Post('/staff')
@@ -101,7 +104,7 @@ export class DepartmentsController {
       staffDto,
       createdBy,
     );
-    return new ResponseRequest(res, result, msgResponse.createDepartmentStaff);
+    return new ResponseRequest(res, result, departmentMsg.createStaff);
   }
 
   @Put('/staff/:id')
@@ -121,7 +124,7 @@ export class DepartmentsController {
       staffDto,
       updatedBy,
     );
-    return new ResponseRequest(res, result, msgResponse.updateDepartmentStaff);
+    return new ResponseRequest(res, result, departmentMsg.updateStaff);
   }
 
   @Delete('/staff/:id')
@@ -136,13 +139,16 @@ export class DepartmentsController {
     const user: UserLoginResponseDto = req?.user;
     const deletedBy: string = user.profileId;
     await this.service.deleteDepartmentStaff(id, deletedBy);
-    return new ResponseRequest(res, true, msgResponse.deleteDepartmentStaff);
+    return new ResponseRequest(res, true, departmentMsg.deleteStaff);
   }
 
   @Get()
-  async getAllDepartment(@Res() res: Response): Promise<ResponseRequest> {
-    const result = await this.service.findAllDepartment();
-    return new ResponseRequest(res, result, msgResponse.getAllDepartment);
+  async getAllDepartment(
+    @Query() queryDto: QueryDepartmentDto,
+    @Res() res: Response,
+  ): Promise<ResponseRequest> {
+    const result = await this.service.findAllDepartment(queryDto);
+    return new ResponseRequest(res, result, departmentMsg.getAll);
   }
 
   @Get('/:id')
@@ -151,6 +157,6 @@ export class DepartmentsController {
     @Res() res: Response,
   ): Promise<ResponseRequest> {
     const result = await this.service.findDepartmentById(id);
-    return new ResponseRequest(res, result, msgResponse.getByIdDepartment);
+    return new ResponseRequest(res, result, departmentMsg.getById);
   }
 }

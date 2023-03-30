@@ -16,7 +16,7 @@ export class CreateDepartmentDto {
   @IsString()
   @IsNotEmpty()
   @ApiProperty()
-  unitName?: string;
+  name?: string;
 
   @IsString()
   @IsNotEmpty()

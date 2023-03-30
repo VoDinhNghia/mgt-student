@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
@@ -16,15 +15,32 @@ import {
 } from './schemas/departments.staff.schema';
 import { unionBy } from 'lodash';
 import { CreateStaffDepartmentDto } from './dtos/department.staff.create.dto';
-import { ErolesUser } from 'src/constants/constant';
+import { ErolesUser, EroomType } from 'src/constants/constant';
 import { UpdateDepartmentDto } from './dtos/department.update.dto';
 import { Users, UsersDocument } from '../users/schemas/users.schema';
 import { UpdateStaffDepartmentDto } from './dtos/department.staff.update.dto';
-import { ValidateDto } from 'src/validates/validates.common.dto';
-import { collections } from 'src/constants/constants.collections.name';
-import { msgNotFound } from 'src/constants/constants.message.response';
-import { ImatchFindDeparment } from './interfaces/departments.find.match.interface';
-import { departmentLookup } from 'src/utils/utils.lookup.query.service';
+import {
+  departmentMsg,
+  msgNotFound,
+  roomMsg,
+  userMsg,
+} from 'src/constants/constants.message.response';
+import {
+  IprofileStaff,
+  IqueryDeparment,
+} from './interfaces/departments.interface';
+import {
+  Attachment,
+  AttachmentDocument,
+} from '../attachments/schemas/attachments.schema';
+import { Rooms, RoomsDocument } from '../rooms/schemas/rooms.schema';
+import { ValidFields } from 'src/validates/validates.fields-id-dto';
+import {
+  selectAttachment,
+  selectRoom,
+  selectUser,
+} from 'src/utils/utils.populate';
+import { QueryDepartmentDto } from './dtos/department.query.dto';
 
 @Injectable()
 export class DepartmentsService {
@@ -37,26 +53,35 @@ export class DepartmentsService {
     private readonly profileSchema: Model<ProfileDocument>,
     @InjectModel(Users.name)
     private readonly userSchema: Model<UsersDocument>,
+    @InjectModel(Attachment.name)
+    private readonly attachmentSchema: Model<AttachmentDocument>,
+    @InjectModel(Rooms.name)
+    private readonly roomSchema: Model<RoomsDocument>,
   ) {}
 
   async createDepartment(
     departmentDto: CreateDepartmentDto,
     createdBy: string,
   ): Promise<Departments> {
-    const { attachment = [] } = departmentDto;
-    await new ValidateDto().department(departmentDto);
+    const { attachment = [], manager, contacts = {} } = departmentDto;
+    const valid = new ValidFields();
+    await valid.id(this.profileSchema, manager, userMsg.notFoundProfile);
+    const room = await this.roomSchema.findOne({
+      _id: new Types.ObjectId(contacts.office),
+      isDeleted: false,
+      type: EroomType.OFFICE_DEPARTMENT,
+    });
+    if (!room) {
+      new CommonException(404, roomMsg.notFound);
+    }
     if (attachment.length > 0) {
-      const ids = await new ValidateDto().idLists(
-        collections.attachments,
-        attachment,
-      );
+      const ids = await valid.idList(this.attachmentSchema, attachment);
       departmentDto.attachment = ids;
     }
-    const newDocument = await new this.deparmentSchema({
+    const result = await new this.deparmentSchema({
       ...departmentDto,
       createdBy,
     }).save();
-    const result = await this.findDepartmentById(newDocument._id);
     return result;
   }
 
@@ -65,45 +90,82 @@ export class DepartmentsService {
     departmentDto: UpdateDepartmentDto,
     updatedBy: string,
   ): Promise<Departments> {
-    const { attachment = [] } = departmentDto;
-    await new ValidateDto().department(departmentDto);
+    const { attachment = [], manager, contacts = {} } = departmentDto;
+    const valid = new ValidFields();
+    if (manager) {
+      await valid.id(this.profileSchema, manager, userMsg.notFoundProfile);
+    }
+    if (contacts?.office) {
+      const room = await this.roomSchema.findOne({
+        _id: new Types.ObjectId(contacts.office),
+        isDeleted: false,
+        type: EroomType.OFFICE_DEPARTMENT,
+      });
+      if (!room) {
+        new CommonException(404, roomMsg.notFound);
+      }
+    }
     if (attachment.length > 0) {
-      const ids = await new ValidateDto().idLists(
-        collections.attachments,
-        attachment,
-      );
+      const ids = await valid.idList(this.attachmentSchema, attachment);
       departmentDto.attachment = ids;
     }
-    const dto = {
+    const updateDto = {
       ...departmentDto,
       updatedBy,
       updatedAt: Date.now(),
     };
-    const result = await this.deparmentSchema.findByIdAndUpdate(id, dto, {
+    const result = await this.deparmentSchema.findByIdAndUpdate(id, updateDto, {
       new: true,
     });
     return result;
   }
 
   async findDepartmentById(id: string): Promise<Departments> {
-    const match: ImatchFindDeparment = {
-      $match: { _id: new Types.ObjectId(id) },
-    };
-    const lookup = departmentLookup();
-    const aggregate = [match, ...lookup];
-    const result = await this.deparmentSchema.aggregate(aggregate);
-    if (!result[0]) {
+    const result = await this.deparmentSchema
+      .findById(id)
+      .populate('manager', selectUser, this.profileSchema, {
+        isDeleted: false,
+      })
+      .populate('contacts.office', selectRoom, this.roomSchema, {
+        isDeleted: false,
+      })
+      .populate('attachment', selectAttachment, this.attachmentSchema, {
+        isDeleted: false,
+      })
+      .exec();
+    if (!result) {
       new CommonException(404, msgNotFound);
     }
-    return result[0];
+    return result;
   }
 
-  async findAllDepartment(): Promise<Departments[]> {
-    const match: ImatchFindDeparment = { $match: { isDeleted: false } };
-    const aggregateLookup = departmentLookup();
-    const aggregate = [match, ...aggregateLookup];
-    const results = await this.deparmentSchema.aggregate(aggregate);
-    return results;
+  async findAllDepartment(
+    queryDto: QueryDepartmentDto,
+  ): Promise<{ results: Departments[]; total: number }> {
+    const { limit, page, searchKey, manager } = queryDto;
+    const query: IqueryDeparment = { isDeleted: false };
+    if (manager) {
+      query.manager = new Types.ObjectId(manager);
+    }
+    if (searchKey) {
+      query.name = new RegExp(searchKey, 'i');
+    }
+    const results = await this.deparmentSchema
+      .find(query)
+      .skip(limit && page ? Number(limit) * Number(page) - Number(limit) : null)
+      .limit(limit ? Number(limit) : null)
+      .populate('manager', selectUser, this.profileSchema, {
+        isDeleted: false,
+      })
+      .populate('contacts.office', selectRoom, this.roomSchema, {
+        isDeleted: false,
+      })
+      .populate('attachment', selectAttachment, this.attachmentSchema, {
+        isDeleted: false,
+      })
+      .exec();
+    const total = await this.deparmentSchema.find(query).count();
+    return { results, total };
   }
 
   async createMultiStaffDepartment(
@@ -111,32 +173,30 @@ export class DepartmentsService {
     createdBy: string,
   ): Promise<DepartmentStaff[]> {
     const { department, staffs = [] } = staffDto;
-    await this.findDepartmentById(department);
+    await new ValidFields().id(
+      this.deparmentSchema,
+      department,
+      departmentMsg.notFound,
+    );
     const staffLists = unionBy(staffs, 'staff');
-    const results = [];
+    const multiDto = [];
     for await (const item of staffLists) {
-      try {
-        const staffInfo = await this.findUserProfile(item.staff);
-        if (!staffInfo) {
-          continue;
-        }
-        const userInfo: Users | any = staffInfo?.user;
-        if (userInfo?.role !== ErolesUser.STAFF) {
-          continue;
-        }
-        const dto = {
-          department,
-          staff: item?.staff,
-          joinDate: item?.joinDate || Date.now(),
-          createdBy,
-        };
-        const result = await new this.staffSchema(dto).save();
-        results.push(result);
-      } catch (error) {
-        console.log(error);
+      const staffInfo = await this.findUserProfile(item.staff);
+      if (!staffInfo) {
         continue;
       }
+      if (staffInfo?.user?.role !== ErolesUser.STAFF) {
+        continue;
+      }
+      const createDto = {
+        department,
+        staff: item?.staff,
+        joinDate: item?.joinDate || Date.now(),
+        createdBy,
+      };
+      multiDto.push(createDto);
     }
+    const results = await this.staffSchema.insertMany(multiDto);
     return results;
   }
 
@@ -145,11 +205,9 @@ export class DepartmentsService {
     createdBy: string,
   ): Promise<DepartmentStaff> {
     const { department, staff } = staffDto;
-    await this.findDepartmentById(department);
-    const staffInfo = await this.findUserProfile(staff);
-    if (!staffInfo) {
-      new CommonException(404, msgNotFound);
-    }
+    const valid = new ValidFields();
+    await valid.id(this.deparmentSchema, department, departmentMsg.notFound);
+    await valid.id(this.profileSchema, staff, userMsg.notFoundProfile);
     const result = await new this.staffSchema({
       ...staffDto,
       createdBy,
@@ -162,29 +220,31 @@ export class DepartmentsService {
     staffDto: UpdateStaffDepartmentDto,
     updatedBy: string,
   ): Promise<DepartmentStaff> {
-    const { department, joinDate } = staffDto;
+    const { department, staff } = staffDto;
+    const valid = new ValidFields();
     if (department) {
-      await this.findDepartmentById(department);
+      await valid.id(this.deparmentSchema, department, departmentMsg.notFound);
     }
-    const staff: DepartmentStaffDocument = await this.staffSchema.findById(id);
-    if (!staff) {
-      new CommonException(404, msgNotFound);
+    if (staff) {
+      await valid.id(this.profileSchema, staff, userMsg.notFoundProfile);
     }
-    staff.department = department
-      ? new Types.ObjectId(department)
-      : staff.department;
-    staff.joinDate = joinDate || staff.joinDate;
-    staff.updatedBy = new Types.ObjectId(updatedBy);
-    staff.updatedAt = new Date(Date.now());
-    await staff.save();
-    return staff;
+    const updateDto = {
+      ...staffDto,
+      updatedBy,
+      updatedAt: Date.now(),
+    };
+    const result = await this.staffSchema.findByIdAndUpdate(id, updateDto, {
+      new: true,
+    });
+    return result;
   }
 
   async deleteDepartmentStaff(id: string, deletedBy: string): Promise<void> {
-    const staff: DepartmentStaffDocument = await this.staffSchema.findById(id);
-    if (!staff) {
-      new CommonException(404, msgNotFound);
-    }
+    await new ValidFields().id(
+      this.staffSchema,
+      id,
+      departmentMsg.notFoundStaff,
+    );
     const dto = {
       isDeleted: true,
       deletedBy,
@@ -193,7 +253,7 @@ export class DepartmentsService {
     await this.staffSchema.findByIdAndUpdate(id, dto);
   }
 
-  async findUserProfile(profile: string): Promise<ProfileDocument> {
+  async findUserProfile(profile: string): Promise<IprofileStaff | null> {
     const staffInfo = await this.profileSchema
       .findOne({
         _id: new Types.ObjectId(profile),
