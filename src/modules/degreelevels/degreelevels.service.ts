@@ -3,9 +3,10 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { degreeLevelMsg } from 'src/constants/constants.message.response';
 import { CommonException } from 'src/exceptions/execeptions.common-error';
-import { ValidateDto } from 'src/validates/validates.common.dto';
 import { CreateDegreeLevelDto } from './dtos/degreelevels.create.dto';
+import { QueryDegreeLevelDto } from './dtos/degreelevels.query.dto';
 import { UpdateDegreeLevelDto } from './dtos/degreeLevels.update.dto';
+import { IqueryDegreelevel } from './interfaces/degreelevels.interface';
 import {
   DegreeLevel,
   DegreeLevelDocument,
@@ -22,7 +23,8 @@ export class DegreelevelService {
     degreelevelDto: CreateDegreeLevelDto,
     createdBy: string,
   ): Promise<DegreeLevel> {
-    await new ValidateDto().degreeLevelName(degreelevelDto);
+    const { name } = degreelevelDto;
+    await this.validateName(name);
     const result = await new this.degreeLevelSchema({
       ...degreelevelDto,
       createdBy,
@@ -43,7 +45,10 @@ export class DegreelevelService {
     updateDto: UpdateDegreeLevelDto,
     updatedBy: string,
   ): Promise<DegreeLevel> {
-    await new ValidateDto().degreeLevelName(updateDto);
+    const { name } = updateDto;
+    if (name) {
+      await this.validateName(name);
+    }
     const dto = {
       ...updateDto,
       updatedBy,
@@ -55,8 +60,40 @@ export class DegreelevelService {
     return result;
   }
 
-  async findAllDegreeLevels(): Promise<DegreeLevel[]> {
-    const results = await this.degreeLevelSchema.find({});
-    return results;
+  async findAllDegreeLevels(
+    queryDto: QueryDegreeLevelDto,
+  ): Promise<{ results: DegreeLevel[]; total: number }> {
+    const { limit, page, searchKey } = queryDto;
+    const query: IqueryDegreelevel = { isDeleted: false };
+    if (searchKey) {
+      query.name = new RegExp(searchKey, 'i');
+    }
+    const results = await this.degreeLevelSchema
+      .find(query)
+      .skip(limit && page ? Number(limit) * Number(page) - Number(limit) : null)
+      .limit(limit ? Number(limit) : null)
+      .exec();
+    const total = await this.degreeLevelSchema.find(query).count();
+    return { results, total };
+  }
+
+  async deleteDegreelevel(id: string, deletedBy: string): Promise<void> {
+    await this.findDegreeLevelById(id);
+    const deleteDto = {
+      deletedBy,
+      isDeleted: true,
+      deletedAt: Date.now(),
+    };
+    await this.degreeLevelSchema.findByIdAndUpdate(id, deleteDto);
+  }
+
+  async validateName(name: string): Promise<void> {
+    const result = await this.degreeLevelSchema.findOne({
+      name: name.trim(),
+      isDeleted: false,
+    });
+    if (result) {
+      new CommonException(409, degreeLevelMsg.existedName);
+    }
   }
 }

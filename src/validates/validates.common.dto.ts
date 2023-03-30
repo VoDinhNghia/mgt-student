@@ -114,18 +114,6 @@ export class ValidateDto {
     }
   }
 
-  async degreeLevelName(degreeLevelDto: Record<string, any>): Promise<void> {
-    const { name } = degreeLevelDto;
-    if (name) {
-      const options = { name: name.trim() };
-      await this.existedByOptions(
-        collections.degreelevels,
-        options,
-        'DegreeLevel name',
-      );
-    }
-  }
-
   async courseName(courseDto: UpdateCourseDto): Promise<void> {
     const { name } = courseDto;
     if (name) {

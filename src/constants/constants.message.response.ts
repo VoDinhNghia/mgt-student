@@ -203,6 +203,7 @@ export const degreeLevelMsg = {
   getById: 'Get degreelevel by id success',
   delete: 'Delete degreelevel success',
   notFound: 'Degreelevel not found',
+  existedName: 'Degreelevel name existed already',
 };
 
 export const departmentMsg = {
