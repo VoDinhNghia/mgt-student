@@ -67,3 +67,8 @@ export const departmentController = {
   name: 'api/departments',
   tag: 'departments',
 };
+
+export const degreeLeveController = {
+  name: 'api/degreelevels',
+  tag: 'degreelevels',
+};

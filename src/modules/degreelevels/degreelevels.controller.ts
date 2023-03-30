@@ -7,7 +7,9 @@ import {
   Put,
   Req,
   Res,
+  Query,
   UseGuards,
+  Delete,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { ResponseRequest } from 'src/utils/utils.response-api';
@@ -20,9 +22,11 @@ import { Response, Request } from 'express';
 import { UpdateDegreeLevelDto } from './dtos/degreeLevels.update.dto';
 import { degreeLevelMsg } from 'src/constants/constants.message.response';
 import { UserLoginResponseDto } from '../auth/dtos/auth.result.login-service.dto';
+import { degreeLeveController } from 'src/constants/constants.controller.name-tag';
+import { QueryDegreeLevelDto } from './dtos/degreelevels.query.dto';
 
-@Controller('api/degreelevels')
-@ApiTags('degreelevels')
+@Controller(degreeLeveController.name)
+@ApiTags(degreeLeveController.tag)
 export class DegreelevelController {
   constructor(private readonly degreeLevelService: DegreelevelService) {}
 
@@ -64,9 +68,27 @@ export class DegreelevelController {
     return new ResponseRequest(res, result, degreeLevelMsg.update);
   }
 
+  @Delete('/:id')
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
+  async deleteDegreeLevel(
+    @Param('id') id: string,
+    @Res() res: Response,
+    @Req() req: Request,
+  ): Promise<ResponseRequest> {
+    const user: UserLoginResponseDto = req?.user;
+    const deletedBy: string = user.profileId;
+    await this.degreeLevelService.deleteDegreelevel(id, deletedBy);
+    return new ResponseRequest(res, true, degreeLevelMsg.delete);
+  }
+
   @Get()
-  async getAllDegreeLevel(@Res() res: Response): Promise<ResponseRequest> {
-    const result = await this.degreeLevelService.findAllDegreeLevels();
+  async getAllDegreeLevel(
+    @Query() queryDto: QueryDegreeLevelDto,
+    @Res() res: Response,
+  ): Promise<ResponseRequest> {
+    const result = await this.degreeLevelService.findAllDegreeLevels(queryDto);
     return new ResponseRequest(res, result, degreeLevelMsg.getAll);
   }
 
