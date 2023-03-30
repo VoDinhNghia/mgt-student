@@ -116,6 +116,7 @@ export class FacultiesService {
         isDeleted: false,
       })
       .populate('award', selectAward, this.awardSchema, { isDeleted: false })
+      .sort({ createdAt: -1 })
       .exec();
     const total = await this.facultySchema.find(query).count();
     return { results, total };
@@ -210,6 +211,7 @@ export class FacultiesService {
         isDeleted: false,
       })
       .populate('award', selectAward, this.awardSchema, { isDeleted: false })
+      .sort({ createdAt: -1 })
       .exec();
     const total = await this.majorSchema.find(query).count();
     return { results, total };

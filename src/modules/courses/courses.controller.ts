@@ -8,6 +8,8 @@ import {
   Res,
   Req,
   UseGuards,
+  Query,
+  Delete,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { ResponseRequest } from 'src/utils/utils.response-api';
@@ -20,9 +22,11 @@ import { CreateCourseDto } from './dtos/courses.create.dto';
 import { UpdateCourseDto } from './dtos/courses.update.dto';
 import { courseMsg } from 'src/constants/constants.message.response';
 import { UserLoginResponseDto } from '../auth/dtos/auth.result.login-service.dto';
+import { courseController } from 'src/constants/constants.controller.name-tag';
+import { QueryCourseDto } from './dtos/courses.query.dto';
 
-@Controller('api/courses')
-@ApiTags('courses')
+@Controller(courseController.name)
+@ApiTags(courseController.tag)
 export class CoursesController {
   constructor(private readonly courseService: CoursesService) {}
 
@@ -61,6 +65,21 @@ export class CoursesController {
     return new ResponseRequest(res, result, courseMsg.update);
   }
 
+  @Delete('/:id')
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
+  async deleteCourse(
+    @Param('id') id: string,
+    @Res() res: Response,
+    @Req() req: Request,
+  ): Promise<ResponseRequest> {
+    const user: UserLoginResponseDto = req?.user;
+    const deletedBy: string = user.profileId;
+    await this.courseService.deleteCourse(id, deletedBy);
+    return new ResponseRequest(res, true, courseMsg.delete);
+  }
+
   @Get('/:id')
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
@@ -76,8 +95,11 @@ export class CoursesController {
   @Get()
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
-  async getListFaculties(@Res() res: Response): Promise<ResponseRequest> {
-    const result = await this.courseService.findAllCourses();
+  async getListFaculties(
+    @Query() queryDto: QueryCourseDto,
+    @Res() res: Response,
+  ): Promise<ResponseRequest> {
+    const result = await this.courseService.findAllCourses(queryDto);
     return new ResponseRequest(res, result, courseMsg.getAll);
   }
 }

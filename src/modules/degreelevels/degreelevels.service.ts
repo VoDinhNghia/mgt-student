@@ -72,6 +72,7 @@ export class DegreelevelService {
       .find(query)
       .skip(limit && page ? Number(limit) * Number(page) - Number(limit) : null)
       .limit(limit ? Number(limit) : null)
+      .sort({ createdAt: -1 })
       .exec();
     const total = await this.degreeLevelSchema.find(query).count();
     return { results, total };

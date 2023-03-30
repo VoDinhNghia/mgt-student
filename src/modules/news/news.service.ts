@@ -75,6 +75,7 @@ export class NewsService {
       .populate('attachment', selectAttachment, this.attachmentSchema, {
         isDeleted: false,
       })
+      .sort({ createdAt: -1 })
       .exec();
     const total = await this.newsSchema.find(query).count();
     return { results, total };

@@ -163,6 +163,7 @@ export class DepartmentsService {
       .populate('attachment', selectAttachment, this.attachmentSchema, {
         isDeleted: false,
       })
+      .sort({ createdAt: -1 })
       .exec();
     const total = await this.deparmentSchema.find(query).count();
     return { results, total };
