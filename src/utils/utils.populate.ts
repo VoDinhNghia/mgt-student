@@ -48,3 +48,21 @@ export const selectRoom = [
   'capacity',
   'divice',
 ];
+
+export const selectAward = [
+  '_id',
+  'name',
+  'time',
+  'location',
+  'type',
+  'description',
+  'isDeleted',
+];
+
+export const selectFaculty = [
+  '_id',
+  'name',
+  'introduction',
+  'foundYear',
+  'isDeleted',
+];

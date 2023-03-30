@@ -101,40 +101,6 @@ export function departmentLookup() {
   return lookup;
 }
 
-export function facultyLookup() {
-  const lookup = lookupCommon([
-    referenceAward(),
-    {
-      from: collections.profiles,
-      localField: 'headOfSection',
-      foreignField: '_id',
-      as: 'headOfSection',
-      unwind: true,
-    },
-    {
-      from: collections.profiles,
-      localField: 'eputeHead',
-      foreignField: '_id',
-      as: 'eputeHead',
-      unwind: true,
-    },
-  ]);
-  return lookup;
-}
-
-export function majorLookup() {
-  const lookup = lookupCommon([
-    {
-      from: collections.faculties,
-      localField: 'faculty',
-      foreignField: '_id',
-      as: 'faculty',
-      unwind: true,
-    },
-  ]);
-  return [...facultyLookup(), ...lookup];
-}
-
 export function trainningPointScholarshipLookup() {
   const lookup = lookupCommon([
     {
