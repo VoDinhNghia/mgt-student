@@ -86,21 +86,6 @@ export function classSubjectCommon() {
   return lookup;
 }
 
-export function departmentLookup() {
-  const lookup = lookupCommon([
-    {
-      from: collections.profiles,
-      localField: 'manager',
-      foreignField: '_id',
-      as: 'manager',
-      unwind: true,
-    },
-    referenceAttachment(),
-    referenceOffice(),
-  ]);
-  return lookup;
-}
-
 export function trainningPointScholarshipLookup() {
   const lookup = lookupCommon([
     {

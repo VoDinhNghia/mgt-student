@@ -6,8 +6,6 @@ import { uniq } from 'lodash';
 import { validateEmail } from './validates.email';
 import { msgValidateEmail } from 'src/constants/constants.message.response';
 import { collections } from 'src/constants/constants.collections.name';
-import { CreateDepartmentDto } from 'src/modules/departments/dtos/departments.create.dto';
-import { EroomType } from 'src/constants/constant';
 import { CreateCenterDto } from 'src/modules/centers/dtos/centers.create.dto';
 import { UpdateCourseDto } from 'src/modules/courses/dtos/courses.update.dto';
 
@@ -113,21 +111,6 @@ export class ValidateDto {
     }
     if (faculty) {
       await this.fieldId(collections.faculties, faculty);
-    }
-  }
-
-  async department(departmentDto: CreateDepartmentDto): Promise<void> {
-    const { manager, contacts } = departmentDto;
-    const { office } = contacts;
-    if (office) {
-      const options = {
-        _id: new Types.ObjectId(contacts?.office),
-        type: EroomType.OFFICE_DEPARTMENT,
-      };
-      await this.fieldOptions(collections.rooms, options, 'Room');
-    }
-    if (manager) {
-      await this.fieldId(collections.profiles, manager);
     }
   }
 
