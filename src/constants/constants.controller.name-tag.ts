@@ -92,3 +92,8 @@ export const centerController = {
   name: 'api/centers',
   tag: 'centers',
 };
+
+export const branchController = {
+  name: 'api/branchs',
+  tag: 'branchs',
+};

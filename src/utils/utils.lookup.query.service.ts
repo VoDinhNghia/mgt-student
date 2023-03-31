@@ -6,10 +6,6 @@ export function awardLookup() {
   return lookup;
 }
 
-export function branchLookup() {
-  return locationBranchAndSchoolLookup();
-}
-
 export function subjectLookup() {
   const lookup = lookupCommon([
     referenceSemester(),
@@ -93,40 +89,6 @@ export function userAndSyncLookup() {
       localField: '_id',
       foreignField: 'user',
       as: 'profile',
-      unwind: true,
-    },
-  ]);
-  return lookup;
-}
-
-export function locationBranchAndSchoolLookup() {
-  const lookup = lookupCommon([
-    {
-      from: collections.countries,
-      localField: 'location.country',
-      foreignField: '_id',
-      as: 'country',
-      unwind: true,
-    },
-    {
-      from: collections.provinces,
-      localField: 'location.province',
-      foreignField: '_id',
-      as: 'province',
-      unwind: true,
-    },
-    {
-      from: collections.districts,
-      localField: 'location.district',
-      foreignField: '_id',
-      as: 'district',
-      unwind: true,
-    },
-    {
-      from: collections.wards,
-      localField: 'location.ward',
-      foreignField: '_id',
-      as: 'ward',
       unwind: true,
     },
   ]);
