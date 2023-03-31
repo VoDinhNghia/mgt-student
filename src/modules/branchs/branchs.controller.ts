@@ -20,11 +20,12 @@ import { BranchCreateDto } from './dtos/branchs.create.dto';
 import { BranchQueryDto } from './dtos/branchs.query.dto';
 import { BranchUpdateDto } from './dtos/branchs.update.dto';
 import { ResponseRequest } from 'src/utils/utils.response-api';
-import { msgResponse } from 'src/constants/constants.message.response';
+import { branchMsg } from 'src/constants/constants.message.response';
 import { UserLoginResponseDto } from '../auth/dtos/auth.result.login-service.dto';
+import { branchController } from 'src/constants/constants.controller.name-tag';
 
-@Controller('api/branchs')
-@ApiTags('branchs')
+@Controller(branchController.name)
+@ApiTags(branchController.tag)
 export class BranchController {
   constructor(private readonly branchService: BranchService) {}
 
@@ -43,7 +44,7 @@ export class BranchController {
       branchCreateDto,
       createdBy,
     );
-    return new ResponseRequest(res, result, msgResponse.createBranch);
+    return new ResponseRequest(res, result, branchMsg.create);
   }
 
   @Get()
@@ -52,7 +53,7 @@ export class BranchController {
     @Res() res: Response,
   ): Promise<ResponseRequest> {
     const result = await this.branchService.findAllBranchs(branchQueryDto);
-    return new ResponseRequest(res, result, msgResponse.getAllBranch);
+    return new ResponseRequest(res, result, branchMsg.getAll);
   }
 
   @Put('/:id')
@@ -67,8 +68,27 @@ export class BranchController {
   ): Promise<ResponseRequest> {
     const user: UserLoginResponseDto = req?.user;
     const updatedBy: string = user.profileId;
-    await this.branchService.updateBranch(id, updateBranchDto, updatedBy);
-    return new ResponseRequest(res, true, msgResponse.updateBranch);
+    const result = await this.branchService.updateBranch(
+      id,
+      updateBranchDto,
+      updatedBy,
+    );
+    return new ResponseRequest(res, result, branchMsg.update);
+  }
+
+  @Put('/:id')
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
+  async deleteBranch(
+    @Param('id') id: string,
+    @Res() res: Response,
+    @Req() req: Request,
+  ): Promise<ResponseRequest> {
+    const user: UserLoginResponseDto = req?.user;
+    const deletedBy: string = user.profileId;
+    await this.branchService.deleteBranch(id, deletedBy);
+    return new ResponseRequest(res, true, branchMsg.delete);
   }
 
   @Get('/:id')
@@ -77,6 +97,6 @@ export class BranchController {
     @Res() res: Response,
   ): Promise<ResponseRequest> {
     const result = await this.branchService.findById(id);
-    return new ResponseRequest(res, result, msgResponse.getByIdBranch);
+    return new ResponseRequest(res, result, branchMsg.getById);
   }
 }

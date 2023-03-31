@@ -248,6 +248,16 @@ export const centerMsg = {
   notFound: 'Center not found',
 };
 
+export const branchMsg = {
+  create: 'Create branch success',
+  getAll: 'Get all branchs success',
+  update: 'Update branch success',
+  getById: 'Get branch by id success',
+  notFound: 'Branch not found',
+  existedName: 'Branch name existed already',
+  delete: 'Delete branch success',
+};
+
 export const msgResponse = {
   initSupperAdminAuth: 'Create supper admin success',
   loginAuth: 'Login sucess',
@@ -257,10 +267,6 @@ export const msgResponse = {
   updateAward: 'Update award success',
   getByIdAward: 'Get award by Id sucess',
   getAllAward: 'Get all award success',
-  createBranch: 'Create branch success',
-  getAllBranch: 'Get all branchs success',
-  updateBranch: 'Update branch success',
-  getByIdBranch: 'Get branch by id success',
 };
 
 export const descriptionResponse = {
