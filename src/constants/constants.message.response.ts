@@ -258,15 +258,20 @@ export const branchMsg = {
   delete: 'Delete branch success',
 };
 
+export const awardMsg = {
+  create: 'Create award success',
+  update: 'Update award success',
+  getById: 'Get award by Id sucess',
+  getAll: 'Get all award success',
+  delete: 'Delete award success',
+  notFound: 'Award not found',
+};
+
 export const msgResponse = {
   initSupperAdminAuth: 'Create supper admin success',
   loginAuth: 'Login sucess',
   getMeAuth: 'Get me success',
   errorAuth: 'User or password incorrect',
-  createAward: 'Create award success',
-  updateAward: 'Update award success',
-  getByIdAward: 'Get award by Id sucess',
-  getAllAward: 'Get all award success',
 };
 
 export const descriptionResponse = {

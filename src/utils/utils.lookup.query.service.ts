@@ -1,11 +1,6 @@
 import { collections } from 'src/constants/constants.collections.name';
 import { lookupCommon } from './utils.lookup.query.aggregate-query';
 
-export function awardLookup() {
-  const lookup = lookupCommon([referenceAttachment()]);
-  return lookup;
-}
-
 export function subjectLookup() {
   const lookup = lookupCommon([
     referenceSemester(),
@@ -95,52 +90,12 @@ export function userAndSyncLookup() {
   return lookup;
 }
 
-export function referenceAttachment() {
-  return {
-    from: collections.attachments,
-    localField: 'attachment',
-    foreignField: '_id',
-    as: 'attachment',
-    unwind: false,
-  };
-}
-
-export function referenceAward() {
-  return {
-    from: collections.awards,
-    localField: 'award',
-    foreignField: '_id',
-    as: 'award',
-    unwind: false,
-  };
-}
-
-export function referenceOffice() {
-  return {
-    from: collections.rooms,
-    localField: 'contacts.office',
-    foreignField: '_id',
-    as: 'office',
-    unwind: true,
-  };
-}
-
 export function referenceSemester() {
   return {
     from: collections.semesters,
     localField: 'semester',
     foreignField: '_id',
     as: 'semester',
-    unwind: true,
-  };
-}
-
-export function referenceUser() {
-  return {
-    from: collections.profiles,
-    localField: 'user',
-    foreignField: '_id',
-    as: 'user',
     unwind: true,
   };
 }
