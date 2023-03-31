@@ -1,5 +1,3 @@
-// link reference config helmet: https://github.com/helmetjs/helmet
-// Note that applying helmet as global or registering it must come before other calls to app.use()
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
@@ -33,7 +31,6 @@ async function bootstrap() {
       configService.get<string>('ADMIN_FRONTEND'),
       configService.get<string>('FRONTEND'),
       configService.get<string>('LIBRARY_FRONTEND'),
-      configService.get<string>('COURSE'),
       configService.get<string>('LIBRARY'),
       configService.get<string>('ATTENDANCE'),
     ],

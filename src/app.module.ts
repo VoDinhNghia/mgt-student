@@ -31,6 +31,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { SyncServiceModule } from './modules/sync-service/sync-service.module';
 import { ChatModule } from './modules/chat/chat.module';
 import { ThrottlerModule } from '@nestjs/throttler';
+import { SettingsModule } from './modules/settings/settings.module';
 
 @Module({
   imports: [
@@ -48,8 +49,8 @@ import { ThrottlerModule } from '@nestjs/throttler';
       }),
     }),
     ThrottlerModule.forRoot({
-      ttl: 60, // the number of seconds that each request will last in storage
-      limit: 20, // the maximum number of requests within the TTL limit
+      ttl: 60,
+      limit: 20,
     }),
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '../..', 'src/public'),
@@ -78,6 +79,7 @@ import { ThrottlerModule } from '@nestjs/throttler';
     BlogsModule,
     SyncServiceModule,
     ChatModule,
+    SettingsModule,
   ],
   controllers: [AppController],
   providers: [AppService, DbConnection],

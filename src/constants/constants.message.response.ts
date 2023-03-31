@@ -276,6 +276,21 @@ export const authMsg = {
   errorAuth: 'User or password incorrect',
 };
 
+export const settingMsg = {
+  createSubjectPass: 'Create setting subject pass success',
+  createLearningrate: 'Create setting learning rate success',
+  updateSubjectPass: 'Update setting subject pass success',
+  deleteSubjectPass: 'Delete setting subject pass success',
+  getAllSubjectPass: 'Get all setting subject pass success',
+  getByIdSubjectPass: 'Get setting subject pass success',
+  updateLearningRate: 'Update setting learning rate success',
+  deleteLearningRate: 'Delete setting learning rate success',
+  getAllLearningRate: 'Get all setting learning rate success',
+  getByIdLearningRate: 'Get setting learning rate success',
+  notFoundSubjectPass: 'Setting subject not found',
+  notFoundLearningRate: 'Setting learning rate not found',
+};
+
 export const descriptionMsg = {
   apiLogin: 'Response data when login success',
 };

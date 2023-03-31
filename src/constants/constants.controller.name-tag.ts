@@ -107,3 +107,8 @@ export const authController = {
   name: 'api/auth',
   tag: 'auth',
 };
+
+export const settingController = {
+  name: 'api/settings',
+  tag: 'settings',
+};
