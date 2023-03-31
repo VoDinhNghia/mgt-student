@@ -239,6 +239,15 @@ export const departmentMsg = {
   notFoundStaff: 'Staff not found',
 };
 
+export const centerMsg = {
+  create: 'Create center success',
+  getAll: 'Get all centers success',
+  update: 'Update center success',
+  getById: 'Get center by id success',
+  delete: 'Delete center success',
+  notFound: 'Center not found',
+};
+
 export const msgResponse = {
   initSupperAdminAuth: 'Create supper admin success',
   loginAuth: 'Login sucess',
@@ -252,11 +261,6 @@ export const msgResponse = {
   getAllBranch: 'Get all branchs success',
   updateBranch: 'Update branch success',
   getByIdBranch: 'Get branch by id success',
-  createCenter: 'Create center success',
-  getAllCenter: 'Get all centers success',
-  updateCenter: 'Update center success',
-  getByIdCenter: 'Get center by id success',
-  deleteCenter: 'Delete center success',
 };
 
 export const descriptionResponse = {

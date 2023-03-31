@@ -53,7 +53,7 @@ import {
   selectCourse,
   selectDegreelevel,
   selectMajor,
-  selectUser,
+  selectProfile,
 } from 'src/utils/utils.populate';
 import { QueryClassDto } from './dtos/class-subject.query-class.dto';
 import { QuerySubjectDto } from './dtos/class-subject.query-subject.dto';
@@ -117,7 +117,7 @@ export class ClassSubjectService {
       .populate('degreeLevel', selectDegreelevel, this.degreelevelSchema, {
         isDeleted: false,
       })
-      .populate('homeroomteacher', selectUser, this.profileSchema, {
+      .populate('homeroomteacher', selectProfile, this.profileSchema, {
         isDeleted: false,
       })
       .exec();
@@ -164,7 +164,7 @@ export class ClassSubjectService {
       .populate('degreeLevel', selectDegreelevel, this.degreelevelSchema, {
         isDeleted: false,
       })
-      .populate('homeroomteacher', selectUser, this.profileSchema, {
+      .populate('homeroomteacher', selectProfile, this.profileSchema, {
         isDeleted: false,
       })
       .sort({ createdAt: -1 })

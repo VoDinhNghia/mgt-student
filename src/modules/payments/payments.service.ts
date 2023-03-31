@@ -27,7 +27,7 @@ import {
   Semester,
   SemesterDocument,
 } from '../semesters/schemas/semesters.schema';
-import { selectSemester, selectUser } from 'src/utils/utils.populate';
+import { selectSemester, selectProfile } from 'src/utils/utils.populate';
 import { QueryMgtMoneyPerCreditDto } from './dtos/payments.query.mgt-money-per-credit.dto';
 import { IqueryMgtMoneyPerCredit } from './interfaces/payments.query.mgt-money-per-credit.interface';
 import {
@@ -172,7 +172,7 @@ export class PaymentsService {
   async findUserPaymentById(id: string): Promise<PaymentStudyFee> {
     const result = await this.paymentSchema
       .findById(id)
-      .populate('user', selectUser, this.profileSchema, { isDeleted: false })
+      .populate('user', selectProfile, this.profileSchema, { isDeleted: false })
       .populate('semester', selectSemester, this.semesterSchema, {
         isDeleted: false,
       })

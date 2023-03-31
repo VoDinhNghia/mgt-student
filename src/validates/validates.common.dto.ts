@@ -4,7 +4,6 @@ import { DbConnection } from 'src/constants/constants.db.mongo.connection';
 import { CommonException } from 'src/exceptions/execeptions.common-error';
 import { uniq } from 'lodash';
 import { collections } from 'src/constants/constants.collections.name';
-import { CreateCenterDto } from 'src/modules/centers/dtos/centers.create.dto';
 
 export class ValidateDto {
   db: any = new DbConnection();
@@ -89,16 +88,5 @@ export class ValidateDto {
       profileDto.award = awardIds;
     }
     return profileDto;
-  }
-
-  async center(centerDto: CreateCenterDto): Promise<void> {
-    const { director, contacts } = centerDto;
-    const { office } = contacts;
-    if (director) {
-      await this.fieldId(collections.profiles, director);
-    }
-    if (office) {
-      await this.fieldId(collections.rooms, office);
-    }
   }
 }

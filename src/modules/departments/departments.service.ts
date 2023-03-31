@@ -38,7 +38,7 @@ import { ValidFields } from 'src/validates/validates.fields-id-dto';
 import {
   selectAttachment,
   selectRoom,
-  selectUser,
+  selectProfile,
 } from 'src/utils/utils.populate';
 import { QueryDepartmentDto } from './dtos/department.query.dto';
 
@@ -123,7 +123,7 @@ export class DepartmentsService {
   async findDepartmentById(id: string): Promise<Departments> {
     const result = await this.deparmentSchema
       .findById(id)
-      .populate('manager', selectUser, this.profileSchema, {
+      .populate('manager', selectProfile, this.profileSchema, {
         isDeleted: false,
       })
       .populate('contacts.office', selectRoom, this.roomSchema, {
@@ -154,7 +154,7 @@ export class DepartmentsService {
       .find(query)
       .skip(limit && page ? Number(limit) * Number(page) - Number(limit) : null)
       .limit(limit ? Number(limit) : null)
-      .populate('manager', selectUser, this.profileSchema, {
+      .populate('manager', selectProfile, this.profileSchema, {
         isDeleted: false,
       })
       .populate('contacts.office', selectRoom, this.roomSchema, {
