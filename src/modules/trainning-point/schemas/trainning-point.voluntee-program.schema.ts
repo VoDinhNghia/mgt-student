@@ -3,11 +3,19 @@ import mongoose, { Document } from 'mongoose';
 import { EtypeVolunteeProgram } from 'src/constants/constant';
 import { collections } from 'src/constants/constants.collections.name';
 import { FieldsCommonSchema } from 'src/utils/utils.fields-common.schema';
+import { getRandomCodeVoluntee } from 'src/utils/utils.generate.code';
 
 export type VolunteeProgramsDocument = VolunteePrograms & Document;
 
 @Schema({ collection: collections.voluntee_programs, versionKey: false })
 export class VolunteePrograms extends FieldsCommonSchema {
+  @Prop({
+    required: true,
+    default: getRandomCodeVoluntee(3),
+    unique: true,
+  })
+  code?: string;
+
   @Prop({
     type: mongoose.Schema.Types.ObjectId,
     ref: collections.faculties,

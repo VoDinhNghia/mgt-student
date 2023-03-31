@@ -8,6 +8,7 @@ import { QuerySemesterDto } from './dtos/semesters.query.dto';
 import { UpdateSemesterDto } from './dtos/semesters.update.dto';
 import { IsemesterQuery } from './interfaces/semesters.find.interface';
 import { Semester, SemesterDocument } from './schemas/semesters.schema';
+import { getRandomCodeSemester } from 'src/utils/utils.generate.code';
 
 @Injectable()
 export class SemestersService {
@@ -22,6 +23,7 @@ export class SemestersService {
   ): Promise<Semester> {
     const dto = {
       ...semesterDto,
+      code: getRandomCodeSemester(3),
       createdBy,
     };
     const result = await new this.semesterSchema(dto).save();

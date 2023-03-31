@@ -16,3 +16,11 @@ export interface IqueryVoluntee {
   faculty?: Types.ObjectId;
   semester?: Types.ObjectId;
 }
+
+export interface ItrainningPointImport {
+  user?: string;
+  semester?: string;
+  program?: string;
+  attendance?: string;
+  status?: string;
+}

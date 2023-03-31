@@ -8,7 +8,6 @@ import {
   userMsg,
 } from 'src/constants/constants.message.response';
 import { CommonException } from 'src/exceptions/execeptions.common-error';
-import { getRandomCodeReceiptId } from 'src/utils/utils.generate.code-payment';
 import { SubjectUserRegister } from 'src/utils/utils.user.register-subject.query';
 import { CreateMoneyPerCreditMgtDto } from './dtos/payments.mgt-money-per-credit.create.dto';
 import { UpdateMoneyPerCreditMgtDto } from './dtos/payments.mgt-money-per-credit.update.dto';
@@ -36,6 +35,7 @@ import {
 } from '../users/schemas/users.profile.schema';
 import { IuserRegisterResponse } from './interfaces/payments.find.user-tuition.interface';
 import { ValidFields } from 'src/validates/validates.fields-id-dto';
+import { getRandomCodeReceiptId } from 'src/utils/utils.generate.code';
 
 @Injectable()
 export class PaymentsService {

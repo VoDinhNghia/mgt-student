@@ -20,7 +20,7 @@ import {
 import { CreateLeaderSchoolDto } from './dto/users.create.leader-school.dto';
 import { QueryLeaderSchoolDto } from './dto/users.query.leader-school.dto';
 import { UpdateLeaderSchoolDto } from './dto/users.update.leader-school.dto';
-import { getRandomCode } from 'src/utils/utils.generate.code-profile';
+import { getRandomCodeProfile } from 'src/utils/utils.generate.code';
 import {
   StudyProcesses,
   StudyProcessDocument,
@@ -102,7 +102,7 @@ export class UsersService {
     const profileDto = {
       ...usersDto,
       user: user._id,
-      code: getRandomCode(6),
+      code: getRandomCodeProfile(5),
       createdBy,
     };
     const profile = await this.createUserProfile(profileDto);
@@ -322,7 +322,7 @@ export class UsersService {
         const profileDto = {
           ...item,
           user: user._id,
-          code: getRandomCode(6),
+          code: getRandomCodeProfile(5),
           createdBy,
         };
         profile = await new this.profileSchema(profileDto).save();
@@ -366,7 +366,7 @@ export class UsersService {
       firstName,
       lastName,
       user: supperAdmin._id,
-      code: `SA_${getRandomCode(5)}`,
+      code: `SA_${getRandomCodeProfile(5)}`,
     };
     await this.createUserProfile(profileSuperAdmin);
     const result = await this.findUserById(supperAdmin._id);
