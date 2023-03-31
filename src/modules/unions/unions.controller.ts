@@ -94,7 +94,7 @@ export class UnionsController {
   async updateUnion(
     @Param('id') id: string,
     @Body() unionDto: UpdateUnionDto,
-    @Res() res: ResponseRequest,
+    @Res() res: Response,
     @Req() req: Request,
   ): Promise<ResponseRequest> {
     const user: UserLoginResponseDto = req?.user;
@@ -110,7 +110,7 @@ export class UnionsController {
   async updateUnionMember(
     @Param('id') id: string,
     @Body() memberDto: UpdateUnionMember,
-    @Res() res: ResponseRequest,
+    @Res() res: Response,
     @Req() req: Request,
   ): Promise<ResponseRequest> {
     const user: UserLoginResponseDto = req?.user;
@@ -130,7 +130,7 @@ export class UnionsController {
   async updateUnionImage(
     @Param('id') id: string,
     @Body() imageDto: UpdateUnionImage,
-    @Res() res: ResponseRequest,
+    @Res() res: Response,
     @Req() req: Request,
   ): Promise<ResponseRequest> {
     const user: UserLoginResponseDto = req?.user;
@@ -149,7 +149,7 @@ export class UnionsController {
   @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
   async deleteUnion(
     @Param('id') id: string,
-    @Res() res: ResponseRequest,
+    @Res() res: Response,
     @Req() req: Request,
   ): Promise<ResponseRequest> {
     const user: UserLoginResponseDto = req?.user;
@@ -164,7 +164,7 @@ export class UnionsController {
   @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
   async deleteUnionMember(
     @Param('id') id: string,
-    @Res() res: ResponseRequest,
+    @Res() res: Response,
     @Req() req: Request,
   ): Promise<ResponseRequest> {
     const user: UserLoginResponseDto = req?.user;
@@ -179,7 +179,7 @@ export class UnionsController {
   @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
   async deleteUnionImage(
     @Param('id') id: string,
-    @Res() res: ResponseRequest,
+    @Res() res: Response,
     @Req() req: Request,
   ): Promise<ResponseRequest> {
     const user: UserLoginResponseDto = req?.user;
@@ -191,7 +191,7 @@ export class UnionsController {
   @Get()
   async getAllUnion(
     @Query() queryDto: QueryUnionDto,
-    @Res() res: ResponseRequest,
+    @Res() res: Response,
   ): Promise<ResponseRequest> {
     const results = await this.unionService.findAllUnions(queryDto);
     return new ResponseRequest(res, results, unionMsg.getAll);
@@ -202,7 +202,7 @@ export class UnionsController {
   @UseGuards(JwtAuthGuard)
   async getAllUnionMembers(
     @Query() queryDto: QueryUnionMemberDto,
-    @Res() res: ResponseRequest,
+    @Res() res: Response,
   ): Promise<ResponseRequest> {
     const results = await this.unionService.findAllUnionMembers(queryDto);
     return new ResponseRequest(res, results, unionMsg.getAllMembers);
@@ -213,7 +213,7 @@ export class UnionsController {
   @UseGuards(JwtAuthGuard)
   async getAllUnionImages(
     @Query() queryDto: QueryUnionImageDto,
-    @Res() res: ResponseRequest,
+    @Res() res: Response,
   ): Promise<ResponseRequest> {
     const results = await this.unionService.findAllUnionImages(queryDto);
     return new ResponseRequest(res, results, unionMsg.getAllImages);
@@ -225,7 +225,7 @@ export class UnionsController {
   @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
   async getUnionMemberById(
     @Param('id') id: string,
-    @Res() res: ResponseRequest,
+    @Res() res: Response,
   ): Promise<ResponseRequest> {
     const result = await this.unionService.findUnionMemberById(id);
     return new ResponseRequest(res, result, unionMsg.getByIdMember);
@@ -237,7 +237,7 @@ export class UnionsController {
   @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
   async getUnionImageById(
     @Param('id') id: string,
-    @Res() res: ResponseRequest,
+    @Res() res: Response,
   ): Promise<ResponseRequest> {
     const result = await this.unionService.findUnionImageById(id);
     return new ResponseRequest(res, result, unionMsg.getByIdImage);
@@ -246,7 +246,7 @@ export class UnionsController {
   @Get('/:id')
   async getUnionById(
     @Param('id') id: string,
-    @Res() res: ResponseRequest,
+    @Res() res: Response,
   ): Promise<ResponseRequest> {
     const result = await this.unionService.findUnionById(id);
     return new ResponseRequest(res, result, unionMsg.getById);
