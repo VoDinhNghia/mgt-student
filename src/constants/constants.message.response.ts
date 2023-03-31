@@ -57,6 +57,8 @@ export const attachmentMsg = {
   getById: 'Get attachment success',
   delete: 'Delete attachment success',
   notFound: 'Attachment not found',
+  getAll: 'Get all attachment success',
+  getAllByUser: 'Get all attachment of user success',
 };
 
 export const semesterMsg = {

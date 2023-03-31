@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsString } from 'class-validator';
+import { EmimetypeAttachment } from 'src/constants/constant';
 
 export class FileRequestDto {
   @IsString()
@@ -24,7 +25,7 @@ export class FileRequestDto {
 
   @IsString()
   @IsNotEmpty()
-  @ApiProperty()
+  @ApiProperty({ enum: EmimetypeAttachment })
   mimetype?: string;
 
   @IsString()

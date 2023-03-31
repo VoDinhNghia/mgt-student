@@ -93,3 +93,7 @@ export enum Epermission {
 export const expiresInJwt = '7d';
 
 export const passwordDefault = '123Code#';
+
+export enum EmimetypeAttachment {
+  IMAGE = 'image/jpeg',
+}
