@@ -1,11 +1,9 @@
-export interface ImatchFindAward {
-  $match?: {
-    isDeleted?: boolean;
-    type?: string;
-    name?: RegExp;
-    time?: {
-      $gte?: Date;
-      $lte?: Date;
-    };
+export interface IqueryAwards {
+  isDeleted?: boolean;
+  type?: string;
+  name?: RegExp;
+  time?: {
+    $gte?: Date;
+    $lte?: Date;
   };
 }

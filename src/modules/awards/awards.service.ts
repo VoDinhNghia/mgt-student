@@ -1,16 +1,18 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model, Types } from 'mongoose';
-import { collections } from 'src/constants/constants.collections.name';
+import { Model } from 'mongoose';
 import { msgNotFound } from 'src/constants/constants.message.response';
 import { CommonException } from 'src/exceptions/execeptions.common-error';
-import { awardLookup } from 'src/utils/utils.lookup.query.service';
-import { skipLimitAndSortPagination } from 'src/utils/utils.page.pagination';
-import { ValidateDto } from 'src/validates/validates.common.dto';
+import { selectAttachment } from 'src/utils/utils.populate';
+import { ValidFields } from 'src/validates/validates.fields-id-dto';
+import {
+  Attachment,
+  AttachmentDocument,
+} from '../attachments/schemas/attachments.schema';
 import { CreateAwardDto } from './dtos/awards.create.dto';
 import { QueryAwardDto } from './dtos/awards.query.dto';
 import { UpdateAwardDto } from './dtos/awards.update.dto';
-import { ImatchFindAward } from './interfaces/awards.find.match.interface';
+import { IqueryAwards } from './interfaces/awards.find.match.interface';
 import { Award, AwardDocument } from './schemas/awards.schema';
 
 @Injectable()
@@ -18,86 +20,105 @@ export class AwardsService {
   constructor(
     @InjectModel(Award.name)
     private readonly awardSchema: Model<AwardDocument>,
+    @InjectModel(Attachment.name)
+    private readonly attachmentSchema: Model<AttachmentDocument>,
   ) {}
 
   async createAward(
-    createAwardDto: CreateAwardDto,
+    createDto: CreateAwardDto,
     createdBy: string,
   ): Promise<Award> {
-    const { attachment = [] } = createAwardDto;
-    const attachmentIds = await new ValidateDto().idLists(
-      collections.attachments,
-      attachment,
-    );
-    createAwardDto.attachment = attachmentIds;
+    const { attachment = [] } = createDto;
+    if (attachment.length > 0) {
+      const attachmentIds = await new ValidFields().idList(
+        this.attachmentSchema,
+        attachment,
+      );
+      createDto.attachment = attachmentIds;
+    }
     const result = await new this.awardSchema({
-      ...createAwardDto,
+      ...createDto,
       createdBy,
     }).save();
     return result;
   }
 
   async findAwardById(id: string): Promise<Award> {
-    const match = { $match: { _id: new Types.ObjectId(id) } };
-    const lookup = awardLookup();
-    const aggregate = [match, ...lookup];
-    const result = await this.awardSchema.aggregate(aggregate);
-    if (!result[0]) {
+    const result = await this.awardSchema
+      .findById(id)
+      .populate('attachment', selectAttachment, this.attachmentSchema, {
+        isDeleted: false,
+      })
+      .exec();
+    if (!result) {
       new CommonException(404, msgNotFound);
     }
-    return result[0];
+    return result;
   }
 
   async updateAward(
     id: string,
-    updateAwardDto: UpdateAwardDto,
+    updateDto: UpdateAwardDto,
     updatedBy: string,
   ): Promise<Award> {
-    await this.findAwardById(id);
-    const dto = {
-      ...updateAwardDto,
+    const { attachment = [] } = updateDto;
+    if (attachment.length > 0) {
+      const attachmentIds = await new ValidFields().idList(
+        this.attachmentSchema,
+        attachment,
+      );
+      updateDto.attachment = attachmentIds;
+    }
+    const newDto = {
+      ...updateDto,
       updatedBy,
       updatedAt: Date.now(),
     };
-    const result = await this.awardSchema.findByIdAndUpdate(id, dto, {
+    const result = await this.awardSchema.findByIdAndUpdate(id, newDto, {
       new: true,
     });
     return result;
   }
 
-  async deleteAward(id: string): Promise<void> {
-    await this.findAwardById(id);
-    await this.awardSchema.findByIdAndDelete(id);
+  async deleteAward(id: string, deletedBy: string): Promise<void> {
+    const deleteDto = {
+      isDeleted: true,
+      deletedBy,
+      deletedAt: Date.now(),
+    };
+    await this.awardSchema.findByIdAndUpdate(id, deleteDto);
   }
 
   async findAllAward(
-    queryAwardDto: QueryAwardDto,
-  ): Promise<{ data: Award[]; countTotal: number }> {
-    const { limit, page, searchKey, type, fromDate, toDate } = queryAwardDto;
-    const match: ImatchFindAward = { $match: { isDeleted: false } };
+    queryDto: QueryAwardDto,
+  ): Promise<{ results: Award[]; total: number }> {
+    const { limit, page, searchKey, type, fromDate, toDate } = queryDto;
+    const query: IqueryAwards = { isDeleted: false };
     if (searchKey) {
-      match.$match.name = new RegExp(searchKey);
+      query.name = new RegExp(searchKey, 'i');
     }
     if (type) {
-      match.$match.type = type;
+      query.type = type;
     }
     if (fromDate && !toDate) {
-      match.$match.time = { $gte: fromDate };
+      query.time = { $gte: new Date(fromDate) };
     }
     if (!fromDate && toDate) {
-      match.$match.time = { $lte: toDate };
+      query.time = { $lte: new Date(toDate) };
     }
-    if (fromDate && !toDate) {
-      match.$match.time = { $gte: fromDate, $lte: toDate };
+    if (fromDate && toDate) {
+      query.time = { $gte: new Date(fromDate), $lte: new Date(toDate) };
     }
-    const lookup = awardLookup();
-    const aggregatePagi = skipLimitAndSortPagination(limit, page);
-    const aggregate = [match, ...aggregatePagi, ...lookup];
-    const result = await this.awardSchema.aggregate(aggregate);
-    const countDocument = await this.awardSchema.countDocuments();
-    return {
-      data: result,
-      countTotal: countDocument,
-    };
+    const results = await this.awardSchema
+      .find(query)
+      .skip(limit && page ? Number(limit) * Number(page) - Number(limit) : null)
+      .limit(limit ? Number(limit) : null)
+      .populate('attachment', selectAttachment, this.attachmentSchema, {
+        isDeleted: false,
+      })
+      .sort({ createAt: -1 })
+      .exec();
+    const total = await this.awardSchema.find(query).count();
+    return { results, total };
   }
 }

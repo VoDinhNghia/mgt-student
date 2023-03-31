@@ -130,6 +130,7 @@ export class BranchService {
       .populate('location.ward', selectWard, this.wardSchema, {
         isDeleted: false,
       })
+      .sort({ createAt: -1 })
       .exec();
     const total = await this.branchSchema.find(query).count();
     return { results, total };

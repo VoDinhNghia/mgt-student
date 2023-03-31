@@ -97,3 +97,8 @@ export const branchController = {
   name: 'api/branchs',
   tag: 'branchs',
 };
+
+export const awardController = {
+  name: 'api/awards',
+  tag: 'awards',
+};

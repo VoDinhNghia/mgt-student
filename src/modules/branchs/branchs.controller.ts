@@ -9,6 +9,7 @@ import {
   Res,
   Req,
   UseGuards,
+  Delete,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { ErolesUser } from 'src/constants/constant';
@@ -76,7 +77,7 @@ export class BranchController {
     return new ResponseRequest(res, result, branchMsg.update);
   }
 
-  @Put('/:id')
+  @Delete('/:id')
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))

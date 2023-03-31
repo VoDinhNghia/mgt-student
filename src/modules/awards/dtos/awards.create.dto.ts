@@ -20,7 +20,7 @@ export class CreateAwardDto {
   @IsDate()
   @Type(() => Date)
   @ApiProperty({
-    default: `${new GetCurrentDate().getYearMonthDate()}T00:00:00`,
+    default: `${new GetCurrentDate().getYearMonthDate()}`,
   })
   time?: Date;
 
