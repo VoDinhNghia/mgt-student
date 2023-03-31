@@ -55,7 +55,7 @@ export class InstituteController {
   async updateInstitute(
     @Param('id') id: string,
     @Body() instituteDto: UpdateInstituteDto,
-    @Res() res: ResponseRequest,
+    @Res() res: Response,
     @Req() req: Request,
   ): Promise<ResponseRequest> {
     const user: UserLoginResponseDto = req?.user;
@@ -74,7 +74,7 @@ export class InstituteController {
   @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
   async deleteInstitute(
     @Param('id') id: string,
-    @Res() res: ResponseRequest,
+    @Res() res: Response,
     @Req() req: Request,
   ): Promise<ResponseRequest> {
     const user: UserLoginResponseDto = req?.user;
@@ -86,7 +86,7 @@ export class InstituteController {
   @Get()
   async getAllInstitute(
     @Query() queryDto: QueryIntituteDto,
-    @Res() res: ResponseRequest,
+    @Res() res: Response,
   ): Promise<ResponseRequest> {
     const result = await this.instutiteService.findAllInstitudes(queryDto);
     return new ResponseRequest(res, result, instituteMsg.getAll);
@@ -95,7 +95,7 @@ export class InstituteController {
   @Get('/:id')
   async getInstituteById(
     @Param('id') id: string,
-    @Res() res: ResponseRequest,
+    @Res() res: Response,
   ): Promise<ResponseRequest> {
     const result = await this.instutiteService.findInstituteById(id);
     return new ResponseRequest(res, result, instituteMsg.getById);

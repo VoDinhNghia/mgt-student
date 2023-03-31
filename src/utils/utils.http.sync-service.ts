@@ -1,13 +1,9 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { HttpService } from '@nestjs/axios';
 
 export class Http {
-  private http: any = new HttpService();
+  private http: HttpService = new HttpService();
 
-  async get(
-    url: string,
-    keyAccess: string,
-  ): Promise<Record<string, any>[] | null> {
+  async get(url: string, keyAccess: string): Promise<object[] | null> {
     try {
       const results = this.http.get(url, {
         headers: {
@@ -23,8 +19,8 @@ export class Http {
   async post(
     url: string,
     keyAccess: string,
-    body: Record<string, any>,
-  ): Promise<Record<string, any>[] | null> {
+    body: string | object | string[] | object[],
+  ): Promise<object[] | null> {
     try {
       const results = this.http.post(url, body, {
         headers: {
