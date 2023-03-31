@@ -3,7 +3,7 @@ import mongoose, { Document } from 'mongoose';
 import { collections } from 'src/constants/constants.collections.name';
 import { EuserGender } from 'src/constants/constant';
 import { FieldsCommonSchema } from 'src/utils/utils.fields-common.schema';
-import { getRandomCode } from 'src/utils/utils.generate.code-profile';
+import { getRandomCodeProfile } from 'src/utils/utils.generate.code';
 
 export type ProfileDocument = Profile & Document;
 
@@ -49,7 +49,7 @@ export class Profile extends FieldsCommonSchema {
   @Prop({
     maxlength: 15,
     minlength: 6,
-    default: getRandomCode(6),
+    default: getRandomCodeProfile(5),
     unique: true,
   })
   code?: string; // student and lecturer code
