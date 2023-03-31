@@ -6,6 +6,7 @@ import {
   Param,
   Post,
   Req,
+  Query,
   Res,
   UploadedFile,
   UseGuards,
@@ -27,6 +28,10 @@ import {
 import { attachmentMsg } from 'src/constants/constants.message.response';
 import { UserLoginResponseDto } from '../auth/dtos/auth.result.login-service.dto';
 import { attachmentController } from 'src/constants/constants.controller.name-tag';
+import { RoleGuard } from '../auth/guards/auth.role-auth.guard';
+import { ErolesUser } from 'src/constants/constant';
+import { QueryAttachmentDto } from './dtos/attachments.query.dto';
+import { QueryAttachmentUserDto } from './dtos/attachments.query-by-user.dto';
 @Controller(attachmentController.name)
 @ApiTags(attachmentController.tag)
 export class AttachmentsController {
@@ -71,6 +76,34 @@ export class AttachmentsController {
     const user: UserLoginResponseDto = req?.user;
     await this.attachmentService.deleteAttachment(id, user.profileId);
     return new ResponseRequest(res, true, attachmentMsg.delete);
+  }
+
+  @Get()
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
+  async getAllAttachments(
+    @Query() queryDto: QueryAttachmentDto,
+    @Res() res: Response,
+  ): Promise<ResponseRequest> {
+    const results = await this.attachmentService.findAllAttachments(queryDto);
+    return new ResponseRequest(res, results, attachmentMsg.getAll);
+  }
+
+  @Get('/users')
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  async getAttachmentUsers(
+    @Query() queryDto: QueryAttachmentUserDto,
+    @Res() res: Response,
+    @Req() req: Request,
+  ): Promise<ResponseRequest> {
+    const user: UserLoginResponseDto = req?.user;
+    const results = await this.attachmentService.findAttachmentUsers(
+      queryDto,
+      user.profileId,
+    );
+    return new ResponseRequest(res, results, attachmentMsg.getAllByUser);
   }
 
   @Get('/:id')
