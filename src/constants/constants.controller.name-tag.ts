@@ -102,3 +102,8 @@ export const awardController = {
   name: 'api/awards',
   tag: 'awards',
 };
+
+export const authController = {
+  name: 'api/auth',
+  tag: 'auth',
+};

@@ -267,13 +267,13 @@ export const awardMsg = {
   notFound: 'Award not found',
 };
 
-export const msgResponse = {
-  initSupperAdminAuth: 'Create supper admin success',
-  loginAuth: 'Login sucess',
-  getMeAuth: 'Get me success',
+export const authMsg = {
+  createSupperAdmin: 'Create supper admin success',
+  login: 'Login sucess',
+  getMe: 'Get me success',
   errorAuth: 'User or password incorrect',
 };
 
-export const descriptionResponse = {
+export const descriptionMsg = {
   apiLogin: 'Response data when login success',
 };
