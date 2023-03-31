@@ -32,6 +32,7 @@ import { SyncServiceModule } from './modules/sync-service/sync-service.module';
 import { ChatModule } from './modules/chat/chat.module';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { SettingsModule } from './modules/settings/settings.module';
+import { TrainningPointModule } from './modules/trainning-point/trainning-point.module';
 
 @Module({
   imports: [
@@ -80,6 +81,7 @@ import { SettingsModule } from './modules/settings/settings.module';
     SyncServiceModule,
     ChatModule,
     SettingsModule,
+    TrainningPointModule,
   ],
   controllers: [AppController],
   providers: [AppService, DbConnection],

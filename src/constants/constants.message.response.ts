@@ -291,6 +291,11 @@ export const settingMsg = {
   notFoundLearningRate: 'Setting learning rate not found',
 };
 
+export const trainningPointMsg = {
+  importTraingPoint: 'Import trainning point success',
+  importVolunteeProgram: 'Import voluntee program success',
+};
+
 export const descriptionMsg = {
   apiLogin: 'Response data when login success',
 };

@@ -108,3 +108,8 @@ export enum EtypeSettingSubjectPass {
   FINAL_EXAM_POINT = 'FINAL_EXAM_POINT',
   ACCUMULATED_POINT = 'ACCUMULATED_POINT',
 }
+
+export enum EtypeVolunteeProgram {
+  UNIVERSITY = 'UNIVERSITY',
+  FACULTY = 'FACULTY',
+}
