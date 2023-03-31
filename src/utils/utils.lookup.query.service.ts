@@ -10,21 +10,6 @@ export function branchLookup() {
   return locationBranchAndSchoolLookup();
 }
 
-export function centerLookup() {
-  const lookup = lookupCommon([
-    {
-      from: collections.profiles,
-      localField: 'director',
-      foreignField: '_id',
-      as: 'director',
-      unwind: true,
-    },
-    referenceAward(),
-    referenceOffice(),
-  ]);
-  return lookup;
-}
-
 export function subjectLookup() {
   const lookup = lookupCommon([
     referenceSemester(),

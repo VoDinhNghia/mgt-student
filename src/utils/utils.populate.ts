@@ -6,7 +6,7 @@ export const selectAttachment = [
   'isDeleted',
 ];
 
-export const selectUser = [
+export const selectProfile = [
   '_id',
   'firstName',
   'lastName',
@@ -19,7 +19,7 @@ export const selectUser = [
 export const selectUnion = {
   image: ['_id', 'attachment', 'description', 'union', 'isDeleted'],
   member: ['_id', 'user', 'position', 'union'],
-  user: selectUser,
+  user: selectProfile,
   union: ['_id', 'nameUnit', 'isDeleted'],
 };
 
@@ -34,7 +34,7 @@ export const selectScholarship = {
     'attachment',
     'percentTuition',
   ],
-  user: selectUser,
+  user: selectProfile,
 };
 
 export const selectSemester = ['_id', 'name', 'year', 'isDeleted'];

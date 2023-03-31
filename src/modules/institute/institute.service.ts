@@ -9,7 +9,7 @@ import { CommonException } from 'src/exceptions/execeptions.common-error';
 import {
   selectAttachment,
   selectRoom,
-  selectUser,
+  selectProfile,
 } from 'src/utils/utils.populate';
 import { ValidFields } from 'src/validates/validates.fields-id-dto';
 import {
@@ -111,10 +111,10 @@ export class InstituteService {
       .populate('attachment', selectAttachment, this.attachmentSchema, {
         isDeleted: false,
       })
-      .populate('parson', selectUser, this.profileSchema, {
+      .populate('parson', selectProfile, this.profileSchema, {
         isDeleted: false,
       })
-      .populate('viceParson', selectUser, this.profileSchema, {
+      .populate('viceParson', selectProfile, this.profileSchema, {
         isDeleted: false,
       })
       .populate('contacts.office', selectRoom, this.roomSchema, {
@@ -142,10 +142,10 @@ export class InstituteService {
       .populate('attachment', selectAttachment, this.attachmentSchema, {
         isDeleted: false,
       })
-      .populate('parson', selectUser, this.profileSchema, {
+      .populate('parson', selectProfile, this.profileSchema, {
         isDeleted: false,
       })
-      .populate('viceParson', selectUser, this.profileSchema, {
+      .populate('viceParson', selectProfile, this.profileSchema, {
         isDeleted: false,
       })
       .populate('contacts.office', selectRoom, this.roomSchema, {

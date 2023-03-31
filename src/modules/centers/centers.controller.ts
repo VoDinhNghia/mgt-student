@@ -7,6 +7,7 @@ import {
   Post,
   Put,
   Res,
+  Query,
   Req,
   UseGuards,
 } from '@nestjs/common';
@@ -19,11 +20,13 @@ import { CenterService } from './centers.service';
 import { Response, Request } from 'express';
 import { CreateCenterDto } from './dtos/centers.create.dto';
 import { UpdateCenterDto } from './dtos/centers.update.dto';
-import { msgResponse } from 'src/constants/constants.message.response';
+import { centerMsg } from 'src/constants/constants.message.response';
 import { UserLoginResponseDto } from '../auth/dtos/auth.result.login-service.dto';
+import { centerController } from 'src/constants/constants.controller.name-tag';
+import { QueryCenterDto } from './dtos/centers.query.dto';
 
-@Controller('api/centers')
-@ApiTags('centers')
+@Controller(centerController.name)
+@ApiTags(centerController.tag)
 export class CenterController {
   constructor(private readonly service: CenterService) {}
 
@@ -39,7 +42,7 @@ export class CenterController {
     const user: UserLoginResponseDto = req?.user;
     const createdBy: string = user.profileId;
     const result = await this.service.createCenter(centerDto, createdBy);
-    return new ResponseRequest(res, result, msgResponse.createCenter);
+    return new ResponseRequest(res, result, centerMsg.create);
   }
 
   @Put('/:id')
@@ -55,7 +58,7 @@ export class CenterController {
     const user: UserLoginResponseDto = req?.user;
     const updatedBy: string = user.profileId;
     const result = await this.service.updateCenter(id, centerDto, updatedBy);
-    return new ResponseRequest(res, result, msgResponse.updateCenter);
+    return new ResponseRequest(res, result, centerMsg.update);
   }
 
   @Delete('/:id')
@@ -70,13 +73,16 @@ export class CenterController {
     const user: UserLoginResponseDto = req?.user;
     const deletedBy: string = user.profileId;
     await this.service.deleteCenter(id, deletedBy);
-    return new ResponseRequest(res, true, msgResponse.deleteCenter);
+    return new ResponseRequest(res, true, centerMsg.delete);
   }
 
   @Get()
-  async getAllCenter(@Res() res: Response): Promise<ResponseRequest> {
-    const result = await this.service.findAllCenter();
-    return new ResponseRequest(res, result, msgResponse.getAllCenter);
+  async getAllCenter(
+    @Query() queryDto: QueryCenterDto,
+    @Res() res: Response,
+  ): Promise<ResponseRequest> {
+    const result = await this.service.findAllCenter(queryDto);
+    return new ResponseRequest(res, result, centerMsg.getAll);
   }
 
   @Get('/:id')
@@ -85,6 +91,6 @@ export class CenterController {
     @Res() res: Response,
   ): Promise<ResponseRequest> {
     const result = await this.service.findCenterById(id);
-    return new ResponseRequest(res, result, msgResponse.getByIdCenter);
+    return new ResponseRequest(res, result, centerMsg.getById);
   }
 }

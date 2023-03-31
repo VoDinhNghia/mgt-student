@@ -87,3 +87,8 @@ export const classSubjectController = {
   name: 'api/class-subject',
   tag: 'class-subject',
 };
+
+export const centerController = {
+  name: 'api/centers',
+  tag: 'centers',
+};

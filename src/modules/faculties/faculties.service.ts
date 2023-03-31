@@ -27,7 +27,7 @@ import { ValidFields } from 'src/validates/validates.fields-id-dto';
 import {
   selectAward,
   selectFaculty,
-  selectUser,
+  selectProfile,
 } from 'src/utils/utils.populate';
 
 @Injectable()
@@ -63,10 +63,10 @@ export class FacultiesService {
   async findFacultyById(id: string): Promise<Faculty> {
     const result = await this.facultySchema
       .findById(id)
-      .populate('headOfSection', selectUser, this.profileSchema, {
+      .populate('headOfSection', selectProfile, this.profileSchema, {
         isDeleted: false,
       })
-      .populate('eputeHead', selectUser, this.profileSchema, {
+      .populate('eputeHead', selectProfile, this.profileSchema, {
         isDeleted: false,
       })
       .populate('award', selectAward, this.awardSchema, { isDeleted: false })
@@ -109,10 +109,10 @@ export class FacultiesService {
       .find(query)
       .skip(limit && page ? Number(limit) * Number(page) - Number(limit) : null)
       .limit(limit ? Number(limit) : null)
-      .populate('headOfSection', selectUser, this.profileSchema, {
+      .populate('headOfSection', selectProfile, this.profileSchema, {
         isDeleted: false,
       })
-      .populate('eputeHead', selectUser, this.profileSchema, {
+      .populate('eputeHead', selectProfile, this.profileSchema, {
         isDeleted: false,
       })
       .populate('award', selectAward, this.awardSchema, { isDeleted: false })
@@ -148,10 +148,10 @@ export class FacultiesService {
       .populate('faculty', selectFaculty, this.facultySchema, {
         isDeleted: false,
       })
-      .populate('headOfSection', selectUser, this.profileSchema, {
+      .populate('headOfSection', selectProfile, this.profileSchema, {
         isDeleted: false,
       })
-      .populate('eputeHead', selectUser, this.profileSchema, {
+      .populate('eputeHead', selectProfile, this.profileSchema, {
         isDeleted: false,
       })
       .populate('award', selectAward, this.awardSchema, { isDeleted: false })
@@ -204,10 +204,10 @@ export class FacultiesService {
       .populate('faculty', selectFaculty, this.facultySchema, {
         isDeleted: false,
       })
-      .populate('headOfSection', selectUser, this.profileSchema, {
+      .populate('headOfSection', selectProfile, this.profileSchema, {
         isDeleted: false,
       })
-      .populate('eputeHead', selectUser, this.profileSchema, {
+      .populate('eputeHead', selectProfile, this.profileSchema, {
         isDeleted: false,
       })
       .populate('award', selectAward, this.awardSchema, { isDeleted: false })

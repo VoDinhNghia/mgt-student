@@ -6,7 +6,7 @@ import {
   userMsg,
 } from 'src/constants/constants.message.response';
 import { CommonException } from 'src/exceptions/execeptions.common-error';
-import { selectUser } from 'src/utils/utils.populate';
+import { selectProfile } from 'src/utils/utils.populate';
 import { ValidFields } from 'src/validates/validates.fields-id-dto';
 import {
   Profile,
@@ -69,7 +69,7 @@ export class PermissionsService {
   async findAdminPermissionById(id: string): Promise<AdminPermission> {
     const result = await this.permissionSchema
       .findById(id)
-      .populate('user', selectUser, this.profileSchema, { isDeleted: false })
+      .populate('user', selectProfile, this.profileSchema, { isDeleted: false })
       .exec();
     if (!result) {
       new CommonException(404, permissionMsg.notFound);
@@ -92,7 +92,7 @@ export class PermissionsService {
       .find(query)
       .skip(limit && page ? Number(limit) * Number(page) - Number(limit) : null)
       .limit(limit ? Number(limit) : null)
-      .populate('user', selectUser, this.profileSchema, { isDeleted: false })
+      .populate('user', selectProfile, this.profileSchema, { isDeleted: false })
       .sort({ createdAt: -1 })
       .exec();
     const total = await this.permissionSchema.find(query).count();
