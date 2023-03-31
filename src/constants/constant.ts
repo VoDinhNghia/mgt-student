@@ -97,3 +97,14 @@ export const passwordDefault = '123Code#';
 export enum EmimetypeAttachment {
   IMAGE = 'image/jpeg',
 }
+
+export enum EtypeLearningRate {
+  TEN_POINT_SCALE = 'TEN_POINT_SCALE',
+  FOUR_POINT_SCALE = 'FOUR_POINT_SCALE',
+  POINT_TRAINNING = 'POINT_TRAINNING',
+}
+
+export enum EtypeSettingSubjectPass {
+  FINAL_EXAM_POINT = 'FINAL_EXAM_POINT',
+  ACCUMULATED_POINT = 'ACCUMULATED_POINT',
+}
