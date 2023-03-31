@@ -112,3 +112,8 @@ export const settingController = {
   name: 'api/settings',
   tag: 'settings',
 };
+
+export const trainningPointController = {
+  name: 'api/trainning-point',
+  tag: 'trainning-point',
+};
