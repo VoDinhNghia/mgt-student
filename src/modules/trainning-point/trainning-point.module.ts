@@ -10,6 +10,12 @@ import {
   VolunteePrograms,
   VolunteeProgramsSchema,
 } from './schemas/trainning-point.voluntee-program.schema';
+import { Faculty, FacultySchema } from '../faculties/schemas/faculties.schema';
+import { Profile, ProfileSchema } from '../users/schemas/users.profile.schema';
+import {
+  Semester,
+  SemesterSchema,
+} from '../semesters/schemas/semesters.schema';
 
 @Module({
   imports: [
@@ -21,6 +27,18 @@ import {
       {
         name: VolunteePrograms.name,
         schema: VolunteeProgramsSchema,
+      },
+      {
+        name: Faculty.name,
+        schema: FacultySchema,
+      },
+      {
+        name: Profile.name,
+        schema: ProfileSchema,
+      },
+      {
+        name: Semester.name,
+        schema: SemesterSchema,
       },
     ]),
   ],

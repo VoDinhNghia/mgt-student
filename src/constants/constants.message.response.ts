@@ -294,6 +294,16 @@ export const settingMsg = {
 export const trainningPointMsg = {
   importTraingPoint: 'Import trainning point success',
   importVolunteeProgram: 'Import voluntee program success',
+  validateVoluntee:
+    'Failed - title or location or startDate or endDate or type must provided',
+  validateDate: 'Failed - startDate or endDate incorect format',
+  validateLeader: 'Failed - Leader not found',
+  validateSecretary: 'Failed - secretary not found',
+  statusImportVoluntee: 'Success - create voluntee program success',
+  statusImportTrainningPoint: 'Success - create trainning point success',
+  sysError: 'Failed - system error',
+  notFoundVoluntee: 'Voluntee not found',
+  notFoundTrainningPoint: 'Trainning point not found',
 };
 
 export const descriptionMsg = {
