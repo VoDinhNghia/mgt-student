@@ -4,7 +4,7 @@ import {
   TrainningPoints,
   TranningPointsDocument,
 } from './schemas/trainning-point.schema';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import {
   VolunteePrograms,
   VolunteeProgramsDocument,
@@ -24,6 +24,8 @@ import {
 import {
   ItrainningPointImport,
   IvolunteeImport,
+  IqueryTrainningPoint,
+  IqueryVoluntee,
 } from './interfaces/trainning-point.interface';
 import {
   facultiesMsg,
@@ -31,7 +33,24 @@ import {
   trainningPointMsg,
   userMsg,
 } from 'src/constants/constants.message.response';
-import { EtypeVolunteeProgram } from 'src/constants/constant';
+import {
+  EtypeVolunteeProgram,
+  lengthRandomCodeVoluntee,
+} from 'src/constants/constant';
+import { CreateTrainningPointDto } from './dtos/trainning-point.create.dto';
+import { ValidFields } from 'src/validates/validates.fields-id-dto';
+import { getRandomCodeVoluntee } from 'src/utils/utils.generate.code';
+import { CreateVolunteeProgramDto } from './dtos/trainning-point.create.voluntee-program.dto';
+import { UpdateTrainningPointDto } from './dtos/trainning-point.update.dto';
+import { UpdateVolunteeDto } from './dtos/trainning-point.update-voluntee.dto';
+import { CommonException } from 'src/exceptions/execeptions.common-error';
+import {
+  selectFaculty,
+  selectProfile,
+  selectSemester,
+} from 'src/utils/utils.populate';
+import { QueryTrainningPointDto } from './dtos/trainning-point.query.dto';
+import { QueryVolunteeDto } from './dtos/trainning-point.query-voluntee.dto';
 
 @Injectable()
 export class TrainningPointService {
@@ -47,6 +66,50 @@ export class TrainningPointService {
     @InjectModel(Semester.name)
     private readonly semesterSchema: Model<SemesterDocument>,
   ) {}
+
+  async createTrainingPoint(
+    createDto: CreateTrainningPointDto,
+    createdBy: string,
+  ): Promise<TrainningPoints> {
+    const { user, semester, program } = createDto;
+    const valid = new ValidFields();
+    await valid.id(this.profileSchema, user, userMsg.notFoundProfile);
+    await valid.id(this.semesterSchema, semester, semesterMsg.notFound);
+    await valid.id(
+      this.volunteeProgramSchema,
+      program,
+      trainningPointMsg.notFoundVoluntee,
+    );
+    const result = await new this.trainningPointSchema({
+      ...createDto,
+      createdBy,
+    }).save();
+    return result;
+  }
+
+  async createVoluntee(
+    createDto: CreateVolunteeProgramDto,
+    createdBy: string,
+  ): Promise<VolunteePrograms> {
+    const {
+      faculty,
+      semester,
+      organizingCommittee: { leader, secretary },
+    } = createDto;
+    const valid = new ValidFields();
+    await valid.id(this.profileSchema, leader, userMsg.notFoundProfile);
+    await valid.id(this.profileSchema, secretary, userMsg.notFoundProfile);
+    await valid.id(this.semesterSchema, semester, semesterMsg.notFound);
+    if (faculty) {
+      await valid.id(this.facultySchema, faculty, facultiesMsg.notFound);
+    }
+    const result = await new this.volunteeProgramSchema({
+      ...createDto,
+      code: getRandomCodeVoluntee(lengthRandomCodeVoluntee),
+      createdBy,
+    }).save();
+    return result;
+  }
 
   async importVoluntee(
     data: IvolunteeImport[],
@@ -114,6 +177,7 @@ export class TrainningPointService {
         leader: leaderInfo._id,
         secretary: secretaryInfo._id,
       };
+      item.code = getRandomCodeVoluntee(lengthRandomCodeVoluntee);
       try {
         await new this.volunteeProgramSchema({ ...item, createdBy }).save();
         item.status = trainningPointMsg.statusImportVoluntee;
@@ -169,5 +233,217 @@ export class TrainningPointService {
       }
     }
     return data;
+  }
+
+  async updateTrainningPoint(
+    id: string,
+    updateDto: UpdateTrainningPointDto,
+    updatedBy: string,
+  ): Promise<TrainningPoints> {
+    const { user, semester, program } = updateDto;
+    const valid = new ValidFields();
+    if (user) {
+      await valid.id(this.profileSchema, user, userMsg.notFoundProfile);
+    }
+    if (semester) {
+      await valid.id(this.semesterSchema, semester, semesterMsg.notFound);
+    }
+    if (program) {
+      await valid.id(
+        this.volunteeProgramSchema,
+        program,
+        trainningPointMsg.notFoundVoluntee,
+      );
+    }
+    const newDto = {
+      ...updateDto,
+      updatedBy,
+      updatedAt: Date.now(),
+    };
+    const result = await this.trainningPointSchema.findByIdAndUpdate(
+      id,
+      newDto,
+      { new: true },
+    );
+    return result;
+  }
+
+  async updateVolutee(
+    id: string,
+    updateDto: UpdateVolunteeDto,
+    updatedBy: string,
+  ): Promise<VolunteePrograms> {
+    const {
+      faculty,
+      semester,
+      organizingCommittee: { leader, secretary },
+    } = updateDto;
+    const valid = new ValidFields();
+    if (semester) {
+      await valid.id(this.semesterSchema, semester, semesterMsg.notFound);
+    }
+    if (leader) {
+      await valid.id(this.profileSchema, leader, userMsg.notFoundProfile);
+    }
+    if (secretary) {
+      await valid.id(this.profileSchema, secretary, userMsg.notFoundProfile);
+    }
+    if (faculty) {
+      await valid.id(this.facultySchema, faculty, facultiesMsg.notFound);
+    }
+    const newDto = {
+      ...updateDto,
+      updatedBy,
+      updatedAt: Date.now(),
+    };
+    const result = await this.volunteeProgramSchema.findByIdAndUpdate(
+      id,
+      newDto,
+      { new: true },
+    );
+    return result;
+  }
+
+  async findTrainningPointById(id: string): Promise<TrainningPoints> {
+    const result = await this.trainningPointSchema
+      .findById(id)
+      .populate('user', selectProfile, this.profileSchema, { isDeleted: false })
+      .populate('semester', selectSemester, this.semesterSchema, {
+        isDeleted: false,
+      })
+      .populate('program', '', this.volunteeProgramSchema, { isDeleted: false })
+      .exec();
+    if (!result) {
+      new CommonException(404, trainningPointMsg.notFoundTrainningPoint);
+    }
+    return result;
+  }
+
+  async findVolunteeById(id: string): Promise<VolunteePrograms> {
+    const result = await this.volunteeProgramSchema
+      .findById(id)
+      .populate('faculty', selectFaculty, this.facultySchema, {
+        isDeleted: false,
+      })
+      .populate('semester', selectSemester, this.semesterSchema, {
+        isDeleted: false,
+      })
+      .populate(
+        'organizingCommittee.leader',
+        selectProfile,
+        this.profileSchema,
+        {
+          isDeleted: false,
+        },
+      )
+      .populate(
+        'organizingCommittee.secretary',
+        selectProfile,
+        this.profileSchema,
+        {
+          isDeleted: false,
+        },
+      )
+      .exec();
+    if (!result) {
+      new CommonException(404, trainningPointMsg.notFoundVoluntee);
+    }
+    return result;
+  }
+
+  async findAllTrainningPoint(
+    queryDto: QueryTrainningPointDto,
+  ): Promise<{ results: TrainningPoints[]; total: number }> {
+    const { limit, page, user, program, semester } = queryDto;
+    const query: IqueryTrainningPoint = { isDeleted: false };
+    if (user) {
+      query.user = new Types.ObjectId(user);
+    }
+    if (program) {
+      query.program = new Types.ObjectId(program);
+    }
+    if (semester) {
+      query.semester = new Types.ObjectId(semester);
+    }
+    const results = await this.trainningPointSchema
+      .find(query)
+      .skip(limit && page ? Number(limit) * Number(page) - Number(limit) : null)
+      .limit(limit ? Number(limit) : null)
+      .populate('user', selectProfile, this.profileSchema, { isDeleted: false })
+      .populate('semester', selectSemester, this.semesterSchema, {
+        isDeleted: false,
+      })
+      .populate('program', '', this.volunteeProgramSchema, { isDeleted: false })
+      .sort({ createdAt: -1 })
+      .exec();
+    const total = await this.trainningPointSchema.find(query).count();
+    return { results, total };
+  }
+
+  async findAllVolunteeProgram(
+    queryDto: QueryVolunteeDto,
+  ): Promise<{ results: VolunteePrograms[]; total: number }> {
+    const { limit, page, searchKey, semester, faculty, leader } = queryDto;
+    const query: IqueryVoluntee = { isDeleted: false };
+    if (searchKey) {
+      query.name = new RegExp(searchKey, 'i');
+    }
+    if (semester) {
+      query.semester = new Types.ObjectId(semester);
+    }
+    if (faculty) {
+      query.faculty = new Types.ObjectId(faculty);
+    }
+    if (leader) {
+      query['organizingCommittee.leader'] = new Types.ObjectId(leader);
+    }
+    const results = await this.volunteeProgramSchema
+      .find(query)
+      .skip(limit && page ? Number(limit) * Number(page) - Number(limit) : null)
+      .limit(limit ? Number(limit) : null)
+      .populate('faculty', selectFaculty, this.facultySchema, {
+        isDeleted: false,
+      })
+      .populate('semester', selectSemester, this.semesterSchema, {
+        isDeleted: false,
+      })
+      .populate(
+        'organizingCommittee.leader',
+        selectProfile,
+        this.profileSchema,
+        {
+          isDeleted: false,
+        },
+      )
+      .populate(
+        'organizingCommittee.secretary',
+        selectProfile,
+        this.profileSchema,
+        {
+          isDeleted: false,
+        },
+      )
+      .sort({ createdAt: -1 })
+      .exec();
+    const total = await this.volunteeProgramSchema.find(query).count();
+    return { results, total };
+  }
+
+  async deleteTrainningPoint(id: string, deletedBy: string): Promise<void> {
+    const deleteDto = {
+      isDeleted: false,
+      deletedBy,
+      deletedAt: Date.now(),
+    };
+    await this.trainningPointSchema.findByIdAndUpdate(id, deleteDto);
+  }
+
+  async deleteVoluntee(id: string, deletedBy: string): Promise<void> {
+    const deleteDto = {
+      isDeleted: false,
+      deletedBy,
+      deletedAt: Date.now(),
+    };
+    await this.volunteeProgramSchema.findByIdAndUpdate(id, deleteDto);
   }
 }

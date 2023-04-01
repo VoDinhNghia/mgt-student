@@ -13,7 +13,6 @@ import {
   ValidateNested,
 } from 'class-validator';
 import { Type } from 'class-transformer';
-import { GetCurrentDate } from 'src/utils/utils.get.current-date';
 
 export class CreateVolunteeProgramDto {
   @IsString()
@@ -44,13 +43,13 @@ export class CreateVolunteeProgramDto {
   @IsDate()
   @Type(() => Date)
   @IsNotEmpty()
-  @ApiProperty({ default: new GetCurrentDate().getYearMonthDate() })
+  @ApiProperty()
   startDate?: string;
 
   @IsDate()
   @Type(() => Date)
   @IsNotEmpty()
-  @ApiProperty({ default: new GetCurrentDate().getYearMonthDate() })
+  @ApiProperty()
   endDate?: Date;
 
   @IsString()
