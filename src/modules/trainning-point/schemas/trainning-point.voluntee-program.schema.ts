@@ -1,6 +1,9 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { Document } from 'mongoose';
-import { EtypeVolunteeProgram } from 'src/constants/constant';
+import {
+  EtypeVolunteeProgram,
+  lengthRandomCodeVoluntee,
+} from 'src/constants/constant';
 import { collections } from 'src/constants/constants.collections.name';
 import { FieldsCommonSchema } from 'src/utils/utils.fields-common.schema';
 import { getRandomCodeVoluntee } from 'src/utils/utils.generate.code';
@@ -11,7 +14,7 @@ export type VolunteeProgramsDocument = VolunteePrograms & Document;
 export class VolunteePrograms extends FieldsCommonSchema {
   @Prop({
     required: true,
-    default: getRandomCodeVoluntee(3),
+    default: getRandomCodeVoluntee(lengthRandomCodeVoluntee),
     unique: true,
   })
   code?: string;

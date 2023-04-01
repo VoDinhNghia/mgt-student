@@ -20,11 +20,12 @@ export class CreateTrainningPointDto {
 
   @IsBoolean()
   @IsNotEmpty()
-  @ApiProperty({ default: false })
-  satus?: string;
+  @ApiProperty({ default: true })
+  status?: boolean;
 
   @IsNotEmpty()
   @IsDate()
   @Type(() => Date)
+  @ApiProperty()
   attendance?: Date;
 }

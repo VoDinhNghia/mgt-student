@@ -9,6 +9,8 @@ export interface IqueryTrainningPoint {
 }
 
 export interface IqueryVoluntee {
+  isDeleted?: boolean;
+  name?: RegExp;
   organizingCommittee?: {
     leader?: Types.ObjectId;
     secretary?: Types.ObjectId;
@@ -40,4 +42,5 @@ export interface IvolunteeImport {
     leader?: string;
     secretary?: string;
   };
+  code?: string;
 }

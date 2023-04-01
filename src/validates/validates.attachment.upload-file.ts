@@ -62,3 +62,11 @@ export const fileName = (
   const getCurrentDate = new GetCurrentDate().getYearMonthDate();
   cb(null, `${getCurrentDate}-${file.originalname}`);
 };
+
+export const destinationImportVoluntee = (
+  req: Record<any, any>,
+  file: Record<string, any>,
+  cb: any,
+) => {
+  cb(null, join(__dirname, '../../..', './src/files/import-trainning-points'));
+};

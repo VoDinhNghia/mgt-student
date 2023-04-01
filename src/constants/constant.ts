@@ -113,3 +113,5 @@ export enum EtypeVolunteeProgram {
   UNIVERSITY = 'UNIVERSITY',
   FACULTY = 'FACULTY',
 }
+
+export const lengthRandomCodeVoluntee = 3;

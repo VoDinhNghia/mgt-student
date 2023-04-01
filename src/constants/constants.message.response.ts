@@ -292,6 +292,16 @@ export const settingMsg = {
 };
 
 export const trainningPointMsg = {
+  createTrainningPoint: 'Create trainning point success',
+  updateTrainningPoint: 'Update trainning point success',
+  getAllTrainningPoint: 'Get all trainning point success',
+  getByIdTrainningPoint: 'Get trainning point by id success',
+  deleteTrainningPoint: 'Delete trainning point success',
+  createVoluntee: 'Create voluntee success',
+  updateVoluntee: 'Update voluntee success',
+  getAllVoluntee: 'Get all voluntee success',
+  getByIdVoluntee: 'Get voluntee by id success',
+  deleteVoluntee: 'Delete voluntee success',
   importTraingPoint: 'Import trainning point success',
   importVolunteeProgram: 'Import voluntee program success',
   validateVoluntee:
