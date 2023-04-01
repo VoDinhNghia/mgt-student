@@ -42,7 +42,7 @@ import { selectAttachment, selectScholarship } from 'src/utils/utils.populate';
 import {
   StudyProcessDocument,
   StudyProcesses,
-} from '../users/schemas/users.study-process.schema';
+} from '../study-process/schemas/study-process.schema';
 import {
   Profile,
   ProfileDocument,

@@ -128,3 +128,8 @@ export enum EtypeDegree {
   GOOD = 'GOOD',
   EXCELLENT = 'EXCELLENT',
 }
+
+export enum EtypeStatusSubjectStudy {
+  PASS = 'PASS',
+  FAILED = 'FAILED',
+}

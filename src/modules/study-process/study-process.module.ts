@@ -5,7 +5,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import {
   StudyProcessSchema,
   StudyProcesses,
-} from '../users/schemas/users.study-process.schema';
+} from './schemas/study-process.schema';
 import {
   DegreeManagement,
   DegreeManagementSchema,
@@ -23,6 +23,10 @@ import {
   SubjectSchema,
   Subjects,
 } from '../class-subject/schemas/class-subject.subject.schema';
+import {
+  SettingSubjectPass,
+  SettingSubjectPassSchema,
+} from '../settings/schemas/settings.subject-pass.schema';
 
 @Module({
   imports: [
@@ -33,6 +37,7 @@ import {
       { name: SubjectAttendance.name, schema: SubjectAttendanceSchema },
       { name: Subjects.name, schema: SubjectSchema },
       { name: Profile.name, schema: ProfileSchema },
+      { name: SettingSubjectPass.name, schema: SettingSubjectPassSchema },
     ]),
   ],
   controllers: [StudyProcessController],

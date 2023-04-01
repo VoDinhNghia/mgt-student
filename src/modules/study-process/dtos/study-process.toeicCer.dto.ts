@@ -8,7 +8,6 @@ import {
   Max,
   Min,
 } from 'class-validator';
-import { GetCurrentDate } from 'src/utils/utils.get.current-date';
 
 export class ToeicCertificateDto {
   @IsOptional()
@@ -27,6 +26,6 @@ export class ToeicCertificateDto {
   @IsOptional()
   @IsDate()
   @Type(() => Date)
-  @ApiProperty({ default: new GetCurrentDate().getYearMonthDate() })
+  @ApiProperty()
   expirationDate: Date;
 }

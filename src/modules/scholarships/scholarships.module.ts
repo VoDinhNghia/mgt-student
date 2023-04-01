@@ -16,7 +16,7 @@ import { Profile, ProfileSchema } from '../users/schemas/users.profile.schema';
 import {
   StudyProcesses,
   StudyProcessSchema,
-} from '../users/schemas/users.study-process.schema';
+} from '../study-process/schemas/study-process.schema';
 import { Scholarship, ScholarshipSchema } from './schemas/scholarships.schema';
 import {
   ScholarshipUser,

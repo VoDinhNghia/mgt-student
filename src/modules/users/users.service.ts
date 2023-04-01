@@ -24,8 +24,7 @@ import { getRandomCodeProfile } from 'src/utils/utils.generate.code';
 import {
   StudyProcesses,
   StudyProcessDocument,
-} from './schemas/users.study-process.schema';
-import { CreateStudyProcessDto } from './dto/users.create.study-process.dto';
+} from '../study-process/schemas/study-process.schema';
 import { InitSuperAdminDto } from '../auth/dtos/auth.init-super-admin.dto';
 import { UsersUpdateDto } from './dto/users.update.dto';
 import {
@@ -126,7 +125,7 @@ export class UsersService {
     createdBy: string,
   ): Promise<boolean> {
     try {
-      const studyProcessDto: CreateStudyProcessDto & { createdBy: string } = {
+      const studyProcessDto = {
         user: profileId,
         status: EstatusUserProfile.STUDYING,
         createdBy,
