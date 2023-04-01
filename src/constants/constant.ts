@@ -115,3 +115,16 @@ export enum EtypeVolunteeProgram {
 }
 
 export const lengthRandomCodeVoluntee = 3;
+
+export enum EtypeAttendance {
+  MANUAL = 'MANUAL',
+  FACE_RECOGNITION = 'FACE_RECOGNITION',
+  BIOMETRIC = 'BIOMETRIC',
+}
+
+export enum EtypeDegree {
+  AVERAGE = 'AVERAGE',
+  PRETTY = 'PRETTY',
+  GOOD = 'GOOD',
+  EXCELLENT = 'EXCELLENT',
+}

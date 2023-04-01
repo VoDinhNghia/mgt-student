@@ -33,6 +33,7 @@ import { ChatModule } from './modules/chat/chat.module';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { SettingsModule } from './modules/settings/settings.module';
 import { TrainningPointModule } from './modules/trainning-point/trainning-point.module';
+import { StudyProcessModule } from './modules/study-process/study-process.module';
 
 @Module({
   imports: [
@@ -82,6 +83,7 @@ import { TrainningPointModule } from './modules/trainning-point/trainning-point.
     ChatModule,
     SettingsModule,
     TrainningPointModule,
+    StudyProcessModule,
   ],
   controllers: [AppController],
   providers: [AppService, DbConnection],

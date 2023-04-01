@@ -31,6 +31,7 @@ export const collections = {
   school_infos: 'school_infos',
   semesters: 'semesters',
   study_processes: 'study_processes',
+  subject_attendances: 'subject_attendances',
   subject_processes: 'subject_processes',
   subject_registers: 'subject_registers',
   subjects: 'subjects',
@@ -40,4 +41,5 @@ export const collections = {
   unions_images: 'unions_images',
   voluntee_programs: 'voluntee_programs',
   wards: 'wards',
+  degree_management: 'degree_management',
 };
