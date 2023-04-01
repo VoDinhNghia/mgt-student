@@ -11,7 +11,7 @@ import {
 import {
   StudyProcesses,
   StudyProcessSchema,
-} from './schemas/users.study-process.schema';
+} from '../study-process/schemas/study-process.schema';
 import { Award, AwardSchema } from '../awards/schemas/awards.schema';
 import { Faculty, FacultySchema } from '../faculties/schemas/faculties.schema';
 import {

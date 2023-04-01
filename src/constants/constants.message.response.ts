@@ -316,6 +316,18 @@ export const trainningPointMsg = {
   notFoundTrainningPoint: 'Trainning point not found',
 };
 
+export const studyProcessMsg = {
+  update: 'Update study process success',
+  createSubjectRegister: 'Create subject register success',
+  updateSubjectRegister: 'Update subject register success',
+  notFound: 'User study process not found',
+  notFoundSubjectRegister: 'Subject register not found',
+  notPermissionUpdateSubject:
+    'You are permission edit points, please contact with admin to edit',
+  existedSubjectRegister: 'You have registed this subject already',
+  sufficientNumber: 'Sufficient number of students have registered',
+};
+
 export const descriptionMsg = {
   apiLogin: 'Response data when login success',
 };
