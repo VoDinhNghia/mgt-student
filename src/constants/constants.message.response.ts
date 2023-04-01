@@ -320,6 +320,9 @@ export const studyProcessMsg = {
   update: 'Update study process success',
   createSubjectRegister: 'Create subject register success',
   updateSubjectRegister: 'Update subject register success',
+  getByIdStudyProcess: 'Get study process by id success',
+  getAll: 'Get all study process success',
+  getAllByStudent: 'Get all study process of student success',
   notFound: 'User study process not found',
   notFoundSubjectRegister: 'Subject register not found',
   notPermissionUpdateSubject:

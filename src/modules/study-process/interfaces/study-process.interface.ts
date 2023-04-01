@@ -1,3 +1,5 @@
+import { Types } from 'mongoose';
+
 export interface IupdateSubjectRegister {
   accumalatedPoint?: number;
   essayScore?: number;
@@ -6,4 +8,12 @@ export interface IupdateSubjectRegister {
   status?: string;
   updatedBy?: string;
   updatedAt?: number | Date;
+}
+
+export interface ImatchStudyProcess {
+  $match?: {
+    isDeleted?: boolean;
+    user?: Types.ObjectId;
+    semester?: Types.ObjectId;
+  };
 }
