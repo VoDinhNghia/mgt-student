@@ -6,6 +6,7 @@ import {
   IsNotEmpty,
   IsNumber,
   IsObject,
+  IsOptional,
   IsString,
   Max,
   Min,
@@ -16,8 +17,8 @@ import { GetCurrentDate } from 'src/utils/utils.get.current-date';
 
 export class CreateVolunteeProgramDto {
   @IsString()
-  @IsNotEmpty()
-  @ApiProperty({ required: false })
+  @IsOptional()
+  @ApiProperty()
   faculty?: string;
 
   @IsString()

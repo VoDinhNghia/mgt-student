@@ -24,3 +24,20 @@ export interface ItrainningPointImport {
   attendance?: string;
   status?: string;
 }
+
+export interface IvolunteeImport {
+  faculty?: string;
+  semester?: string;
+  type?: string;
+  leader?: string;
+  secretary?: string;
+  title?: string;
+  location?: string;
+  startDate?: string | Date;
+  endDate?: string | Date;
+  status?: string;
+  organizingCommittee?: {
+    leader?: string;
+    secretary?: string;
+  };
+}
