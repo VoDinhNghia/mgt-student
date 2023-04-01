@@ -117,3 +117,8 @@ export const trainningPointController = {
   name: 'api/trainning-point',
   tag: 'trainning-point',
 };
+
+export const studyProcessController = {
+  name: 'api/study-process',
+  tag: 'study-process',
+};
