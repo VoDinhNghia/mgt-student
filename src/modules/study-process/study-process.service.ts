@@ -35,7 +35,11 @@ import {
 } from 'src/constants/constants.message.response';
 import { CommonException } from 'src/exceptions/execeptions.common-error';
 import { UpdatePointSubjectRegisterDto } from './dtos/study-process.update-point.subject.dto';
-import { subjectLookup } from 'src/utils/utils.lookup.query.service';
+import {
+  studyProcessLookup,
+  subjectLookup,
+  subjectRegisterLookup,
+} from 'src/utils/utils.lookup.query.service';
 import {
   SettingSubjectPass,
   SettingSubjectPassDocument,
@@ -44,7 +48,16 @@ import {
   EtypeSettingSubjectPass,
   EtypeStatusSubjectStudy,
 } from 'src/constants/constant';
-import { IupdateSubjectRegister } from './interfaces/study-process.interface';
+import {
+  ImatchStudyProcess,
+  IupdateSubjectRegister,
+} from './interfaces/study-process.interface';
+import { QueryStudyProcessDto } from './dtos/study-process.query.dto';
+import {
+  skipLimitAndSortPagination,
+  skipLimitPagination,
+} from 'src/utils/utils.page.pagination';
+import { QueryStudyProcessByStudent } from './dtos/study-process.query-by-user.dto';
 
 @Injectable()
 export class StudyProcessService {
@@ -79,6 +92,60 @@ export class StudyProcessService {
       new: true,
     });
     return result;
+  }
+
+  async findStudyProcessById(id: string): Promise<StudyProcesses> {
+    const match = { $match: { _id: new Types.ObjectId(id), isDeleted: false } };
+    const lookup = studyProcessLookup();
+    const aggregate = [match, ...lookup, { $limit: 1 }];
+    const result = await this.studyProcessSchema.aggregate(aggregate);
+    if (!result[0]) {
+      new CommonException(404, studyProcessMsg.notFound);
+    }
+    return result[0];
+  }
+
+  async findAllStudyProcess(
+    queryDto: QueryStudyProcessDto,
+  ): Promise<{ results: StudyProcesses[]; total: number }> {
+    const { limit, page, user } = queryDto;
+    const match: ImatchStudyProcess = { $match: { isDeleted: false } };
+    if (user) {
+      match.$match.user = new Types.ObjectId(user);
+    }
+    const lookup = studyProcessLookup();
+    const pagination = skipLimitAndSortPagination(limit, page);
+    const aggregate = [match, ...lookup, ...pagination];
+    const results = await this.studyProcessSchema.aggregate(aggregate);
+    const total = await this.studyProcessSchema.aggregate([
+      match,
+      ...lookup,
+      { $count: 'total' },
+    ]);
+    return { results, total: total[0]?.total || 0 };
+  }
+
+  async findAllStudyProcessByStudent(
+    queryDto: QueryStudyProcessByStudent,
+    studentId: string,
+  ): Promise<{ results: StudyProcesses[]; total: number }> {
+    const { limit, page } = queryDto;
+    const userStudy = await this.studyProcessSchema.findOne({
+      user: new Types.ObjectId(studentId),
+    });
+    const match = {
+      $match: { studyprocess: userStudy._id, isDeleted: false },
+    };
+    const lookup = subjectRegisterLookup();
+    const pagination = skipLimitPagination(limit, page);
+    const aggregate = [match, ...lookup, ...pagination];
+    const results = await this.subjectRegisterSchema.aggregate(aggregate);
+    const total = await this.subjectRegisterSchema.aggregate([
+      match,
+      ...lookup,
+      { $count: 'total' },
+    ]);
+    return { results, total: total[0]?.total || 0 };
   }
 
   async createSubjectRegister(

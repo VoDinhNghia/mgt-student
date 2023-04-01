@@ -90,6 +90,88 @@ export function userAndSyncLookup() {
   return lookup;
 }
 
+export function studyProcessLookup() {
+  const lookup = lookupCommon([
+    {
+      from: collections.profiles,
+      localField: 'user',
+      foreignField: '_id',
+      as: 'user',
+      unwind: true,
+    },
+    {
+      from: collections.subject_registers,
+      localField: '_id',
+      foreignField: 'studyprocess',
+      as: 'studyprocess',
+      unwind: true,
+    },
+    {
+      from: collections.subjects,
+      localField: 'studyprocess.subject',
+      foreignField: '_id',
+      as: 'subject',
+      unwind: true,
+    },
+  ]);
+  return [
+    ...lookup,
+    {
+      $set: {
+        'studyprocess.subject': '$subject',
+      },
+    },
+    {
+      $group: {
+        _id: '$_id',
+        user: { $first: '$user' },
+        isDeleted: { $first: '$isDeleted' },
+        studyprocess: { $push: '$studyprocess' },
+      },
+    },
+  ];
+}
+
+export function subjectRegisterLookup() {
+  const lookup = lookupCommon([
+    {
+      from: collections.subjects,
+      localField: 'subject',
+      foreignField: '_id',
+      as: 'subject',
+      unwind: true,
+    },
+    {
+      from: collections.semesters,
+      localField: 'subject.semester',
+      foreignField: '_id',
+      as: 'semester',
+      unwind: true,
+    },
+  ]);
+  return [
+    ...lookup,
+    {
+      $set: {
+        'subject.semester': '$semester',
+      },
+    },
+    {
+      $group: {
+        _id: '$_id',
+        isDeleted: { $first: '$isDeleted' },
+        statusRegister: { $first: '$statusRegister' },
+        accumalatedPoint: { $first: '$accumalatedPoint' },
+        essayScore: { $first: '$essayScore' },
+        finalScore: { $first: '$finalScore' },
+        midtermScore: { $first: '$midtermScore' },
+        status: { $first: '$status' },
+        subject: { $first: '$subject' },
+      },
+    },
+  ];
+}
+
 export function referenceSemester() {
   return {
     from: collections.semesters,
