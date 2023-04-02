@@ -10,6 +10,14 @@ import {
   SettingSubjectPass,
   SettingSubjectPassSchema,
 } from './schemas/settings.subject-pass.schema';
+import {
+  SettingMoneyCredit,
+  SettingMoneyCreditSchema,
+} from './schemas/settings.money-credit.schema';
+import {
+  Semester,
+  SemesterSchema,
+} from '../semesters/schemas/semesters.schema';
 
 @Module({
   imports: [
@@ -21,6 +29,14 @@ import {
       {
         name: SettingSubjectPass.name,
         schema: SettingSubjectPassSchema,
+      },
+      {
+        name: SettingMoneyCredit.name,
+        schema: SettingMoneyCreditSchema,
+      },
+      {
+        name: Semester.name,
+        schema: SemesterSchema,
       },
     ]),
   ],

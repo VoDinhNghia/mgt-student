@@ -8,16 +8,35 @@ import {
   SettingSubjectPass,
   SettingSubjectPassDocument,
 } from './schemas/settings.subject-pass.schema';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { CreateSettingSubjectPassDto } from './dtos/settings.create.subject-pass.dto';
 import { UpdateSettingSubjectPassDto } from './dtos/settings.update.subject-pass.dto';
 import { CommonException } from 'src/exceptions/execeptions.common-error';
-import { settingMsg } from 'src/constants/constants.message.response';
+import {
+  semesterMsg,
+  settingMsg,
+} from 'src/constants/constants.message.response';
 import { QuerySettingSubjectPassDto } from './dtos/settings.query-subject-pass.dto';
-import { IquerySettings } from './interfaces/settings.interface';
+import {
+  IqueryMoneyCredit,
+  IquerySettings,
+} from './interfaces/settings.interface';
 import { CreateSettingLearningRateDto } from './dtos/settings.create.learning-rate.dto';
 import { UpdateSettingLearningRateDto } from './dtos/settings.update.learning-rate.dto';
 import { QuerySettingLearningRateDto } from './dtos/settings.query-learning-rate.dto';
+import {
+  SettingMoneyCredit,
+  SettingMoneyCreditDocument,
+} from './schemas/settings.money-credit.schema';
+import {
+  Semester,
+  SemesterDocument,
+} from '../semesters/schemas/semesters.schema';
+import { CreateSettingMoneyCreditDto } from './dtos/settings.create.money-credit.dto';
+import { ValidFields } from 'src/validates/validates.fields-id-dto';
+import { UpdateSettingMoneyCreditDto } from './dtos/settings.update.money-credit.dto';
+import { selectSemester } from 'src/utils/utils.populate';
+import { QuerySettingMoneyCreditDto } from './dtos/settings.query.money-credit.dto';
 
 @Injectable()
 export class SettingsService {
@@ -26,6 +45,10 @@ export class SettingsService {
     private readonly learningRateSchema: Model<SettingLearningRateDocument>,
     @InjectModel(SettingSubjectPass.name)
     private readonly subjectPassSchema: Model<SettingSubjectPassDocument>,
+    @InjectModel(SettingMoneyCredit.name)
+    private readonly moneyCreditSchema: Model<SettingMoneyCreditDocument>,
+    @InjectModel(Semester.name)
+    private readonly semesterSchema: Model<SemesterDocument>,
   ) {}
 
   async createSettingSubjectPass(
@@ -159,5 +182,83 @@ export class SettingsService {
       deletedAt: Date.now(),
     };
     await this.learningRateSchema.findByIdAndUpdate(id, deleteDto);
+  }
+
+  async createSettingMoneyCredit(
+    creditMgtDto: CreateSettingMoneyCreditDto,
+    createdBy: string,
+  ): Promise<SettingMoneyCredit> {
+    const { semester } = creditMgtDto;
+    const valid = new ValidFields();
+    await valid.id(this.semesterSchema, semester, semesterMsg.notFound);
+    const option = { semester: new Types.ObjectId(semester), isDeleted: false };
+    const existedMoneyCredit = await this.moneyCreditSchema.findOne(option);
+    if (existedMoneyCredit) {
+      new CommonException(409, settingMsg.existedMoneyCredit);
+    }
+    const dto = {
+      ...creditMgtDto,
+      createdBy,
+    };
+    const result = await new this.moneyCreditSchema(dto).save();
+    return result;
+  }
+
+  async updateSettingMoneyCredit(
+    id: string,
+    creditMgtDto: UpdateSettingMoneyCreditDto,
+    updatedBy: string,
+  ): Promise<SettingMoneyCredit> {
+    const { semester } = creditMgtDto;
+    if (semester) {
+      const valid = new ValidFields();
+      await valid.id(this.semesterSchema, semester, semesterMsg.notFound);
+    }
+    const dto = {
+      ...creditMgtDto,
+      updatedBy,
+      updatedAt: Date.now(),
+    };
+    const result = await this.moneyCreditSchema.findByIdAndUpdate(id, dto, {
+      new: true,
+    });
+    return result;
+  }
+
+  async findSettingMoneyCreditById(id: string): Promise<SettingMoneyCredit> {
+    const result = await this.moneyCreditSchema
+      .findById(id)
+      .populate('semester', selectSemester, this.semesterSchema, {
+        isDeleted: false,
+      })
+      .exec();
+    if (!result) {
+      new CommonException(404, settingMsg.notFoundMoneyCredit);
+    }
+    return result;
+  }
+
+  async findAllSettingMoneyCredit(
+    queryDto: QuerySettingMoneyCreditDto,
+  ): Promise<{ results: SettingMoneyCredit[]; total: number }> {
+    const { limit, page, searchKey, semester } = queryDto;
+    const query: IqueryMoneyCredit = { isDeleted: false };
+    if (semester) {
+      query.semester = new Types.ObjectId(semester);
+    }
+    if (searchKey) {
+      query.name = new RegExp(searchKey, 'i');
+    }
+    const results = await this.moneyCreditSchema
+      .find(query)
+      .skip(limit && page ? Number(limit) * Number(page) - Number(limit) : null)
+      .limit(limit ? Number(limit) : null)
+      .populate('semester', selectSemester, this.semesterSchema, {
+        isDeleted: false,
+      })
+      .sort({ createdAt: -1 })
+      .lean();
+    const total = await this.moneyCreditSchema.find(query).count();
+    return { results, total };
   }
 }

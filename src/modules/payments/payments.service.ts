@@ -5,20 +5,15 @@ import { EstatusPayments } from 'src/constants/constant';
 import {
   paymentMsg,
   semesterMsg,
+  settingMsg,
   studyProcessMsg,
   userMsg,
 } from 'src/constants/constants.message.response';
 import { CommonException } from 'src/exceptions/execeptions.common-error';
 import { SubjectUserRegister } from 'src/utils/utils.user.register-subject.query';
-import { CreateMoneyPerCreditMgtDto } from './dtos/payments.mgt-money-per-credit.create.dto';
-import { UpdateMoneyPerCreditMgtDto } from './dtos/payments.mgt-money-per-credit.update.dto';
 import { QueryTuitionUser } from './dtos/payments.query.tuition-user.dto';
 import { CreateUserPaymentDto } from './dtos/payments.users.create.dto';
 import { UpdateUserPaymentDto } from './dtos/payments.users.update.dto';
-import {
-  MoneyPerCreditMgt,
-  MoneyPerCreditManagementDocument,
-} from './schemas/payments.mgt-money-per-credit.schema';
 import {
   PaymentStudyFee,
   PaymentStudyFeeDocument,
@@ -28,25 +23,27 @@ import {
   SemesterDocument,
 } from '../semesters/schemas/semesters.schema';
 import { selectSemester, selectProfile } from 'src/utils/utils.populate';
-import { QueryMgtMoneyPerCreditDto } from './dtos/payments.query.mgt-money-per-credit.dto';
-import { IqueryMgtMoneyPerCredit } from './interfaces/payments.query.mgt-money-per-credit.interface';
 import {
   Profile,
   ProfileDocument,
 } from '../users/schemas/users.profile.schema';
-import { IuserRegisterResponse } from './interfaces/payments.find.user-tuition.interface';
+import { IuserRegisterResponse } from './interfaces/payments.interface';
 import { ValidFields } from 'src/validates/validates.fields-id-dto';
 import { getRandomCodeReceiptId } from 'src/utils/utils.generate.code';
 import {
   StudyProcessDocument,
   StudyProcesses,
 } from '../study-process/schemas/study-process.schema';
+import {
+  SettingMoneyCredit,
+  SettingMoneyCreditDocument,
+} from '../settings/schemas/settings.money-credit.schema';
 
 @Injectable()
 export class PaymentsService {
   constructor(
-    @InjectModel(MoneyPerCreditMgt.name)
-    private readonly moneyCreditSchema: Model<MoneyPerCreditManagementDocument>,
+    @InjectModel(SettingMoneyCredit.name)
+    private readonly moneyCreditSchema: Model<SettingMoneyCreditDocument>,
     @InjectModel(PaymentStudyFee.name)
     private readonly paymentSchema: Model<PaymentStudyFeeDocument>,
     @InjectModel(Semester.name)
@@ -57,84 +54,6 @@ export class PaymentsService {
     private readonly studyprocessSchema: Model<StudyProcessDocument>,
     private readonly subjectRegister: SubjectUserRegister,
   ) {}
-
-  async createMoneyPerCreditMgt(
-    creditMgtDto: CreateMoneyPerCreditMgtDto,
-    createdBy: string,
-  ): Promise<MoneyPerCreditMgt> {
-    const { semester } = creditMgtDto;
-    const valid = new ValidFields();
-    await valid.id(this.semesterSchema, semester, semesterMsg.notFound);
-    const option = { semester: new Types.ObjectId(semester), isDeleted: false };
-    const existedMoneyCredit = await this.moneyCreditSchema.findOne(option);
-    if (existedMoneyCredit) {
-      new CommonException(409, paymentMsg.existedMoneyCreditMgt);
-    }
-    const dto = {
-      ...creditMgtDto,
-      createdBy,
-    };
-    const result = await new this.moneyCreditSchema(dto).save();
-    return result;
-  }
-
-  async updateMoneyPerCreditMgt(
-    id: string,
-    creditMgtDto: UpdateMoneyPerCreditMgtDto,
-    updatedBy: string,
-  ): Promise<MoneyPerCreditMgt> {
-    const { semester } = creditMgtDto;
-    if (semester) {
-      const valid = new ValidFields();
-      await valid.id(this.semesterSchema, semester, semesterMsg.notFound);
-    }
-    const dto = {
-      ...creditMgtDto,
-      updatedBy,
-      updatedAt: Date.now(),
-    };
-    const result = await this.moneyCreditSchema.findByIdAndUpdate(id, dto, {
-      new: true,
-    });
-    return result;
-  }
-
-  async findByIdMoneyPerCreditMgt(id: string): Promise<MoneyPerCreditMgt> {
-    const result = await this.moneyCreditSchema
-      .findById(id)
-      .populate('semester', selectSemester, this.semesterSchema, {
-        isDeleted: false,
-      })
-      .exec();
-    if (!result) {
-      new CommonException(404, paymentMsg.notFound);
-    }
-    return result;
-  }
-
-  async findAllMoneyPerCreditMgt(
-    queryDto: QueryMgtMoneyPerCreditDto,
-  ): Promise<{ results: MoneyPerCreditMgt[]; total: number }> {
-    const { limit, page, searchKey, semester } = queryDto;
-    const query: IqueryMgtMoneyPerCredit = { isDeleted: false };
-    if (semester) {
-      query.semester = new Types.ObjectId(semester);
-    }
-    if (searchKey) {
-      query.name = new RegExp(searchKey, 'i');
-    }
-    const results = await this.moneyCreditSchema
-      .find(query)
-      .skip(limit && page ? Number(limit) * Number(page) - Number(limit) : null)
-      .limit(limit ? Number(limit) : null)
-      .populate('semester', selectSemester, this.semesterSchema, {
-        isDeleted: false,
-      })
-      .sort({ createdAt: -1 })
-      .lean();
-    const total = await this.moneyCreditSchema.find(query).count();
-    return { results, total };
-  }
 
   async createUserPayment(
     paymentDto: CreateUserPaymentDto,
@@ -230,7 +149,7 @@ export class PaymentsService {
     const option = { semester: new Types.ObjectId(semester), isDeleted: false };
     const creditMgt = await this.moneyCreditSchema.findOne(option);
     if (!creditMgt) {
-      new CommonException(404, paymentMsg.notFound);
+      new CommonException(404, settingMsg.notFoundMoneyCredit);
     }
     const { moneyPerCredit } = creditMgt;
     for (const item of subjectList) {

@@ -114,15 +114,10 @@ export const permissionMsg = {
 };
 
 export const paymentMsg = {
-  createMoneyCreditMgt: 'Create amount credit success',
-  getAllMoneyCreditMgt: 'Get all amount credit success',
-  updateMoneyCreditMgt: 'Update amount credit success',
-  getByIdMoneyCreditMgt: 'Get amount credit by id success',
   createUserTuition: 'Create user tuition success',
   getAllUserTuition: 'Get user tuition success',
   notFound: 'Payment not found',
   notFoundUserPayment: 'User tuition not found',
-  existedMoneyCreditMgt: 'Amount credit existed already',
 };
 
 export const newsMsg = {
@@ -289,6 +284,12 @@ export const settingMsg = {
   getByIdLearningRate: 'Get setting learning rate success',
   notFoundSubjectPass: 'Setting subject not found',
   notFoundLearningRate: 'Setting learning rate not found',
+  createMoneyCredit: 'Create amount credit success',
+  getAllMoneyCredit: 'Get all amount credit success',
+  updateMoneyCredit: 'Update amount credit success',
+  getByIdMoneyCredit: 'Get amount credit by id success',
+  existedMoneyCredit: 'Amount credit existed already',
+  notFoundMoneyCredit: 'Setting money credit not found',
 };
 
 export const trainningPointMsg = {
