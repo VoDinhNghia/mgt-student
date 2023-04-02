@@ -26,7 +26,6 @@ import { InstituteModule } from './modules/institute/institute.module';
 import { DepartmentsModule } from './modules/departments/departments.module';
 import { CenterModule } from './modules/centers/centers.module';
 import { PermissionsModule } from './modules/permissions/permissions.module';
-import { DbConnection } from './constants/constants.db.mongo.connection';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { SyncServiceModule } from './modules/sync-service/sync-service.module';
 import { ChatModule } from './modules/chat/chat.module';
@@ -86,6 +85,6 @@ import { StudyProcessModule } from './modules/study-process/study-process.module
     StudyProcessModule,
   ],
   controllers: [AppController],
-  providers: [AppService, DbConnection],
+  providers: [AppService],
 })
 export class AppModule {}

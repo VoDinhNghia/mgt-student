@@ -40,3 +40,30 @@ export interface IgetUserScholarship {
     avatar?: string;
   };
 }
+
+export interface IuserSubjectRegister {
+  _id?: Types.ObjectId;
+  isDeleted?: boolean;
+  statusRegister?: boolean;
+  studyprocess?: Types.ObjectId;
+  accumalatedPoint?: number;
+  essayScore?: number;
+  finalScore?: number;
+  midtermScore?: number;
+  status?: string;
+  subject?: {
+    calculateCumulativePoint?: boolean;
+    numberCredits?: number;
+  };
+}
+
+export interface ItrainningPoint {
+  _id?: Types.ObjectId;
+  isDeleted?: boolean;
+  user?: Types.ObjectId;
+  semester?: Types.ObjectId;
+  status?: boolean;
+  program?: {
+    point?: number;
+  };
+}
