@@ -27,6 +27,9 @@ import { UpdateSettingSubjectPassDto } from './dtos/settings.update.subject-pass
 import { UpdateSettingLearningRateDto } from './dtos/settings.update.learning-rate.dto';
 import { QuerySettingSubjectPassDto } from './dtos/settings.query-subject-pass.dto';
 import { QuerySettingLearningRateDto } from './dtos/settings.query-learning-rate.dto';
+import { CreateSettingMoneyCreditDto } from './dtos/settings.create.money-credit.dto';
+import { UpdateSettingMoneyCreditDto } from './dtos/settings.update.money-credit.dto';
+import { QuerySettingMoneyCreditDto } from './dtos/settings.query.money-credit.dto';
 
 @Controller(settingController.name)
 @ApiTags(settingController.tag)
@@ -185,5 +188,61 @@ export class SettingsController {
   ): Promise<ResponseRequest> {
     const result = await this.service.findSettingLearningRateById(id);
     return new ResponseRequest(res, result, settingMsg.getByIdLearningRate);
+  }
+
+  @Post('/money-credit')
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
+  async createMoneyCredit(
+    @Body() createDto: CreateSettingMoneyCreditDto,
+    @Res() res: Response,
+    @Req() req: Request,
+  ): Promise<ResponseRequest> {
+    const user: UserLoginResponseDto = req?.user;
+    const createdBy: string = user.profileId;
+    const result = await this.service.createSettingMoneyCredit(
+      createDto,
+      createdBy,
+    );
+    return new ResponseRequest(res, result, settingMsg.createMoneyCredit);
+  }
+
+  @Put('/money-credit/:id')
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
+  async updateMoneyCredit(
+    @Param('id') id: string,
+    @Body() updateDto: UpdateSettingMoneyCreditDto,
+    @Res() res: Response,
+    @Req() req: Request,
+  ): Promise<ResponseRequest> {
+    const user: UserLoginResponseDto = req?.user;
+    const updatedBy: string = user.profileId;
+    const result = await this.service.updateSettingMoneyCredit(
+      id,
+      updateDto,
+      updatedBy,
+    );
+    return new ResponseRequest(res, result, settingMsg.updateMoneyCredit);
+  }
+
+  @Get('/money-credit')
+  async getAllMoneyCredit(
+    @Query() queryDto: QuerySettingMoneyCreditDto,
+    @Res() res: Response,
+  ): Promise<ResponseRequest> {
+    const result = await this.service.findAllSettingMoneyCredit(queryDto);
+    return new ResponseRequest(res, result, settingMsg.getAllMoneyCredit);
+  }
+
+  @Get('/money-credit/:id')
+  async getByIdMoneyCredit(
+    @Param('id') id: string,
+    @Res() res: Response,
+  ): Promise<ResponseRequest> {
+    const result = await this.service.findSettingMoneyCreditById(id);
+    return new ResponseRequest(res, result, settingMsg.getByIdMoneyCredit);
   }
 }

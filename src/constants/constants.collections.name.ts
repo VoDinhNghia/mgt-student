@@ -21,7 +21,7 @@ export const collections = {
   institudes: 'institudes',
   leader_schools: 'leader_schools',
   majors: 'majors',
-  money_per_credit_mgts: 'money_per_credit_mgts',
+  management_money_credit: 'management_money_credit',
   news: 'news',
   payment_study_fees: 'payment_study_fees',
   provinces: 'provinces',

@@ -3,10 +3,10 @@ import mongoose, { Document } from 'mongoose';
 import { collections } from 'src/constants/constants.collections.name';
 import { FieldsCommonSchema } from 'src/utils/utils.fields-common.schema';
 
-export type MoneyPerCreditManagementDocument = MoneyPerCreditMgt & Document;
+export type SettingMoneyCreditDocument = SettingMoneyCredit & Document;
 
-@Schema({ collection: collections.money_per_credit_mgts, versionKey: false })
-export class MoneyPerCreditMgt extends FieldsCommonSchema {
+@Schema({ collection: collections.management_money_credit, versionKey: false })
+export class SettingMoneyCredit extends FieldsCommonSchema {
   @Prop({
     type: String,
     required: true,
@@ -26,5 +26,5 @@ export class MoneyPerCreditMgt extends FieldsCommonSchema {
   semester?: mongoose.Types.ObjectId;
 }
 
-export const MoneyPerCreditManagementSchema =
-  SchemaFactory.createForClass(MoneyPerCreditMgt);
+export const SettingMoneyCreditSchema =
+  SchemaFactory.createForClass(SettingMoneyCredit);
