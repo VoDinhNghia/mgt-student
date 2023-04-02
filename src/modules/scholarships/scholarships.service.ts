@@ -4,13 +4,13 @@ import { Model, Types } from 'mongoose';
 import {
   considerConditionScholarshipPoint,
   EstatusUserProfile,
+  trainningPointDefault,
 } from 'src/constants/constant';
 import {
   scholarshipMsg,
   semesterMsg,
 } from 'src/constants/constants.message.response';
 import { CommonException } from 'src/exceptions/execeptions.common-error';
-import { QueryService } from 'src/utils/utils.query.service';
 import { SubjectUserRegister } from 'src/utils/utils.user.register-subject.query';
 import { CreateScholarshipUser } from './dtos/scholarship.user.create.dto';
 import { CreateScholarshipDto } from './dtos/scholarship.create.dto';
@@ -29,7 +29,9 @@ import {
   IgetUserScholarship,
   IqueryUserScholarship,
   IsemesterQueryScholarship,
-} from './interfaces/scholarships.find.interface';
+  ItrainningPoint,
+  IuserSubjectRegister,
+} from './interfaces/scholarships.interface';
 import {
   Attachment,
   AttachmentDocument,
@@ -52,6 +54,11 @@ import {
   PaymentStudyFeeDocument,
 } from '../payments/schemas/payments.schema';
 import { ValidFields } from 'src/validates/validates.fields-id-dto';
+import {
+  TrainningPoints,
+  TranningPointsDocument,
+} from '../trainning-point/schemas/trainning-point.schema';
+import { trainningPointScholarshipLookup } from 'src/utils/utils.lookup.query.service';
 
 @Injectable()
 export class ScholarshipService {
@@ -70,6 +77,9 @@ export class ScholarshipService {
     private readonly profileSchema: Model<ProfileDocument>,
     @InjectModel(PaymentStudyFee.name)
     private readonly paymentStudyFeeSchema: Model<PaymentStudyFeeDocument>,
+    @InjectModel(TrainningPoints.name)
+    private readonly trainningPointSchema: Model<TranningPointsDocument>,
+    private readonly subjectRegister: SubjectUserRegister,
   ) {}
 
   async createScholarship(
@@ -160,6 +170,7 @@ export class ScholarshipService {
       .populate('attachment', selectAttachment, this.attachmentSchema, {
         isDeleted: false,
       })
+      .sort({ createdAt: -1 })
       .exec();
     const total = await this.scholarshipSchema.find(query).count();
     return { results, total };
@@ -239,7 +250,7 @@ export class ScholarshipService {
   }
 
   async createUserScholarship(
-    studyProcessLists: StudyProcesses[],
+    studyProcessLists: StudyProcessDocument[],
     semester: string,
     createdBy: string,
   ): Promise<ScholarshipUser[]> {
@@ -247,16 +258,13 @@ export class ScholarshipService {
     for await (const item of studyProcessLists) {
       try {
         const { totalAccumalated, totalNumberCredits } =
-          await new SubjectUserRegister().getUserTotalAccumalated(
-            semester,
-            String(item.user),
-          );
+          await this.getUserTotalAccumalated(semester, item._id);
         const accumalatedPoint =
           totalNumberCredits > 0 ? totalAccumalated / totalNumberCredits : 0;
         if (accumalatedPoint < considerConditionScholarshipPoint) {
           continue;
         }
-        const tranningpoint = await new QueryService().getUserTrainningPoint(
+        const tranningpoint = await this.getUserTrainningPoint(
           String(item.user),
           semester,
         );
@@ -310,6 +318,53 @@ export class ScholarshipService {
       isDeleted: false,
     });
     return result;
+  }
+
+  async getUserTotalAccumalated(
+    semester: string,
+    studyprocess: string,
+  ): Promise<{ totalAccumalated: number; totalNumberCredits: number }> {
+    const subjectIds = await this.subjectRegister.getSubjectIds(semester);
+    const result: IuserSubjectRegister[] =
+      await this.subjectRegister.getUserSubjects(studyprocess, subjectIds);
+    let totalAccumalated = 0;
+    let totalNumberCredits = 0;
+    if (result.length <= 0) {
+      return { totalAccumalated, totalNumberCredits };
+    }
+    for (const item of result) {
+      if (item.subject?.calculateCumulativePoint) {
+        totalAccumalated +=
+          (item?.accumalatedPoint || 0) * item?.subject?.numberCredits;
+        totalNumberCredits += item?.subject?.numberCredits || 0;
+      }
+    }
+    return { totalAccumalated, totalNumberCredits };
+  }
+
+  async getUserTrainningPoint(
+    profileId: string,
+    semesterId: string,
+  ): Promise<number> {
+    const lookup = trainningPointScholarshipLookup();
+    const aggregate = [
+      {
+        $match: {
+          user: new Types.ObjectId(profileId),
+          semester: new Types.ObjectId(semesterId),
+          status: true,
+        },
+      },
+      ...lookup,
+    ];
+    const results = await this.trainningPointSchema.aggregate(aggregate);
+    const totalTrainningPoint = results.reduce(
+      (x: ItrainningPoint, y: ItrainningPoint) =>
+        (x.program?.point ?? 0) + (y.program?.point ?? 0),
+      0,
+    );
+    const point = totalTrainningPoint + trainningPointDefault;
+    return point > 100 ? 100 : point;
   }
 
   async deleteScholarship(id: string, deletedBy: string): Promise<void> {

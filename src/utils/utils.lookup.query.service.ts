@@ -114,8 +114,7 @@ export function studyProcessLookup() {
       unwind: true,
     },
   ]);
-  return [
-    ...lookup,
+  const setAndGroup = [
     {
       $set: {
         'studyprocess.subject': '$subject',
@@ -130,6 +129,7 @@ export function studyProcessLookup() {
       },
     },
   ];
+  return [...lookup, ...setAndGroup];
 }
 
 export function subjectRegisterLookup() {
@@ -149,8 +149,7 @@ export function subjectRegisterLookup() {
       unwind: true,
     },
   ]);
-  return [
-    ...lookup,
+  const setAndGroup = [
     {
       $set: {
         'subject.semester': '$semester',
@@ -170,6 +169,7 @@ export function subjectRegisterLookup() {
       },
     },
   ];
+  return [...lookup, ...setAndGroup];
 }
 
 export function referenceSemester() {

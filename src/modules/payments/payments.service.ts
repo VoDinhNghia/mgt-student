@@ -5,6 +5,7 @@ import { EstatusPayments } from 'src/constants/constant';
 import {
   paymentMsg,
   semesterMsg,
+  studyProcessMsg,
   userMsg,
 } from 'src/constants/constants.message.response';
 import { CommonException } from 'src/exceptions/execeptions.common-error';
@@ -36,6 +37,10 @@ import {
 import { IuserRegisterResponse } from './interfaces/payments.find.user-tuition.interface';
 import { ValidFields } from 'src/validates/validates.fields-id-dto';
 import { getRandomCodeReceiptId } from 'src/utils/utils.generate.code';
+import {
+  StudyProcessDocument,
+  StudyProcesses,
+} from '../study-process/schemas/study-process.schema';
 
 @Injectable()
 export class PaymentsService {
@@ -48,6 +53,9 @@ export class PaymentsService {
     private readonly semesterSchema: Model<SemesterDocument>,
     @InjectModel(Profile.name)
     private readonly profileSchema: Model<ProfileDocument>,
+    @InjectModel(StudyProcesses.name)
+    private readonly studyprocessSchema: Model<StudyProcessDocument>,
+    private readonly subjectRegister: SubjectUserRegister,
   ) {}
 
   async createMoneyPerCreditMgt(
@@ -200,9 +208,12 @@ export class PaymentsService {
       semester: new Types.ObjectId(semester),
       isDeleted: false,
     };
-    const service = new SubjectUserRegister();
-    const subjectIds = await service.getSubjectIds(semester);
-    const subjects = await service.getUserSubjects(profile, subjectIds);
+    const studyProcessId = await this.getStudyProcessId(profile);
+    const subjectIds = await this.subjectRegister.getSubjectIds(semester);
+    const subjects = await this.subjectRegister.getUserSubjects(
+      studyProcessId,
+      subjectIds,
+    );
     const listSubjectUser = await this.getTotalMoneySubject(subjects, semester);
     const tuitionInsemester = await this.paymentSchema.findOne(options);
     const result = {
@@ -227,5 +238,16 @@ export class PaymentsService {
       item.totalMoney = moneyPerCredit * numberCredits;
     }
     return subjectList;
+  }
+
+  async getStudyProcessId(profileId: string): Promise<string> {
+    const result = await this.studyprocessSchema.findOne({
+      isDeleted: false,
+      user: new Types.ObjectId(profileId),
+    });
+    if (!result) {
+      new CommonException(404, studyProcessMsg.notFound);
+    }
+    return result._id;
   }
 }

@@ -15,6 +15,19 @@ import {
   PaymentStudyFee,
   PaymentStudyFeeSchema,
 } from './schemas/payments.schema';
+import {
+  StudyProcessSchema,
+  StudyProcesses,
+} from '../study-process/schemas/study-process.schema';
+import {
+  SubjectRegisterSchema,
+  SubjectRegisters,
+} from '../study-process/schemas/study-process.subject.schema';
+import {
+  SubjectSchema,
+  Subjects,
+} from '../class-subject/schemas/class-subject.subject.schema';
+import { SubjectUserRegister } from 'src/utils/utils.user.register-subject.query';
 
 @Module({
   imports: [
@@ -26,9 +39,12 @@ import {
       { name: PaymentStudyFee.name, schema: PaymentStudyFeeSchema },
       { name: Semester.name, schema: SemesterSchema },
       { name: Profile.name, schema: ProfileSchema },
+      { name: StudyProcesses.name, schema: StudyProcessSchema },
+      { name: SubjectRegisters.name, schema: SubjectRegisterSchema },
+      { name: Subjects.name, schema: SubjectSchema },
     ]),
   ],
-  providers: [PaymentsService],
+  providers: [PaymentsService, SubjectUserRegister],
   controllers: [PaymentsController],
 })
 export class PaymentsModule {}
