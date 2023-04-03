@@ -3,7 +3,10 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Users, UsersDocument } from '../users/schemas/users.schema';
 import { Http } from 'src/utils/utils.http.sync-service';
-import { keyAccessLibraryService } from 'src/constants/constant';
+import {
+  keyAccessBlogService,
+  keyAccessLibraryService,
+} from 'src/constants/constant';
 import { GetCurrentDate } from 'src/utils/utils.get.current-date';
 import { ConfigService } from '@nestjs/config';
 import { syncUserLookup } from 'src/utils/utils.lookup.query.service';
@@ -22,6 +25,16 @@ export class SyncServiceService {
     const result = await new Http().post(url, keyAccessLibraryService, body);
     if (!result) {
       return null;
+    }
+    return result;
+  }
+
+  async migrateUserBlogService() {
+    const url = `${this.configService.get('BLOG_SERVICE')}/api/user/migrate`;
+    const body = await this.getAllUsers();
+    const result = await new Http().post(url, keyAccessBlogService, body);
+    if (!result) {
+      return 'error';
     }
     return result;
   }

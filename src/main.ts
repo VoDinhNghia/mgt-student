@@ -33,6 +33,7 @@ async function bootstrap() {
       configService.get<string>('LIBRARY_FRONTEND'),
       configService.get<string>('LIBRARY'),
       configService.get<string>('ATTENDANCE'),
+      configService.get<string>('BLOG_SERVICE'),
     ],
     methods: ['GET', 'POST', 'DELETE', 'PUT'],
     credentials: true,
