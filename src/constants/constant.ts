@@ -61,6 +61,8 @@ export const keyAccessLibraryService = 'Key_library_service_backend_private';
 
 export const keyAccessStudyProcessService = 'course-access-key-secrect';
 
+export const keyAccessBlogService = 'blog-service-access-backend_@mgt-student';
+
 export enum EtypeLeaderSchool {
   PARTYCOMMITTEE = 'PARTY_COMMITTEE',
   SCHOOLBOARD = 'SCHOOL_BOARD',

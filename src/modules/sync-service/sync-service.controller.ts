@@ -24,6 +24,15 @@ export class SyncServiceController {
     return new ResponseRequest(res, result, syncServiceMsg.migrateUsersLibrary);
   }
 
+  @Post('/migrate/user-blog-service')
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN]))
+  async migrateUserBlogService(@Res() res: Response): Promise<ResponseRequest> {
+    const result = await this.service.migrateUserBlogService();
+    return new ResponseRequest(res, result, syncServiceMsg.migrateUsersLibrary);
+  }
+
   @Get('/users')
   @UseGuards(AuthServiceAccessByKey(keyAccessLibraryService))
   async getAllUsers(@Res() res: Response): Promise<ResponseRequest> {
