@@ -3,7 +3,11 @@ import { ResponseRequest } from 'src/utils/utils.response-api';
 import { SyncServiceService } from './sync-service.service';
 import { Response } from 'express';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { ErolesUser, keyAccessLibraryService } from 'src/constants/constant';
+import {
+  ErolesUser,
+  keyAccessBlogService,
+  keyAccessLibraryService,
+} from 'src/constants/constant';
 import { AuthServiceAccessByKey } from 'src/validates/validates.service.key-access';
 import { RoleGuard } from '../auth/guards/auth.role-auth.guard';
 import { JwtAuthGuard } from '../auth/guards/auth.jwt-auth.guard';
@@ -21,7 +25,7 @@ export class SyncServiceController {
   @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN]))
   async migrateUsers(@Res() res: Response): Promise<ResponseRequest> {
     const result = await this.service.migrateUser();
-    return new ResponseRequest(res, result, syncServiceMsg.migrateUsersLibrary);
+    return new ResponseRequest(res, result, syncServiceMsg.migrateUsers);
   }
 
   @Post('/migrate/user-blog-service')
@@ -30,17 +34,15 @@ export class SyncServiceController {
   @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN]))
   async migrateUserBlogService(@Res() res: Response): Promise<ResponseRequest> {
     const result = await this.service.migrateUserBlogService();
-    return new ResponseRequest(res, result, syncServiceMsg.migrateUsersLibrary);
+    return new ResponseRequest(res, result, syncServiceMsg.migrateUsers);
   }
 
   @Get('/users')
-  @UseGuards(AuthServiceAccessByKey(keyAccessLibraryService))
+  @UseGuards(
+    AuthServiceAccessByKey([keyAccessLibraryService, keyAccessBlogService]),
+  )
   async getAllUsers(@Res() res: Response): Promise<ResponseRequest> {
     const result = await this.service.getUserForSyncData();
-    return new ResponseRequest(
-      res,
-      result,
-      syncServiceMsg.getAllUserSyncLibrary,
-    );
+    return new ResponseRequest(res, result, syncServiceMsg.getAllUser);
   }
 }
