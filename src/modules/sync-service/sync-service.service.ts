@@ -47,9 +47,7 @@ export class SyncServiceService {
 
   async getUserForSyncData(): Promise<Users[]> {
     const current = new GetCurrentDate();
-    const date = `${current.getYear()}-${current.getMonth()}-${
-      Number(current.getDate()) - 1
-    }T00:00:01`;
+    const date = `${current.getYear()}-${current.getMonth()}-${current.getDate()}T00:00:01`;
     const match = {
       $match: {
         $or: [
