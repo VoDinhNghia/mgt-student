@@ -77,8 +77,8 @@ export const schoolMsg = {
 };
 
 export const syncServiceMsg = {
-  migrateUsersLibrary: 'Sync data success',
-  getAllUserSyncLibrary: 'Get all users success',
+  migrateUsers: 'Sync data success',
+  getAllUser: 'Get all users success',
 };
 
 export const scholarshipMsg = {
