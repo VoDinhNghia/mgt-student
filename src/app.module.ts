@@ -12,7 +12,6 @@ import { AttachmentsModule } from './modules/attachments/attachments.module';
 import { BranchModule } from './modules/branchs/branchs.module';
 import { ClassSubjectModule } from './modules/class-subject/class-subject.module';
 import { FacultiesModule } from './modules/faculties/faculties.module';
-import { BlogsModule } from './modules/blogs/blogs.module';
 import { AwardsModule } from './modules/awards/awards.module';
 import { CoursesModule } from './modules/courses/courses.module';
 import { RoomsModule } from './modules/rooms/rooms.module';
@@ -77,7 +76,6 @@ import { StudyProcessModule } from './modules/study-process/study-process.module
     CenterModule,
     CountriesModule,
     NewsModule,
-    BlogsModule,
     SyncServiceModule,
     ChatModule,
     SettingsModule,
