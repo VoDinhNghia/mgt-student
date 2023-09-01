@@ -39,6 +39,11 @@ import { HttpStatusCode } from 'src/constants/constants.http-status';
 
 @Injectable()
 export class BranchService {
+  private populateCountryField: string = 'location.country';
+  private populateProvinceField: string = 'location.province';
+  private populateDistrictField: string = 'location.district';
+  private populateWardField: string = 'location.ward';
+
   constructor(
     @InjectModel(Branch.name)
     private readonly branchSchema: Model<BranchDocument>,
@@ -87,16 +92,26 @@ export class BranchService {
   async findById(id: string): Promise<Branch> {
     const result = await this.branchSchema
       .findById(id)
-      .populate('location.country', selectCountry, this.countrySchema, {
+      .populate(this.populateCountryField, selectCountry, this.countrySchema, {
         isDeleted: false,
       })
-      .populate('location.province', selectProvince, this.provinceSchema, {
-        isDeleted: false,
-      })
-      .populate('location.district', selectDistrict, this.districtSchema, {
-        isDeleted: false,
-      })
-      .populate('location.ward', selectWard, this.wardSchema, {
+      .populate(
+        this.populateProvinceField,
+        selectProvince,
+        this.provinceSchema,
+        {
+          isDeleted: false,
+        },
+      )
+      .populate(
+        this.populateDistrictField,
+        selectDistrict,
+        this.districtSchema,
+        {
+          isDeleted: false,
+        },
+      )
+      .populate(this.populateWardField, selectWard, this.wardSchema, {
         isDeleted: false,
       })
       .exec();
@@ -119,16 +134,26 @@ export class BranchService {
       .find(query)
       .skip(limit && page ? Number(limit) * Number(page) - Number(limit) : null)
       .limit(limit ? Number(limit) : null)
-      .populate('location.country', selectCountry, this.countrySchema, {
+      .populate(this.populateCountryField, selectCountry, this.countrySchema, {
         isDeleted: false,
       })
-      .populate('location.province', selectProvince, this.provinceSchema, {
-        isDeleted: false,
-      })
-      .populate('location.district', selectDistrict, this.districtSchema, {
-        isDeleted: false,
-      })
-      .populate('location.ward', selectWard, this.wardSchema, {
+      .populate(
+        this.populateProvinceField,
+        selectProvince,
+        this.provinceSchema,
+        {
+          isDeleted: false,
+        },
+      )
+      .populate(
+        this.populateDistrictField,
+        selectDistrict,
+        this.districtSchema,
+        {
+          isDeleted: false,
+        },
+      )
+      .populate(this.populateWardField, selectWard, this.wardSchema, {
         isDeleted: false,
       })
       .sort({ createAt: -1 })
