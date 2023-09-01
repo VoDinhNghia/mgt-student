@@ -58,6 +58,7 @@ import {
 import { QueryClassDto } from './dtos/class-subject.query-class.dto';
 import { QuerySubjectDto } from './dtos/class-subject.query-subject.dto';
 import { skipLimitAndSortPagination } from 'src/utils/utils.page.pagination';
+import { HttpStatusCode } from 'src/constants/constants.http-status';
 
 @Injectable()
 export class ClassSubjectService {
@@ -122,7 +123,7 @@ export class ClassSubjectService {
       })
       .exec();
     if (!result) {
-      new CommonException(404, classMsg.notFoud);
+      new CommonException(HttpStatusCode.NOT_FOUND, classMsg.notFoud);
     }
     return result;
   }
@@ -249,9 +250,11 @@ export class ClassSubjectService {
         ...processDto,
       }).save();
     } catch (error) {
-      console.log(error);
       await this.subjectSchema.findByIdAndDelete(subjectId);
-      new CommonException(500, classMsg.createSubjectProcessError);
+      new CommonException(
+        HttpStatusCode.SERVER_INTERVAL,
+        classMsg.createSubjectProcessError,
+      );
     }
   }
 
@@ -263,7 +266,7 @@ export class ClassSubjectService {
     const aggregate = [match, ...lookup];
     const result = await this.subjectSchema.aggregate(aggregate);
     if (!result[0]) {
-      new CommonException(404, classMsg.notFoundSubject);
+      new CommonException(HttpStatusCode.NOT_FOUND, classMsg.notFoundSubject);
     }
     return result[0];
   }
@@ -359,7 +362,7 @@ export class ClassSubjectService {
     const options = { name: name?.trim(), isDeleted: false };
     const existed = await this.classSchema.findOne(options);
     if (existed) {
-      new CommonException(409, classMsg.existedClassName);
+      new CommonException(HttpStatusCode.CONFLICT, classMsg.existedClassName);
     }
   }
 
@@ -373,7 +376,7 @@ export class ClassSubjectService {
       isDeleted: false,
     });
     if (!subjectProcess) {
-      new CommonException(404, classMsg.notFoundSubject);
+      new CommonException(HttpStatusCode.NOT_FOUND, classMsg.notFoundSubject);
     }
     const midPercent =
       midTermTest?.percent || subjectProcess?.midTermTest?.percent;
@@ -383,7 +386,10 @@ export class ClassSubjectService {
       studentEssay?.percent || subjectProcess?.studentEssay?.percent;
     const totalPercent = midPercent + finalPercent + essayPercent;
     if (totalPercent !== 100) {
-      new CommonException(400, classMsg.validateTotalPercent);
+      new CommonException(
+        HttpStatusCode.BAD_REQUEST,
+        classMsg.validateTotalPercent,
+      );
     }
   }
 

@@ -33,6 +33,7 @@ import {
   WardDocument,
   Wards,
 } from '../countries/schemas/countries.ward.schemas';
+import { HttpStatusCode } from 'src/constants/constants.http-status';
 
 @Injectable()
 export class SchoolService {
@@ -81,7 +82,7 @@ export class SchoolService {
       })
       .exec();
     if (!results) {
-      new CommonException(404, schoolMsg.notFound);
+      new CommonException(HttpStatusCode.NOT_FOUND, schoolMsg.notFound);
     }
     return results;
   }

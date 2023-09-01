@@ -14,6 +14,7 @@ import { QueryNewDto } from './dtos/news.query.dto';
 import { UpdateNewDto } from './dtos/news.update.dto';
 import { IqueryNews } from './interfaces/news.find.match.interface';
 import { News, NewsDocument } from './schemas/news.schema';
+import { HttpStatusCode } from 'src/constants/constants.http-status';
 
 @Injectable()
 export class NewsService {
@@ -52,7 +53,7 @@ export class NewsService {
       })
       .exec();
     if (!result) {
-      new CommonException(404, newsMsg.notFound);
+      new CommonException(HttpStatusCode.NOT_FOUND, newsMsg.notFound);
     }
     return result;
   }

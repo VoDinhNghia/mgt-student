@@ -38,6 +38,7 @@ import {
   SettingMoneyCredit,
   SettingMoneyCreditDocument,
 } from '../settings/schemas/settings.money-credit.schema';
+import { HttpStatusCode } from 'src/constants/constants.http-status';
 
 @Injectable()
 export class PaymentsService {
@@ -105,7 +106,10 @@ export class PaymentsService {
       })
       .exec();
     if (!result) {
-      new CommonException(404, paymentMsg.notFoundUserPayment);
+      new CommonException(
+        HttpStatusCode.NOT_FOUND,
+        paymentMsg.notFoundUserPayment,
+      );
     }
     return result;
   }
@@ -149,7 +153,10 @@ export class PaymentsService {
     const option = { semester: new Types.ObjectId(semester), isDeleted: false };
     const creditMgt = await this.moneyCreditSchema.findOne(option);
     if (!creditMgt) {
-      new CommonException(404, settingMsg.notFoundMoneyCredit);
+      new CommonException(
+        HttpStatusCode.NOT_FOUND,
+        settingMsg.notFoundMoneyCredit,
+      );
     }
     const { moneyPerCredit } = creditMgt;
     for (const item of subjectList) {
@@ -165,7 +172,7 @@ export class PaymentsService {
       user: new Types.ObjectId(profileId),
     });
     if (!result) {
-      new CommonException(404, studyProcessMsg.notFound);
+      new CommonException(HttpStatusCode.NOT_FOUND, studyProcessMsg.notFound);
     }
     return result._id;
   }

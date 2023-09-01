@@ -35,6 +35,7 @@ import { BranchQueryDto } from './dtos/branchs.query.dto';
 import { BranchUpdateDto } from './dtos/branchs.update.dto';
 import { IqueryBranchs } from './interfaces/branchs.interface';
 import { Branch, BranchDocument } from './schemas/branchs.schema';
+import { HttpStatusCode } from 'src/constants/constants.http-status';
 
 @Injectable()
 export class BranchService {
@@ -100,7 +101,7 @@ export class BranchService {
       })
       .exec();
     if (!result) {
-      new CommonException(404, msgNotFound);
+      new CommonException(HttpStatusCode.NOT_FOUND, msgNotFound);
     }
 
     return result;
@@ -193,7 +194,7 @@ export class BranchService {
     const options = { name: name?.trim() };
     const existed = await this.branchSchema.findOne(options);
     if (existed) {
-      new CommonException(409, branchMsg.existedName);
+      new CommonException(HttpStatusCode.CONFLICT, branchMsg.existedName);
     }
   }
 }

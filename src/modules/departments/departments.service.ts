@@ -41,6 +41,7 @@ import {
   selectProfile,
 } from 'src/utils/utils.populate';
 import { QueryDepartmentDto } from './dtos/department.query.dto';
+import { HttpStatusCode } from 'src/constants/constants.http-status';
 
 @Injectable()
 export class DepartmentsService {
@@ -72,7 +73,7 @@ export class DepartmentsService {
       type: EroomType.OFFICE_DEPARTMENT,
     });
     if (!room) {
-      new CommonException(404, roomMsg.notFound);
+      new CommonException(HttpStatusCode.NOT_FOUND, roomMsg.notFound);
     }
     if (attachment.length > 0) {
       const ids = await valid.idList(this.attachmentSchema, attachment);
@@ -102,7 +103,7 @@ export class DepartmentsService {
         type: EroomType.OFFICE_DEPARTMENT,
       });
       if (!room) {
-        new CommonException(404, roomMsg.notFound);
+        new CommonException(HttpStatusCode.NOT_FOUND, roomMsg.notFound);
       }
     }
     if (attachment.length > 0) {
@@ -134,7 +135,7 @@ export class DepartmentsService {
       })
       .exec();
     if (!result) {
-      new CommonException(404, msgNotFound);
+      new CommonException(HttpStatusCode.NOT_FOUND, msgNotFound);
     }
     return result;
   }

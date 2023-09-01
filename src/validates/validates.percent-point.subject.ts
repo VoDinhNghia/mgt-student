@@ -4,6 +4,7 @@ import { of } from 'rxjs';
 import { classMsg } from 'src/constants/constants.message.response';
 import { CreateSubjectDto } from 'src/modules/class-subject/dtos/class-subject.create-subject.dto';
 import { CommonException } from '../exceptions/execeptions.common-error';
+import { HttpStatusCode } from 'src/constants/constants.http-status';
 
 export class ValidatePercentPoint implements NestInterceptor {
   intercept(context: ExecutionContext, next: CallHandler) {
@@ -17,6 +18,11 @@ export class ValidatePercentPoint implements NestInterceptor {
     if (total === 100) {
       return next.handle();
     }
-    return of([new CommonException(400, classMsg.validateTotalPercent)]);
+    return of([
+      new CommonException(
+        HttpStatusCode.BAD_REQUEST,
+        classMsg.validateTotalPercent,
+      ),
+    ]);
   }
 }

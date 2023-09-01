@@ -9,6 +9,7 @@ import { UpdateSemesterDto } from './dtos/semesters.update.dto';
 import { IsemesterQuery } from './interfaces/semesters.find.interface';
 import { Semester, SemesterDocument } from './schemas/semesters.schema';
 import { getRandomCodeSemester } from 'src/utils/utils.generate.code';
+import { HttpStatusCode } from 'src/constants/constants.http-status';
 
 @Injectable()
 export class SemestersService {
@@ -33,7 +34,7 @@ export class SemestersService {
   async findSemesterById(id: string): Promise<Semester> {
     const result = await this.semesterSchema.findById(id);
     if (!result) {
-      new CommonException(404, semesterMsg.notFound);
+      new CommonException(HttpStatusCode.NOT_FOUND, semesterMsg.notFound);
     }
     return result;
   }

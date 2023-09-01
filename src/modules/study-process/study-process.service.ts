@@ -58,6 +58,7 @@ import {
   skipLimitPagination,
 } from 'src/utils/utils.page.pagination';
 import { QueryStudyProcessByStudent } from './dtos/study-process.query-by-user.dto';
+import { HttpStatusCode } from 'src/constants/constants.http-status';
 
 @Injectable()
 export class StudyProcessService {
@@ -100,7 +101,7 @@ export class StudyProcessService {
     const aggregate = [match, ...lookup, { $limit: 1 }];
     const result = await this.studyProcessSchema.aggregate(aggregate);
     if (!result[0]) {
-      new CommonException(404, studyProcessMsg.notFound);
+      new CommonException(HttpStatusCode.NOT_FOUND, studyProcessMsg.notFound);
     }
     return result[0];
   }
@@ -165,7 +166,10 @@ export class StudyProcessService {
       studyprocess: new Types.ObjectId(studyprocess),
     });
     if (existed) {
-      new CommonException(409, studyProcessMsg.existedSubjectRegister);
+      new CommonException(
+        HttpStatusCode.CONFLICT,
+        studyProcessMsg.existedSubjectRegister,
+      );
     }
     const result = await new this.subjectRegisterSchema({
       ...createDto,
@@ -189,10 +193,16 @@ export class StudyProcessService {
       isDeleted: false,
     });
     if (!subjectRegister) {
-      new CommonException(404, studyProcessMsg.notFoundSubjectRegister);
+      new CommonException(
+        HttpStatusCode.NOT_FOUND,
+        studyProcessMsg.notFoundSubjectRegister,
+      );
     }
     if (subjectRegister.accumalatedPoint && subjectRegister.status) {
-      new CommonException(403, studyProcessMsg.notPermissionUpdateSubject);
+      new CommonException(
+        HttpStatusCode.FORBIDEN,
+        studyProcessMsg.notPermissionUpdateSubject,
+      );
     }
     const updateDto: IupdateSubjectRegister = {
       ...pointDto,
@@ -233,7 +243,10 @@ export class StudyProcessService {
       isDeleted: false,
     });
     if (!result) {
-      new CommonException(404, settingMsg.notFoundSubjectPass);
+      new CommonException(
+        HttpStatusCode.NOT_FOUND,
+        settingMsg.notFoundSubjectPass,
+      );
     }
     return result.condition;
   }
@@ -250,7 +263,7 @@ export class StudyProcessService {
       ...lookup,
     ]);
     if (!subject[0]) {
-      new CommonException(404, classMsg.notFoundSubject);
+      new CommonException(HttpStatusCode.NOT_FOUND, classMsg.notFoundSubject);
     }
     const { midTermTest, finalExam, studentEssay } = subject[0].process;
     const pointMid = (midTermTest.percent * midtermScore) / 100;
@@ -266,13 +279,16 @@ export class StudyProcessService {
       isDeleted: false,
     });
     if (!subjectInfo) {
-      new CommonException(404, classMsg.notFoundSubject);
+      new CommonException(HttpStatusCode.NOT_FOUND, classMsg.notFoundSubject);
     }
     const getAllRegister = await this.subjectRegisterSchema.find({
       subject: new Types.ObjectId(subject),
     });
     if (subjectInfo.size <= getAllRegister.length) {
-      new CommonException(409, studyProcessMsg.sufficientNumber);
+      new CommonException(
+        HttpStatusCode.CONFLICT,
+        studyProcessMsg.sufficientNumber,
+      );
     }
   }
 }

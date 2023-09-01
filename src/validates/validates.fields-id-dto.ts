@@ -2,6 +2,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { uniq } from 'lodash';
 import { Types } from 'mongoose';
+import { HttpStatusCode } from 'src/constants/constants.http-status';
 import { CommonException } from 'src/exceptions/execeptions.common-error';
 
 export class ValidFields {
@@ -34,7 +35,7 @@ export class ValidFields {
       isDeleted: false,
     });
     if (!result) {
-      new CommonException(404, message);
+      new CommonException(HttpStatusCode.NOT_FOUND, message);
     }
   }
 }

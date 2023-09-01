@@ -64,6 +64,7 @@ import {
   ClassInfosDocument,
 } from '../class-subject/schemas/class-subject.class.schema';
 import { Course, CourseDocument } from '../courses/schemas/courses.schema';
+import { HttpStatusCode } from 'src/constants/constants.http-status';
 
 @Injectable()
 export class UsersService {
@@ -112,7 +113,10 @@ export class UsersService {
         createdBy,
       );
       if (!isCreate) {
-        new CommonException(500, userMsg.createUserProcessFailed);
+        new CommonException(
+          HttpStatusCode.SERVER_INTERVAL,
+          userMsg.createUserProcessFailed,
+        );
       }
     }
     const result = this.findUserById(user._id);
@@ -146,7 +150,7 @@ export class UsersService {
     const aggregate = [match, ...lookup, { $limit: 1 }];
     const result = await this.userSchema.aggregate(aggregate);
     if (!result[0]) {
-      new CommonException(404, userMsg.notFoundUser);
+      new CommonException(HttpStatusCode.NOT_FOUND, userMsg.notFoundUser);
     }
     return result[0];
   }
@@ -351,7 +355,7 @@ export class UsersService {
     const option = { role: ErolesUser.SUPPER_ADMIN };
     const existedRoleSa = await this.userSchema.findOne(option);
     if (existedRoleSa) {
-      new CommonException(409, userMsg.supperAdminExisted);
+      new CommonException(HttpStatusCode.CONFLICT, userMsg.supperAdminExisted);
     }
     const supperAdminDto = {
       email,
@@ -380,13 +384,16 @@ export class UsersService {
       const option = { user: profileDto.user };
       const existedProfile = await this.profileSchema.findOne(option);
       if (existedProfile) {
-        new CommonException(409, userMsg.profileUserExisted);
+        new CommonException(
+          HttpStatusCode.CONFLICT,
+          userMsg.profileUserExisted,
+        );
       }
       result = await new this.profileSchema(profileDto).save();
     } catch (error) {
       await this.userSchema.findByIdAndDelete(profileDto.user);
       console.log(error);
-      new CommonException(500, msgServerError);
+      new CommonException(HttpStatusCode.SERVER_INTERVAL, msgServerError);
     }
     return result;
   }
@@ -398,12 +405,12 @@ export class UsersService {
     const { user } = leaderDto;
     const userProfile = await this.profileSchema.findById(user);
     if (!userProfile) {
-      new CommonException(404, userMsg.notFoundProfile);
+      new CommonException(HttpStatusCode.NOT_FOUND, userMsg.notFoundProfile);
     }
     const option = { user: new Types.ObjectId(user) };
     const existedLeader = await this.leaderSchoolSchema.findOne(option);
     if (existedLeader) {
-      new CommonException(409, userMsg.leaderSchoolExisted);
+      new CommonException(HttpStatusCode.CONFLICT, userMsg.leaderSchoolExisted);
     }
     const dto = {
       ...leaderDto,
@@ -420,7 +427,10 @@ export class UsersService {
       .populate('user', '', this.profileSchema, { isDeleted: false })
       .exec();
     if (!result) {
-      new CommonException(404, userMsg.notFoundeaderSchool);
+      new CommonException(
+        HttpStatusCode.NOT_FOUND,
+        userMsg.notFoundeaderSchool,
+      );
     }
     return result;
   }
@@ -492,7 +502,7 @@ export class UsersService {
   async validateEmail(email: string): Promise<void> {
     const result = await this.userSchema.findOne({ email });
     if (result) {
-      new CommonException(409, msgEmailExisted);
+      new CommonException(HttpStatusCode.CONFLICT, msgEmailExisted);
     }
   }
 }

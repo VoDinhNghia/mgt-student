@@ -29,6 +29,7 @@ import {
   selectFaculty,
   selectProfile,
 } from 'src/utils/utils.populate';
+import { HttpStatusCode } from 'src/constants/constants.http-status';
 
 @Injectable()
 export class FacultiesService {
@@ -51,7 +52,7 @@ export class FacultiesService {
     await this.validateDto(createFacultyDto);
     const existed = await this.facultySchema.findOne({ name: name?.trim() });
     if (existed) {
-      new CommonException(409, facultiesMsg.existedName);
+      new CommonException(HttpStatusCode.CONFLICT, facultiesMsg.existedName);
     }
     const result = await new this.facultySchema({
       ...createFacultyDto,
@@ -72,7 +73,7 @@ export class FacultiesService {
       .populate('award', selectAward, this.awardSchema, { isDeleted: false })
       .exec();
     if (!result) {
-      new CommonException(404, facultiesMsg.notFound);
+      new CommonException(HttpStatusCode.NOT_FOUND, facultiesMsg.notFound);
     }
     return result;
   }
@@ -132,7 +133,7 @@ export class FacultiesService {
       isDeleted: false,
     });
     if (!facultyInfo) {
-      new CommonException(404, facultiesMsg.notFound);
+      new CommonException(HttpStatusCode.NOT_FOUND, facultiesMsg.notFound);
     }
     await this.validateDto(majorDto);
     const result = await new this.majorSchema({
@@ -157,7 +158,7 @@ export class FacultiesService {
       .populate('award', selectAward, this.awardSchema, { isDeleted: false })
       .exec();
     if (!result) {
-      new CommonException(404, facultiesMsg.notFoundMajor);
+      new CommonException(HttpStatusCode.NOT_FOUND, facultiesMsg.notFoundMajor);
     }
     return result;
   }
@@ -174,7 +175,7 @@ export class FacultiesService {
         isDeleted: false,
       });
       if (!facultyInfo) {
-        new CommonException(404, facultiesMsg.notFound);
+        new CommonException(HttpStatusCode.NOT_FOUND, facultiesMsg.notFound);
       }
     }
     const updateDto = {

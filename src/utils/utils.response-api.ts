@@ -1,5 +1,6 @@
 import { HttpStatus } from '@nestjs/common';
 import { Response } from 'express';
+import { HttpStatusCode } from 'src/constants/constants.http-status';
 
 export class ResponseRequest {
   constructor(
@@ -8,7 +9,7 @@ export class ResponseRequest {
     message: string,
   ) {
     res.status(HttpStatus.OK).json({
-      statusCode: 200,
+      statusCode: HttpStatusCode.OK,
       data,
       message,
     });

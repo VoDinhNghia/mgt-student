@@ -20,6 +20,7 @@ import {
   AdminPermission,
   AdminPermissionDocument,
 } from './schemas/permissions.admin.schema';
+import { HttpStatusCode } from 'src/constants/constants.http-status';
 
 @Injectable()
 export class PermissionsService {
@@ -72,7 +73,7 @@ export class PermissionsService {
       .populate('user', selectProfile, this.profileSchema, { isDeleted: false })
       .exec();
     if (!result) {
-      new CommonException(404, permissionMsg.notFound);
+      new CommonException(HttpStatusCode.NOT_FOUND, permissionMsg.notFound);
     }
     return result;
   }

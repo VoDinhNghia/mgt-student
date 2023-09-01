@@ -26,6 +26,7 @@ import { QueryIntituteDto } from './dtos/institute.query.dto';
 import { UpdateInstituteDto } from './dtos/institute.update.dto';
 import { IqueryInstitute } from './interfaces/institute.find.match.interface';
 import { InstitudeDocument, Institudes } from './schemas/institute.schema';
+import { HttpStatusCode } from 'src/constants/constants.http-status';
 
 @Injectable()
 export class InstituteService {
@@ -122,7 +123,7 @@ export class InstituteService {
       })
       .exec();
     if (!result) {
-      new CommonException(404, instituteMsg.notFound);
+      new CommonException(HttpStatusCode.NOT_FOUND, instituteMsg.notFound);
     }
     return result;
   }

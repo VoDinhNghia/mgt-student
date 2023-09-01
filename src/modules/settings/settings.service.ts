@@ -37,6 +37,7 @@ import { ValidFields } from 'src/validates/validates.fields-id-dto';
 import { UpdateSettingMoneyCreditDto } from './dtos/settings.update.money-credit.dto';
 import { selectSemester } from 'src/utils/utils.populate';
 import { QuerySettingMoneyCreditDto } from './dtos/settings.query.money-credit.dto';
+import { HttpStatusCode } from 'src/constants/constants.http-status';
 
 @Injectable()
 export class SettingsService {
@@ -83,7 +84,10 @@ export class SettingsService {
   async findSettingSubjectPassById(id: string): Promise<SettingSubjectPass> {
     const result = await this.subjectPassSchema.findById(id);
     if (!result) {
-      new CommonException(404, settingMsg.notFoundSubjectPass);
+      new CommonException(
+        HttpStatusCode.NOT_FOUND,
+        settingMsg.notFoundSubjectPass,
+      );
     }
     return result;
   }
@@ -149,7 +153,10 @@ export class SettingsService {
   async findSettingLearningRateById(id: string): Promise<SettingLearningRate> {
     const result = await this.learningRateSchema.findById(id);
     if (!result) {
-      new CommonException(404, settingMsg.notFoundLearningRate);
+      new CommonException(
+        HttpStatusCode.NOT_FOUND,
+        settingMsg.notFoundLearningRate,
+      );
     }
     return result;
   }
@@ -194,7 +201,10 @@ export class SettingsService {
     const option = { semester: new Types.ObjectId(semester), isDeleted: false };
     const existedMoneyCredit = await this.moneyCreditSchema.findOne(option);
     if (existedMoneyCredit) {
-      new CommonException(409, settingMsg.existedMoneyCredit);
+      new CommonException(
+        HttpStatusCode.CONFLICT,
+        settingMsg.existedMoneyCredit,
+      );
     }
     const dto = {
       ...creditMgtDto,
@@ -233,7 +243,10 @@ export class SettingsService {
       })
       .exec();
     if (!result) {
-      new CommonException(404, settingMsg.notFoundMoneyCredit);
+      new CommonException(
+        HttpStatusCode.NOT_FOUND,
+        settingMsg.notFoundMoneyCredit,
+      );
     }
     return result;
   }
