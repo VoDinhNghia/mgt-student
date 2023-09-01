@@ -51,6 +51,7 @@ import {
 } from 'src/utils/utils.populate';
 import { QueryTrainningPointDto } from './dtos/trainning-point.query.dto';
 import { QueryVolunteeDto } from './dtos/trainning-point.query-voluntee.dto';
+import { HttpStatusCode } from 'src/constants/constants.http-status';
 
 @Injectable()
 export class TrainningPointService {
@@ -314,7 +315,10 @@ export class TrainningPointService {
       .populate('program', '', this.volunteeProgramSchema, { isDeleted: false })
       .exec();
     if (!result) {
-      new CommonException(404, trainningPointMsg.notFoundTrainningPoint);
+      new CommonException(
+        HttpStatusCode.NOT_FOUND,
+        trainningPointMsg.notFoundTrainningPoint,
+      );
     }
     return result;
   }
@@ -346,7 +350,10 @@ export class TrainningPointService {
       )
       .exec();
     if (!result) {
-      new CommonException(404, trainningPointMsg.notFoundVoluntee);
+      new CommonException(
+        HttpStatusCode.NOT_FOUND,
+        trainningPointMsg.notFoundVoluntee,
+      );
     }
     return result;
   }

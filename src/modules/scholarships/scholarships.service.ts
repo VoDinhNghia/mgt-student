@@ -59,6 +59,7 @@ import {
   TranningPointsDocument,
 } from '../trainning-point/schemas/trainning-point.schema';
 import { trainningPointScholarshipLookup } from 'src/utils/utils.lookup.query.service';
+import { HttpStatusCode } from 'src/constants/constants.http-status';
 
 @Injectable()
 export class ScholarshipService {
@@ -96,7 +97,7 @@ export class ScholarshipService {
     };
     const existedName = await this.scholarshipSchema.findOne(options);
     if (existedName) {
-      new CommonException(409, scholarshipMsg.existedName);
+      new CommonException(HttpStatusCode.CONFLICT, scholarshipMsg.existedName);
     }
     const result = await new this.scholarshipSchema({
       ...scholarshipDto,
@@ -141,7 +142,7 @@ export class ScholarshipService {
       })
       .exec();
     if (!result) {
-      new CommonException(404, scholarshipMsg.notFound);
+      new CommonException(HttpStatusCode.NOT_FOUND, scholarshipMsg.notFound);
     }
     return result;
   }
@@ -295,7 +296,6 @@ export class ScholarshipService {
         };
         listDto.push(userscholarshipDto);
       } catch (error) {
-        console.log(error);
         continue;
       }
     }

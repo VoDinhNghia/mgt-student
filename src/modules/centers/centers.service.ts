@@ -24,6 +24,7 @@ import {
 } from 'src/utils/utils.populate';
 import { QueryCenterDto } from './dtos/centers.query.dto';
 import { IqueryCenter } from './interfaces/centers.interface';
+import { HttpStatusCode } from 'src/constants/constants.http-status';
 
 @Injectable()
 export class CenterService {
@@ -99,7 +100,7 @@ export class CenterService {
       })
       .exec();
     if (!result) {
-      new CommonException(404, centerMsg.notFound);
+      new CommonException(HttpStatusCode.NOT_FOUND, centerMsg.notFound);
     }
     return result;
   }

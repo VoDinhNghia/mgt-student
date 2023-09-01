@@ -2,6 +2,7 @@
 /* eslint-disable consistent-return */
 import { HttpException } from '@nestjs/common';
 import { join } from 'path';
+import { HttpStatusCode } from 'src/constants/constants.http-status';
 import { GetCurrentDate } from 'src/utils/utils.get.current-date';
 
 export const imageFileFilter = (
@@ -12,8 +13,11 @@ export const imageFileFilter = (
   if (!file.originalname.match(/^.*\.(jpg|webp|png|jpeg)$/)) {
     return callback(
       new HttpException(
-        { statusCode: 400, message: 'Only *.jpg|webp|png|jpeg file accepted.' },
-        400,
+        {
+          statusCode: HttpStatusCode.BAD_REQUEST,
+          message: 'Only *.jpg|webp|png|jpeg file accepted.',
+        },
+        HttpStatusCode.BAD_REQUEST,
       ),
       false,
     );
@@ -29,8 +33,11 @@ export const csvFileFilter = (
   if (!file.originalname.match(/\.(csv)$/)) {
     return callback(
       new HttpException(
-        { statusCode: 400, message: 'Only allowed *.csv file' },
-        400,
+        {
+          statusCode: HttpStatusCode.BAD_REQUEST,
+          message: 'Only allowed *.csv file',
+        },
+        HttpStatusCode.BAD_REQUEST,
       ),
       false,
     );

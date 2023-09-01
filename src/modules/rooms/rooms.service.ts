@@ -8,6 +8,7 @@ import { QueryRoomDto } from './dtos/rooms.query.dto';
 import { UpdateRoomDto } from './dtos/rooms.update.dto';
 import { ImatchFindRoom } from './interfaces/rooms.find.match.interface';
 import { Rooms, RoomsDocument } from './schemas/rooms.schema';
+import { HttpStatusCode } from 'src/constants/constants.http-status';
 
 @Injectable()
 export class RoomsService {
@@ -21,7 +22,7 @@ export class RoomsService {
     const option = { name: name?.trim(), isDeleted: false };
     const existedName = await this.roomSchema.findOne(option);
     if (existedName) {
-      new CommonException(409, roomMsg.existedName);
+      new CommonException(HttpStatusCode.CONFLICT, roomMsg.existedName);
     }
     const createRoomDto = {
       ...roomDto,
@@ -34,7 +35,7 @@ export class RoomsService {
   async findRoomById(id: string): Promise<Rooms> {
     const result = await this.roomSchema.findById(id);
     if (!result) {
-      new CommonException(404, roomMsg.notFound);
+      new CommonException(HttpStatusCode.NOT_FOUND, roomMsg.notFound);
     }
     return result;
   }

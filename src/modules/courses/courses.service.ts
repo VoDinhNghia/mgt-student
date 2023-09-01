@@ -8,6 +8,7 @@ import { QueryCourseDto } from './dtos/courses.query.dto';
 import { UpdateCourseDto } from './dtos/courses.update.dto';
 import { IqueryCourse } from './interfaces/courses.interface';
 import { Course, CourseDocument } from './schemas/courses.schema';
+import { HttpStatusCode } from 'src/constants/constants.http-status';
 
 @Injectable()
 export class CoursesService {
@@ -32,7 +33,7 @@ export class CoursesService {
   async findCourseById(id: string): Promise<Course> {
     const result = await this.courseSchema.findById(id);
     if (!result) {
-      new CommonException(404, courseMsg.notFound);
+      new CommonException(HttpStatusCode.NOT_FOUND, courseMsg.notFound);
     }
     return result;
   }
@@ -91,7 +92,7 @@ export class CoursesService {
       isDeleted: false,
     });
     if (result) {
-      new CommonException(409, courseMsg.existedName);
+      new CommonException(HttpStatusCode.CONFLICT, courseMsg.existedName);
     }
   }
 }

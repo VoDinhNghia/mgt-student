@@ -38,6 +38,7 @@ import {
 } from 'src/utils/utils.populate';
 import { ConfigService } from '@nestjs/config';
 import { QueryWardDto } from './dto/countries.query-ward.dto';
+import { HttpStatusCode } from 'src/constants/constants.http-status';
 
 @Injectable()
 export class CountriesService {
@@ -302,7 +303,7 @@ export class CountriesService {
   async findOneCountry(id: string): Promise<Countries> {
     const result = await this.countrySchema.findById(id);
     if (!result) {
-      new CommonException(404, msgNotFound);
+      new CommonException(HttpStatusCode.NOT_FOUND, msgNotFound);
     }
     return result;
   }

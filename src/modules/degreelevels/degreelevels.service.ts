@@ -11,6 +11,7 @@ import {
   DegreeLevel,
   DegreeLevelDocument,
 } from './schemas/degreelevels.schema';
+import { HttpStatusCode } from 'src/constants/constants.http-status';
 
 @Injectable()
 export class DegreelevelService {
@@ -35,7 +36,7 @@ export class DegreelevelService {
   async findDegreeLevelById(id: string): Promise<DegreeLevel> {
     const result = await this.degreeLevelSchema.findById(id);
     if (!result) {
-      new CommonException(404, degreeLevelMsg.notFound);
+      new CommonException(HttpStatusCode.NOT_FOUND, degreeLevelMsg.notFound);
     }
     return result;
   }
@@ -94,7 +95,7 @@ export class DegreelevelService {
       isDeleted: false,
     });
     if (result) {
-      new CommonException(409, degreeLevelMsg.existedName);
+      new CommonException(HttpStatusCode.CONFLICT, degreeLevelMsg.existedName);
     }
   }
 }

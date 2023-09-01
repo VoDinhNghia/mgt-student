@@ -15,6 +15,7 @@ import { QueryAttachmentUserDto } from './dtos/attachments.query-by-user.dto';
 import { QueryAttachmentDto } from './dtos/attachments.query.dto';
 import { IqueryAttachments } from './interfaces/attachments.interface';
 import { Attachment, AttachmentDocument } from './schemas/attachments.schema';
+import { HttpStatusCode } from 'src/constants/constants.http-status';
 
 @Injectable()
 export class AttachmentsService {
@@ -44,7 +45,7 @@ export class AttachmentsService {
       .select(selectAttachment)
       .exec();
     if (!result) {
-      new CommonException(404, attachmentMsg.notFound);
+      new CommonException(HttpStatusCode.NOT_FOUND, attachmentMsg.notFound);
     }
     return result;
   }
@@ -101,13 +102,13 @@ export class AttachmentsService {
       uploadBy: new Types.ObjectId(profileId),
     });
     if (!result) {
-      new CommonException(404, attachmentMsg.notFound);
+      new CommonException(HttpStatusCode.NOT_FOUND, attachmentMsg.notFound);
     }
     try {
       await this.attachmentSchema.findByIdAndDelete(id);
     } catch (error) {
       console.log(error);
-      new CommonException(500, msgServerError);
+      new CommonException(HttpStatusCode.SERVER_INTERVAL, msgServerError);
     }
     unlinkSync(result.path);
   }

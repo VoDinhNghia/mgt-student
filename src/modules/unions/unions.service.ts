@@ -36,6 +36,7 @@ import {
 import { UnionImages } from './schemas/unions.images.schema';
 import { UnionMembers } from './schemas/unions.members.schema';
 import { Union, UnionDocument } from './schemas/unions.schema';
+import { HttpStatusCode } from 'src/constants/constants.http-status';
 
 @Injectable()
 export class UnionsService {
@@ -163,7 +164,7 @@ export class UnionsService {
   async findUnionById(id: string): Promise<IunionFindAll> {
     const result: IunionFindAll = await this.unionSchema.findById(id).lean();
     if (!result) {
-      new CommonException(404, unionMsg.notFound);
+      new CommonException(HttpStatusCode.NOT_FOUND, unionMsg.notFound);
     }
     const groupMember = await this.groupMember(result._id);
     const imageList = await this.findAllUnionImages({
@@ -184,7 +185,7 @@ export class UnionsService {
       })
       .exec();
     if (!result) {
-      new CommonException(404, unionMsg.notFoundMember);
+      new CommonException(HttpStatusCode.NOT_FOUND, unionMsg.notFoundMember);
     }
     return result;
   }
@@ -201,7 +202,7 @@ export class UnionsService {
       })
       .exec();
     if (!result) {
-      new CommonException(404, unionMsg.notFoundMember);
+      new CommonException(HttpStatusCode.NOT_FOUND, unionMsg.notFoundMember);
     }
     return result;
   }

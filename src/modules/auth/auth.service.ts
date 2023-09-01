@@ -11,6 +11,7 @@ import { UserLoginResponseDto } from './dtos/auth.result.login-service.dto';
 import { authMsg } from 'src/constants/constants.message.response';
 import { ImatchFindAuth } from './interfaces/auth.interface';
 import { userLookup } from 'src/utils/utils.lookup.query.service';
+import { HttpStatusCode } from 'src/constants/constants.http-status';
 
 @Injectable()
 export class AuthService {
@@ -24,7 +25,7 @@ export class AuthService {
     const { email, passWord } = loginDto;
     const user = await this.findUserAuth(email, passWord);
     if (!user) {
-      new CommonException(401, authMsg.errorAuth);
+      new CommonException(HttpStatusCode.UN_AUTHORIZED, authMsg.errorAuth);
     }
     await this.userSchema.findByIdAndUpdate(user._id, { statusLogin: true });
     const result = {

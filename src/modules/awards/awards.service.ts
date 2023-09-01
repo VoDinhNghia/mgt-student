@@ -14,6 +14,7 @@ import { QueryAwardDto } from './dtos/awards.query.dto';
 import { UpdateAwardDto } from './dtos/awards.update.dto';
 import { IqueryAwards } from './interfaces/awards.find.match.interface';
 import { Award, AwardDocument } from './schemas/awards.schema';
+import { HttpStatusCode } from 'src/constants/constants.http-status';
 
 @Injectable()
 export class AwardsService {
@@ -51,7 +52,7 @@ export class AwardsService {
       })
       .exec();
     if (!result) {
-      new CommonException(404, msgNotFound);
+      new CommonException(HttpStatusCode.NOT_FOUND, msgNotFound);
     }
     return result;
   }
