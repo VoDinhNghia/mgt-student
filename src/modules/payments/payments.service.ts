@@ -42,6 +42,9 @@ import { HttpStatusCode } from 'src/constants/constants.http-status';
 
 @Injectable()
 export class PaymentsService {
+  private populateUser: string = 'user';
+  private populateSemster: string = 'semester';
+
   constructor(
     @InjectModel(SettingMoneyCredit.name)
     private readonly moneyCreditSchema: Model<SettingMoneyCreditDocument>,
@@ -56,7 +59,7 @@ export class PaymentsService {
     private readonly subjectRegister: SubjectUserRegister,
   ) {}
 
-  async createUserPayment(
+  public async createUserPayment(
     paymentDto: CreateUserPaymentDto,
     createdBy: string,
   ): Promise<PaymentStudyFee> {
@@ -73,10 +76,11 @@ export class PaymentsService {
       createdBy,
     };
     const result = await new this.paymentSchema(newPaymentDto).save();
+
     return result;
   }
 
-  async updateUserPayment(
+  public async updateUserPayment(
     id: string,
     paymentDto: UpdateUserPaymentDto,
     updatedBy: string,
@@ -94,14 +98,17 @@ export class PaymentsService {
     const result = await this.paymentSchema.findByIdAndUpdate(id, dto, {
       new: true,
     });
+
     return result;
   }
 
-  async findUserPaymentById(id: string): Promise<PaymentStudyFee> {
+  public async findUserPaymentById(id: string): Promise<PaymentStudyFee> {
     const result = await this.paymentSchema
       .findById(id)
-      .populate('user', selectProfile, this.profileSchema, { isDeleted: false })
-      .populate('semester', selectSemester, this.semesterSchema, {
+      .populate(this.populateUser, selectProfile, this.profileSchema, {
+        isDeleted: false,
+      })
+      .populate(this.populateSemster, selectSemester, this.semesterSchema, {
         isDeleted: false,
       })
       .exec();
@@ -111,10 +118,11 @@ export class PaymentsService {
         paymentMsg.notFoundUserPayment,
       );
     }
+
     return result;
   }
 
-  async findTuitionUserInSemester(
+  public async findTuitionUserInSemester(
     queryDto: QueryTuitionUser,
   ): Promise<{ subjects: IuserRegisterResponse[]; tuitionStatus: string }> {
     const { semester, profile } = queryDto;
@@ -143,10 +151,11 @@ export class PaymentsService {
       subjects: listSubjectUser,
       tuitionStatus: tuitionInsemester?.status || EstatusPayments.OWED,
     };
+
     return result;
   }
 
-  async getTotalMoneySubject(
+  private async getTotalMoneySubject(
     subjectList: IuserRegisterResponse[],
     semester: string,
   ): Promise<IuserRegisterResponse[]> {
@@ -163,10 +172,11 @@ export class PaymentsService {
       const numberCredits = item.subject?.numberCredits;
       item.totalMoney = moneyPerCredit * numberCredits;
     }
+
     return subjectList;
   }
 
-  async getStudyProcessId(profileId: string): Promise<string> {
+  private async getStudyProcessId(profileId: string): Promise<string> {
     const result = await this.studyprocessSchema.findOne({
       isDeleted: false,
       user: new Types.ObjectId(profileId),
@@ -174,6 +184,7 @@ export class PaymentsService {
     if (!result) {
       new CommonException(HttpStatusCode.NOT_FOUND, studyProcessMsg.notFound);
     }
+
     return result._id;
   }
 }

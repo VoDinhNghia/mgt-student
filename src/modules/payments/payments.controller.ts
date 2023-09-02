@@ -30,13 +30,14 @@ export class PaymentsController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @UseGuards(RoleGuard([ErolesUser.ACCOUNTANT, ErolesUser.STUDENT]))
-  async getTuitionUserInSemester(
+  public async getTuitionUserInSemester(
     @Query() queryDto: QueryTuitionUser,
     @Res() res: Response,
   ): Promise<ResponseRequest> {
     const result = await this.paymentService.findTuitionUserInSemester(
       queryDto,
     );
+
     return new ResponseRequest(res, result, paymentMsg.getAllUserTuition);
   }
 
@@ -44,17 +45,18 @@ export class PaymentsController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @UseGuards(RoleGuard([ErolesUser.ACCOUNTANT]))
-  async createUserPayment(
+  public async createUserPayment(
     @Body() userPaymentDto: CreateUserPaymentDto,
     @Res() res: Response,
     @Req() req: Request,
   ): Promise<ResponseRequest> {
     const user: UserLoginResponseDto = req?.user;
-    const createdBy: string = user.profileId;
+    const { profileId } = user;
     const result = await this.paymentService.createUserPayment(
       userPaymentDto,
-      createdBy,
+      profileId,
     );
+
     return new ResponseRequest(res, result, paymentMsg.createUserTuition);
   }
 }
