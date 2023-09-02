@@ -68,6 +68,8 @@ import { HttpStatusCode } from 'src/constants/constants.http-status';
 
 @Injectable()
 export class UsersService {
+  private populateUser: string = 'user';
+
   constructor(
     @InjectModel(Users.name) private readonly userSchema: Model<UsersDocument>,
     @InjectModel(Profile.name)
@@ -90,7 +92,10 @@ export class UsersService {
     private readonly courseSchema: Model<CourseDocument>,
   ) {}
 
-  async createUser(usersDto: CreateUserDto, createdBy: string): Promise<Users> {
+  public async createUser(
+    usersDto: CreateUserDto,
+    createdBy: string,
+  ): Promise<Users> {
     const { email } = usersDto;
     await this.validateEmail(email);
     usersDto.passWord = cryptoPassWord(usersDto.passWord);
@@ -120,10 +125,11 @@ export class UsersService {
       }
     }
     const result = this.findUserById(user._id);
+
     return result;
   }
 
-  async createStudyProcess(
+  public async createStudyProcess(
     userId: string,
     profileId: string,
     createdBy: string,
@@ -137,14 +143,13 @@ export class UsersService {
       await new this.studyProcessSchema(studyProcessDto).save();
       return true;
     } catch (error) {
-      console.log(error);
       await this.userSchema.findByIdAndDelete(userId);
       await this.profileSchema.findByIdAndDelete(profileId);
       return false;
     }
   }
 
-  async findUserById(id: string): Promise<Users> {
+  public async findUserById(id: string): Promise<Users> {
     const match = { $match: { _id: new Types.ObjectId(id) } };
     const lookup = userLookup();
     const aggregate = [match, ...lookup, { $limit: 1 }];
@@ -152,10 +157,11 @@ export class UsersService {
     if (!result[0]) {
       new CommonException(HttpStatusCode.NOT_FOUND, userMsg.notFoundUser);
     }
+
     return result[0];
   }
 
-  async findAllUsers(
+  public async findAllUsers(
     query: UsersFillterDto,
     userId: string,
   ): Promise<{ results: Users[]; total: number }> {
@@ -204,13 +210,14 @@ export class UsersService {
       ...aggregate,
       { $count: 'total' },
     ]);
+
     return {
       results,
       total: total[0]?.total ?? 0,
     };
   }
 
-  async updateUser(
+  public async updateUser(
     id: string,
     payload: UsersUpdateDto,
     updatedBy: string,
@@ -230,10 +237,11 @@ export class UsersService {
     const result = await this.userSchema.findByIdAndUpdate(id, updateInfo, {
       new: true,
     });
+
     return result;
   }
 
-  async updateUserProfile(
+  public async updateUserProfile(
     id: string,
     profileDto: UpdateProfileDto,
     updatedBy: string,
@@ -287,10 +295,11 @@ export class UsersService {
       updatedAt: Date.now(),
       updatedBy,
     });
+
     return result;
   }
 
-  async importUser(
+  public async importUser(
     createdBy: string,
     data: IusersImport[],
   ): Promise<IusersImport[]> {
@@ -347,10 +356,13 @@ export class UsersService {
       }
       item.statusImport = userMsg.importStatus;
     }
+
     return data;
   }
 
-  async initSupperAdmin(superAdminDto: InitSuperAdminDto): Promise<Users> {
+  public async initSupperAdmin(
+    superAdminDto: InitSuperAdminDto,
+  ): Promise<Users> {
     const { email, passWord, firstName, lastName } = superAdminDto;
     const option = { role: ErolesUser.SUPPER_ADMIN };
     const existedRoleSa = await this.userSchema.findOne(option);
@@ -373,10 +385,11 @@ export class UsersService {
     };
     await this.createUserProfile(profileSuperAdmin);
     const result = await this.findUserById(supperAdmin._id);
+
     return result;
   }
 
-  async createUserProfile(
+  public async createUserProfile(
     profileDto: UserProfileDto,
   ): Promise<ProfileDocument> {
     let result = null;
@@ -395,10 +408,11 @@ export class UsersService {
       console.log(error);
       new CommonException(HttpStatusCode.SERVER_INTERVAL, msgServerError);
     }
+
     return result;
   }
 
-  async createLeaderSchool(
+  public async createLeaderSchool(
     leaderDto: CreateLeaderSchoolDto,
     createdBy: string,
   ): Promise<LeaderSchools> {
@@ -418,13 +432,14 @@ export class UsersService {
     };
     const createLeaderSchool = await new this.leaderSchoolSchema(dto).save();
     const result = await this.findLeaderSchoolById(createLeaderSchool._id);
+
     return result;
   }
 
-  async findLeaderSchoolById(id: string): Promise<LeaderSchools> {
+  public async findLeaderSchoolById(id: string): Promise<LeaderSchools> {
     const result = await this.leaderSchoolSchema
       .findById(id)
-      .populate('user', '', this.profileSchema, { isDeleted: false })
+      .populate(this.populateUser, '', this.profileSchema, { isDeleted: false })
       .exec();
     if (!result) {
       new CommonException(
@@ -432,10 +447,11 @@ export class UsersService {
         userMsg.notFoundeaderSchool,
       );
     }
+
     return result;
   }
 
-  async updateLeaderSchool(
+  public async updateLeaderSchool(
     id: string,
     updateLeaderDto: UpdateLeaderSchoolDto,
     updatedBy: string,
@@ -449,10 +465,11 @@ export class UsersService {
     const result = await this.leaderSchoolSchema.findByIdAndUpdate(id, dto, {
       new: true,
     });
+
     return result;
   }
 
-  async findAllLeaderSchool(
+  public async findAllLeaderSchool(
     queryDto: QueryLeaderSchoolDto,
   ): Promise<{ results: LeaderSchools[]; total: number }> {
     const { user, limit, page } = queryDto;
@@ -464,17 +481,21 @@ export class UsersService {
       .find(query)
       .skip(limit && page ? Number(limit) * Number(page) - Number(limit) : null)
       .limit(limit ? Number(limit) : null)
-      .populate('user', '', this.profileSchema, { isDeleted: false })
+      .populate(this.populateUser, '', this.profileSchema, { isDeleted: false })
       .sort({ createdAt: -1 })
       .exec();
     const total = await this.leaderSchoolSchema.find(query).count();
+
     return {
       results,
       total,
     };
   }
 
-  async deleteLeaderSchool(id: string, deletedBy: string): Promise<void> {
+  public async deleteLeaderSchool(
+    id: string,
+    deletedBy: string,
+  ): Promise<void> {
     await this.findLeaderSchoolById(id);
     const dto = {
       deletedBy,
@@ -484,7 +505,7 @@ export class UsersService {
     await this.leaderSchoolSchema.findByIdAndUpdate(id, dto);
   }
 
-  async deleteUser(id: string, deletedBy: string): Promise<void> {
+  public async deleteUser(id: string, deletedBy: string): Promise<void> {
     await this.findUserById(id);
     const dto = {
       deletedBy,
@@ -499,7 +520,7 @@ export class UsersService {
     await this.studyProcessSchema.findOneAndUpdate({ user: profile._id }, dto);
   }
 
-  async validateEmail(email: string): Promise<void> {
+  private async validateEmail(email: string): Promise<void> {
     const result = await this.userSchema.findOne({ email });
     if (result) {
       new CommonException(HttpStatusCode.CONFLICT, msgEmailExisted);

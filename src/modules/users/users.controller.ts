@@ -50,14 +50,15 @@ export class UsersController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
-  async createUser(
+  public async createUser(
     @Body() userDto: CreateUserDto,
     @Req() req: Request,
     @Res() res: Response,
   ): Promise<ResponseRequest> {
     const user: UserLoginResponseDto = req?.user;
-    const createdBy: string = user.profileId;
-    const result = await this.service.createUser(userDto, createdBy);
+    const { profileId } = user;
+    const result = await this.service.createUser(userDto, profileId);
+
     return new ResponseRequest(res, result, userMsg.create);
   }
 
@@ -75,17 +76,18 @@ export class UsersController {
       }),
     }),
   )
-  async importUser(
+  public async importUser(
     @Req() req: Request,
     @Res() res: Response,
     @Body() body: StorageObjectDto,
     @UploadedFile('file') file: Express.Multer.File,
   ): Promise<ResponseRequest> {
     const user: UserLoginResponseDto = req?.user;
-    const createdBy: string = user?.profileId;
+    const { profileId } = user;
     const rawData = readFileSync(file.path, 'utf8');
     const csvData = getDataFromCsvFileUpload(rawData);
-    const result = await this.service.importUser(createdBy, csvData);
+    const result = await this.service.importUser(profileId, csvData);
+
     return new ResponseRequest(res, result, userMsg.importUser);
   }
 
@@ -93,34 +95,36 @@ export class UsersController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
-  async updateUser(
+  public async updateUser(
     @Param('id') id: string,
     @Body() updateDto: UsersUpdateDto,
     @Req() req: Request,
     @Res() res: Response,
   ): Promise<ResponseRequest> {
     const user: UserLoginResponseDto = req?.user;
-    const updatedBy: string = user.profileId;
-    const result = await this.service.updateUser(id, updateDto, updatedBy);
+    const { profileId } = user;
+    const result = await this.service.updateUser(id, updateDto, profileId);
+
     return new ResponseRequest(res, result, userMsg.update);
   }
 
   @Put('/profile/:id')
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
-  async updateProfile(
+  public async updateProfile(
     @Param('id') id: string,
     @Body() updateProfileDto: UpdateProfileDto,
     @Req() req: Request,
     @Res() res: Response,
   ): Promise<ResponseRequest> {
     const user: UserLoginResponseDto = req?.user;
-    const updatedBy: string = user.profileId;
+    const { profileId } = user;
     const result = await this.service.updateUserProfile(
       id,
       updateProfileDto,
-      updatedBy,
+      profileId,
     );
+
     return new ResponseRequest(res, result, userMsg.updateUserProfile);
   }
 
@@ -128,17 +132,18 @@ export class UsersController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
-  async createLeaderSchool(
+  public async createLeaderSchool(
     @Body() leaderSchoolDto: CreateLeaderSchoolDto,
     @Res() res: Response,
     @Req() req: Request,
   ): Promise<ResponseRequest> {
     const user: UserLoginResponseDto = req?.user;
-    const createdBy: string = user.profileId;
+    const { profileId } = user;
     const result = await this.service.createLeaderSchool(
       leaderSchoolDto,
-      createdBy,
+      profileId,
     );
+
     return new ResponseRequest(res, result, userMsg.createLeaderSchool);
   }
 
@@ -146,37 +151,40 @@ export class UsersController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
-  async updateLeaderSchool(
+  public async updateLeaderSchool(
     @Param('id') id: string,
     @Body() updateLeaderDto: UpdateLeaderSchoolDto,
     @Res() res: Response,
     @Req() req: Request,
   ): Promise<ResponseRequest> {
     const user: UserLoginResponseDto = req?.user;
-    const updatedBy: string = user.profileId;
+    const { profileId } = user;
     const result = await this.service.updateLeaderSchool(
       id,
       updateLeaderDto,
-      updatedBy,
+      profileId,
     );
+
     return new ResponseRequest(res, result, userMsg.updateLeaderSchool);
   }
 
   @Get('/leader-school')
-  async getAllLeaderSchools(
+  public async getAllLeaderSchools(
     @Query() queryLeaderDto: QueryLeaderSchoolDto,
     @Res() res: Response,
   ): Promise<ResponseRequest> {
     const results = await this.service.findAllLeaderSchool(queryLeaderDto);
+
     return new ResponseRequest(res, results, userMsg.getAllLeaderSchools);
   }
 
   @Get('/leader-school/:id')
-  async getLeaderSchoolById(
+  public async getLeaderSchoolById(
     @Param('id') id: string,
     @Res() res: Response,
   ): Promise<ResponseRequest> {
     const result = await this.service.findLeaderSchoolById(id);
+
     return new ResponseRequest(res, result, userMsg.getByIdLeaderSchools);
   }
 
@@ -184,14 +192,15 @@ export class UsersController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
-  async deleteLeaderSchoolById(
+  public async deleteLeaderSchoolById(
     @Param('id') id: string,
     @Res() res: Response,
     @Req() req: Request,
   ): Promise<ResponseRequest> {
     const user: UserLoginResponseDto = req?.user;
-    const deletedBy: string = user.profileId;
-    await this.service.deleteLeaderSchool(id, deletedBy);
+    const { profileId } = user;
+    await this.service.deleteLeaderSchool(id, profileId);
+
     return new ResponseRequest(res, true, userMsg.deleteLeaderSchool);
   }
 
@@ -199,13 +208,14 @@ export class UsersController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
-  async getAllUsers(
+  public async getAllUsers(
     @Query() queryDto: UsersFillterDto,
     @Res() res: Response,
     @Req() req: Request,
   ): Promise<ResponseRequest> {
     const user: UserLoginResponseDto = req?.user;
     const result = await this.service.findAllUsers(queryDto, user._id);
+
     return new ResponseRequest(res, result, userMsg.getAll);
   }
 
@@ -213,14 +223,15 @@ export class UsersController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
-  async deleteUser(
+  public async deleteUser(
     @Param('id') id: string,
     @Req() req: Request,
     @Res() res: Response,
   ): Promise<ResponseRequest> {
     const user: UserLoginResponseDto = req?.user;
-    const deletedBy: string = user.profileId;
-    await this.service.deleteUser(id, deletedBy);
+    const { profileId } = user;
+    await this.service.deleteUser(id, profileId);
+
     return new ResponseRequest(res, true, userMsg.delete);
   }
 
@@ -228,11 +239,12 @@ export class UsersController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
-  async getUserByid(
+  public async getUserByid(
     @Param('id') id: string,
     @Res() res: Response,
   ): Promise<ResponseRequest> {
     const result = await this.service.findUserById(id);
+
     return new ResponseRequest(res, result, userMsg.getById);
   }
 }
