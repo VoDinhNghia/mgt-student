@@ -18,6 +18,8 @@ import { HttpStatusCode } from 'src/constants/constants.http-status';
 
 @Injectable()
 export class NewsService {
+  private populateAttachment: string = 'attachment';
+
   constructor(
     @InjectModel(News.name)
     private readonly newsSchema: Model<NewsDocument>,
@@ -25,7 +27,7 @@ export class NewsService {
     private readonly attachmentSchema: Model<AttachmentDocument>,
   ) {}
 
-  async createNews(
+  public async createNews(
     createNewDto: CreateNewDto,
     createdBy: string,
   ): Promise<News> {
@@ -42,23 +44,30 @@ export class NewsService {
       createdBy,
     };
     const result = await new this.newsSchema(dto).save();
+
     return result;
   }
 
-  async findNewsById(id: string): Promise<News> {
+  public async findNewsById(id: string): Promise<News> {
     const result = await this.newsSchema
       .findById(id)
-      .populate('attachment', selectAttachment, this.attachmentSchema, {
-        isDeleted: false,
-      })
+      .populate(
+        this.populateAttachment,
+        selectAttachment,
+        this.attachmentSchema,
+        {
+          isDeleted: false,
+        },
+      )
       .exec();
     if (!result) {
       new CommonException(HttpStatusCode.NOT_FOUND, newsMsg.notFound);
     }
+
     return result;
   }
 
-  async findAllNews(
+  public async findAllNews(
     queryDto: QueryNewDto,
   ): Promise<{ results: News[]; total: number }> {
     const { limit, page, type, searchKey } = queryDto;
@@ -73,16 +82,22 @@ export class NewsService {
       .find(query)
       .skip(limit && page ? Number(limit) * Number(page) - Number(limit) : null)
       .limit(limit ? Number(limit) : null)
-      .populate('attachment', selectAttachment, this.attachmentSchema, {
-        isDeleted: false,
-      })
+      .populate(
+        this.populateAttachment,
+        selectAttachment,
+        this.attachmentSchema,
+        {
+          isDeleted: false,
+        },
+      )
       .sort({ createdAt: -1 })
       .exec();
     const total = await this.newsSchema.find(query).count();
+
     return { results, total };
   }
 
-  async updateNews(
+  public async updateNews(
     id: string,
     updateDto: UpdateNewDto,
     updatedBy: string,
@@ -103,10 +118,11 @@ export class NewsService {
     const result = await this.newsSchema.findByIdAndUpdate(id, dto, {
       new: true,
     });
+
     return result;
   }
 
-  async deleteNews(id: string, deletedBy: string): Promise<void> {
+  public async deleteNews(id: string, deletedBy: string): Promise<void> {
     await this.findNewsById(id);
     const dto = {
       isDeleted: true,
