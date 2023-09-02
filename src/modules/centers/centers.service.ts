@@ -28,6 +28,10 @@ import { HttpStatusCode } from 'src/constants/constants.http-status';
 
 @Injectable()
 export class CenterService {
+  private populateDirector: string = 'director';
+  private populateAward: string = 'award';
+  private populateOffice: string = 'contacts.office';
+
   constructor(
     @InjectModel(Center.name)
     private readonly centerSchema: Model<CenterDocument>,
@@ -39,7 +43,7 @@ export class CenterService {
     private readonly roomSchema: Model<RoomsDocument>,
   ) {}
 
-  async createCenter(
+  public async createCenter(
     centerDto: CreateCenterDto,
     createdBy: string,
   ): Promise<Center> {
@@ -55,10 +59,11 @@ export class CenterService {
       ...centerDto,
       createdBy,
     }).save();
+
     return result;
   }
 
-  async updateCenter(
+  public async updateCenter(
     id: string,
     centerDto: UpdateCenterDto,
     updatedBy: string,
@@ -83,29 +88,31 @@ export class CenterService {
     const result = await this.centerSchema.findByIdAndUpdate(id, updateDto, {
       new: true,
     });
+
     return result;
   }
 
-  async findCenterById(id: string): Promise<Center> {
+  public async findCenterById(id: string): Promise<Center> {
     const result = await this.centerSchema
       .findById(id)
-      .populate('director', selectProfile, this.profileSchema, {
+      .populate(this.populateDirector, selectProfile, this.profileSchema, {
         isDeleted: false,
       })
-      .populate('award', selectAward, this.awardSchema, {
+      .populate(this.populateAward, selectAward, this.awardSchema, {
         isDeleted: false,
       })
-      .populate('contacts.office', selectRoom, this.roomSchema, {
+      .populate(this.populateOffice, selectRoom, this.roomSchema, {
         isDeleted: false,
       })
       .exec();
     if (!result) {
       new CommonException(HttpStatusCode.NOT_FOUND, centerMsg.notFound);
     }
+
     return result;
   }
 
-  async findAllCenter(
+  public async findAllCenter(
     queryDto: QueryCenterDto,
   ): Promise<{ results: Center[]; total: number }> {
     const { limit, page, searchKey, director } = queryDto;
@@ -120,22 +127,23 @@ export class CenterService {
       .find(query)
       .skip(limit && page ? Number(limit) * Number(page) - Number(limit) : null)
       .limit(limit ? Number(limit) : null)
-      .populate('director', selectProfile, this.profileSchema, {
+      .populate(this.populateDirector, selectProfile, this.profileSchema, {
         isDeleted: false,
       })
-      .populate('award', selectAward, this.awardSchema, {
+      .populate(this.populateAward, selectAward, this.awardSchema, {
         isDeleted: false,
       })
-      .populate('contacts.office', selectRoom, this.roomSchema, {
+      .populate(this.populateOffice, selectRoom, this.roomSchema, {
         isDeleted: false,
       })
       .sort({ createdAt: -1 })
       .exec();
     const total = await this.centerSchema.find(query).count();
+
     return { results, total };
   }
 
-  async deleteCenter(id: string, deletedBy: string): Promise<void> {
+  public async deleteCenter(id: string, deletedBy: string): Promise<void> {
     await this.findCenterById(id);
     const dto = {
       isDeleted: true,
