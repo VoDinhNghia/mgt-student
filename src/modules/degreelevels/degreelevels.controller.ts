@@ -34,17 +34,18 @@ export class DegreelevelController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
-  async createDegreeLevel(
+  public async createDegreeLevel(
     @Body() degreeLevelDto: CreateDegreeLevelDto,
     @Res() res: Response,
     @Req() req: Request,
   ): Promise<ResponseRequest> {
     const user: UserLoginResponseDto = req?.user;
-    const createdBy: string = user.profileId;
+    const { profileId } = user;
     const result = await this.degreeLevelService.createDegreeLevel(
       degreeLevelDto,
-      createdBy,
+      profileId,
     );
+
     return new ResponseRequest(res, result, degreeLevelMsg.create);
   }
 
@@ -52,19 +53,20 @@ export class DegreelevelController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
-  async updateDegreeLevel(
+  public async updateDegreeLevel(
     @Param('id') id: string,
     @Body() degreeLevelDto: UpdateDegreeLevelDto,
     @Res() res: Response,
     @Req() req: Request,
   ): Promise<ResponseRequest> {
     const user: UserLoginResponseDto = req?.user;
-    const updatedBy: string = user.profileId;
+    const { profileId } = user;
     const result = await this.degreeLevelService.updateDegreeLevel(
       id,
       degreeLevelDto,
-      updatedBy,
+      profileId,
     );
+
     return new ResponseRequest(res, result, degreeLevelMsg.update);
   }
 
@@ -72,32 +74,35 @@ export class DegreelevelController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
-  async deleteDegreeLevel(
+  public async deleteDegreeLevel(
     @Param('id') id: string,
     @Res() res: Response,
     @Req() req: Request,
   ): Promise<ResponseRequest> {
     const user: UserLoginResponseDto = req?.user;
-    const deletedBy: string = user.profileId;
-    await this.degreeLevelService.deleteDegreelevel(id, deletedBy);
+    const { profileId } = user;
+    await this.degreeLevelService.deleteDegreelevel(id, profileId);
+
     return new ResponseRequest(res, true, degreeLevelMsg.delete);
   }
 
   @Get()
-  async getAllDegreeLevel(
+  public async getAllDegreeLevel(
     @Query() queryDto: QueryDegreeLevelDto,
     @Res() res: Response,
   ): Promise<ResponseRequest> {
     const result = await this.degreeLevelService.findAllDegreeLevels(queryDto);
+
     return new ResponseRequest(res, result, degreeLevelMsg.getAll);
   }
 
   @Get('/:id')
-  async getDegreeLevelById(
+  public async getDegreeLevelById(
     @Param('id') id: string,
     @Res() res: Response,
   ): Promise<ResponseRequest> {
     const result = await this.degreeLevelService.findDegreeLevelById(id);
+
     return new ResponseRequest(res, result, degreeLevelMsg.getById);
   }
 }

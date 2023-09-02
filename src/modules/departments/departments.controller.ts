@@ -37,17 +37,18 @@ export class DepartmentsController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
-  async createDepartment(
+  public async createDepartment(
     @Body() departmentDto: CreateDepartmentDto,
     @Res() res: Response,
     @Req() req: Request,
   ): Promise<ResponseRequest> {
     const user: UserLoginResponseDto = req?.user;
-    const createdBy: string = user.profileId;
+    const { profileId } = user;
     const result = await this.service.createDepartment(
       departmentDto,
-      createdBy,
+      profileId,
     );
+
     return new ResponseRequest(res, result, departmentMsg.create);
   }
 
@@ -55,19 +56,20 @@ export class DepartmentsController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
-  async updateDepartment(
+  public async updateDepartment(
     @Param('id') id: string,
     @Body() departmentDto: UpdateDepartmentDto,
     @Res() res: Response,
     @Req() req: Request,
   ): Promise<ResponseRequest> {
     const user: UserLoginResponseDto = req?.user;
-    const updatedBy: string = user.profileId;
+    const { profileId } = user;
     const result = await this.service.updateDepartment(
       id,
       departmentDto,
-      updatedBy,
+      profileId,
     );
+
     return new ResponseRequest(res, result, departmentMsg.update);
   }
 
@@ -75,17 +77,18 @@ export class DepartmentsController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
-  async createDepartmentMultiStaff(
+  public async createDepartmentMultiStaff(
     @Body() staffDto: CreateMultiStaffDepartmentDto,
     @Res() res: Response,
     @Req() req: Request,
   ): Promise<ResponseRequest> {
     const user: UserLoginResponseDto = req?.user;
-    const createdBy: string = user.profileId;
+    const { profileId } = user;
     const result = await this.service.createMultiStaffDepartment(
       staffDto,
-      createdBy,
+      profileId,
     );
+
     return new ResponseRequest(res, result, departmentMsg.createMultiStaff);
   }
 
@@ -93,17 +96,18 @@ export class DepartmentsController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
-  async createDepartmentStaff(
+  public async createDepartmentStaff(
     @Body() staffDto: CreateStaffDepartmentDto,
     @Res() res: Response,
     @Req() req: Request,
   ): Promise<ResponseRequest> {
     const user: UserLoginResponseDto = req?.user;
-    const createdBy: string = user.profileId;
+    const { profileId } = user;
     const result = await this.service.createDepartmentStaff(
       staffDto,
-      createdBy,
+      profileId,
     );
+
     return new ResponseRequest(res, result, departmentMsg.createStaff);
   }
 
@@ -111,19 +115,20 @@ export class DepartmentsController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
-  async updateDepartmentStaff(
+  public async updateDepartmentStaff(
     @Param('id') id: string,
     @Body() staffDto: UpdateStaffDepartmentDto,
     @Res() res: Response,
     @Req() req: Request,
   ): Promise<ResponseRequest> {
     const user: UserLoginResponseDto = req?.user;
-    const updatedBy: string = user.profileId;
+    const { profileId } = user;
     const result = await this.service.updateDepartmentStaff(
       id,
       staffDto,
-      updatedBy,
+      profileId,
     );
+
     return new ResponseRequest(res, result, departmentMsg.updateStaff);
   }
 
@@ -131,32 +136,35 @@ export class DepartmentsController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
-  async deleteDepartmentStaff(
+  public async deleteDepartmentStaff(
     @Param('id') id: string,
     @Res() res: Response,
     @Req() req: Request,
   ): Promise<ResponseRequest> {
     const user: UserLoginResponseDto = req?.user;
-    const deletedBy: string = user.profileId;
-    await this.service.deleteDepartmentStaff(id, deletedBy);
+    const { profileId } = user;
+    await this.service.deleteDepartmentStaff(id, profileId);
+
     return new ResponseRequest(res, true, departmentMsg.deleteStaff);
   }
 
   @Get()
-  async getAllDepartment(
+  public async getAllDepartment(
     @Query() queryDto: QueryDepartmentDto,
     @Res() res: Response,
   ): Promise<ResponseRequest> {
     const result = await this.service.findAllDepartment(queryDto);
+
     return new ResponseRequest(res, result, departmentMsg.getAll);
   }
 
   @Get('/:id')
-  async getDepartmentById(
+  public async getDepartmentById(
     @Param('id') id: string,
     @Res() res: Response,
   ): Promise<ResponseRequest> {
     const result = await this.service.findDepartmentById(id);
+
     return new ResponseRequest(res, result, departmentMsg.getById);
   }
 }
