@@ -34,26 +34,28 @@ export class AwardsController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
-  async createAward(
+  public async createAward(
     @Res() res: Response,
     @Body() createAwardDto: CreateAwardDto,
     @Req() req: Request,
   ): Promise<ResponseRequest> {
     const user: UserLoginResponseDto = req?.user;
-    const createdBy: string = user.profileId;
+    const { profileId } = user;
     const result = await this.awardService.createAward(
       createAwardDto,
-      createdBy,
+      profileId,
     );
+
     return new ResponseRequest(res, result, awardMsg.create);
   }
 
   @Get()
-  async getAllAward(
+  public async getAllAward(
     @Query() queryAwardDto: QueryAwardDto,
     @Res() res: Response,
   ): Promise<ResponseRequest> {
     const result = await this.awardService.findAllAward(queryAwardDto);
+
     return new ResponseRequest(res, result, awardMsg.getAll);
   }
 
@@ -61,19 +63,20 @@ export class AwardsController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
-  async updateAward(
+  public async updateAward(
     @Res() res: Response,
     @Param('id') id: string,
     @Body() updateAwardDto: UpdateAwardDto,
     @Req() req: Request,
   ): Promise<ResponseRequest> {
     const user: UserLoginResponseDto = req?.user;
-    const updatedBy: string = user.profileId;
+    const { profileId } = user;
     const result = await this.awardService.updateAward(
       id,
       updateAwardDto,
-      updatedBy,
+      profileId,
     );
+
     return new ResponseRequest(res, result, awardMsg.update);
   }
 
@@ -81,23 +84,25 @@ export class AwardsController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
-  async deleteAward(
+  public async deleteAward(
     @Res() res: Response,
     @Param('id') id: string,
     @Req() req: Request,
   ): Promise<ResponseRequest> {
     const user: UserLoginResponseDto = req?.user;
-    const deletedBy: string = user.profileId;
-    await this.awardService.deleteAward(id, deletedBy);
+    const { profileId } = user;
+    await this.awardService.deleteAward(id, profileId);
+
     return new ResponseRequest(res, true, awardMsg.delete);
   }
 
   @Get('/:id')
-  async getAwardById(
+  public async getAwardById(
     @Res() res: Response,
     @Param('id') id: string,
   ): Promise<ResponseRequest> {
     const result = await this.awardService.findAwardById(id);
+
     return new ResponseRequest(res, result, awardMsg.getById);
   }
 }
