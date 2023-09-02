@@ -34,17 +34,18 @@ export class SemestersController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
-  async createSemester(
+  public async createSemester(
     @Body() semesterDto: CreateSemesterDto,
     @Res() res: Response,
     @Req() req: Request,
   ): Promise<ResponseRequest> {
     const user: UserLoginResponseDto = req?.user;
-    const createdBy: string = user.profileId;
+    const { profileId } = user;
     const result = await this.semesterService.createSemester(
       semesterDto,
-      createdBy,
+      profileId,
     );
+
     return new ResponseRequest(res, result, semesterMsg.create);
   }
 
@@ -52,19 +53,20 @@ export class SemestersController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
-  async updateSemester(
+  public async updateSemester(
     @Param('id') id: string,
     @Body() updateDto: UpdateSemesterDto,
     @Res() res: Response,
     @Req() req: Request,
   ): Promise<ResponseRequest> {
     const user: UserLoginResponseDto = req?.user;
-    const updatedBy: string = user.profileId;
+    const { profileId } = user;
     const result = await this.semesterService.updateSemester(
       id,
       updateDto,
-      updatedBy,
+      profileId,
     );
+
     return new ResponseRequest(res, result, semesterMsg.update);
   }
 
@@ -72,32 +74,35 @@ export class SemestersController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
-  async deleteSemester(
+  public async deleteSemester(
     @Param('id') id: string,
     @Res() res: Response,
     @Req() req: Request,
   ): Promise<ResponseRequest> {
     const user: UserLoginResponseDto = req?.user;
-    const deletedBy: string = user.profileId;
-    await this.semesterService.deleteSemester(id, deletedBy);
+    const { profileId } = user;
+    await this.semesterService.deleteSemester(id, profileId);
+
     return new ResponseRequest(res, true, semesterMsg.delete);
   }
 
   @Get()
-  async getAllSemester(
+  public async getAllSemester(
     @Query() queryDto: QuerySemesterDto,
     @Res() res: Response,
   ): Promise<ResponseRequest> {
     const results = await this.semesterService.findAllSemesters(queryDto);
+
     return new ResponseRequest(res, results, semesterMsg.getAll);
   }
 
   @Get('/:id')
-  async getSemesterById(
+  public async getSemesterById(
     @Param('id') id: string,
     @Res() res: Response,
   ): Promise<ResponseRequest> {
     const result = await this.semesterService.findSemesterById(id);
+
     return new ResponseRequest(res, result, semesterMsg.getById);
   }
 }
