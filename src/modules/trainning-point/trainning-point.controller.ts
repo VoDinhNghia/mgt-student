@@ -49,14 +49,15 @@ export class TrainningPointController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
-  async createTrainningPoint(
+  public async createTrainningPoint(
     @Body() createDto: CreateTrainningPointDto,
     @Res() res: Response,
     @Req() req: Request,
   ): Promise<ResponseRequest> {
     const user: UserLoginResponseDto = req?.user;
-    const createdBy: string = user?.profileId;
-    const result = await this.service.createTrainingPoint(createDto, createdBy);
+    const { profileId } = user;
+    const result = await this.service.createTrainingPoint(createDto, profileId);
+
     return new ResponseRequest(
       res,
       result,
@@ -68,14 +69,15 @@ export class TrainningPointController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
-  async createVoluntee(
+  public async createVoluntee(
     @Body() createDto: CreateVolunteeProgramDto,
     @Res() res: Response,
     @Req() req: Request,
   ): Promise<ResponseRequest> {
     const user: UserLoginResponseDto = req?.user;
-    const createdBy: string = user?.profileId;
-    const result = await this.service.createVoluntee(createDto, createdBy);
+    const { profileId } = user;
+    const result = await this.service.createVoluntee(createDto, profileId);
+
     return new ResponseRequest(res, result, trainningPointMsg.createVoluntee);
   }
 
@@ -93,17 +95,18 @@ export class TrainningPointController {
       }),
     }),
   )
-  async importVolunteeProgram(
+  public async importVolunteeProgram(
     @Req() req: Request,
     @Res() res: Response,
     @Body() body: StorageObjectDto,
     @UploadedFile('file') file: Express.Multer.File,
   ): Promise<ResponseRequest> {
     const user: UserLoginResponseDto = req?.user;
-    const createdBy: string = user?.profileId;
+    const { profileId } = user;
     const rawData = readFileSync(file.path, 'utf8');
     const csvData = getDataFromCsvFileUpload(rawData);
-    const result = await this.service.importVoluntee(csvData, createdBy);
+    const result = await this.service.importVoluntee(csvData, profileId);
+
     return new ResponseRequest(
       res,
       result,
@@ -125,17 +128,18 @@ export class TrainningPointController {
       }),
     }),
   )
-  async importTrainningPoint(
+  public async importTrainningPoint(
     @Req() req: Request,
     @Res() res: Response,
     @Body() body: StorageObjectDto,
     @UploadedFile('file') file: Express.Multer.File,
   ): Promise<ResponseRequest> {
     const user: UserLoginResponseDto = req?.user;
-    const createdBy: string = user?.profileId;
+    const { profileId } = user;
     const rawData = readFileSync(file.path, 'utf8');
     const csvData = getDataFromCsvFileUpload(rawData);
-    const result = await this.service.importTrainningPoint(csvData, createdBy);
+    const result = await this.service.importTrainningPoint(csvData, profileId);
+
     return new ResponseRequest(
       res,
       result,
@@ -147,19 +151,20 @@ export class TrainningPointController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
-  async updateTrainningPoint(
+  public async updateTrainningPoint(
     @Param('id') id: string,
     @Req() req: Request,
     @Res() res: Response,
     @Body() updateDto: UpdateTrainningPointDto,
   ): Promise<ResponseRequest> {
     const user: UserLoginResponseDto = req?.user;
-    const updatedBy: string = user?.profileId;
+    const { profileId } = user;
     const result = await this.service.updateTrainningPoint(
       id,
       updateDto,
-      updatedBy,
+      profileId,
     );
+
     return new ResponseRequest(
       res,
       result,
@@ -171,15 +176,16 @@ export class TrainningPointController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
-  async updateVoluntee(
+  public async updateVoluntee(
     @Param('id') id: string,
     @Req() req: Request,
     @Res() res: Response,
     @Body() updateDto: UpdateVolunteeDto,
   ): Promise<ResponseRequest> {
     const user: UserLoginResponseDto = req?.user;
-    const updatedBy: string = user?.profileId;
-    const result = await this.service.updateVolutee(id, updateDto, updatedBy);
+    const { profileId } = user;
+    const result = await this.service.updateVolutee(id, updateDto, profileId);
+
     return new ResponseRequest(res, result, trainningPointMsg.updateVoluntee);
   }
 
@@ -187,14 +193,15 @@ export class TrainningPointController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
-  async deleteTrainningPoint(
+  public async deleteTrainningPoint(
     @Param('id') id: string,
     @Req() req: Request,
     @Res() res: Response,
   ): Promise<ResponseRequest> {
     const user: UserLoginResponseDto = req?.user;
-    const deletedBy: string = user?.profileId;
-    await this.service.deleteTrainningPoint(id, deletedBy);
+    const { profileId } = user;
+    await this.service.deleteTrainningPoint(id, profileId);
+
     return new ResponseRequest(
       res,
       true,
@@ -206,25 +213,27 @@ export class TrainningPointController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
-  async deleteVoluntee(
+  public async deleteVoluntee(
     @Param('id') id: string,
     @Req() req: Request,
     @Res() res: Response,
   ): Promise<ResponseRequest> {
     const user: UserLoginResponseDto = req?.user;
-    const deletedBy: string = user?.profileId;
-    await this.service.deleteVoluntee(id, deletedBy);
+    const { profileId } = user;
+    await this.service.deleteVoluntee(id, profileId);
+
     return new ResponseRequest(res, true, trainningPointMsg.deleteVoluntee);
   }
 
   @Get()
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
-  async getAllTrainningPoints(
+  public async getAllTrainningPoints(
     @Res() res: Response,
     @Query() queryDto: QueryTrainningPointDto,
   ): Promise<ResponseRequest> {
     const results = await this.service.findAllTrainningPoint(queryDto);
+
     return new ResponseRequest(
       res,
       results,
@@ -235,22 +244,24 @@ export class TrainningPointController {
   @Get('/voluntee')
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
-  async getAllVoluntee(
+  public async getAllVoluntee(
     @Res() res: Response,
     @Query() queryDto: QueryVolunteeDto,
   ): Promise<ResponseRequest> {
     const results = await this.service.findAllVolunteeProgram(queryDto);
+
     return new ResponseRequest(res, results, trainningPointMsg.getAllVoluntee);
   }
 
   @Get('/:id')
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
-  async getTrainningPointById(
+  public async getTrainningPointById(
     @Param('id') id: string,
     @Res() res: Response,
   ): Promise<ResponseRequest> {
     const result = await this.service.findTrainningPointById(id);
+
     return new ResponseRequest(
       res,
       result,
@@ -261,11 +272,12 @@ export class TrainningPointController {
   @Get('/voluntee/:id')
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
-  async getVolunteeById(
+  public async getVolunteeById(
     @Param('id') id: string,
     @Res() res: Response,
   ): Promise<ResponseRequest> {
     const result = await this.service.findVolunteeById(id);
+
     return new ResponseRequest(res, result, trainningPointMsg.getByIdVoluntee);
   }
 }

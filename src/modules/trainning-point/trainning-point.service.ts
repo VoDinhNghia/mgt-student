@@ -55,6 +55,13 @@ import { HttpStatusCode } from 'src/constants/constants.http-status';
 
 @Injectable()
 export class TrainningPointService {
+  private populateLeader: string = 'organizingCommittee.leader';
+  private populateSemester: string = 'semester';
+  private populateFaculty: string = 'faculty';
+  private populateSecetary: string = 'organizingCommittee.secretary';
+  private populateUser: string = 'user';
+  private populateProgram: string = 'program';
+
   constructor(
     @InjectModel(TrainningPoints.name)
     private readonly trainningPointSchema: Model<TranningPointsDocument>,
@@ -68,7 +75,7 @@ export class TrainningPointService {
     private readonly semesterSchema: Model<SemesterDocument>,
   ) {}
 
-  async createTrainingPoint(
+  public async createTrainingPoint(
     createDto: CreateTrainningPointDto,
     createdBy: string,
   ): Promise<TrainningPoints> {
@@ -85,10 +92,11 @@ export class TrainningPointService {
       ...createDto,
       createdBy,
     }).save();
+
     return result;
   }
 
-  async createVoluntee(
+  public async createVoluntee(
     createDto: CreateVolunteeProgramDto,
     createdBy: string,
   ): Promise<VolunteePrograms> {
@@ -109,10 +117,11 @@ export class TrainningPointService {
       code: getRandomCodeVoluntee(lengthRandomCodeVoluntee),
       createdBy,
     }).save();
+
     return result;
   }
 
-  async importVoluntee(
+  public async importVoluntee(
     data: IvolunteeImport[],
     createdBy: string,
   ): Promise<IvolunteeImport[]> {
@@ -187,10 +196,11 @@ export class TrainningPointService {
         continue;
       }
     }
+
     return data;
   }
 
-  async importTrainningPoint(
+  public async importTrainningPoint(
     data: ItrainningPointImport[],
     createdBy: string,
   ): Promise<ItrainningPointImport[]> {
@@ -233,10 +243,11 @@ export class TrainningPointService {
         continue;
       }
     }
+
     return data;
   }
 
-  async updateTrainningPoint(
+  public async updateTrainningPoint(
     id: string,
     updateDto: UpdateTrainningPointDto,
     updatedBy: string,
@@ -266,10 +277,11 @@ export class TrainningPointService {
       newDto,
       { new: true },
     );
+
     return result;
   }
 
-  async updateVolutee(
+  public async updateVolutee(
     id: string,
     updateDto: UpdateVolunteeDto,
     updatedBy: string,
@@ -302,17 +314,22 @@ export class TrainningPointService {
       newDto,
       { new: true },
     );
+
     return result;
   }
 
-  async findTrainningPointById(id: string): Promise<TrainningPoints> {
+  public async findTrainningPointById(id: string): Promise<TrainningPoints> {
     const result = await this.trainningPointSchema
       .findById(id)
-      .populate('user', selectProfile, this.profileSchema, { isDeleted: false })
-      .populate('semester', selectSemester, this.semesterSchema, {
+      .populate(this.populateUser, selectProfile, this.profileSchema, {
         isDeleted: false,
       })
-      .populate('program', '', this.volunteeProgramSchema, { isDeleted: false })
+      .populate(this.populateSemester, selectSemester, this.semesterSchema, {
+        isDeleted: false,
+      })
+      .populate(this.populateProgram, '', this.volunteeProgramSchema, {
+        isDeleted: false,
+      })
       .exec();
     if (!result) {
       new CommonException(
@@ -320,34 +337,25 @@ export class TrainningPointService {
         trainningPointMsg.notFoundTrainningPoint,
       );
     }
+
     return result;
   }
 
-  async findVolunteeById(id: string): Promise<VolunteePrograms> {
+  public async findVolunteeById(id: string): Promise<VolunteePrograms> {
     const result = await this.volunteeProgramSchema
       .findById(id)
-      .populate('faculty', selectFaculty, this.facultySchema, {
+      .populate(this.populateFaculty, selectFaculty, this.facultySchema, {
         isDeleted: false,
       })
-      .populate('semester', selectSemester, this.semesterSchema, {
+      .populate(this.populateSemester, selectSemester, this.semesterSchema, {
         isDeleted: false,
       })
-      .populate(
-        'organizingCommittee.leader',
-        selectProfile,
-        this.profileSchema,
-        {
-          isDeleted: false,
-        },
-      )
-      .populate(
-        'organizingCommittee.secretary',
-        selectProfile,
-        this.profileSchema,
-        {
-          isDeleted: false,
-        },
-      )
+      .populate(this.populateLeader, selectProfile, this.profileSchema, {
+        isDeleted: false,
+      })
+      .populate(this.populateSecetary, selectProfile, this.profileSchema, {
+        isDeleted: false,
+      })
       .exec();
     if (!result) {
       new CommonException(
@@ -355,10 +363,11 @@ export class TrainningPointService {
         trainningPointMsg.notFoundVoluntee,
       );
     }
+
     return result;
   }
 
-  async findAllTrainningPoint(
+  public async findAllTrainningPoint(
     queryDto: QueryTrainningPointDto,
   ): Promise<{ results: TrainningPoints[]; total: number }> {
     const { limit, page, user, program, semester } = queryDto;
@@ -376,18 +385,23 @@ export class TrainningPointService {
       .find(query)
       .skip(limit && page ? Number(limit) * Number(page) - Number(limit) : null)
       .limit(limit ? Number(limit) : null)
-      .populate('user', selectProfile, this.profileSchema, { isDeleted: false })
-      .populate('semester', selectSemester, this.semesterSchema, {
+      .populate(this.populateUser, selectProfile, this.profileSchema, {
         isDeleted: false,
       })
-      .populate('program', '', this.volunteeProgramSchema, { isDeleted: false })
+      .populate(this.populateSemester, selectSemester, this.semesterSchema, {
+        isDeleted: false,
+      })
+      .populate(this.populateProgram, '', this.volunteeProgramSchema, {
+        isDeleted: false,
+      })
       .sort({ createdAt: -1 })
       .exec();
     const total = await this.trainningPointSchema.find(query).count();
+
     return { results, total };
   }
 
-  async findAllVolunteeProgram(
+  public async findAllVolunteeProgram(
     queryDto: QueryVolunteeDto,
   ): Promise<{ results: VolunteePrograms[]; total: number }> {
     const { limit, page, searchKey, semester, faculty, leader } = queryDto;
@@ -402,41 +416,35 @@ export class TrainningPointService {
       query.faculty = new Types.ObjectId(faculty);
     }
     if (leader) {
-      query['organizingCommittee.leader'] = new Types.ObjectId(leader);
+      query[this.populateLeader] = new Types.ObjectId(leader);
     }
     const results = await this.volunteeProgramSchema
       .find(query)
       .skip(limit && page ? Number(limit) * Number(page) - Number(limit) : null)
       .limit(limit ? Number(limit) : null)
-      .populate('faculty', selectFaculty, this.facultySchema, {
+      .populate(this.populateFaculty, selectFaculty, this.facultySchema, {
         isDeleted: false,
       })
-      .populate('semester', selectSemester, this.semesterSchema, {
+      .populate(this.populateSemester, selectSemester, this.semesterSchema, {
         isDeleted: false,
       })
-      .populate(
-        'organizingCommittee.leader',
-        selectProfile,
-        this.profileSchema,
-        {
-          isDeleted: false,
-        },
-      )
-      .populate(
-        'organizingCommittee.secretary',
-        selectProfile,
-        this.profileSchema,
-        {
-          isDeleted: false,
-        },
-      )
+      .populate(this.populateLeader, selectProfile, this.profileSchema, {
+        isDeleted: false,
+      })
+      .populate(this.populateSecetary, selectProfile, this.profileSchema, {
+        isDeleted: false,
+      })
       .sort({ createdAt: -1 })
       .exec();
     const total = await this.volunteeProgramSchema.find(query).count();
+
     return { results, total };
   }
 
-  async deleteTrainningPoint(id: string, deletedBy: string): Promise<void> {
+  public async deleteTrainningPoint(
+    id: string,
+    deletedBy: string,
+  ): Promise<void> {
     const deleteDto = {
       isDeleted: false,
       deletedBy,
@@ -445,7 +453,7 @@ export class TrainningPointService {
     await this.trainningPointSchema.findByIdAndUpdate(id, deleteDto);
   }
 
-  async deleteVoluntee(id: string, deletedBy: string): Promise<void> {
+  public async deleteVoluntee(id: string, deletedBy: string): Promise<void> {
     const deleteDto = {
       isDeleted: false,
       deletedBy,
