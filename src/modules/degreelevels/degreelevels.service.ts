@@ -20,7 +20,7 @@ export class DegreelevelService {
     private readonly degreeLevelSchema: Model<DegreeLevelDocument>,
   ) {}
 
-  async createDegreeLevel(
+  public async createDegreeLevel(
     degreelevelDto: CreateDegreeLevelDto,
     createdBy: string,
   ): Promise<DegreeLevel> {
@@ -30,18 +30,20 @@ export class DegreelevelService {
       ...degreelevelDto,
       createdBy,
     }).save();
+
     return result;
   }
 
-  async findDegreeLevelById(id: string): Promise<DegreeLevel> {
+  public async findDegreeLevelById(id: string): Promise<DegreeLevel> {
     const result = await this.degreeLevelSchema.findById(id);
     if (!result) {
       new CommonException(HttpStatusCode.NOT_FOUND, degreeLevelMsg.notFound);
     }
+
     return result;
   }
 
-  async updateDegreeLevel(
+  public async updateDegreeLevel(
     id: string,
     updateDto: UpdateDegreeLevelDto,
     updatedBy: string,
@@ -58,10 +60,11 @@ export class DegreelevelService {
     const result = await this.degreeLevelSchema.findByIdAndUpdate(id, dto, {
       new: true,
     });
+
     return result;
   }
 
-  async findAllDegreeLevels(
+  public async findAllDegreeLevels(
     queryDto: QueryDegreeLevelDto,
   ): Promise<{ results: DegreeLevel[]; total: number }> {
     const { limit, page, searchKey } = queryDto;
@@ -76,10 +79,11 @@ export class DegreelevelService {
       .sort({ createdAt: -1 })
       .exec();
     const total = await this.degreeLevelSchema.find(query).count();
+
     return { results, total };
   }
 
-  async deleteDegreelevel(id: string, deletedBy: string): Promise<void> {
+  public async deleteDegreelevel(id: string, deletedBy: string): Promise<void> {
     await this.findDegreeLevelById(id);
     const deleteDto = {
       deletedBy,
@@ -89,7 +93,7 @@ export class DegreelevelService {
     await this.degreeLevelSchema.findByIdAndUpdate(id, deleteDto);
   }
 
-  async validateName(name: string): Promise<void> {
+  private async validateName(name: string): Promise<void> {
     const result = await this.degreeLevelSchema.findOne({
       name: name.trim(),
       isDeleted: false,
