@@ -23,8 +23,9 @@ export class SyncServiceController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN]))
-  async migrateUsers(@Res() res: Response): Promise<ResponseRequest> {
+  public async migrateUsers(@Res() res: Response): Promise<ResponseRequest> {
     const result = await this.service.migrateUser();
+
     return new ResponseRequest(res, result, syncServiceMsg.migrateUsers);
   }
 
@@ -32,8 +33,11 @@ export class SyncServiceController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN]))
-  async migrateUserBlogService(@Res() res: Response): Promise<ResponseRequest> {
+  public async migrateUserBlogService(
+    @Res() res: Response,
+  ): Promise<ResponseRequest> {
     const result = await this.service.migrateUserBlogService();
+
     return new ResponseRequest(res, result, syncServiceMsg.migrateUsers);
   }
 
@@ -41,8 +45,9 @@ export class SyncServiceController {
   @UseGuards(
     AuthServiceAccessByKey([keyAccessLibraryService, keyAccessBlogService]),
   )
-  async getAllUsers(@Res() res: Response): Promise<ResponseRequest> {
+  public async getAllUsers(@Res() res: Response): Promise<ResponseRequest> {
     const result = await this.service.getUserForSyncData();
+
     return new ResponseRequest(res, result, syncServiceMsg.getAllUser);
   }
 }
