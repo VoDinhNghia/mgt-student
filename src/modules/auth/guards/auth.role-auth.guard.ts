@@ -11,6 +11,7 @@ export const RoleGuard = (roles: string[]): Type<CanActivate> => {
         .getRequest<UsersDto & { user: { role: string } }>();
       const user = request.user;
       const result = roles.includes(user.role);
+
       return result;
     }
   }

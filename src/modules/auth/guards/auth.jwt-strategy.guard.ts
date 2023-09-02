@@ -38,6 +38,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     } catch (error) {
       console.log('verify token socket error');
     }
+
     return payload;
   }
 }

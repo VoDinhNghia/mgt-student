@@ -18,6 +18,8 @@ import { HttpStatusCode } from 'src/constants/constants.http-status';
 
 @Injectable()
 export class AwardsService {
+  private populateAttachment: string = 'attachment';
+
   constructor(
     @InjectModel(Award.name)
     private readonly awardSchema: Model<AwardDocument>,
@@ -25,7 +27,7 @@ export class AwardsService {
     private readonly attachmentSchema: Model<AttachmentDocument>,
   ) {}
 
-  async createAward(
+  public async createAward(
     createDto: CreateAwardDto,
     createdBy: string,
   ): Promise<Award> {
@@ -41,23 +43,30 @@ export class AwardsService {
       ...createDto,
       createdBy,
     }).save();
+
     return result;
   }
 
-  async findAwardById(id: string): Promise<Award> {
+  public async findAwardById(id: string): Promise<Award> {
     const result = await this.awardSchema
       .findById(id)
-      .populate('attachment', selectAttachment, this.attachmentSchema, {
-        isDeleted: false,
-      })
+      .populate(
+        this.populateAttachment,
+        selectAttachment,
+        this.attachmentSchema,
+        {
+          isDeleted: false,
+        },
+      )
       .exec();
     if (!result) {
       new CommonException(HttpStatusCode.NOT_FOUND, msgNotFound);
     }
+
     return result;
   }
 
-  async updateAward(
+  public async updateAward(
     id: string,
     updateDto: UpdateAwardDto,
     updatedBy: string,
@@ -78,10 +87,11 @@ export class AwardsService {
     const result = await this.awardSchema.findByIdAndUpdate(id, newDto, {
       new: true,
     });
+
     return result;
   }
 
-  async deleteAward(id: string, deletedBy: string): Promise<void> {
+  public async deleteAward(id: string, deletedBy: string): Promise<void> {
     const deleteDto = {
       isDeleted: true,
       deletedBy,
@@ -90,7 +100,7 @@ export class AwardsService {
     await this.awardSchema.findByIdAndUpdate(id, deleteDto);
   }
 
-  async findAllAward(
+  public async findAllAward(
     queryDto: QueryAwardDto,
   ): Promise<{ results: Award[]; total: number }> {
     const { limit, page, searchKey, type, fromDate, toDate } = queryDto;
@@ -114,12 +124,18 @@ export class AwardsService {
       .find(query)
       .skip(limit && page ? Number(limit) * Number(page) - Number(limit) : null)
       .limit(limit ? Number(limit) : null)
-      .populate('attachment', selectAttachment, this.attachmentSchema, {
-        isDeleted: false,
-      })
+      .populate(
+        this.populateAttachment,
+        selectAttachment,
+        this.attachmentSchema,
+        {
+          isDeleted: false,
+        },
+      )
       .sort({ createAt: -1 })
       .exec();
     const total = await this.awardSchema.find(query).count();
+
     return { results, total };
   }
 }
