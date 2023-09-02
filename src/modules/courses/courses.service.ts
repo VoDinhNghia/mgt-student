@@ -17,7 +17,7 @@ export class CoursesService {
     private readonly courseSchema: Model<CourseDocument>,
   ) {}
 
-  async createCourse(
+  public async createCourse(
     courseDto: CreateCourseDto,
     createdBy: string,
   ): Promise<Course> {
@@ -27,18 +27,20 @@ export class CoursesService {
       ...courseDto,
       createdBy,
     }).save();
+
     return course;
   }
 
-  async findCourseById(id: string): Promise<Course> {
+  public async findCourseById(id: string): Promise<Course> {
     const result = await this.courseSchema.findById(id);
     if (!result) {
       new CommonException(HttpStatusCode.NOT_FOUND, courseMsg.notFound);
     }
+
     return result;
   }
 
-  async updateCourse(
+  public async updateCourse(
     id: string,
     courseDto: UpdateCourseDto,
     updatedBy: string,
@@ -55,10 +57,11 @@ export class CoursesService {
     const result = await this.courseSchema.findByIdAndUpdate(id, updateDto, {
       new: true,
     });
+
     return result;
   }
 
-  async findAllCourses(
+  public async findAllCourses(
     queryDto: QueryCourseDto,
   ): Promise<{ results: Course[]; total: number }> {
     const { limit, page, searchKey } = queryDto;
@@ -73,10 +76,11 @@ export class CoursesService {
       .sort({ createdAt: -1 })
       .exec();
     const total = await this.courseSchema.find(query).count();
+
     return { results, total };
   }
 
-  async deleteCourse(id: string, deletedBy: string): Promise<void> {
+  public async deleteCourse(id: string, deletedBy: string): Promise<void> {
     await this.findCourseById(id);
     const deleteDto = {
       deletedBy,
@@ -86,7 +90,7 @@ export class CoursesService {
     await this.courseSchema.findByIdAndUpdate(id, deleteDto);
   }
 
-  async validateName(name: string): Promise<void> {
+  private async validateName(name: string): Promise<void> {
     const result = await this.courseSchema.findOne({
       name: name.trim(),
       isDeleted: false,
