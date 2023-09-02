@@ -33,6 +33,11 @@ import { HttpStatusCode } from 'src/constants/constants.http-status';
 
 @Injectable()
 export class FacultiesService {
+  private populateHeadOfSection: string = 'headOfSection';
+  private populateEputeHead: string = 'eputeHead';
+  private populateAward: string = 'award';
+  private populateFaculty: string = 'faculty';
+
   constructor(
     @InjectModel(Faculty.name)
     private readonly facultySchema: Model<FacultyDocument>,
@@ -44,7 +49,7 @@ export class FacultiesService {
     private readonly awardSchema: Model<AwardDocument>,
   ) {}
 
-  async createFaculty(
+  public async createFaculty(
     createFacultyDto: CreateFacultyDto,
     createdBy: string,
   ): Promise<Faculty> {
@@ -58,27 +63,31 @@ export class FacultiesService {
       ...createFacultyDto,
       createdBy,
     }).save();
+
     return result;
   }
 
-  async findFacultyById(id: string): Promise<Faculty> {
+  public async findFacultyById(id: string): Promise<Faculty> {
     const result = await this.facultySchema
       .findById(id)
-      .populate('headOfSection', selectProfile, this.profileSchema, {
+      .populate(this.populateHeadOfSection, selectProfile, this.profileSchema, {
         isDeleted: false,
       })
-      .populate('eputeHead', selectProfile, this.profileSchema, {
+      .populate(this.populateEputeHead, selectProfile, this.profileSchema, {
         isDeleted: false,
       })
-      .populate('award', selectAward, this.awardSchema, { isDeleted: false })
+      .populate(this.populateAward, selectAward, this.awardSchema, {
+        isDeleted: false,
+      })
       .exec();
     if (!result) {
       new CommonException(HttpStatusCode.NOT_FOUND, facultiesMsg.notFound);
     }
+
     return result;
   }
 
-  async updateFaculty(
+  public async updateFaculty(
     id: string,
     facultyDto: UpdateFacultyDto,
     updatedBy: string,
@@ -92,10 +101,11 @@ export class FacultiesService {
     const result = await this.facultySchema.findByIdAndUpdate(id, updateDto, {
       new: true,
     });
+
     return result;
   }
 
-  async findAllFaculties(
+  public async findAllFaculties(
     facultyQueryDto: FacultyQueryDto,
   ): Promise<{ results: Faculty[]; total: number }> {
     const { limit, page, searchKey, type } = facultyQueryDto;
@@ -110,20 +120,23 @@ export class FacultiesService {
       .find(query)
       .skip(limit && page ? Number(limit) * Number(page) - Number(limit) : null)
       .limit(limit ? Number(limit) : null)
-      .populate('headOfSection', selectProfile, this.profileSchema, {
+      .populate(this.populateHeadOfSection, selectProfile, this.profileSchema, {
         isDeleted: false,
       })
-      .populate('eputeHead', selectProfile, this.profileSchema, {
+      .populate(this.populateEputeHead, selectProfile, this.profileSchema, {
         isDeleted: false,
       })
-      .populate('award', selectAward, this.awardSchema, { isDeleted: false })
+      .populate(this.populateAward, selectAward, this.awardSchema, {
+        isDeleted: false,
+      })
       .sort({ createdAt: -1 })
       .exec();
     const total = await this.facultySchema.find(query).count();
+
     return { results, total };
   }
 
-  async createMajor(
+  public async createMajor(
     majorDto: CreateMajorDto,
     createdBy: string,
   ): Promise<Majors> {
@@ -140,30 +153,34 @@ export class FacultiesService {
       ...majorDto,
       createdBy,
     }).save();
+
     return result;
   }
 
-  async findMajorById(id: string): Promise<Majors> {
+  public async findMajorById(id: string): Promise<Majors> {
     const result = await this.majorSchema
       .findById(id)
-      .populate('faculty', selectFaculty, this.facultySchema, {
+      .populate(this.populateFaculty, selectFaculty, this.facultySchema, {
         isDeleted: false,
       })
-      .populate('headOfSection', selectProfile, this.profileSchema, {
+      .populate(this.populateHeadOfSection, selectProfile, this.profileSchema, {
         isDeleted: false,
       })
-      .populate('eputeHead', selectProfile, this.profileSchema, {
+      .populate(this.populateEputeHead, selectProfile, this.profileSchema, {
         isDeleted: false,
       })
-      .populate('award', selectAward, this.awardSchema, { isDeleted: false })
+      .populate(this.populateAward, selectAward, this.awardSchema, {
+        isDeleted: false,
+      })
       .exec();
     if (!result) {
       new CommonException(HttpStatusCode.NOT_FOUND, facultiesMsg.notFoundMajor);
     }
+
     return result;
   }
 
-  async updateMajor(
+  public async updateMajor(
     id: string,
     majorDto: UpdateMajorDto,
     updatedBy: string,
@@ -186,10 +203,11 @@ export class FacultiesService {
     const result = await this.majorSchema.findByIdAndUpdate(id, updateDto, {
       new: true,
     });
+
     return result;
   }
 
-  async findAllMajors(
+  public async findAllMajors(
     queryDto: MajorQueryDto,
   ): Promise<{ results: Majors[]; total: number }> {
     const { faculty, searchKey } = queryDto;
@@ -202,23 +220,26 @@ export class FacultiesService {
     }
     const results = await this.majorSchema
       .find(query)
-      .populate('faculty', selectFaculty, this.facultySchema, {
+      .populate(this.populateFaculty, selectFaculty, this.facultySchema, {
         isDeleted: false,
       })
-      .populate('headOfSection', selectProfile, this.profileSchema, {
+      .populate(this.populateHeadOfSection, selectProfile, this.profileSchema, {
         isDeleted: false,
       })
-      .populate('eputeHead', selectProfile, this.profileSchema, {
+      .populate(this.populateEputeHead, selectProfile, this.profileSchema, {
         isDeleted: false,
       })
-      .populate('award', selectAward, this.awardSchema, { isDeleted: false })
+      .populate(this.populateAward, selectAward, this.awardSchema, {
+        isDeleted: false,
+      })
       .sort({ createdAt: -1 })
       .exec();
     const total = await this.majorSchema.find(query).count();
+
     return { results, total };
   }
 
-  async validateDto(facultyDto: CreateFacultyDto): Promise<void> {
+  private async validateDto(facultyDto: CreateFacultyDto): Promise<void> {
     const { award = [], headOfSection, eputeHead } = facultyDto;
     const valid = new ValidFields();
     if (headOfSection) {
