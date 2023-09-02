@@ -57,7 +57,7 @@ export class BranchService {
     private readonly wardSchema: Model<WardDocument>,
   ) {}
 
-  async createBranchNew(
+  public async createBranchNew(
     createDto: BranchCreateDto,
     createdBy: string,
   ): Promise<Branch> {
@@ -89,7 +89,7 @@ export class BranchService {
     return result;
   }
 
-  async findById(id: string): Promise<Branch> {
+  public async findById(id: string): Promise<Branch> {
     const result = await this.branchSchema
       .findById(id)
       .populate(this.populateCountryField, selectCountry, this.countrySchema, {
@@ -122,7 +122,7 @@ export class BranchService {
     return result;
   }
 
-  async findAllBranchs(
+  public async findAllBranchs(
     queryDto: BranchQueryDto,
   ): Promise<{ results: Branch[]; total: number }> {
     const { limit, page, searchKey } = queryDto;
@@ -159,10 +159,11 @@ export class BranchService {
       .sort({ createAt: -1 })
       .exec();
     const total = await this.branchSchema.find(query).count();
+
     return { results, total };
   }
 
-  async updateBranch(
+  public async updateBranch(
     id: string,
     updateDto: BranchUpdateDto,
     updatedBy: string,
@@ -203,10 +204,11 @@ export class BranchService {
     const result = await this.branchSchema.findByIdAndUpdate(id, newDto, {
       new: true,
     });
+
     return result;
   }
 
-  async deleteBranch(id: string, deletedBy: string): Promise<void> {
+  public async deleteBranch(id: string, deletedBy: string): Promise<void> {
     const deleteDto = {
       isDeleted: true,
       deletedBy,
@@ -215,7 +217,7 @@ export class BranchService {
     await this.branchSchema.findByIdAndUpdate(id, deleteDto);
   }
 
-  async validateName(name: string): Promise<void> {
+  private async validateName(name: string): Promise<void> {
     const options = { name: name?.trim() };
     const existed = await this.branchSchema.findOne(options);
     if (existed) {
