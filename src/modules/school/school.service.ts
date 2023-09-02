@@ -37,6 +37,13 @@ import { HttpStatusCode } from 'src/constants/constants.http-status';
 
 @Injectable()
 export class SchoolService {
+  private populateImage: string = 'image';
+  private populateAward: string = 'award';
+  private populateCountry: string = 'location.country';
+  private populateProvince: string = 'location.province';
+  private populateDistrict: string = 'location.district';
+  private populateWard: string = 'location.ward';
+
   constructor(
     @InjectModel(SchoolInfo.name)
     private readonly schoolSchema: Model<SchoolInfoDocument>,
@@ -54,40 +61,41 @@ export class SchoolService {
     private readonly wardSchema: Model<WardDocument>,
   ) {}
 
-  async createSchool(schoolDto: CreateSchoolDto): Promise<void> {
+  public async createSchool(schoolDto: CreateSchoolDto): Promise<void> {
     const school = await this.schoolSchema.findOne({ schoolId });
     if (!school) {
       await new this.schoolSchema(schoolDto).save();
     }
   }
 
-  async findSchoolInfo(): Promise<SchoolInfo> {
+  public async findSchoolInfo(): Promise<SchoolInfo> {
     const results = await this.schoolSchema
       .findOne({ schoolId })
-      .populate('image', selectAttachment, this.attachmentSchema, {
+      .populate(this.populateImage, selectAttachment, this.attachmentSchema, {
         isDeleted: false,
       })
-      .populate('award', '', this.awardSchema, { isDeleted: false })
-      .populate('location.country', '', this.countrySchema, {
+      .populate(this.populateAward, '', this.awardSchema, { isDeleted: false })
+      .populate(this.populateCountry, '', this.countrySchema, {
         isDeleted: false,
       })
-      .populate('location.province', '', this.provinceSchema, {
+      .populate(this.populateProvince, '', this.provinceSchema, {
         isDeleted: false,
       })
-      .populate('location.district', '', this.districtSchema, {
+      .populate(this.populateDistrict, '', this.districtSchema, {
         isDeleted: false,
       })
-      .populate('location.ward', '', this.wardSchema, {
+      .populate(this.populateWard, '', this.wardSchema, {
         isDeleted: false,
       })
       .exec();
     if (!results) {
       new CommonException(HttpStatusCode.NOT_FOUND, schoolMsg.notFound);
     }
+
     return results;
   }
 
-  async updateSchool(
+  public async updateSchool(
     id: string,
     schoolDto: UpdateSchoolDto,
     updatedBy: string,
@@ -131,6 +139,7 @@ export class SchoolService {
     const result = await this.schoolSchema.findByIdAndUpdate(id, dto, {
       new: true,
     });
+
     return result;
   }
 }

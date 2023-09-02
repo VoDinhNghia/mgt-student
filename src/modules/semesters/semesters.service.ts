@@ -18,7 +18,7 @@ export class SemestersService {
     private readonly semesterSchema: Model<SemesterDocument>,
   ) {}
 
-  async createSemester(
+  public async createSemester(
     semesterDto: CreateSemesterDto,
     createdBy: string,
   ): Promise<Semester> {
@@ -28,18 +28,20 @@ export class SemestersService {
       createdBy,
     };
     const result = await new this.semesterSchema(dto).save();
+
     return result;
   }
 
-  async findSemesterById(id: string): Promise<Semester> {
+  public async findSemesterById(id: string): Promise<Semester> {
     const result = await this.semesterSchema.findById(id);
     if (!result) {
       new CommonException(HttpStatusCode.NOT_FOUND, semesterMsg.notFound);
     }
+
     return result;
   }
 
-  async updateSemester(
+  public async updateSemester(
     id: string,
     updateDto: UpdateSemesterDto,
     updatedBy: string,
@@ -52,10 +54,11 @@ export class SemestersService {
     const result = await this.semesterSchema.findByIdAndUpdate(id, dto, {
       new: true,
     });
+
     return result;
   }
 
-  async findAllSemesters(
+  public async findAllSemesters(
     queryDto: QuerySemesterDto,
   ): Promise<{ results: Semester[]; total: number }> {
     const { limit, page, searchKey } = queryDto;
@@ -70,13 +73,14 @@ export class SemestersService {
       .sort({ createdAt: -1 })
       .exec();
     const total = await this.semesterSchema.find(query).count();
+
     return {
       results,
       total,
     };
   }
 
-  async deleteSemester(id: string, deletedBy: string): Promise<void> {
+  public async deleteSemester(id: string, deletedBy: string): Promise<void> {
     await this.findSemesterById(id);
     const dto = {
       deletedBy,
