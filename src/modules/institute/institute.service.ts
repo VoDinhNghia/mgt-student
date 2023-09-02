@@ -30,6 +30,11 @@ import { HttpStatusCode } from 'src/constants/constants.http-status';
 
 @Injectable()
 export class InstituteService {
+  private populateAttachment: string = 'attachment';
+  private populateParson: string = 'parson';
+  private populateViceParson: string = 'viceParson';
+  private populateOffice: string = 'contacts.office';
+
   constructor(
     @InjectModel(Institudes.name)
     private readonly institutiSchema: Model<InstitudeDocument>,
@@ -41,7 +46,7 @@ export class InstituteService {
     private readonly roomSchema: Model<RoomsDocument>,
   ) {}
 
-  async createInstitute(
+  public async createInstitute(
     instituteDto: CreateInstituteDto,
     createdBy: string,
   ): Promise<Institudes> {
@@ -65,10 +70,11 @@ export class InstituteService {
       ...instituteDto,
       createdBy,
     }).save();
+
     return result;
   }
 
-  async updateInstitute(
+  public async updateInstitute(
     id: string,
     instituteDto: UpdateInstituteDto,
     updatedBy: string,
@@ -103,32 +109,39 @@ export class InstituteService {
     const result = await this.institutiSchema.findByIdAndUpdate(id, updateDto, {
       new: true,
     });
+
     return result;
   }
 
-  async findInstituteById(id: string): Promise<Institudes> {
+  public async findInstituteById(id: string): Promise<Institudes> {
     const result = await this.institutiSchema
       .findById(id)
-      .populate('attachment', selectAttachment, this.attachmentSchema, {
+      .populate(
+        this.populateAttachment,
+        selectAttachment,
+        this.attachmentSchema,
+        {
+          isDeleted: false,
+        },
+      )
+      .populate(this.populateParson, selectProfile, this.profileSchema, {
         isDeleted: false,
       })
-      .populate('parson', selectProfile, this.profileSchema, {
+      .populate(this.populateViceParson, selectProfile, this.profileSchema, {
         isDeleted: false,
       })
-      .populate('viceParson', selectProfile, this.profileSchema, {
-        isDeleted: false,
-      })
-      .populate('contacts.office', selectRoom, this.roomSchema, {
+      .populate(this.populateOffice, selectRoom, this.roomSchema, {
         isDeleted: false,
       })
       .exec();
     if (!result) {
       new CommonException(HttpStatusCode.NOT_FOUND, instituteMsg.notFound);
     }
+
     return result;
   }
 
-  async findAllInstitudes(
+  public async findAllInstitudes(
     queryDto: QueryIntituteDto,
   ): Promise<{ results: Institudes[]; total: number }> {
     const { limit, page, searchKey } = queryDto;
@@ -140,25 +153,31 @@ export class InstituteService {
       .find(query)
       .skip(limit && page ? Number(limit) * Number(page) - Number(limit) : null)
       .limit(limit ? Number(limit) : null)
-      .populate('attachment', selectAttachment, this.attachmentSchema, {
+      .populate(
+        this.populateAttachment,
+        selectAttachment,
+        this.attachmentSchema,
+        {
+          isDeleted: false,
+        },
+      )
+      .populate(this.populateParson, selectProfile, this.profileSchema, {
         isDeleted: false,
       })
-      .populate('parson', selectProfile, this.profileSchema, {
+      .populate(this.populateViceParson, selectProfile, this.profileSchema, {
         isDeleted: false,
       })
-      .populate('viceParson', selectProfile, this.profileSchema, {
-        isDeleted: false,
-      })
-      .populate('contacts.office', selectRoom, this.roomSchema, {
+      .populate(this.populateOffice, selectRoom, this.roomSchema, {
         isDeleted: false,
       })
       .sort({ createdAt: -1 })
       .exec();
     const total = await this.institutiSchema.find(query).count();
+
     return { results, total };
   }
 
-  async deleteInstitude(id: string, deletedBy: string): Promise<void> {
+  public async deleteInstitude(id: string, deletedBy: string): Promise<void> {
     await this.findInstituteById(id);
     const dto = {
       isDeleted: true,
