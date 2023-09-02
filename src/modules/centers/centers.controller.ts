@@ -34,14 +34,15 @@ export class CenterController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
-  async createCenter(
+  public async createCenter(
     @Body() centerDto: CreateCenterDto,
     @Res() res: Response,
     @Req() req: Request,
   ): Promise<ResponseRequest> {
     const user: UserLoginResponseDto = req?.user;
-    const createdBy: string = user.profileId;
-    const result = await this.service.createCenter(centerDto, createdBy);
+    const { profileId } = user;
+    const result = await this.service.createCenter(centerDto, profileId);
+
     return new ResponseRequest(res, result, centerMsg.create);
   }
 
@@ -49,15 +50,16 @@ export class CenterController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
-  async updateCenter(
+  public async updateCenter(
     @Param('id') id: string,
     @Body() centerDto: UpdateCenterDto,
     @Res() res: Response,
     @Req() req: Request,
   ): Promise<ResponseRequest> {
-    const user: UserLoginResponseDto = req?.user;
-    const updatedBy: string = user.profileId;
-    const result = await this.service.updateCenter(id, centerDto, updatedBy);
+    const user: UserLoginResponseDto = req.user;
+    const { profileId } = user;
+    const result = await this.service.updateCenter(id, centerDto, profileId);
+
     return new ResponseRequest(res, result, centerMsg.update);
   }
 
@@ -65,32 +67,35 @@ export class CenterController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
-  async deleteCenter(
+  public async deleteCenter(
     @Param('id') id: string,
     @Res() res: Response,
     @Req() req: Request,
   ): Promise<ResponseRequest> {
-    const user: UserLoginResponseDto = req?.user;
-    const deletedBy: string = user.profileId;
-    await this.service.deleteCenter(id, deletedBy);
+    const user: UserLoginResponseDto = req.user;
+    const { profileId } = user;
+    await this.service.deleteCenter(id, profileId);
+
     return new ResponseRequest(res, true, centerMsg.delete);
   }
 
   @Get()
-  async getAllCenter(
+  public async getAllCenter(
     @Query() queryDto: QueryCenterDto,
     @Res() res: Response,
   ): Promise<ResponseRequest> {
     const result = await this.service.findAllCenter(queryDto);
+
     return new ResponseRequest(res, result, centerMsg.getAll);
   }
 
   @Get('/:id')
-  async getCenterById(
+  public async getCenterById(
     @Param('id') id: string,
     @Res() res: Response,
   ): Promise<ResponseRequest> {
     const result = await this.service.findCenterById(id);
+
     return new ResponseRequest(res, result, centerMsg.getById);
   }
 }
