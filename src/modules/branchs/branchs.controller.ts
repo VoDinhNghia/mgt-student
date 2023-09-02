@@ -34,26 +34,28 @@ export class BranchController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
-  async createBranch(
+  public async createBranch(
     @Res() res: Response,
     @Body() branchCreateDto: BranchCreateDto,
     @Req() req: Request,
   ): Promise<ResponseRequest> {
     const user: UserLoginResponseDto = req?.user;
-    const createdBy: string = user.profileId;
+    const { profileId } = user;
     const result = await this.branchService.createBranchNew(
       branchCreateDto,
-      createdBy,
+      profileId,
     );
+
     return new ResponseRequest(res, result, branchMsg.create);
   }
 
   @Get()
-  async getAllBranchs(
+  public async getAllBranchs(
     @Query() branchQueryDto: BranchQueryDto,
     @Res() res: Response,
   ): Promise<ResponseRequest> {
     const result = await this.branchService.findAllBranchs(branchQueryDto);
+
     return new ResponseRequest(res, result, branchMsg.getAll);
   }
 
@@ -61,19 +63,20 @@ export class BranchController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
-  async updateBranch(
+  public async updateBranch(
     @Param('id') id: string,
     @Body() updateBranchDto: BranchUpdateDto,
     @Res() res: Response,
     @Req() req: Request,
   ): Promise<ResponseRequest> {
     const user: UserLoginResponseDto = req?.user;
-    const updatedBy: string = user.profileId;
+    const { profileId } = user;
     const result = await this.branchService.updateBranch(
       id,
       updateBranchDto,
-      updatedBy,
+      profileId,
     );
+
     return new ResponseRequest(res, result, branchMsg.update);
   }
 
@@ -81,23 +84,25 @@ export class BranchController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
-  async deleteBranch(
+  public async deleteBranch(
     @Param('id') id: string,
     @Res() res: Response,
     @Req() req: Request,
   ): Promise<ResponseRequest> {
     const user: UserLoginResponseDto = req?.user;
-    const deletedBy: string = user.profileId;
-    await this.branchService.deleteBranch(id, deletedBy);
+    const { profileId } = user;
+    await this.branchService.deleteBranch(id, profileId);
+
     return new ResponseRequest(res, true, branchMsg.delete);
   }
 
   @Get('/:id')
-  async getBranchById(
+  public async getBranchById(
     @Param('id') id: string,
     @Res() res: Response,
   ): Promise<ResponseRequest> {
     const result = await this.branchService.findById(id);
+
     return new ResponseRequest(res, result, branchMsg.getById);
   }
 }

@@ -38,17 +38,18 @@ export class ClassSubjectController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
-  async createClass(
+  public async createClass(
     @Res() res: Response,
     @Body() createClassDto: CreateClassDto,
     @Req() req: Request,
   ): Promise<ResponseRequest> {
     const user: UserLoginResponseDto = req?.user;
-    const createdBy: string = user.profileId;
+    const { profileId } = user;
     const result = await this.classSubjectService.createClass(
       createClassDto,
-      createdBy,
+      profileId,
     );
+
     return new ResponseRequest(res, result, classMsg.create);
   }
 
@@ -57,17 +58,18 @@ export class ClassSubjectController {
   @UseGuards(JwtAuthGuard)
   @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
   @UseInterceptors(ValidatePercentPoint)
-  async createSubject(
+  public async createSubject(
     @Res() res: Response,
     @Body() subjectDto: CreateSubjectDto,
     @Req() req: Request,
   ): Promise<ResponseRequest> {
     const user: UserLoginResponseDto = req?.user;
-    const createdBy: string = user.profileId;
+    const { profileId } = user;
     const result = await this.classSubjectService.createSubject(
       subjectDto,
-      createdBy,
+      profileId,
     );
+
     return new ResponseRequest(res, result, classMsg.createSubject);
   }
 
@@ -75,19 +77,20 @@ export class ClassSubjectController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
-  async updateSubject(
+  public async updateSubject(
     @Param('id') id: string,
     @Res() res: Response,
     @Body() subjectDto: UpdateSubjectDto,
     @Req() req: Request,
   ): Promise<ResponseRequest> {
     const user: UserLoginResponseDto = req?.user;
-    const updatedBy: string = user.profileId;
+    const { profileId } = user;
     const result = await this.classSubjectService.updateSubject(
       id,
       subjectDto,
-      updatedBy,
+      profileId,
     );
+
     return new ResponseRequest(res, result, classMsg.updateSubject);
   }
 
@@ -95,14 +98,15 @@ export class ClassSubjectController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
-  async deleteSubject(
+  public async deleteSubject(
     @Param('id') id: string,
     @Res() res: Response,
     @Req() req: Request,
   ): Promise<ResponseRequest> {
     const user: UserLoginResponseDto = req?.user;
-    const deletedBy: string = user.profileId;
-    await this.classSubjectService.deleteSubject(id, deletedBy);
+    const { profileId } = user;
+    await this.classSubjectService.deleteSubject(id, profileId);
+
     return new ResponseRequest(res, true, classMsg.deleteSubject);
   }
 
@@ -110,59 +114,64 @@ export class ClassSubjectController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
-  async updateCalss(
+  public async updateCalss(
     @Param('id') id: string,
     @Res() res: Response,
     @Body() classDto: UpdateClassDto,
     @Req() req: Request,
   ): Promise<ResponseRequest> {
     const user: UserLoginResponseDto = req?.user;
-    const updatedBy: string = user.profileId;
+    const { profileId } = user;
     const result = await this.classSubjectService.updateClass(
       id,
       classDto,
-      updatedBy,
+      profileId,
     );
+
     return new ResponseRequest(res, result, classMsg.update);
   }
 
   @Get('/class/:id')
-  async getCalss(
+  public async getCalss(
     @Param('id') id: string,
     @Res() res: Response,
   ): Promise<ResponseRequest> {
     const result = await this.classSubjectService.findClassById(id);
+
     return new ResponseRequest(res, result, classMsg.getById);
   }
 
   @Get('/class')
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
-  async getAllCalss(
+  public async getAllCalss(
     @Query() queryDto: QueryClassDto,
     @Res() res: Response,
   ): Promise<ResponseRequest> {
     const result = await this.classSubjectService.findAllClasses(queryDto);
+
     return new ResponseRequest(res, result, classMsg.getAll);
   }
 
   @Get('/subject')
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
-  async getAllSubjects(
+  public async getAllSubjects(
     @Query() queryDto: QueryClassDto,
     @Res() res: Response,
   ): Promise<ResponseRequest> {
     const result = await this.classSubjectService.findAllSubjects(queryDto);
+
     return new ResponseRequest(res, result, classMsg.getAllSubject);
   }
 
   @Get('/subject/:id')
-  async getSubject(
+  public async getSubject(
     @Param('id') id: string,
     @Res() res: Response,
   ): Promise<ResponseRequest> {
     const result = await this.classSubjectService.findSubjectById(id);
+
     return new ResponseRequest(res, result, classMsg.getByIdSubject);
   }
 }

@@ -62,6 +62,11 @@ import { HttpStatusCode } from 'src/constants/constants.http-status';
 
 @Injectable()
 export class ClassSubjectService {
+  private populateMajor: string = 'major';
+  private populateCourse: string = 'course';
+  private populateDegreeLevel: string = 'degreeLevel';
+  private populateHomeRoomTeacher: string = 'homeroomteacher';
+
   constructor(
     @InjectModel(ClassInfos.name)
     private readonly classSchema: Model<ClassInfosDocument>,
@@ -81,7 +86,7 @@ export class ClassSubjectService {
     private readonly majorSchema: Model<MajorsDocument>,
   ) {}
 
-  async createClass(
+  public async createClass(
     createClassDto: CreateClassDto,
     createdBy: string,
   ): Promise<ClassInfos> {
@@ -107,28 +112,44 @@ export class ClassSubjectService {
       ...createClassDto,
       createdBy,
     }).save();
+
     return result;
   }
 
-  async findClassById(id: string): Promise<ClassInfos> {
+  public async findClassById(id: string): Promise<ClassInfos> {
     const result = await this.classSchema
       .findById(id)
-      .populate('major', selectMajor, this.majorSchema, { isDeleted: false })
-      .populate('course', selectCourse, this.courseSchema, { isDeleted: false })
-      .populate('degreeLevel', selectDegreelevel, this.degreelevelSchema, {
+      .populate(this.populateMajor, selectMajor, this.majorSchema, {
         isDeleted: false,
       })
-      .populate('homeroomteacher', selectProfile, this.profileSchema, {
+      .populate(this.populateCourse, selectCourse, this.courseSchema, {
         isDeleted: false,
       })
+      .populate(
+        this.populateDegreeLevel,
+        selectDegreelevel,
+        this.degreelevelSchema,
+        {
+          isDeleted: false,
+        },
+      )
+      .populate(
+        this.populateHomeRoomTeacher,
+        selectProfile,
+        this.profileSchema,
+        {
+          isDeleted: false,
+        },
+      )
       .exec();
     if (!result) {
       new CommonException(HttpStatusCode.NOT_FOUND, classMsg.notFoud);
     }
+
     return result;
   }
 
-  async findAllClasses(
+  public async findAllClasses(
     queryDto: QueryClassDto,
   ): Promise<{ results: ClassInfos[]; total: number }> {
     const {
@@ -160,21 +181,36 @@ export class ClassSubjectService {
       .find(query)
       .skip(limit && page ? Number(limit) * Number(page) - Number(limit) : null)
       .limit(limit ? Number(limit) : null)
-      .populate('major', selectMajor, this.majorSchema, { isDeleted: false })
-      .populate('course', selectCourse, this.courseSchema, { isDeleted: false })
-      .populate('degreeLevel', selectDegreelevel, this.degreelevelSchema, {
+      .populate(this.populateMajor, selectMajor, this.majorSchema, {
         isDeleted: false,
       })
-      .populate('homeroomteacher', selectProfile, this.profileSchema, {
+      .populate(this.populateCourse, selectCourse, this.courseSchema, {
         isDeleted: false,
       })
+      .populate(
+        this.populateDegreeLevel,
+        selectDegreelevel,
+        this.degreelevelSchema,
+        {
+          isDeleted: false,
+        },
+      )
+      .populate(
+        this.populateHomeRoomTeacher,
+        selectProfile,
+        this.profileSchema,
+        {
+          isDeleted: false,
+        },
+      )
       .sort({ createdAt: -1 })
       .exec();
     const total = await this.classSchema.find(query).count();
+
     return { results, total };
   }
 
-  async updateClass(
+  public async updateClass(
     id: string,
     classDto: UpdateClassDto,
     updatedBy: string,
@@ -212,10 +248,11 @@ export class ClassSubjectService {
     const result = await this.classSchema.findByIdAndUpdate(id, updateDto, {
       new: true,
     });
+
     return result;
   }
 
-  async createSubject(
+  public async createSubject(
     subjectDto: CreateSubjectDto,
     createdBy: string,
   ): Promise<Subjects> {
@@ -237,28 +274,11 @@ export class ClassSubjectService {
     const subject = await new this.subjectSchema(createDto).save();
     await this.createSubjectProcess(subject._id, createDto);
     const result = await this.findSubjectById(subject._id);
+
     return result;
   }
 
-  async createSubjectProcess(
-    subjectId: string,
-    processDto: CreateSubjectDto,
-  ): Promise<void> {
-    try {
-      await new this.subjectProcessSchema({
-        subject: subjectId,
-        ...processDto,
-      }).save();
-    } catch (error) {
-      await this.subjectSchema.findByIdAndDelete(subjectId);
-      new CommonException(
-        HttpStatusCode.SERVER_INTERVAL,
-        classMsg.createSubjectProcessError,
-      );
-    }
-  }
-
-  async findSubjectById(id: string): Promise<Subjects> {
+  public async findSubjectById(id: string): Promise<Subjects> {
     const match: ImatchSubject = {
       $match: { _id: new Types.ObjectId(id) },
     };
@@ -268,10 +288,11 @@ export class ClassSubjectService {
     if (!result[0]) {
       new CommonException(HttpStatusCode.NOT_FOUND, classMsg.notFoundSubject);
     }
+
     return result[0];
   }
 
-  async findAllSubjects(
+  public async findAllSubjects(
     queryDto: QuerySubjectDto,
   ): Promise<{ results: Subjects[]; total: number }> {
     const {
@@ -309,13 +330,14 @@ export class ClassSubjectService {
     const aggregateTotal = [match, ...lookup, { $count: 'total' }];
     const results = await this.subjectSchema.aggregate(aggregate);
     const total = await this.subjectSchema.aggregate(aggregateTotal);
+
     return {
       results,
       total: total[0]?.total ?? 0,
     };
   }
 
-  async updateSubject(
+  public async updateSubject(
     id: string,
     subjectDto: UpdateSubjectDto,
     updatedBy: string,
@@ -355,10 +377,42 @@ export class ClassSubjectService {
       updateDto,
     );
     const result = await this.findSubjectById(id);
+
     return result;
   }
 
-  async validateClassName(name: string): Promise<void> {
+  public async deleteSubject(id: string, deletedBy: string): Promise<void> {
+    const deleteDto = {
+      isDeleted: true,
+      deletedBy,
+      deletedAt: Date.now(),
+    };
+    await this.subjectSchema.findByIdAndUpdate(id, deleteDto);
+    await this.subjectProcessSchema.findOneAndUpdate(
+      { subject: new Types.ObjectId(id) },
+      deleteDto,
+    );
+  }
+
+  private async createSubjectProcess(
+    subjectId: string,
+    processDto: CreateSubjectDto,
+  ): Promise<void> {
+    try {
+      await new this.subjectProcessSchema({
+        subject: subjectId,
+        ...processDto,
+      }).save();
+    } catch (error) {
+      await this.subjectSchema.findByIdAndDelete(subjectId);
+      new CommonException(
+        HttpStatusCode.SERVER_INTERVAL,
+        classMsg.createSubjectProcessError,
+      );
+    }
+  }
+
+  private async validateClassName(name: string): Promise<void> {
     const options = { name: name?.trim(), isDeleted: false };
     const existed = await this.classSchema.findOne(options);
     if (existed) {
@@ -366,7 +420,7 @@ export class ClassSubjectService {
     }
   }
 
-  async validatePercent(
+  private async validatePercent(
     subjectId: string,
     subjectDto: UpdateSubjectDto,
   ): Promise<void> {
@@ -391,18 +445,5 @@ export class ClassSubjectService {
         classMsg.validateTotalPercent,
       );
     }
-  }
-
-  async deleteSubject(id: string, deletedBy: string): Promise<void> {
-    const deleteDto = {
-      isDeleted: true,
-      deletedBy,
-      deletedAt: Date.now(),
-    };
-    await this.subjectSchema.findByIdAndUpdate(id, deleteDto);
-    await this.subjectProcessSchema.findOneAndUpdate(
-      { subject: new Types.ObjectId(id) },
-      deleteDto,
-    );
   }
 }

@@ -30,50 +30,60 @@ import { QueryWardDto } from './dto/countries.query-ward.dto';
 @Controller(countriesController.name)
 @ApiTags(countriesController.tag)
 export class CountriesController {
+  private countriesFile: string = 'countries.json';
+  private provinceFile: string = 'province.json';
+  private districtFile: string = 'district.json';
+  private wardFile: string = 'ward.json';
+
   constructor(private readonly countryService: CountriesService) {}
 
   @Get()
-  async getAlls(
+  public async getAlls(
     @Query() queryDto: QueryCountriesDto,
     @Res() res: Response,
   ): Promise<ResponseRequest> {
     const data = await this.countryService.findAllCountry(queryDto);
+
     return new ResponseRequest(res, data, countriesMsg.getAllCountries);
   }
 
   @Get('/provinces')
-  async getPovinceAlls(
+  public async getPovinceAlls(
     @Query() queryPovinceDto: QueryPovinceDto,
     @Res() res: Response,
   ): Promise<ResponseRequest> {
     const result = await this.countryService.findAllProvinces(queryPovinceDto);
+
     return new ResponseRequest(res, result, countriesMsg.getAllProvince);
   }
 
   @Get('/districts')
-  async getDistrictAlls(
+  public async getDistrictAlls(
     @Query() queryDistrictDto: QueryDistrictDto,
     @Res() res: Response,
   ): Promise<ResponseRequest> {
     const result = await this.countryService.findAllDistricts(queryDistrictDto);
+
     return new ResponseRequest(res, result, countriesMsg.getAllDistrict);
   }
 
   @Get('/wards')
-  async getWardAlls(
+  public async getWardAlls(
     @Query() queryDto: QueryWardDto,
     @Res() res: Response,
   ): Promise<ResponseRequest> {
     const result = await this.countryService.findAllWards(queryDto);
+
     return new ResponseRequest(res, result, countriesMsg.getAllWard);
   }
 
   @Get('/:id')
-  async find(
+  public async find(
     @Param('id') id: string,
     @Res() res: Response,
   ): Promise<ResponseRequest> {
     const result = await this.countryService.findOneCountry(id);
+
     return new ResponseRequest(res, result, countriesMsg.getByIdCountry);
   }
 
@@ -81,14 +91,15 @@ export class CountriesController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
-  async initCountries(
+  public async initCountries(
     @Req() req: Request,
     @Res() res: Response,
   ): Promise<ResponseRequest> {
     const user: UserLoginResponseDto = req?.user;
-    const createdBy: string = user?.profileId;
-    const data = readFileJson('countries.json');
-    const result = await this.countryService.initCountries(data, createdBy);
+    const { profileId } = user;
+    const data = readFileJson(this.countriesFile);
+    const result = await this.countryService.initCountries(data, profileId);
+
     return new ResponseRequest(res, result, countriesMsg.initCountries);
   }
 
@@ -96,7 +107,7 @@ export class CountriesController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
-  async update(
+  public async update(
     @Param('id') id: string,
     @Body() updateCountriesDto: UpdateCountriesDto,
     @Res() res: Response,
@@ -105,6 +116,7 @@ export class CountriesController {
       id,
       updateCountriesDto,
     );
+
     return new ResponseRequest(res, result, countriesMsg.updateCountry);
   }
 
@@ -112,14 +124,15 @@ export class CountriesController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
-  async initProvince(
+  public async initProvince(
     @Req() req: Request,
     @Res() res: Response,
   ): Promise<ResponseRequest> {
     const user: UserLoginResponseDto = req?.user;
-    const createdBy: string = user?.profileId;
-    const data = readFileJson('province.json');
-    const result = await this.countryService.initProvinces(data, createdBy);
+    const { profileId } = user;
+    const data = readFileJson(this.provinceFile);
+    const result = await this.countryService.initProvinces(data, profileId);
+
     return new ResponseRequest(res, result, countriesMsg.initProvince);
   }
 
@@ -127,14 +140,15 @@ export class CountriesController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
-  async initDistrict(
+  public async initDistrict(
     @Req() req: Request,
     @Res() res: Response,
   ): Promise<ResponseRequest> {
     const user: UserLoginResponseDto = req?.user;
-    const createdBy: string = user?.profileId;
-    const data = readFileJson('district.json');
-    const result = await this.countryService.initDisTricts(data, createdBy);
+    const { profileId } = user;
+    const data = readFileJson(this.districtFile);
+    const result = await this.countryService.initDisTricts(data, profileId);
+
     return new ResponseRequest(res, result, countriesMsg.initDistrict);
   }
 
@@ -142,14 +156,15 @@ export class CountriesController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
-  async initWard(
+  public async initWard(
     @Req() req: Request,
     @Res() res: Response,
   ): Promise<ResponseRequest> {
     const user: UserLoginResponseDto = req?.user;
-    const createdBy: string = user?.profileId;
-    const data = readFileJson('ward.json');
-    const result = await this.countryService.initWards(data, createdBy);
+    const { profileId } = user;
+    const data = readFileJson(this.wardFile);
+    const result = await this.countryService.initWards(data, profileId);
+
     return new ResponseRequest(res, result, countriesMsg.initWard);
   }
 }

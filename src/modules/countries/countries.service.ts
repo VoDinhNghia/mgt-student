@@ -42,6 +42,11 @@ import { HttpStatusCode } from 'src/constants/constants.http-status';
 
 @Injectable()
 export class CountriesService {
+  private populateCountryId: string = 'countryId';
+  private populateProvinceId: string = 'provinceId';
+  private populateDistrictId: string = 'districtId';
+  private prefixUrlFlag: string = 'PREFIX_URL_FLAG';
+
   constructor(
     @InjectModel(Countries.name)
     private readonly countrySchema: Model<CountriesDocument>,
@@ -54,7 +59,7 @@ export class CountriesService {
     private readonly configService: ConfigService,
   ) {}
 
-  async initCountries(
+  public async initCountries(
     data: CreateCoutriesDto[],
     createdBy: string,
   ): Promise<Countries[]> {
@@ -73,7 +78,7 @@ export class CountriesService {
         continue;
       }
       try {
-        item.flag = `${this.configService.get('PREFIX_URL_FLAG')}${item.flag}`;
+        item.flag = `${this.configService.get(this.prefixUrlFlag)}${item.flag}`;
         await new this.countrySchema({ ...item, createdBy }).save();
         item.status = countriesMsg.createSuccess;
       } catch {
@@ -81,10 +86,11 @@ export class CountriesService {
         continue;
       }
     }
+
     return data;
   }
 
-  async initProvinces(
+  public async initProvinces(
     data: CreateProvinceDto[],
     createdBy: string,
   ): Promise<CreateProvinceDto[]> {
@@ -112,10 +118,11 @@ export class CountriesService {
         item.status = countriesMsg.systemError;
       }
     }
+
     return data;
   }
 
-  async initDisTricts(
+  public async initDisTricts(
     data: CreateDistrictDto[],
     createdBy: string,
   ): Promise<CreateDistrictDto[]> {
@@ -151,10 +158,11 @@ export class CountriesService {
         item.status = countriesMsg.systemError;
       }
     }
+
     return data;
   }
 
-  async initWards(
+  public async initWards(
     data: CreateWardDto[],
     createdBy: string,
   ): Promise<CreateWardDto[]> {
@@ -198,10 +206,11 @@ export class CountriesService {
         item.status = countriesMsg.systemError;
       }
     }
+
     return data;
   }
 
-  async findAllCountry(
+  public async findAllCountry(
     queryDto: QueryCountriesDto,
   ): Promise<{ results: Countries[]; total: number }> {
     const { limit, page, searchKey } = queryDto;
@@ -216,10 +225,11 @@ export class CountriesService {
       .sort({ createdAt: -1 })
       .exec();
     const total = await this.countrySchema.find(query).count();
+
     return { results, total };
   }
 
-  async findAllProvinces(
+  public async findAllProvinces(
     queryPovinceDto: QueryPovinceDto,
   ): Promise<{ results: Provinces[]; total: number }> {
     const { countryId, searchKey, limit, page } = queryPovinceDto;
@@ -234,16 +244,17 @@ export class CountriesService {
       .find(query)
       .skip(limit && page ? Number(limit) * Number(page) - Number(limit) : null)
       .limit(limit ? Number(limit) : null)
-      .populate('countryId', selectCountry, this.countrySchema, {
+      .populate(this.populateCountryId, selectCountry, this.countrySchema, {
         isDeleted: false,
       })
       .sort({ createdAt: -1 })
       .exec();
     const total = await this.provinceSchema.find(query).count();
+
     return { results, total };
   }
 
-  async findAllDistricts(
+  public async findAllDistricts(
     queryDto: QueryDistrictDto,
   ): Promise<{ results: Districts[]; total: number }> {
     const { provinceId, searchKey, limit, page } = queryDto;
@@ -258,19 +269,20 @@ export class CountriesService {
       .find(query)
       .skip(limit && page ? Number(limit) * Number(page) - Number(limit) : null)
       .limit(limit ? Number(limit) : null)
-      .populate('countryId', selectCountry, this.countrySchema, {
+      .populate(this.populateCountryId, selectCountry, this.countrySchema, {
         isDeleted: false,
       })
-      .populate('provinceId', selectProvince, this.provinceSchema, {
+      .populate(this.populateProvinceId, selectProvince, this.provinceSchema, {
         isDeleted: false,
       })
       .sort({ createdAt: -1 })
       .exec();
     const total = await this.districtSchema.find(query).count();
+
     return { results, total };
   }
 
-  async findAllWards(
+  public async findAllWards(
     queryDto: QueryWardDto,
   ): Promise<{ results: Wards[]; total: number }> {
     const { districtId, searchKey, limit, page } = queryDto;
@@ -285,30 +297,32 @@ export class CountriesService {
       .find(query)
       .skip(limit && page ? Number(limit) * Number(page) - Number(limit) : null)
       .limit(limit ? Number(limit) : null)
-      .populate('countryId', selectCountry, this.countrySchema, {
+      .populate(this.populateCountryId, selectCountry, this.countrySchema, {
         isDeleted: false,
       })
-      .populate('provinceId', selectProvince, this.provinceSchema, {
+      .populate(this.populateProvinceId, selectProvince, this.provinceSchema, {
         isDeleted: false,
       })
-      .populate('districtId', selectDistrict, this.districtSchema, {
+      .populate(this.populateDistrictId, selectDistrict, this.districtSchema, {
         isDeleted: false,
       })
       .sort({ createdAt: -1 })
       .exec();
     const total = await this.wardSchema.find(query).count();
+
     return { results, total };
   }
 
-  async findOneCountry(id: string): Promise<Countries> {
+  public async findOneCountry(id: string): Promise<Countries> {
     const result = await this.countrySchema.findById(id);
     if (!result) {
       new CommonException(HttpStatusCode.NOT_FOUND, msgNotFound);
     }
+
     return result;
   }
 
-  async updateCountry(
+  public async updateCountry(
     id: string,
     updateCountriesDto: UpdateCountriesDto,
   ): Promise<Countries> {
@@ -318,6 +332,7 @@ export class CountriesService {
       updateCountriesDto,
       { new: true },
     );
+
     return result;
   }
 }
