@@ -34,17 +34,18 @@ export class InstituteController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
-  async createInstitute(
+  public async createInstitute(
     @Body() instituteDto: CreateInstituteDto,
     @Res() res: Response,
     @Req() req: Request,
   ): Promise<ResponseRequest> {
     const user: UserLoginResponseDto = req?.user;
-    const createdBy: string = user.profileId;
+    const { profileId } = user;
     const result = await this.instutiteService.createInstitute(
       instituteDto,
-      createdBy,
+      profileId,
     );
+
     return new ResponseRequest(res, result, instituteMsg.create);
   }
 
@@ -52,19 +53,20 @@ export class InstituteController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
-  async updateInstitute(
+  public async updateInstitute(
     @Param('id') id: string,
     @Body() instituteDto: UpdateInstituteDto,
     @Res() res: Response,
     @Req() req: Request,
   ): Promise<ResponseRequest> {
     const user: UserLoginResponseDto = req?.user;
-    const updatedBy: string = user.profileId;
+    const { profileId } = user;
     const result = await this.instutiteService.updateInstitute(
       id,
       instituteDto,
-      updatedBy,
+      profileId,
     );
+
     return new ResponseRequest(res, result, instituteMsg.update);
   }
 
@@ -72,32 +74,35 @@ export class InstituteController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
-  async deleteInstitute(
+  public async deleteInstitute(
     @Param('id') id: string,
     @Res() res: Response,
     @Req() req: Request,
   ): Promise<ResponseRequest> {
     const user: UserLoginResponseDto = req?.user;
-    const deletedBy: string = user.profileId;
-    await this.instutiteService.deleteInstitude(id, deletedBy);
+    const { profileId } = user;
+    await this.instutiteService.deleteInstitude(id, profileId);
+
     return new ResponseRequest(res, true, instituteMsg.delete);
   }
 
   @Get()
-  async getAllInstitute(
+  public async getAllInstitute(
     @Query() queryDto: QueryIntituteDto,
     @Res() res: Response,
   ): Promise<ResponseRequest> {
     const result = await this.instutiteService.findAllInstitudes(queryDto);
+
     return new ResponseRequest(res, result, instituteMsg.getAll);
   }
 
   @Get('/:id')
-  async getInstituteById(
+  public async getInstituteById(
     @Param('id') id: string,
     @Res() res: Response,
   ): Promise<ResponseRequest> {
     const result = await this.instutiteService.findInstituteById(id);
+
     return new ResponseRequest(res, result, instituteMsg.getById);
   }
 }
