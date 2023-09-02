@@ -29,7 +29,7 @@ import {
 } from '../users/schemas/users.profile.schema';
 import { IuserRegisterResponse } from './interfaces/payments.interface';
 import { ValidFields } from 'src/validates/validates.fields-id-dto';
-import { getRandomCodeReceiptId } from 'src/utils/utils.generate.code';
+import { GenerateCode } from 'src/utils/utils.generate.code';
 import {
   StudyProcessDocument,
   StudyProcesses,
@@ -44,6 +44,7 @@ import { HttpStatusCode } from 'src/constants/constants.http-status';
 export class PaymentsService {
   private populateUser: string = 'user';
   private populateSemster: string = 'semester';
+  private geneReceiptId: string = new GenerateCode().getRandomCodeReceiptId(4);
 
   constructor(
     @InjectModel(SettingMoneyCredit.name)
@@ -72,7 +73,7 @@ export class PaymentsService {
       createdBy: string;
     } = {
       ...paymentDto,
-      receiptId: getRandomCodeReceiptId(4),
+      receiptId: this.geneReceiptId,
       createdBy,
     };
     const result = await new this.paymentSchema(newPaymentDto).save();

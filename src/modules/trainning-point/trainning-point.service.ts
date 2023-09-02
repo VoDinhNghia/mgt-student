@@ -39,7 +39,7 @@ import {
 } from 'src/constants/constant';
 import { CreateTrainningPointDto } from './dtos/trainning-point.create.dto';
 import { ValidFields } from 'src/validates/validates.fields-id-dto';
-import { getRandomCodeVoluntee } from 'src/utils/utils.generate.code';
+import { GenerateCode } from 'src/utils/utils.generate.code';
 import { CreateVolunteeProgramDto } from './dtos/trainning-point.create.voluntee-program.dto';
 import { UpdateTrainningPointDto } from './dtos/trainning-point.update.dto';
 import { UpdateVolunteeDto } from './dtos/trainning-point.update-voluntee.dto';
@@ -61,6 +61,9 @@ export class TrainningPointService {
   private populateSecetary: string = 'organizingCommittee.secretary';
   private populateUser: string = 'user';
   private populateProgram: string = 'program';
+  private codeValuntee: string = new GenerateCode().getRandomCodeVoluntee(
+    lengthRandomCodeVoluntee,
+  );
 
   constructor(
     @InjectModel(TrainningPoints.name)
@@ -114,7 +117,7 @@ export class TrainningPointService {
     }
     const result = await new this.volunteeProgramSchema({
       ...createDto,
-      code: getRandomCodeVoluntee(lengthRandomCodeVoluntee),
+      code: this.codeValuntee,
       createdBy,
     }).save();
 
@@ -187,7 +190,7 @@ export class TrainningPointService {
         leader: leaderInfo._id,
         secretary: secretaryInfo._id,
       };
-      item.code = getRandomCodeVoluntee(lengthRandomCodeVoluntee);
+      item.code = this.codeValuntee;
       try {
         await new this.volunteeProgramSchema({ ...item, createdBy }).save();
         item.status = trainningPointMsg.statusImportVoluntee;

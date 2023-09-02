@@ -13,6 +13,7 @@ export class FileExtender implements NestInterceptor {
     const req = context.switchToHttp().getRequest();
     req.file['comment'] = req.body.comment;
     req.file['outletId'] = Number(req.body.outletId);
+
     return next.handle();
   }
 }
