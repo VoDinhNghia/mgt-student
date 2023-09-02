@@ -21,7 +21,7 @@ export class AuthService {
     private readonly userSchema: Model<UsersDocument>,
   ) {}
 
-  async login(loginDto: LoginDto): Promise<UserLoginResponseDto> {
+  public async login(loginDto: LoginDto): Promise<UserLoginResponseDto> {
     const { email, passWord } = loginDto;
     const user = await this.findUserAuth(email, passWord);
     if (!user) {
@@ -33,10 +33,14 @@ export class AuthService {
       statusLogin: true,
       accessToken: this.jwtService.sign({ ...user }),
     };
+
     return result;
   }
 
-  async findUserAuth(email: string, passWord: string): Promise<UsersDocument> {
+  public async findUserAuth(
+    email: string,
+    passWord: string,
+  ): Promise<UsersDocument> {
     const password = cryptoPassWord(passWord);
     const match: ImatchFindAuth = {
       $match: { email, passWord: password, status: EstatusUser.ACTIVE },
@@ -58,6 +62,7 @@ export class AuthService {
     ];
     const aggregate = [match, ...lookup, ...project];
     const result = await this.userSchema.aggregate(aggregate);
+
     return result[0] ?? null;
   }
 }

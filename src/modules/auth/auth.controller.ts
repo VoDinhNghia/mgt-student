@@ -32,11 +32,12 @@ export class AuthController {
   ) {}
 
   @Post('/init-supper-admin')
-  async initAdmin(
+  public async initAdmin(
     @Body() superAdminDto: InitSuperAdminDto,
     @Res() res: Response,
   ): Promise<ResponseRequest> {
     const result = await this.userService.initSupperAdmin(superAdminDto);
+
     return new ResponseRequest(res, result, authMsg.createSupperAdmin);
   }
 
@@ -46,23 +47,25 @@ export class AuthController {
     type: ResponseLoginApiDto,
     isArray: false,
   })
-  async login(
+  public async login(
     @Body() loginDto: LoginDto,
     @Res() res: Response,
   ): Promise<ResponseRequest> {
     const checkUser = await this.authService.login(loginDto);
+
     return new ResponseRequest(res, checkUser, authMsg.login);
   }
 
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @Get('/me')
-  async getProfile(
+  public async getProfile(
     @Req() req: Request,
     @Res() res: Response,
   ): Promise<ResponseRequest> {
     const user: UserLoginResponseDto = req?.user;
     const result = await this.userService.findUserById(user._id);
+
     return new ResponseRequest(res, result, authMsg.getMe);
   }
 }
