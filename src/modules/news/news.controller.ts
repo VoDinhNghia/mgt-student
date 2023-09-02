@@ -34,14 +34,15 @@ export class NewsController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
-  async createNews(
+  public async createNews(
     @Body() createNewDto: CreateNewDto,
     @Res() res: Response,
     @Req() req: Request,
   ): Promise<ResponseRequest> {
     const user: UserLoginResponseDto = req?.user;
-    const createdBy: string = user.profileId;
-    const result = await this.newService.createNews(createNewDto, createdBy);
+    const { profileId } = user;
+    const result = await this.newService.createNews(createNewDto, profileId);
+
     return new ResponseRequest(res, result, newsMsg.create);
   }
 
@@ -49,11 +50,12 @@ export class NewsController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
-  async getById(
+  public async getById(
     @Param('id') id: string,
     @Res() res: Response,
   ): Promise<ResponseRequest> {
     const result = await this.newService.findNewsById(id);
+
     return new ResponseRequest(res, result, newsMsg.getById);
   }
 
@@ -61,19 +63,20 @@ export class NewsController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
-  async updateNews(
+  public async updateNews(
     @Param('id') id: string,
     @Body() updateNewDto: UpdateNewDto,
     @Res() res: Response,
     @Req() req: Request,
   ): Promise<ResponseRequest> {
     const user: UserLoginResponseDto = req?.user;
-    const updatedBy: string = user.profileId;
+    const { profileId } = user;
     const result = await this.newService.updateNews(
       id,
       updateNewDto,
-      updatedBy,
+      profileId,
     );
+
     return new ResponseRequest(res, result, newsMsg.update);
   }
 
@@ -81,11 +84,12 @@ export class NewsController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
-  async getListNews(
+  public async getListNews(
     @Query() queryNewDto: QueryNewDto,
     @Res() res: Response,
   ): Promise<ResponseRequest> {
     const result = await this.newService.findAllNews(queryNewDto);
+
     return new ResponseRequest(res, result, newsMsg.getAll);
   }
 
@@ -93,14 +97,15 @@ export class NewsController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
-  async deleteNews(
+  public async deleteNews(
     @Param('id') id: string,
     @Res() res: Response,
     @Req() req: Request,
   ): Promise<ResponseRequest> {
     const user: UserLoginResponseDto = req?.user;
-    const deletedBy: string = user.profileId;
-    await this.newService.deleteNews(id, deletedBy);
+    const { profileId } = user;
+    await this.newService.deleteNews(id, profileId);
+
     return new ResponseRequest(res, true, newsMsg.delete);
   }
 }
