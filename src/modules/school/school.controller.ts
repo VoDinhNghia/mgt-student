@@ -46,25 +46,27 @@ export class SchoolController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
-  async updateSchool(
+  public async updateSchool(
     @Param('id') id: string,
     @Body() schoolDto: UpdateSchoolDto,
     @Res() res: Response,
     @Req() req: Request,
   ): Promise<ResponseRequest> {
     const user: UserLoginResponseDto = req?.user;
-    const updatedBy: string = user.profileId;
+    const { profileId } = user;
     const result = await this.schoolService.updateSchool(
       id,
       schoolDto,
-      updatedBy,
+      profileId,
     );
+
     return new ResponseRequest(res, result, schoolMsg.update);
   }
 
   @Get()
-  async getAllSchool(@Res() res: Response): Promise<ResponseRequest> {
+  public async getAllSchool(@Res() res: Response): Promise<ResponseRequest> {
     const result = await this.schoolService.findSchoolInfo();
+
     return new ResponseRequest(res, result, schoolMsg.getSchoolInfo);
   }
 }
