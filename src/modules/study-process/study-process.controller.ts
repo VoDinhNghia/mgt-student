@@ -34,17 +34,18 @@ export class StudyProcessController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @UseGuards(RoleGuard([ErolesUser.STUDENT]))
-  async registerSubject(
+  public async registerSubject(
     @Body() createDto: CreateStudySubjectProcessDto,
     @Req() req: Request,
     @Res() res: Response,
   ): Promise<ResponseRequest> {
     const user: UserLoginResponseDto = req?.user;
-    const createdBy: string = user?.profileId;
+    const { profileId } = user;
     const result = await this.service.createSubjectRegister(
       createDto,
-      createdBy,
+      profileId,
     );
+
     return new ResponseRequest(
       res,
       result,
@@ -56,19 +57,20 @@ export class StudyProcessController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @UseGuards(RoleGuard([ErolesUser.LECTURER]))
-  async updateSubjectPoint(
+  public async updateSubjectPoint(
     @Param('id') id: string,
     @Body() updateDto: UpdatePointSubjectRegisterDto,
     @Res() res: Response,
     @Req() req: Request,
   ): Promise<ResponseRequest> {
     const user: UserLoginResponseDto = req?.user;
-    const updatedBy: string = user?.profileId;
+    const { profileId } = user;
     const result = await this.service.updatePointSubjectRegister(
       id,
       updateDto,
-      updatedBy,
+      profileId,
     );
+
     return new ResponseRequest(
       res,
       result,
@@ -80,39 +82,42 @@ export class StudyProcessController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
-  async getAllStudyProcess(
+  public async getAllStudyProcess(
     @Query() queryDto: QueryStudyProcessDto,
     @Res() res: Response,
   ): Promise<ResponseRequest> {
     const results = await this.service.findAllStudyProcess(queryDto);
+
     return new ResponseRequest(res, results, studyProcessMsg.getAll);
   }
 
   @Get('/student')
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
-  async getAllStudyProcessByStudent(
+  public async getAllStudyProcessByStudent(
     @Query() queryDto: QueryStudyProcessByStudent,
     @Res() res: Response,
     @Req() req: Request,
   ): Promise<ResponseRequest> {
     const user: UserLoginResponseDto = req?.user;
-    const studentId: string = user?.profileId;
+    const { profileId } = user;
     const results = await this.service.findAllStudyProcessByStudent(
       queryDto,
-      studentId,
+      profileId,
     );
+
     return new ResponseRequest(res, results, studyProcessMsg.getAll);
   }
 
   @Get('/:id')
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
-  async getStudyProcessById(
+  public async getStudyProcessById(
     @Param('id') id: string,
     @Res() res: Response,
   ): Promise<ResponseRequest> {
     const result = await this.service.findStudyProcessById(id);
+
     return new ResponseRequest(
       res,
       result,

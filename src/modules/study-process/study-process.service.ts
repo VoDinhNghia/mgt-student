@@ -79,7 +79,7 @@ export class StudyProcessService {
     private readonly settingSubjectSchema: Model<SettingSubjectPassDocument>,
   ) {}
 
-  async updateStudyProcess(
+  public async updateStudyProcess(
     id: string,
     updateDto: UpdateStudyProcessDto,
     updatedBy: string,
@@ -92,10 +92,11 @@ export class StudyProcessService {
     const result = await this.studyProcessSchema.findByIdAndUpdate(id, newDto, {
       new: true,
     });
+
     return result;
   }
 
-  async findStudyProcessById(id: string): Promise<StudyProcesses> {
+  public async findStudyProcessById(id: string): Promise<StudyProcesses> {
     const match = { $match: { _id: new Types.ObjectId(id), isDeleted: false } };
     const lookup = studyProcessLookup();
     const aggregate = [match, ...lookup, { $limit: 1 }];
@@ -103,10 +104,11 @@ export class StudyProcessService {
     if (!result[0]) {
       new CommonException(HttpStatusCode.NOT_FOUND, studyProcessMsg.notFound);
     }
+
     return result[0];
   }
 
-  async findAllStudyProcess(
+  public async findAllStudyProcess(
     queryDto: QueryStudyProcessDto,
   ): Promise<{ results: StudyProcesses[]; total: number }> {
     const { limit, page, user } = queryDto;
@@ -123,10 +125,11 @@ export class StudyProcessService {
       ...lookup,
       { $count: 'total' },
     ]);
+
     return { results, total: total[0]?.total || 0 };
   }
 
-  async findAllStudyProcessByStudent(
+  public async findAllStudyProcessByStudent(
     queryDto: QueryStudyProcessByStudent,
     studentId: string,
   ): Promise<{ results: StudyProcesses[]; total: number }> {
@@ -146,10 +149,11 @@ export class StudyProcessService {
       ...lookup,
       { $count: 'total' },
     ]);
+
     return { results, total: total[0]?.total || 0 };
   }
 
-  async createSubjectRegister(
+  public async createSubjectRegister(
     createDto: CreateStudySubjectProcessDto,
     createdBy: string,
   ): Promise<SubjectRegisters> {
@@ -175,10 +179,11 @@ export class StudyProcessService {
       ...createDto,
       createdBy,
     }).save();
+
     return result;
   }
 
-  async updatePointSubjectRegister(
+  public async updatePointSubjectRegister(
     id: string,
     pointDto: UpdatePointSubjectRegisterDto,
     updatedBy: string,
@@ -234,10 +239,11 @@ export class StudyProcessService {
       updateDto,
       { new: true },
     );
+
     return result;
   }
 
-  async findSettingSubject(type: string): Promise<number> {
+  private async findSettingSubject(type: string): Promise<number> {
     const result = await this.settingSubjectSchema.findOne({
       type,
       isDeleted: false,
@@ -248,10 +254,11 @@ export class StudyProcessService {
         settingMsg.notFoundSubjectPass,
       );
     }
+
     return result.condition;
   }
 
-  async calculateAccumulatedPoint(
+  private async calculateAccumulatedPoint(
     subjectId: string | Types.ObjectId,
     midtermScore: number,
     finalScore: number,
@@ -270,10 +277,11 @@ export class StudyProcessService {
     const pointEsasy = (studentEssay.percent * essayScore) / 100;
     const pointFinal = (finalExam.percent * finalScore) / 100;
     const accumalatedPoint = pointEsasy + pointFinal + pointMid;
+
     return accumalatedPoint;
   }
 
-  async validNumberSubjectRegister(subject: string): Promise<void> {
+  private async validNumberSubjectRegister(subject: string): Promise<void> {
     const subjectInfo = await this.subjectSchema.findOne({
       _id: new Types.ObjectId(subject),
       isDeleted: false,
