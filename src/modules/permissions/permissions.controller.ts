@@ -34,17 +34,18 @@ export class PermissionsController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN]))
-  async createAdminPermission(
+  public async createAdminPermission(
     @Body() permissionDto: CreatePermissionDto,
     @Res() res: Response,
     @Req() req: Request,
   ) {
     const user: UserLoginResponseDto = req?.user;
-    const createdBy: string = user.profileId;
+    const { profileId } = user;
     const result = await this.service.createAdminPermission(
       permissionDto,
-      createdBy,
+      profileId,
     );
+
     return new ResponseRequest(res, result, permissionMsg.create);
   }
 
@@ -52,19 +53,20 @@ export class PermissionsController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN]))
-  async updateAdminPermission(
+  public async updateAdminPermission(
     @Param('id') id: string,
     @Body() permissionDto: UpdatePermissionDto,
     @Res() res: Response,
     @Req() req: Request,
   ) {
     const user: UserLoginResponseDto = req?.user;
-    const updatedBy: string = user.profileId;
+    const { profileId } = user;
     const result = await this.service.updateAdminPermission(
       id,
       permissionDto,
-      updatedBy,
+      profileId,
     );
+
     return new ResponseRequest(res, result, permissionMsg.update);
   }
 
@@ -72,14 +74,15 @@ export class PermissionsController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN]))
-  async deleteAdminPermission(
+  public async deleteAdminPermission(
     @Param('id') id: string,
     @Res() res: Response,
     @Req() req: Request,
   ): Promise<ResponseRequest> {
     const user: UserLoginResponseDto = req?.user;
-    const deletedBy: string = user.profileId;
-    await this.service.deleteAdminPermission(id, deletedBy);
+    const { profileId } = user;
+    await this.service.deleteAdminPermission(id, profileId);
+
     return new ResponseRequest(res, true, permissionMsg.delete);
   }
 
@@ -87,11 +90,12 @@ export class PermissionsController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
-  async getAllAdminPermission(
+  public async getAllAdminPermission(
     @Query() queryDto: QueryPermissionDto,
     @Res() res: Response,
   ) {
     const results = await this.service.findAllAdminPermissions(queryDto);
+
     return new ResponseRequest(res, results, permissionMsg.getAll);
   }
 
@@ -99,8 +103,12 @@ export class PermissionsController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
-  async getAdminPermissionById(@Param('id') id: string, @Res() res: Response) {
+  public async getAdminPermissionById(
+    @Param('id') id: string,
+    @Res() res: Response,
+  ) {
     const result = await this.service.findAdminPermissionById(id);
+
     return new ResponseRequest(res, result, permissionMsg.getById);
   }
 }

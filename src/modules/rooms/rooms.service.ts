@@ -17,7 +17,10 @@ export class RoomsService {
     private readonly roomSchema: Model<RoomsDocument>,
   ) {}
 
-  async createRoom(roomDto: CreateRoomDto, createdBy: string): Promise<Rooms> {
+  public async createRoom(
+    roomDto: CreateRoomDto,
+    createdBy: string,
+  ): Promise<Rooms> {
     const { name } = roomDto;
     const option = { name: name?.trim(), isDeleted: false };
     const existedName = await this.roomSchema.findOne(option);
@@ -29,18 +32,20 @@ export class RoomsService {
       createdBy,
     };
     const result = await new this.roomSchema(createRoomDto).save();
+
     return result;
   }
 
-  async findRoomById(id: string): Promise<Rooms> {
+  public async findRoomById(id: string): Promise<Rooms> {
     const result = await this.roomSchema.findById(id);
     if (!result) {
       new CommonException(HttpStatusCode.NOT_FOUND, roomMsg.notFound);
     }
+
     return result;
   }
 
-  async findAllRooms(
+  public async findAllRooms(
     queryRoomDto: QueryRoomDto,
   ): Promise<{ results: Rooms[]; total: number }> {
     const { limit, page, searchKey, type } = queryRoomDto;
@@ -62,10 +67,11 @@ export class RoomsService {
       results: rooms,
       total,
     };
+
     return data;
   }
 
-  async updateRoom(
+  public async updateRoom(
     id: string,
     updateDto: UpdateRoomDto,
     updatedBy: string,
@@ -79,10 +85,11 @@ export class RoomsService {
     const result = await this.roomSchema.findByIdAndUpdate(id, dto, {
       new: true,
     });
+
     return result;
   }
 
-  async deleteRoom(id: string, deletedBy: string): Promise<void> {
+  public async deleteRoom(id: string, deletedBy: string): Promise<void> {
     await this.findRoomById(id);
     const dto = {
       isDeleted: true,

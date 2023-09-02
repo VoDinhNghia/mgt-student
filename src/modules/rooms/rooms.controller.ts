@@ -34,25 +34,27 @@ export class RoomsController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
-  async createRoom(
+  public async createRoom(
     @Body() createRoomDto: CreateRoomDto,
     @Res() res: Response,
     @Req() req: Request,
   ): Promise<ResponseRequest> {
     const user: UserLoginResponseDto = req?.user;
-    const createdBy: string = user.profileId;
-    const result = await this.roomService.createRoom(createRoomDto, createdBy);
+    const { profileId } = user;
+    const result = await this.roomService.createRoom(createRoomDto, profileId);
+
     return new ResponseRequest(res, result, roomMsg.create);
   }
 
   @Get()
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
-  async getRooms(
+  public async getRooms(
     @Query() queryRoomDto: QueryRoomDto,
     @Res() res: Response,
   ): Promise<ResponseRequest> {
     const result = await this.roomService.findAllRooms(queryRoomDto);
+
     return new ResponseRequest(res, result, roomMsg.getAll);
   }
 
@@ -60,19 +62,20 @@ export class RoomsController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @UseGuards(RoleGuard([ErolesUser.ADMIN]))
-  async updateRoom(
+  public async updateRoom(
     @Param('id') id: string,
     @Body() updateRoomDto: UpdateRoomDto,
     @Res() res: Response,
     @Req() req: Request,
   ): Promise<ResponseRequest> {
     const user: UserLoginResponseDto = req?.user;
-    const updatedBy: string = user.profileId;
+    const { profileId } = user;
     const result = await this.roomService.updateRoom(
       id,
       updateRoomDto,
-      updatedBy,
+      profileId,
     );
+
     return new ResponseRequest(res, result, roomMsg.update);
   }
 
@@ -80,25 +83,27 @@ export class RoomsController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @UseGuards(RoleGuard([ErolesUser.ADMIN]))
-  async deleteRoom(
+  public async deleteRoom(
     @Param('id') id: string,
     @Res() res: Response,
     @Req() req: Request,
   ): Promise<ResponseRequest> {
     const user: UserLoginResponseDto = req?.user;
-    const deletedBy: string = user.profileId;
-    await this.roomService.deleteRoom(id, deletedBy);
+    const { profileId } = user;
+    await this.roomService.deleteRoom(id, profileId);
+
     return new ResponseRequest(res, true, roomMsg.delete);
   }
 
   @Get('/:id')
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
-  async getRoomById(
+  public async getRoomById(
     @Param('id') id: string,
     @Res() res: Response,
   ): Promise<ResponseRequest> {
     const result = await this.roomService.findRoomById(id);
+
     return new ResponseRequest(res, result, roomMsg.getById);
   }
 }

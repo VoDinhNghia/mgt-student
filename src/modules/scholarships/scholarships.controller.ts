@@ -36,17 +36,18 @@ export class ScholarshipController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
-  async createScholarship(
+  public async createScholarship(
     @Body() scholarshipDto: CreateScholarshipDto,
     @Res() res: Response,
     @Req() req: Request,
   ): Promise<ResponseRequest> {
     const user: UserLoginResponseDto = req?.user;
-    const createdBy: string = user.profileId;
+    const { profileId } = user;
     const result = await this.service.createScholarship(
       scholarshipDto,
-      createdBy,
+      profileId,
     );
+
     return new ResponseRequest(res, result, scholarshipMsg.create);
   }
 
@@ -54,19 +55,20 @@ export class ScholarshipController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
-  async updateScholarship(
+  public async updateScholarship(
     @Param('id') id: string,
     @Body() updateScholarshipDto: UpdateScholarshipDto,
     @Res() res: Response,
     @Req() req: Request,
   ): Promise<ResponseRequest> {
     const user: UserLoginResponseDto = req?.user;
-    const updatedBy: string = user.profileId;
+    const { profileId } = user;
     const result = await this.service.updateScholarship(
       id,
       updateScholarshipDto,
-      updatedBy,
+      profileId,
     );
+
     return new ResponseRequest(res, result, scholarshipMsg.update);
   }
 
@@ -74,14 +76,15 @@ export class ScholarshipController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
-  async deleteScholarship(
+  public async deleteScholarship(
     @Param('id') id: string,
     @Res() res: Response,
     @Req() req: Request,
   ): Promise<ResponseRequest> {
     const user: UserLoginResponseDto = req?.user;
-    const deletedBy: string = user.profileId;
-    await this.service.deleteScholarship(id, deletedBy);
+    const { profileId } = user;
+    await this.service.deleteScholarship(id, profileId);
+
     return new ResponseRequest(res, true, scholarshipMsg.delete);
   }
 
@@ -89,23 +92,25 @@ export class ScholarshipController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
-  async deleteUserScholarship(
+  public async deleteUserScholarship(
     @Param('id') id: string,
     @Res() res: Response,
     @Req() req: Request,
   ): Promise<ResponseRequest> {
     const user: UserLoginResponseDto = req?.user;
-    const deletedBy: string = user.profileId;
-    await this.service.deleteUserScholarship(id, deletedBy);
+    const { profileId } = user;
+    await this.service.deleteUserScholarship(id, profileId);
+
     return new ResponseRequest(res, true, scholarshipMsg.deleteUser);
   }
 
   @Get()
-  async getAllScholarship(
+  public async getAllScholarship(
     @Query() queryDto: QueryScholarshipDto,
     @Res() res: Response,
   ): Promise<ResponseRequest> {
     const result = await this.service.findAllScholarship(queryDto);
+
     return new ResponseRequest(res, result, scholarshipMsg.getAll);
   }
 
@@ -113,37 +118,40 @@ export class ScholarshipController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
-  async createUserScholarshipInSemester(
+  public async createUserScholarshipInSemester(
     @Body() dto: CreateUserScholarshipInSemester,
     @Res() res: Response,
     @Req() req: Request,
   ): Promise<ResponseRequest> {
     const user: UserLoginResponseDto = req?.user;
-    const createdBy: string = user.profileId;
+    const { profileId } = user;
     const result = await this.service.createUserScholarshipInSemester(
       dto.semester,
-      createdBy,
+      profileId,
     );
+
     return new ResponseRequest(res, result, scholarshipMsg.createUser);
   }
 
   @Get('/user')
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
-  async getUserScholarship(
+  public async getUserScholarship(
     @Query() dto: QueryUserScholarshipDto,
     @Res() res: Response,
   ): Promise<ResponseRequest> {
     const result = await this.service.findAllUserScholarShip(dto);
+
     return new ResponseRequest(res, result, scholarshipMsg.getAllUsers);
   }
 
   @Get('/:id')
-  async getScholarshipById(
+  public async getScholarshipById(
     @Param('id') id: string,
     @Res() res: Response,
   ): Promise<ResponseRequest> {
     const result = await this.service.findScholarshipById(id);
+
     return new ResponseRequest(res, result, scholarshipMsg.getById);
   }
 }

@@ -24,6 +24,8 @@ import { HttpStatusCode } from 'src/constants/constants.http-status';
 
 @Injectable()
 export class PermissionsService {
+  private populateUser: string = 'user';
+
   constructor(
     @InjectModel(AdminPermission.name)
     private readonly permissionSchema: Model<AdminPermissionDocument>,
@@ -31,7 +33,7 @@ export class PermissionsService {
     private readonly profileSchema: Model<ProfileDocument>,
   ) {}
 
-  async createAdminPermission(
+  public async createAdminPermission(
     permissionDto: CreatePermissionDto,
     createdBy: string,
   ): Promise<AdminPermission> {
@@ -43,10 +45,11 @@ export class PermissionsService {
       createdBy,
     };
     const permission = await new this.permissionSchema(dto).save();
+
     return permission;
   }
 
-  async updateAdminPermission(
+  public async updateAdminPermission(
     id: string,
     permissionDto: UpdatePermissionDto,
     updatedBy: string,
@@ -64,21 +67,25 @@ export class PermissionsService {
     const result = await this.permissionSchema.findByIdAndUpdate(id, dto, {
       new: true,
     });
+
     return result;
   }
 
-  async findAdminPermissionById(id: string): Promise<AdminPermission> {
+  public async findAdminPermissionById(id: string): Promise<AdminPermission> {
     const result = await this.permissionSchema
       .findById(id)
-      .populate('user', selectProfile, this.profileSchema, { isDeleted: false })
+      .populate(this.populateUser, selectProfile, this.profileSchema, {
+        isDeleted: false,
+      })
       .exec();
     if (!result) {
       new CommonException(HttpStatusCode.NOT_FOUND, permissionMsg.notFound);
     }
+
     return result;
   }
 
-  async findAllAdminPermissions(
+  public async findAllAdminPermissions(
     queryDto: QueryPermissionDto,
   ): Promise<{ results: AdminPermission[]; total: number }> {
     const { limit, page, user, searchKey } = queryDto;
@@ -93,14 +100,19 @@ export class PermissionsService {
       .find(query)
       .skip(limit && page ? Number(limit) * Number(page) - Number(limit) : null)
       .limit(limit ? Number(limit) : null)
-      .populate('user', selectProfile, this.profileSchema, { isDeleted: false })
+      .populate(this.populateUser, selectProfile, this.profileSchema, {
+        isDeleted: false,
+      })
       .sort({ createdAt: -1 })
       .exec();
     const total = await this.permissionSchema.find(query).count();
     return { results, total };
   }
 
-  async deleteAdminPermission(id: string, deletedBy: string): Promise<void> {
+  public async deleteAdminPermission(
+    id: string,
+    deletedBy: string,
+  ): Promise<void> {
     await this.findAdminPermissionById(id);
     const dto = {
       isDeleted: true,
