@@ -34,14 +34,15 @@ export class CoursesController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
-  async createCourse(
+  public async createCourse(
     @Res() res: Response,
     @Body() courseDto: CreateCourseDto,
     @Req() req: Request,
   ): Promise<ResponseRequest> {
     const user: UserLoginResponseDto = req?.user;
-    const createdBy: string = user.profileId;
-    const result = await this.courseService.createCourse(courseDto, createdBy);
+    const { profileId } = user;
+    const result = await this.courseService.createCourse(courseDto, profileId);
+
     return new ResponseRequest(res, result, courseMsg.create);
   }
 
@@ -49,19 +50,20 @@ export class CoursesController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
-  async updateCourse(
+  public async updateCourse(
     @Param('id') id: string,
     @Body() courseDto: UpdateCourseDto,
     @Res() res: Response,
     @Req() req: Request,
   ): Promise<ResponseRequest> {
     const user: UserLoginResponseDto = req?.user;
-    const updatedBy: string = user.profileId;
+    const { profileId } = user;
     const result = await this.courseService.updateCourse(
       id,
       courseDto,
-      updatedBy,
+      profileId,
     );
+
     return new ResponseRequest(res, result, courseMsg.update);
   }
 
@@ -69,14 +71,15 @@ export class CoursesController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
-  async deleteCourse(
+  public async deleteCourse(
     @Param('id') id: string,
     @Res() res: Response,
     @Req() req: Request,
   ): Promise<ResponseRequest> {
     const user: UserLoginResponseDto = req?.user;
-    const deletedBy: string = user.profileId;
-    await this.courseService.deleteCourse(id, deletedBy);
+    const { profileId } = user;
+    await this.courseService.deleteCourse(id, profileId);
+
     return new ResponseRequest(res, true, courseMsg.delete);
   }
 
@@ -84,22 +87,24 @@ export class CoursesController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
-  async getCourseById(
+  public async getCourseById(
     @Param('id') id: string,
     @Res() res: Response,
   ): Promise<ResponseRequest> {
     const result = await this.courseService.findCourseById(id);
+
     return new ResponseRequest(res, result, courseMsg.getById);
   }
 
   @Get()
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
-  async getListFaculties(
+  public async getListFaculties(
     @Query() queryDto: QueryCourseDto,
     @Res() res: Response,
   ): Promise<ResponseRequest> {
     const result = await this.courseService.findAllCourses(queryDto);
+
     return new ResponseRequest(res, result, courseMsg.getAll);
   }
 }
