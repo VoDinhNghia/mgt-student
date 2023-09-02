@@ -40,6 +40,10 @@ import { HttpStatusCode } from 'src/constants/constants.http-status';
 
 @Injectable()
 export class UnionsService {
+  private populateUnion: string = 'union';
+  private populateAttachment: string = 'attachment';
+  private populateUser: string = 'user';
+
   constructor(
     @InjectModel(Union.name) private readonly unionSchema: Model<UnionDocument>,
     @InjectModel(UnionMembers.name)
@@ -52,7 +56,7 @@ export class UnionsService {
     private readonly attachmentSchema: Model<AttachmentDocument>,
   ) {}
 
-  async createUnion(
+  public async createUnion(
     unionDto: CreateUnionDto,
     createdBy: string,
   ): Promise<Union> {
@@ -60,7 +64,7 @@ export class UnionsService {
     return union;
   }
 
-  async createUnionMember(
+  public async createUnionMember(
     memberDto: CreateUnionMemberDto,
     createdBy: string,
   ): Promise<UnionMembers> {
@@ -73,10 +77,11 @@ export class UnionsService {
       createdBy,
     };
     const result = await new this.unionMemberSchema(newMemberDto).save();
+
     return result;
   }
 
-  async createUnionImage(
+  public async createUnionImage(
     imageDto: CreateUnionImagesDto,
     createdBy: string,
   ): Promise<UnionImages> {
@@ -89,10 +94,11 @@ export class UnionsService {
       createdBy,
     };
     const result = await new this.unionImageSchema(newImageDto).save();
+
     return result;
   }
 
-  async updateUnion(
+  public async updateUnion(
     id: string,
     unionDto: UpdateUnionDto,
     updatedBy: string,
@@ -106,10 +112,11 @@ export class UnionsService {
     const result = await this.unionSchema.findByIdAndUpdate(id, updateDto, {
       new: true,
     });
+
     return result;
   }
 
-  async updateUnionMember(
+  public async updateUnionMember(
     id: string,
     memberDto: UpdateUnionMember,
     updatedBy: string,
@@ -132,10 +139,11 @@ export class UnionsService {
       updateMemberDto,
       { new: true },
     );
+
     return result;
   }
 
-  async updateUnionImage(
+  public async updateUnionImage(
     id: string,
     imageDto: UpdateUnionImage,
     updatedBy: string,
@@ -158,10 +166,11 @@ export class UnionsService {
       updateImageDto,
       { new: true },
     );
+
     return result;
   }
 
-  async findUnionById(id: string): Promise<IunionFindAll> {
+  public async findUnionById(id: string): Promise<IunionFindAll> {
     const result: IunionFindAll = await this.unionSchema.findById(id).lean();
     if (!result) {
       new CommonException(HttpStatusCode.NOT_FOUND, unionMsg.notFound);
@@ -170,44 +179,52 @@ export class UnionsService {
     const imageList = await this.findAllUnionImages({
       union: String(result._id),
     });
+
     return { ...result, groupMember, imageList: imageList.results };
   }
 
-  async findUnionMemberById(id: string): Promise<UnionMembers> {
+  public async findUnionMemberById(id: string): Promise<UnionMembers> {
     const result = await this.unionMemberSchema
       .findById(id)
       .select(selectUnion.member)
-      .populate('union', selectUnion.union, this.unionSchema, {
+      .populate(this.populateUnion, selectUnion.union, this.unionSchema, {
         isDeleted: false,
       })
-      .populate('user', selectUnion.user, this.profileSchema, {
+      .populate(this.populateUser, selectUnion.user, this.profileSchema, {
         isDeleted: false,
       })
       .exec();
     if (!result) {
       new CommonException(HttpStatusCode.NOT_FOUND, unionMsg.notFoundMember);
     }
+
     return result;
   }
 
-  async findUnionImageById(id: string): Promise<UnionImages> {
+  public async findUnionImageById(id: string): Promise<UnionImages> {
     const result = await this.unionImageSchema
       .findById(id)
       .select(selectUnion.image)
-      .populate('union', selectUnion.union, this.unionSchema, {
+      .populate(this.populateUnion, selectUnion.union, this.unionSchema, {
         isDeleted: false,
       })
-      .populate('attachment', selectAttachment, this.attachmentSchema, {
-        isDeleted: false,
-      })
+      .populate(
+        this.populateAttachment,
+        selectAttachment,
+        this.attachmentSchema,
+        {
+          isDeleted: false,
+        },
+      )
       .exec();
     if (!result) {
       new CommonException(HttpStatusCode.NOT_FOUND, unionMsg.notFoundMember);
     }
+
     return result;
   }
 
-  async findAllUnions(
+  public async findAllUnions(
     queryDto: QueryUnionDto,
   ): Promise<{ results: IunionFindAll[]; total: number }> {
     const { limit, page, searchKey } = queryDto;
@@ -230,26 +247,14 @@ export class UnionsService {
       data.push({ ...union, groupMember, imageList: imageList.results });
     }
     const total = await this.unionSchema.find(query).count();
+
     return {
       results: data,
       total,
     };
   }
 
-  async groupMember(unionId: Types.ObjectId): Promise<Igroup[]> {
-    const groupMember = await this.unionMemberSchema.aggregate([
-      { $match: { union: unionId, isDeleted: false } },
-      {
-        $group: {
-          _id: '$position',
-          count: { $count: {} },
-        },
-      },
-    ]);
-    return groupMember;
-  }
-
-  async findAllUnionImages(
+  public async findAllUnionImages(
     queryDto: QueryUnionImageDto,
   ): Promise<{ results: UnionImages[]; total: number }> {
     const { limit, page, searchKey, union } = queryDto;
@@ -263,24 +268,30 @@ export class UnionsService {
     const results = await this.unionImageSchema
       .find(query)
       .select(selectUnion.image)
-      .populate('attachment', selectAttachment, this.attachmentSchema, {
-        isDeleted: false,
-      })
+      .populate(
+        this.populateAttachment,
+        selectAttachment,
+        this.attachmentSchema,
+        {
+          isDeleted: false,
+        },
+      )
       .skip(limit && page ? Number(limit) * Number(page) - Number(limit) : null)
       .limit(limit ? Number(limit) : null)
-      .populate('union', selectUnion.union, this.unionSchema, {
+      .populate(this.populateUnion, selectUnion.union, this.unionSchema, {
         isDeleted: false,
       })
       .sort({ createdAt: -1 })
       .lean();
     const total = await this.unionImageSchema.find(query).count();
+
     return {
       results,
       total,
     };
   }
 
-  async findAllUnionMembers(
+  public async findAllUnionMembers(
     queryDto: QueryUnionMemberDto,
   ): Promise<{ results: UnionImages[]; total: number }> {
     const { limit, page, searchKey, union, user } = queryDto;
@@ -297,24 +308,25 @@ export class UnionsService {
     const results = await this.unionMemberSchema
       .find(query)
       .select(selectUnion.member)
-      .populate('user', selectUnion.user, this.profileSchema, {
+      .populate(this.populateUser, selectUnion.user, this.profileSchema, {
         isDeleted: false,
       })
       .skip(limit && page ? Number(limit) * Number(page) - Number(limit) : null)
       .limit(limit ? Number(limit) : null)
-      .populate('union', selectUnion.union, this.unionSchema, {
+      .populate(this.populateUnion, selectUnion.union, this.unionSchema, {
         isDeleted: false,
       })
       .sort({ createdAt: -1 })
       .lean();
     const total = await this.unionMemberSchema.find(query).count();
+
     return {
       results,
       total,
     };
   }
 
-  async deleteUnion(id: string, deletedBy: string): Promise<void> {
+  public async deleteUnion(id: string, deletedBy: string): Promise<void> {
     await this.findUnionById(id);
     const deleteDto = {
       deletedBy,
@@ -324,7 +336,7 @@ export class UnionsService {
     await this.unionSchema.findByIdAndUpdate(id, deleteDto);
   }
 
-  async deleteUnionImage(id: string, deletedBy: string): Promise<void> {
+  public async deleteUnionImage(id: string, deletedBy: string): Promise<void> {
     await this.findUnionById(id);
     const deleteDto = {
       deletedBy,
@@ -334,7 +346,7 @@ export class UnionsService {
     await this.unionImageSchema.findByIdAndUpdate(id, deleteDto);
   }
 
-  async deleteUnionMember(id: string, deletedBy: string): Promise<void> {
+  public async deleteUnionMember(id: string, deletedBy: string): Promise<void> {
     await this.findUnionById(id);
     const deleteDto = {
       deletedBy,
@@ -342,5 +354,19 @@ export class UnionsService {
       deletedAt: Date.now(),
     };
     await this.unionMemberSchema.findByIdAndUpdate(id, deleteDto);
+  }
+
+  private async groupMember(unionId: Types.ObjectId): Promise<Igroup[]> {
+    const groupMember = await this.unionMemberSchema.aggregate([
+      { $match: { union: unionId, isDeleted: false } },
+      {
+        $group: {
+          _id: '$position',
+          count: { $count: {} },
+        },
+      },
+    ]);
+
+    return groupMember;
   }
 }
