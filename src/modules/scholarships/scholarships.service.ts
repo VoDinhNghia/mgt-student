@@ -63,6 +63,11 @@ import { HttpStatusCode } from 'src/constants/constants.http-status';
 
 @Injectable()
 export class ScholarshipService {
+  private populateSemester: string = 'semester';
+  private populateAttachment: string = 'attachment';
+  private populateScholarship: string = 'scholarship';
+  private populateUser: string = 'user';
+
   constructor(
     @InjectModel(Scholarship.name)
     private readonly scholarshipSchema: Model<ScholarshipDocument>,
@@ -83,7 +88,7 @@ export class ScholarshipService {
     private readonly subjectRegister: SubjectUserRegister,
   ) {}
 
-  async createScholarship(
+  public async createScholarship(
     scholarshipDto: CreateScholarshipDto,
     createdBy: string,
   ): Promise<Scholarship> {
@@ -103,10 +108,11 @@ export class ScholarshipService {
       ...scholarshipDto,
       createdBy,
     }).save();
+
     return result;
   }
 
-  async updateScholarship(
+  public async updateScholarship(
     id: string,
     scholarshipDto: UpdateScholarshipDto,
     updatedBy: string,
@@ -128,26 +134,38 @@ export class ScholarshipService {
         new: true,
       },
     );
+
     return result;
   }
 
-  async findScholarshipById(id: string): Promise<Scholarship> {
+  public async findScholarshipById(id: string): Promise<Scholarship> {
     const result = await this.scholarshipSchema
       .findById(id)
-      .populate('semester', selectScholarship.semester, this.semesterSchema, {
-        isDeleted: false,
-      })
-      .populate('attachment', selectAttachment, this.attachmentSchema, {
-        isDeleted: false,
-      })
+      .populate(
+        this.populateSemester,
+        selectScholarship.semester,
+        this.semesterSchema,
+        {
+          isDeleted: false,
+        },
+      )
+      .populate(
+        this.populateAttachment,
+        selectAttachment,
+        this.attachmentSchema,
+        {
+          isDeleted: false,
+        },
+      )
       .exec();
     if (!result) {
       new CommonException(HttpStatusCode.NOT_FOUND, scholarshipMsg.notFound);
     }
+
     return result;
   }
 
-  async findAllScholarship(
+  public async findAllScholarship(
     queryDto: QueryScholarshipDto,
   ): Promise<{ results: Scholarship[]; total: number }> {
     const { semester, type, limit, page, searchKey } = queryDto;
@@ -165,19 +183,30 @@ export class ScholarshipService {
       .find(query)
       .skip(limit && page ? Number(limit) * Number(page) - Number(limit) : null)
       .limit(limit ? Number(limit) : null)
-      .populate('semester', selectScholarship.semester, this.semesterSchema, {
-        isDeleted: false,
-      })
-      .populate('attachment', selectAttachment, this.attachmentSchema, {
-        isDeleted: false,
-      })
+      .populate(
+        this.populateSemester,
+        selectScholarship.semester,
+        this.semesterSchema,
+        {
+          isDeleted: false,
+        },
+      )
+      .populate(
+        this.populateAttachment,
+        selectAttachment,
+        this.attachmentSchema,
+        {
+          isDeleted: false,
+        },
+      )
       .sort({ createdAt: -1 })
       .exec();
     const total = await this.scholarshipSchema.find(query).count();
+
     return { results, total };
   }
 
-  async findAllUserScholarShip(
+  public async findAllUserScholarShip(
     queryDto: QueryUserScholarshipDto,
   ): Promise<IgetUserScholarship[]> {
     const { scholarship, user, semester } = queryDto;
@@ -191,14 +220,14 @@ export class ScholarshipService {
     const results: IgetUserScholarship[] = await this.scholarshipUserSchema
       .find(query)
       .populate(
-        'scholarship',
+        this.populateScholarship,
         selectScholarship.scholarship,
         this.scholarshipSchema,
         {
           isDeleted: false,
         },
       )
-      .populate('user', selectScholarship.user, this.profileSchema, {
+      .populate(this.populateUser, selectScholarship.user, this.profileSchema, {
         isDeleted: false,
       })
       .sort({ createdAt: -1 })
@@ -226,10 +255,11 @@ export class ScholarshipService {
         data.push(item);
       }
     }
+
     return data;
   }
 
-  async createUserScholarshipInSemester(
+  public async createUserScholarshipInSemester(
     semester: string,
     createdBy: string,
   ): Promise<ScholarshipUser[]> {
@@ -247,10 +277,11 @@ export class ScholarshipService {
       semester,
       createdBy,
     );
+
     return data;
   }
 
-  async createUserScholarship(
+  public async createUserScholarship(
     studyProcessLists: StudyProcessDocument[],
     semester: string,
     createdBy: string,
@@ -300,10 +331,34 @@ export class ScholarshipService {
       }
     }
     const data = await this.scholarshipUserSchema.insertMany(listDto);
+
     return data;
   }
 
-  async considerConditions(
+  public async deleteScholarship(id: string, deletedBy: string): Promise<void> {
+    await this.findScholarshipById(id);
+    const deleteDto = {
+      deletedBy,
+      isDeleted: true,
+      deletedAt: Date.now(),
+    };
+    await this.scholarshipSchema.findByIdAndUpdate(id, deleteDto);
+  }
+
+  public async deleteUserScholarship(
+    id: string,
+    deletedBy: string,
+  ): Promise<void> {
+    await this.findScholarshipById(id);
+    const deleteDto = {
+      deletedBy,
+      isDeleted: true,
+      deletedAt: Date.now(),
+    };
+    await this.scholarshipUserSchema.findByIdAndUpdate(id, deleteDto);
+  }
+
+  private async considerConditions(
     accumalatedPoint: number,
     tranningpoint: number,
     numberCredit: number,
@@ -317,10 +372,11 @@ export class ScholarshipService {
       numberCredit: { $lte: numberCredit },
       isDeleted: false,
     });
+
     return result;
   }
 
-  async getUserTotalAccumalated(
+  private async getUserTotalAccumalated(
     semester: string,
     studyprocess: string,
   ): Promise<{ totalAccumalated: number; totalNumberCredits: number }> {
@@ -339,10 +395,11 @@ export class ScholarshipService {
         totalNumberCredits += item?.subject?.numberCredits || 0;
       }
     }
+
     return { totalAccumalated, totalNumberCredits };
   }
 
-  async getUserTrainningPoint(
+  private async getUserTrainningPoint(
     profileId: string,
     semesterId: string,
   ): Promise<number> {
@@ -364,26 +421,7 @@ export class ScholarshipService {
       0,
     );
     const point = totalTrainningPoint + trainningPointDefault;
+
     return point > 100 ? 100 : point;
-  }
-
-  async deleteScholarship(id: string, deletedBy: string): Promise<void> {
-    await this.findScholarshipById(id);
-    const deleteDto = {
-      deletedBy,
-      isDeleted: true,
-      deletedAt: Date.now(),
-    };
-    await this.scholarshipSchema.findByIdAndUpdate(id, deleteDto);
-  }
-
-  async deleteUserScholarship(id: string, deletedBy: string): Promise<void> {
-    await this.findScholarshipById(id);
-    const deleteDto = {
-      deletedBy,
-      isDeleted: true,
-      deletedAt: Date.now(),
-    };
-    await this.scholarshipUserSchema.findByIdAndUpdate(id, deleteDto);
   }
 }
