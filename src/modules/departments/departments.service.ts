@@ -45,6 +45,12 @@ import { HttpStatusCode } from 'src/constants/constants.http-status';
 
 @Injectable()
 export class DepartmentsService {
+  private populateManager: string = 'manager';
+  private populateOffice: string = 'contacts.office';
+  private populateAttachment: string = 'attachment';
+  private populateUser: string = 'user';
+  private uniqStaff: string = 'staff';
+
   constructor(
     @InjectModel(Departments.name)
     private readonly deparmentSchema: Model<DepartmentsDocument>,
@@ -60,7 +66,7 @@ export class DepartmentsService {
     private readonly roomSchema: Model<RoomsDocument>,
   ) {}
 
-  async createDepartment(
+  public async createDepartment(
     departmentDto: CreateDepartmentDto,
     createdBy: string,
   ): Promise<Departments> {
@@ -83,10 +89,11 @@ export class DepartmentsService {
       ...departmentDto,
       createdBy,
     }).save();
+
     return result;
   }
 
-  async updateDepartment(
+  public async updateDepartment(
     id: string,
     departmentDto: UpdateDepartmentDto,
     updatedBy: string,
@@ -118,29 +125,36 @@ export class DepartmentsService {
     const result = await this.deparmentSchema.findByIdAndUpdate(id, updateDto, {
       new: true,
     });
+
     return result;
   }
 
-  async findDepartmentById(id: string): Promise<Departments> {
+  public async findDepartmentById(id: string): Promise<Departments> {
     const result = await this.deparmentSchema
       .findById(id)
-      .populate('manager', selectProfile, this.profileSchema, {
+      .populate(this.populateManager, selectProfile, this.profileSchema, {
         isDeleted: false,
       })
-      .populate('contacts.office', selectRoom, this.roomSchema, {
+      .populate(this.populateOffice, selectRoom, this.roomSchema, {
         isDeleted: false,
       })
-      .populate('attachment', selectAttachment, this.attachmentSchema, {
-        isDeleted: false,
-      })
+      .populate(
+        this.populateAttachment,
+        selectAttachment,
+        this.attachmentSchema,
+        {
+          isDeleted: false,
+        },
+      )
       .exec();
     if (!result) {
       new CommonException(HttpStatusCode.NOT_FOUND, msgNotFound);
     }
+
     return result;
   }
 
-  async findAllDepartment(
+  public async findAllDepartment(
     queryDto: QueryDepartmentDto,
   ): Promise<{ results: Departments[]; total: number }> {
     const { limit, page, searchKey, manager } = queryDto;
@@ -155,22 +169,28 @@ export class DepartmentsService {
       .find(query)
       .skip(limit && page ? Number(limit) * Number(page) - Number(limit) : null)
       .limit(limit ? Number(limit) : null)
-      .populate('manager', selectProfile, this.profileSchema, {
+      .populate(this.populateManager, selectProfile, this.profileSchema, {
         isDeleted: false,
       })
-      .populate('contacts.office', selectRoom, this.roomSchema, {
+      .populate(this.populateOffice, selectRoom, this.roomSchema, {
         isDeleted: false,
       })
-      .populate('attachment', selectAttachment, this.attachmentSchema, {
-        isDeleted: false,
-      })
+      .populate(
+        this.populateAttachment,
+        selectAttachment,
+        this.attachmentSchema,
+        {
+          isDeleted: false,
+        },
+      )
       .sort({ createdAt: -1 })
       .exec();
     const total = await this.deparmentSchema.find(query).count();
+
     return { results, total };
   }
 
-  async createMultiStaffDepartment(
+  public async createMultiStaffDepartment(
     staffDto: CreateMultiStaffDepartmentDto,
     createdBy: string,
   ): Promise<DepartmentStaff[]> {
@@ -180,7 +200,7 @@ export class DepartmentsService {
       department,
       departmentMsg.notFound,
     );
-    const staffLists = unionBy(staffs, 'staff');
+    const staffLists = unionBy(staffs, this.uniqStaff);
     const multiDto = [];
     for await (const item of staffLists) {
       const staffInfo = await this.findUserProfile(item.staff);
@@ -199,10 +219,11 @@ export class DepartmentsService {
       multiDto.push(createDto);
     }
     const results = await this.staffSchema.insertMany(multiDto);
+
     return results;
   }
 
-  async createDepartmentStaff(
+  public async createDepartmentStaff(
     staffDto: CreateStaffDepartmentDto,
     createdBy: string,
   ): Promise<DepartmentStaff> {
@@ -214,10 +235,11 @@ export class DepartmentsService {
       ...staffDto,
       createdBy,
     }).save();
+
     return result;
   }
 
-  async updateDepartmentStaff(
+  public async updateDepartmentStaff(
     id: string,
     staffDto: UpdateStaffDepartmentDto,
     updatedBy: string,
@@ -238,10 +260,14 @@ export class DepartmentsService {
     const result = await this.staffSchema.findByIdAndUpdate(id, updateDto, {
       new: true,
     });
+
     return result;
   }
 
-  async deleteDepartmentStaff(id: string, deletedBy: string): Promise<void> {
+  public async deleteDepartmentStaff(
+    id: string,
+    deletedBy: string,
+  ): Promise<void> {
     await new ValidFields().id(
       this.staffSchema,
       id,
@@ -255,14 +281,17 @@ export class DepartmentsService {
     await this.staffSchema.findByIdAndUpdate(id, dto);
   }
 
-  async findUserProfile(profile: string): Promise<IprofileStaff | null> {
+  private async findUserProfile(
+    profile: string,
+  ): Promise<IprofileStaff | null> {
     const staffInfo = await this.profileSchema
       .findOne({
         _id: new Types.ObjectId(profile),
         isDeleted: false,
       })
-      .populate('user', '', this.userSchema)
+      .populate(this.populateUser, '', this.userSchema)
       .exec();
+
     return staffInfo;
   }
 }
