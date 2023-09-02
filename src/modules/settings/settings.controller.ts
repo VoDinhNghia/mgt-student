@@ -40,17 +40,18 @@ export class SettingsController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
-  async createSubjectPass(
+  public async createSubjectPass(
     @Body() createDto: CreateSettingSubjectPassDto,
     @Res() res: Response,
     @Req() req: Request,
   ): Promise<ResponseRequest> {
     const user: UserLoginResponseDto = req?.user;
-    const createdBy: string = user?.profileId;
+    const { profileId } = user;
     const result = await this.service.createSettingSubjectPass(
       createDto,
-      createdBy,
+      profileId,
     );
+
     return new ResponseRequest(res, result, settingMsg.createSubjectPass);
   }
 
@@ -58,17 +59,18 @@ export class SettingsController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
-  async createLearningRate(
+  public async createLearningRate(
     @Body() createDto: CreateSettingLearningRateDto,
     @Res() res: Response,
     @Req() req: Request,
   ): Promise<ResponseRequest> {
     const user: UserLoginResponseDto = req?.user;
-    const createdBy: string = user?.profileId;
+    const { profileId } = user;
     const result = await this.service.createSettingLearningRate(
       createDto,
-      createdBy,
+      profileId,
     );
+
     return new ResponseRequest(res, result, settingMsg.createLearningrate);
   }
 
@@ -76,19 +78,20 @@ export class SettingsController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
-  async updateSubjectPass(
+  public async updateSubjectPass(
     @Param('id') id: string,
     @Body() updateDto: UpdateSettingSubjectPassDto,
     @Res() res: Response,
     @Req() req: Request,
   ): Promise<ResponseRequest> {
     const user: UserLoginResponseDto = req?.user;
-    const updatedBy: string = user?.profileId;
+    const { profileId } = user;
     const result = await this.service.updateSettingSubjectPass(
       id,
       updateDto,
-      updatedBy,
+      profileId,
     );
+
     return new ResponseRequest(res, result, settingMsg.updateSubjectPass);
   }
 
@@ -96,19 +99,20 @@ export class SettingsController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
-  async updateLearningRate(
+  public async updateLearningRate(
     @Param('id') id: string,
     @Body() updateDto: UpdateSettingLearningRateDto,
     @Res() res: Response,
     @Req() req: Request,
   ): Promise<ResponseRequest> {
     const user: UserLoginResponseDto = req?.user;
-    const updatedBy: string = user?.profileId;
+    const { profileId } = user;
     const result = await this.service.updateSettingLearningRate(
       id,
       updateDto,
-      updatedBy,
+      profileId,
     );
+
     return new ResponseRequest(res, result, settingMsg.updateLearningRate);
   }
 
@@ -116,14 +120,15 @@ export class SettingsController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
-  async deleteSubjectPass(
+  public async deleteSubjectPass(
     @Param('id') id: string,
     @Res() res: Response,
     @Req() req: Request,
   ): Promise<ResponseRequest> {
     const user: UserLoginResponseDto = req?.user;
-    const deletedBy: string = user?.profileId;
-    await this.service.deleteSettingSubjectPass(id, deletedBy);
+    const { profileId } = user;
+    await this.service.deleteSettingSubjectPass(id, profileId);
+
     return new ResponseRequest(res, true, settingMsg.deleteSubjectPass);
   }
 
@@ -131,14 +136,15 @@ export class SettingsController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
-  async deleteLearningRate(
+  public async deleteLearningRate(
     @Param('id') id: string,
     @Res() res: Response,
     @Req() req: Request,
   ): Promise<ResponseRequest> {
     const user: UserLoginResponseDto = req?.user;
-    const deletedBy: string = user?.profileId;
-    await this.service.deleteSettingLearningRate(id, deletedBy);
+    const { profileId } = user;
+    await this.service.deleteSettingLearningRate(id, profileId);
+
     return new ResponseRequest(res, true, settingMsg.deleteLearningRate);
   }
 
@@ -146,11 +152,12 @@ export class SettingsController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
-  async getAllSubjectPass(
+  public async getAllSubjectPass(
     @Query() queryDto: QuerySettingSubjectPassDto,
     @Res() res: Response,
   ): Promise<ResponseRequest> {
     const results = await this.service.findAllSettingSubjectPass(queryDto);
+
     return new ResponseRequest(res, results, settingMsg.getAllSubjectPass);
   }
 
@@ -158,11 +165,12 @@ export class SettingsController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
-  async getAllLearningRate(
+  public async getAllLearningRate(
     @Query() queryDto: QuerySettingLearningRateDto,
     @Res() res: Response,
   ): Promise<ResponseRequest> {
     const results = await this.service.findAllSettingLearningRate(queryDto);
+
     return new ResponseRequest(res, results, settingMsg.getAllLearningRate);
   }
 
@@ -170,11 +178,12 @@ export class SettingsController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
-  async getSubjectPassById(
+  public async getSubjectPassById(
     @Param('id') id: string,
     @Res() res: Response,
   ): Promise<ResponseRequest> {
     const result = await this.service.findSettingSubjectPassById(id);
+
     return new ResponseRequest(res, result, settingMsg.getByIdSubjectPass);
   }
 
@@ -182,11 +191,12 @@ export class SettingsController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
-  async getLearningRateById(
+  public async getLearningRateById(
     @Param('id') id: string,
     @Res() res: Response,
   ): Promise<ResponseRequest> {
     const result = await this.service.findSettingLearningRateById(id);
+
     return new ResponseRequest(res, result, settingMsg.getByIdLearningRate);
   }
 
@@ -194,17 +204,18 @@ export class SettingsController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
-  async createMoneyCredit(
+  public async createMoneyCredit(
     @Body() createDto: CreateSettingMoneyCreditDto,
     @Res() res: Response,
     @Req() req: Request,
   ): Promise<ResponseRequest> {
     const user: UserLoginResponseDto = req?.user;
-    const createdBy: string = user.profileId;
+    const { profileId } = user;
     const result = await this.service.createSettingMoneyCredit(
       createDto,
-      createdBy,
+      profileId,
     );
+
     return new ResponseRequest(res, result, settingMsg.createMoneyCredit);
   }
 
@@ -212,37 +223,40 @@ export class SettingsController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
-  async updateMoneyCredit(
+  public async updateMoneyCredit(
     @Param('id') id: string,
     @Body() updateDto: UpdateSettingMoneyCreditDto,
     @Res() res: Response,
     @Req() req: Request,
   ): Promise<ResponseRequest> {
     const user: UserLoginResponseDto = req?.user;
-    const updatedBy: string = user.profileId;
+    const { profileId } = user;
     const result = await this.service.updateSettingMoneyCredit(
       id,
       updateDto,
-      updatedBy,
+      profileId,
     );
+
     return new ResponseRequest(res, result, settingMsg.updateMoneyCredit);
   }
 
   @Get('/money-credit')
-  async getAllMoneyCredit(
+  public async getAllMoneyCredit(
     @Query() queryDto: QuerySettingMoneyCreditDto,
     @Res() res: Response,
   ): Promise<ResponseRequest> {
     const result = await this.service.findAllSettingMoneyCredit(queryDto);
+
     return new ResponseRequest(res, result, settingMsg.getAllMoneyCredit);
   }
 
   @Get('/money-credit/:id')
-  async getByIdMoneyCredit(
+  public async getByIdMoneyCredit(
     @Param('id') id: string,
     @Res() res: Response,
   ): Promise<ResponseRequest> {
     const result = await this.service.findSettingMoneyCreditById(id);
+
     return new ResponseRequest(res, result, settingMsg.getByIdMoneyCredit);
   }
 }

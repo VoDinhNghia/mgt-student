@@ -41,6 +41,8 @@ import { HttpStatusCode } from 'src/constants/constants.http-status';
 
 @Injectable()
 export class SettingsService {
+  private populateSemester: string = 'semester';
+
   constructor(
     @InjectModel(SettingLearningRate.name)
     private readonly learningRateSchema: Model<SettingLearningRateDocument>,
@@ -52,7 +54,7 @@ export class SettingsService {
     private readonly semesterSchema: Model<SemesterDocument>,
   ) {}
 
-  async createSettingSubjectPass(
+  public async createSettingSubjectPass(
     settingDto: CreateSettingSubjectPassDto,
     createdBy: string,
   ): Promise<SettingSubjectPass> {
@@ -60,10 +62,11 @@ export class SettingsService {
       ...settingDto,
       createdBy,
     }).save();
+
     return result;
   }
 
-  async updateSettingSubjectPass(
+  public async updateSettingSubjectPass(
     id: string,
     settingDto: UpdateSettingSubjectPassDto,
     updatedBy: string,
@@ -78,10 +81,13 @@ export class SettingsService {
       updateDto,
       { new: true },
     );
+
     return result;
   }
 
-  async findSettingSubjectPassById(id: string): Promise<SettingSubjectPass> {
+  public async findSettingSubjectPassById(
+    id: string,
+  ): Promise<SettingSubjectPass> {
     const result = await this.subjectPassSchema.findById(id);
     if (!result) {
       new CommonException(
@@ -89,10 +95,11 @@ export class SettingsService {
         settingMsg.notFoundSubjectPass,
       );
     }
+
     return result;
   }
 
-  async findAllSettingSubjectPass(
+  public async findAllSettingSubjectPass(
     queryDto: QuerySettingSubjectPassDto,
   ): Promise<{ results: SettingSubjectPass[]; total: number }> {
     const { limit, page, searchKey } = queryDto;
@@ -107,10 +114,14 @@ export class SettingsService {
       .sort({ createdAt: -1 })
       .lean();
     const total = await this.subjectPassSchema.find(query).count();
+
     return { results, total };
   }
 
-  async deleteSettingSubjectPass(id: string, deletedBy: string): Promise<void> {
+  public async deleteSettingSubjectPass(
+    id: string,
+    deletedBy: string,
+  ): Promise<void> {
     const deleteDto = {
       isDeleted: true,
       deletedBy,
@@ -119,7 +130,7 @@ export class SettingsService {
     await this.subjectPassSchema.findByIdAndUpdate(id, deleteDto);
   }
 
-  async createSettingLearningRate(
+  public async createSettingLearningRate(
     settingDto: CreateSettingLearningRateDto,
     createdBy: string,
   ): Promise<SettingLearningRate> {
@@ -127,6 +138,7 @@ export class SettingsService {
       ...settingDto,
       createdBy,
     }).save();
+
     return result;
   }
 
@@ -147,10 +159,13 @@ export class SettingsService {
         new: true,
       },
     );
+
     return result;
   }
 
-  async findSettingLearningRateById(id: string): Promise<SettingLearningRate> {
+  public async findSettingLearningRateById(
+    id: string,
+  ): Promise<SettingLearningRate> {
     const result = await this.learningRateSchema.findById(id);
     if (!result) {
       new CommonException(
@@ -158,10 +173,11 @@ export class SettingsService {
         settingMsg.notFoundLearningRate,
       );
     }
+
     return result;
   }
 
-  async findAllSettingLearningRate(
+  public async findAllSettingLearningRate(
     queryDto: QuerySettingLearningRateDto,
   ): Promise<{ results: SettingLearningRate[]; total: number }> {
     const { limit, page, searchKey } = queryDto;
@@ -176,10 +192,11 @@ export class SettingsService {
       .sort({ createdAt: -1 })
       .lean();
     const total = await this.learningRateSchema.find(query).count();
+
     return { results, total };
   }
 
-  async deleteSettingLearningRate(
+  public async deleteSettingLearningRate(
     id: string,
     deletedBy: string,
   ): Promise<void> {
@@ -191,7 +208,7 @@ export class SettingsService {
     await this.learningRateSchema.findByIdAndUpdate(id, deleteDto);
   }
 
-  async createSettingMoneyCredit(
+  public async createSettingMoneyCredit(
     creditMgtDto: CreateSettingMoneyCreditDto,
     createdBy: string,
   ): Promise<SettingMoneyCredit> {
@@ -211,10 +228,11 @@ export class SettingsService {
       createdBy,
     };
     const result = await new this.moneyCreditSchema(dto).save();
+
     return result;
   }
 
-  async updateSettingMoneyCredit(
+  public async updateSettingMoneyCredit(
     id: string,
     creditMgtDto: UpdateSettingMoneyCreditDto,
     updatedBy: string,
@@ -232,13 +250,16 @@ export class SettingsService {
     const result = await this.moneyCreditSchema.findByIdAndUpdate(id, dto, {
       new: true,
     });
+
     return result;
   }
 
-  async findSettingMoneyCreditById(id: string): Promise<SettingMoneyCredit> {
+  public async findSettingMoneyCreditById(
+    id: string,
+  ): Promise<SettingMoneyCredit> {
     const result = await this.moneyCreditSchema
       .findById(id)
-      .populate('semester', selectSemester, this.semesterSchema, {
+      .populate(this.populateSemester, selectSemester, this.semesterSchema, {
         isDeleted: false,
       })
       .exec();
@@ -248,10 +269,11 @@ export class SettingsService {
         settingMsg.notFoundMoneyCredit,
       );
     }
+
     return result;
   }
 
-  async findAllSettingMoneyCredit(
+  public async findAllSettingMoneyCredit(
     queryDto: QuerySettingMoneyCreditDto,
   ): Promise<{ results: SettingMoneyCredit[]; total: number }> {
     const { limit, page, searchKey, semester } = queryDto;
@@ -266,12 +288,13 @@ export class SettingsService {
       .find(query)
       .skip(limit && page ? Number(limit) * Number(page) - Number(limit) : null)
       .limit(limit ? Number(limit) : null)
-      .populate('semester', selectSemester, this.semesterSchema, {
+      .populate(this.populateSemester, selectSemester, this.semesterSchema, {
         isDeleted: false,
       })
       .sort({ createdAt: -1 })
       .lean();
     const total = await this.moneyCreditSchema.find(query).count();
+
     return { results, total };
   }
 }
