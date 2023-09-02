@@ -36,17 +36,18 @@ export class FacultiesController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
-  async createFaculty(
+  public async createFaculty(
     @Res() res: Response,
     @Body() createFacultyDto: CreateFacultyDto,
     @Req() req: Request,
   ): Promise<ResponseRequest> {
     const user: UserLoginResponseDto = req?.user;
-    const createdBy: string = user.profileId;
+    const { profileId } = user;
     const result = await this.facultyService.createFaculty(
       createFacultyDto,
-      createdBy,
+      profileId,
     );
+
     return new ResponseRequest(res, result, facultiesMsg.create);
   }
 
@@ -54,19 +55,20 @@ export class FacultiesController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
-  async updateFaculty(
+  public async updateFaculty(
     @Param('id') id: string,
     @Body() updateFacultyDto: UpdateFacultyDto,
     @Res() res: Response,
     @Req() req: Request,
   ): Promise<ResponseRequest> {
     const user: UserLoginResponseDto = req?.user;
-    const updatedBy: string = user.profileId;
+    const { profileId } = user;
     const result = await this.facultyService.updateFaculty(
       id,
       updateFacultyDto,
-      updatedBy,
+      profileId,
     );
+
     return new ResponseRequest(res, result, facultiesMsg.update);
   }
 
@@ -74,11 +76,12 @@ export class FacultiesController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
-  async getListFaculties(
+  public async getListFaculties(
     @Query() facultyQueryDto: FacultyQueryDto,
     @Res() res: Response,
   ): Promise<ResponseRequest> {
     const result = await this.facultyService.findAllFaculties(facultyQueryDto);
+
     return new ResponseRequest(res, result, facultiesMsg.getAll);
   }
 
@@ -86,17 +89,18 @@ export class FacultiesController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
-  async createMajor(
+  public async createMajor(
     @Res() res: Response,
     @Body() createMajorDto: CreateMajorDto,
     @Req() req: Request,
   ): Promise<ResponseRequest> {
     const user: UserLoginResponseDto = req?.user;
-    const createdBy: string = user.profileId;
+    const { profileId } = user;
     const result = await this.facultyService.createMajor(
       createMajorDto,
-      createdBy,
+      profileId,
     );
+
     return new ResponseRequest(res, result, facultiesMsg.createMajor);
   }
 
@@ -104,19 +108,20 @@ export class FacultiesController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
-  async updateMajor(
+  public async updateMajor(
     @Param('id') id: string,
     @Body() updateMajorDto: UpdateMajorDto,
     @Res() res: Response,
     @Req() req: Request,
   ): Promise<ResponseRequest> {
     const user: UserLoginResponseDto = req?.user;
-    const updatedBy: string = user.profileId;
+    const { profileId } = user;
     const result = await this.facultyService.updateMajor(
       id,
       updateMajorDto,
-      updatedBy,
+      profileId,
     );
+
     return new ResponseRequest(res, result, facultiesMsg.updateMajor);
   }
 
@@ -124,11 +129,12 @@ export class FacultiesController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
-  async getMajorById(
+  public async getMajorById(
     @Param('id') id: string,
     @Res() res: Response,
   ): Promise<ResponseRequest> {
     const result = await this.facultyService.findMajorById(id);
+
     return new ResponseRequest(res, result, facultiesMsg.getByIdMajor);
   }
 
@@ -136,11 +142,12 @@ export class FacultiesController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
-  async getListMajors(
+  public async getListMajors(
     @Query() queryDto: MajorQueryDto,
     @Res() res: Response,
   ): Promise<ResponseRequest> {
     const result = await this.facultyService.findAllMajors(queryDto);
+
     return new ResponseRequest(res, result, facultiesMsg.getAllMajor);
   }
 
@@ -148,11 +155,12 @@ export class FacultiesController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
-  async getFacultyById(
+  public async getFacultyById(
     @Param('id') id: string,
     @Res() res: Response,
   ): Promise<ResponseRequest> {
     const result = await this.facultyService.findFacultyById(id);
+
     return new ResponseRequest(res, result, facultiesMsg.getById);
   }
 }
