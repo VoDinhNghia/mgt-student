@@ -6,7 +6,7 @@ import {
 } from 'src/constants/constant';
 import { collections } from 'src/constants/constants.collections.name';
 import { FieldsCommonSchema } from 'src/utils/utils.fields-common.schema';
-import { getRandomCodeVoluntee } from 'src/utils/utils.generate.code';
+import { GenerateCode } from 'src/utils/utils.generate.code';
 
 export type VolunteeProgramsDocument = VolunteePrograms & Document;
 
@@ -14,7 +14,7 @@ export type VolunteeProgramsDocument = VolunteePrograms & Document;
 export class VolunteePrograms extends FieldsCommonSchema {
   @Prop({
     required: true,
-    default: getRandomCodeVoluntee(lengthRandomCodeVoluntee),
+    default: new GenerateCode().getRandomCodeVoluntee(lengthRandomCodeVoluntee),
     unique: true,
   })
   code?: string;

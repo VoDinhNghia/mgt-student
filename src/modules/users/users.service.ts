@@ -20,7 +20,7 @@ import {
 import { CreateLeaderSchoolDto } from './dto/users.create.leader-school.dto';
 import { QueryLeaderSchoolDto } from './dto/users.query.leader-school.dto';
 import { UpdateLeaderSchoolDto } from './dto/users.update.leader-school.dto';
-import { getRandomCodeProfile } from 'src/utils/utils.generate.code';
+import { GenerateCode } from 'src/utils/utils.generate.code';
 import {
   StudyProcesses,
   StudyProcessDocument,
@@ -69,6 +69,7 @@ import { HttpStatusCode } from 'src/constants/constants.http-status';
 @Injectable()
 export class UsersService {
   private populateUser: string = 'user';
+  private generateCode: string = new GenerateCode().getRandomCodeProfile(5);
 
   constructor(
     @InjectModel(Users.name) private readonly userSchema: Model<UsersDocument>,
@@ -107,7 +108,7 @@ export class UsersService {
     const profileDto = {
       ...usersDto,
       user: user._id,
-      code: getRandomCodeProfile(5),
+      code: this.generateCode,
       createdBy,
     };
     const profile = await this.createUserProfile(profileDto);
@@ -334,7 +335,7 @@ export class UsersService {
         const profileDto = {
           ...item,
           user: user._id,
-          code: getRandomCodeProfile(5),
+          code: this.generateCode,
           createdBy,
         };
         profile = await new this.profileSchema(profileDto).save();
@@ -381,7 +382,7 @@ export class UsersService {
       firstName,
       lastName,
       user: supperAdmin._id,
-      code: `SA_${getRandomCodeProfile(5)}`,
+      code: `SA_${this.generateCode}`,
     };
     await this.createUserProfile(profileSuperAdmin);
     const result = await this.findUserById(supperAdmin._id);

@@ -2,7 +2,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 import { collections } from 'src/constants/constants.collections.name';
 import { FieldsCommonSchema } from 'src/utils/utils.fields-common.schema';
-import { getRandomCodeSemester } from 'src/utils/utils.generate.code';
+import { GenerateCode } from 'src/utils/utils.generate.code';
 
 export type SemesterDocument = Semester & Document;
 
@@ -15,7 +15,7 @@ export class Semester extends FieldsCommonSchema {
   name?: string; // HK I
 
   @Prop({
-    default: getRandomCodeSemester(4),
+    default: new GenerateCode().getRandomCodeSemester(4),
     required: true,
     unique: true,
   })
