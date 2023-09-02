@@ -40,14 +40,15 @@ export class UnionsController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
-  async createUnion(
+  public async createUnion(
     @Body() unionDto: CreateUnionDto,
     @Res() res: Response,
     @Req() req: Request,
   ): Promise<ResponseRequest> {
     const user: UserLoginResponseDto = req?.user;
-    const createdBy: string = user.profileId;
-    const result = await this.unionService.createUnion(unionDto, createdBy);
+    const { profileId } = user;
+    const result = await this.unionService.createUnion(unionDto, profileId);
+
     return new ResponseRequest(res, result, unionMsg.create);
   }
 
@@ -55,17 +56,18 @@ export class UnionsController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
-  async createUnionMember(
+  public async createUnionMember(
     @Body() memberDto: CreateUnionMemberDto,
     @Res() res: Response,
     @Req() req: Request,
   ): Promise<ResponseRequest> {
     const user: UserLoginResponseDto = req?.user;
-    const createdBy: string = user.profileId;
+    const { profileId } = user;
     const result = await this.unionService.createUnionMember(
       memberDto,
-      createdBy,
+      profileId,
     );
+
     return new ResponseRequest(res, result, unionMsg.createMember);
   }
 
@@ -73,17 +75,18 @@ export class UnionsController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
-  async createUnionImage(
+  public async createUnionImage(
     @Body() imageDto: CreateUnionImagesDto,
     @Res() res: Response,
     @Req() req: Request,
   ): Promise<ResponseRequest> {
     const user: UserLoginResponseDto = req?.user;
-    const createdBy: string = user.profileId;
+    const { profileId } = user;
     const result = await this.unionService.createUnionImage(
       imageDto,
-      createdBy,
+      profileId,
     );
+
     return new ResponseRequest(res, result, unionMsg.createImage);
   }
 
@@ -91,15 +94,16 @@ export class UnionsController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
-  async updateUnion(
+  public async updateUnion(
     @Param('id') id: string,
     @Body() unionDto: UpdateUnionDto,
     @Res() res: Response,
     @Req() req: Request,
   ): Promise<ResponseRequest> {
     const user: UserLoginResponseDto = req?.user;
-    const updatedBy: string = user.profileId;
-    const result = await this.unionService.updateUnion(id, unionDto, updatedBy);
+    const { profileId } = user;
+    const result = await this.unionService.updateUnion(id, unionDto, profileId);
+
     return new ResponseRequest(res, result, unionMsg.update);
   }
 
@@ -107,19 +111,20 @@ export class UnionsController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
-  async updateUnionMember(
+  public async updateUnionMember(
     @Param('id') id: string,
     @Body() memberDto: UpdateUnionMember,
     @Res() res: Response,
     @Req() req: Request,
   ): Promise<ResponseRequest> {
     const user: UserLoginResponseDto = req?.user;
-    const updatedBy: string = user.profileId;
+    const { profileId } = user;
     const result = await this.unionService.updateUnionMember(
       id,
       memberDto,
-      updatedBy,
+      profileId,
     );
+
     return new ResponseRequest(res, result, unionMsg.updateMember);
   }
 
@@ -127,19 +132,20 @@ export class UnionsController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
-  async updateUnionImage(
+  public async updateUnionImage(
     @Param('id') id: string,
     @Body() imageDto: UpdateUnionImage,
     @Res() res: Response,
     @Req() req: Request,
   ): Promise<ResponseRequest> {
     const user: UserLoginResponseDto = req?.user;
-    const updatedBy: string = user.profileId;
+    const { profileId } = user;
     const result = await this.unionService.updateUnionImage(
       id,
       imageDto,
-      updatedBy,
+      profileId,
     );
+
     return new ResponseRequest(res, result, unionMsg.updateImage);
   }
 
@@ -147,14 +153,15 @@ export class UnionsController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
-  async deleteUnion(
+  public async deleteUnion(
     @Param('id') id: string,
     @Res() res: Response,
     @Req() req: Request,
   ): Promise<ResponseRequest> {
     const user: UserLoginResponseDto = req?.user;
-    const deletedBy: string = user.profileId;
-    await this.unionService.deleteUnion(id, deletedBy);
+    const { profileId } = user;
+    await this.unionService.deleteUnion(id, profileId);
+
     return new ResponseRequest(res, true, unionMsg.delete);
   }
 
@@ -162,14 +169,15 @@ export class UnionsController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
-  async deleteUnionMember(
+  public async deleteUnionMember(
     @Param('id') id: string,
     @Res() res: Response,
     @Req() req: Request,
   ): Promise<ResponseRequest> {
     const user: UserLoginResponseDto = req?.user;
-    const deletedBy: string = user.profileId;
-    await this.unionService.deleteUnionMember(id, deletedBy);
+    const { profileId } = user;
+    await this.unionService.deleteUnionMember(id, profileId);
+
     return new ResponseRequest(res, true, unionMsg.deleteMember);
   }
 
@@ -177,45 +185,49 @@ export class UnionsController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
-  async deleteUnionImage(
+  public async deleteUnionImage(
     @Param('id') id: string,
     @Res() res: Response,
     @Req() req: Request,
   ): Promise<ResponseRequest> {
     const user: UserLoginResponseDto = req?.user;
-    const deletedBy: string = user.profileId;
-    await this.unionService.deleteUnionImage(id, deletedBy);
+    const { profileId } = user;
+    await this.unionService.deleteUnionImage(id, profileId);
+
     return new ResponseRequest(res, true, unionMsg.deleteImage);
   }
 
   @Get()
-  async getAllUnion(
+  public async getAllUnion(
     @Query() queryDto: QueryUnionDto,
     @Res() res: Response,
   ): Promise<ResponseRequest> {
     const results = await this.unionService.findAllUnions(queryDto);
+
     return new ResponseRequest(res, results, unionMsg.getAll);
   }
 
   @Get('/members')
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
-  async getAllUnionMembers(
+  public async getAllUnionMembers(
     @Query() queryDto: QueryUnionMemberDto,
     @Res() res: Response,
   ): Promise<ResponseRequest> {
     const results = await this.unionService.findAllUnionMembers(queryDto);
+
     return new ResponseRequest(res, results, unionMsg.getAllMembers);
   }
 
   @Get('/images')
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
-  async getAllUnionImages(
+  public async getAllUnionImages(
     @Query() queryDto: QueryUnionImageDto,
     @Res() res: Response,
   ): Promise<ResponseRequest> {
     const results = await this.unionService.findAllUnionImages(queryDto);
+
     return new ResponseRequest(res, results, unionMsg.getAllImages);
   }
 
@@ -223,11 +235,12 @@ export class UnionsController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
-  async getUnionMemberById(
+  public async getUnionMemberById(
     @Param('id') id: string,
     @Res() res: Response,
   ): Promise<ResponseRequest> {
     const result = await this.unionService.findUnionMemberById(id);
+
     return new ResponseRequest(res, result, unionMsg.getByIdMember);
   }
 
@@ -235,20 +248,22 @@ export class UnionsController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
-  async getUnionImageById(
+  public async getUnionImageById(
     @Param('id') id: string,
     @Res() res: Response,
   ): Promise<ResponseRequest> {
     const result = await this.unionService.findUnionImageById(id);
+
     return new ResponseRequest(res, result, unionMsg.getByIdImage);
   }
 
   @Get('/:id')
-  async getUnionById(
+  public async getUnionById(
     @Param('id') id: string,
     @Res() res: Response,
   ): Promise<ResponseRequest> {
     const result = await this.unionService.findUnionById(id);
+
     return new ResponseRequest(res, result, unionMsg.getById);
   }
 }
