@@ -1,33 +1,37 @@
 export class GetCurrentDate {
-  currentDate: Date = new Date();
+  private currentDate: Date = new Date();
 
-  getDate() {
+  public getDate() {
     const date = this.currentDate.getDate();
     if (date < 10) {
       return `0${date}`;
     }
+
     return date;
   }
 
-  getMonth() {
+  public getMonth() {
     const month = this.currentDate.getMonth() + 1;
     if (month < 10) {
       return `0${month}`;
     }
+
     return month;
   }
 
-  getYear() {
+  public getYear() {
     const year = this.currentDate.getFullYear();
+
     return year;
   }
 
-  getYearMonthDate() {
+  public getYearMonthDate() {
     const fullYear = `${this.getYear()}-${this.getMonth()}-${this.getDate()}`;
+
     return fullYear;
   }
 
-  getFullDateTime() {
+  public getFullDateTime() {
     return this.currentDate;
   }
 }

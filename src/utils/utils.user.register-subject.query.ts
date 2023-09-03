@@ -21,7 +21,7 @@ export class SubjectUserRegister {
     private readonly subjectSchema: Model<SubjectDocument>,
   ) {}
 
-  async getUserSubjects(
+  public async getUserSubjects(
     studyprocess: string,
     subjectIds: ObjectId[],
   ): Promise<IuserSubjectRegister[]> {
@@ -45,10 +45,11 @@ export class SubjectUserRegister {
       { $unwind: '$subject' },
     ];
     const results = await this.subjectRegisterSchema.aggregate(aggregate);
+
     return results;
   }
 
-  async getSubjectIds(semester: string): Promise<ObjectId[]> {
+  public async getSubjectIds(semester: string): Promise<ObjectId[]> {
     const query = {
       semester: new Types.ObjectId(semester),
       status: true,
@@ -58,6 +59,7 @@ export class SubjectUserRegister {
     const subjectIds = subjectList.map((subject: SubjectDocument) => {
       return subject._id;
     });
+
     return subjectIds;
   }
 }
