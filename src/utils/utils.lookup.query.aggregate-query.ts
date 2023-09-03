@@ -6,7 +6,7 @@ export interface IlookupInterface {
   unwind: boolean;
 }
 
-export function lookupCommon(listFields: IlookupInterface[]) {
+export const lookupCommon = (listFields: IlookupInterface[]) => {
   const results = [];
   for (const obj of listFields) {
     const lookup = {
@@ -22,5 +22,6 @@ export function lookupCommon(listFields: IlookupInterface[]) {
       results.push({ $unwind: `$${obj.as}` });
     }
   }
+
   return results;
-}
+};

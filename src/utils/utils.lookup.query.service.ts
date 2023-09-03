@@ -1,7 +1,7 @@
 import { collections } from 'src/constants/constants.collections.name';
 import { lookupCommon } from './utils.lookup.query.aggregate-query';
 
-export function subjectLookup() {
+export const subjectLookup = () => {
   const lookup = lookupCommon([
     referenceSemester(),
     {
@@ -40,10 +40,11 @@ export function subjectLookup() {
       unwind: true,
     },
   ]);
-  return lookup;
-}
 
-export function trainningPointScholarshipLookup() {
+  return lookup;
+};
+
+export const trainningPointScholarshipLookup = () => {
   const lookup = lookupCommon([
     {
       from: collections.voluntee_programs,
@@ -53,18 +54,19 @@ export function trainningPointScholarshipLookup() {
       unwind: true,
     },
   ]);
+
   return lookup;
-}
+};
 
-export function syncUserLookup() {
+export const syncUserLookup = () => {
   return userAndSyncLookup();
-}
+};
 
-export function userLookup() {
+export const userLookup = () => {
   return userAndSyncLookup();
-}
+};
 
-export function profileLookup() {
+export const profileLookup = () => {
   const lookup = lookupCommon([
     {
       from: collections.profiles,
@@ -74,10 +76,11 @@ export function profileLookup() {
       unwind: true,
     },
   ]);
-  return lookup;
-}
 
-export function userAndSyncLookup() {
+  return lookup;
+};
+
+export const userAndSyncLookup = () => {
   const lookup = lookupCommon([
     {
       from: collections.profiles,
@@ -87,10 +90,11 @@ export function userAndSyncLookup() {
       unwind: true,
     },
   ]);
-  return lookup;
-}
 
-export function studyProcessLookup() {
+  return lookup;
+};
+
+export const studyProcessLookup = () => {
   const lookup = lookupCommon([
     {
       from: collections.profiles,
@@ -129,10 +133,11 @@ export function studyProcessLookup() {
       },
     },
   ];
-  return [...lookup, ...setAndGroup];
-}
 
-export function subjectRegisterLookup() {
+  return [...lookup, ...setAndGroup];
+};
+
+export const subjectRegisterLookup = () => {
   const lookup = lookupCommon([
     {
       from: collections.subjects,
@@ -169,10 +174,11 @@ export function subjectRegisterLookup() {
       },
     },
   ];
-  return [...lookup, ...setAndGroup];
-}
 
-export function referenceSemester() {
+  return [...lookup, ...setAndGroup];
+};
+
+export const referenceSemester = () => {
   return {
     from: collections.semesters,
     localField: 'semester',
@@ -180,4 +186,4 @@ export function referenceSemester() {
     as: 'semester',
     unwind: true,
   };
-}
+};

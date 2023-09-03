@@ -13,5 +13,6 @@ export const getDataFromCsvFileUpload = (data: string) => {
       console.log('Done!');
     },
   });
+
   return csvData;
 };

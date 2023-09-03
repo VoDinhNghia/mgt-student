@@ -3,7 +3,7 @@ import { HttpService } from '@nestjs/axios';
 export class Http {
   private http: HttpService = new HttpService();
 
-  async get(url: string, keyAccess: string): Promise<object[] | null> {
+  public async get(url: string, keyAccess: string): Promise<object[] | null> {
     try {
       const results = this.http.get(url, {
         headers: {
@@ -16,7 +16,7 @@ export class Http {
     }
   }
 
-  async post(
+  public async post(
     url: string,
     keyAccess: string,
     body: string | object | string[] | object[],
