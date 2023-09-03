@@ -6,7 +6,7 @@ import { HttpStatusCode } from 'src/constants/constants.http-status';
 import { CommonException } from 'src/exceptions/execeptions.common-error';
 
 export class ValidFields {
-  async idList(schema: any, ids: string[]): Promise<string[]> {
+  public async idList(schema: any, ids: string[]): Promise<string[]> {
     if (ids.length === 0) {
       return ids;
     }
@@ -26,10 +26,11 @@ export class ValidFields {
     const documentIds = results.map((document: Record<string, any>) => {
       return document._id;
     });
+
     return documentIds;
   }
 
-  async id(schema: any, id: string, message: string): Promise<void> {
+  public async id(schema: any, id: string, message: string): Promise<void> {
     const result = await schema.findOne({
       _id: new Types.ObjectId(id),
       isDeleted: false,

@@ -18,6 +18,7 @@ export class ValidatePercentPoint implements NestInterceptor {
     if (total === 100) {
       return next.handle();
     }
+
     return of([
       new CommonException(
         HttpStatusCode.BAD_REQUEST,
