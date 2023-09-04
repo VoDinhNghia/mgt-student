@@ -1,6 +1,7 @@
 import { GetCurrentDate } from './utils.get.current-date';
 
 export class GenerateCode {
+  private currentDate: GetCurrentDate = new GetCurrentDate();
   private randomCode: number = Math.random();
 
   public getRandomCode(length: number) {
@@ -11,7 +12,7 @@ export class GenerateCode {
 
   public getRandomCodeProfile(length: number) {
     const number = this.getRandomCode(length);
-    const year = new GetCurrentDate().getYear();
+    const year = this.currentDate.getYear();
     const profileId = `${year}${number}`;
 
     return profileId;
@@ -19,9 +20,9 @@ export class GenerateCode {
 
   public getRandomCodeByYearMonthDate(length: number) {
     const number = this.getRandomCode(length);
-    const month = new GetCurrentDate().getMonth();
-    const date = new GetCurrentDate().getDate();
-    const year = new GetCurrentDate().getYear();
+    const month = this.currentDate.getMonth();
+    const date = this.currentDate.getDate();
+    const year = this.currentDate.getYear();
     const numberCode = `${year}${month}${date}${number}`;
 
     return numberCode;
