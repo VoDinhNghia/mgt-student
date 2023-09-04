@@ -106,6 +106,7 @@ export class PermissionsService {
       .sort({ createdAt: -1 })
       .exec();
     const total = await this.permissionSchema.find(query).count();
+
     return { results, total };
   }
 

@@ -223,12 +223,24 @@ export class UsersService {
     payload: UsersUpdateDto,
     updatedBy: string,
   ): Promise<Users> {
-    const { passWord, email } = payload;
+    const { passWord, email, newPassword } = payload;
     if (email) {
       await this.validateEmail(email);
     }
-    if (passWord) {
-      payload.passWord = cryptoPassWord(passWord);
+    if (passWord && newPassword) {
+      const currentPassword = cryptoPassWord(passWord);
+      const newPass = cryptoPassWord(newPassword);
+      const checkUserPassword = await this.userSchema.findOne({
+        id: new Types.ObjectId(id),
+        passWord: currentPassword,
+      });
+      if (!checkUserPassword) {
+        new CommonException(
+          HttpStatusCode.BAD_REQUEST,
+          userMsg.passwordIncorect,
+        );
+      }
+      payload.passWord = newPass;
     }
     const updateInfo = {
       ...payload,

@@ -29,6 +29,7 @@ export const userMsg = {
   profileUserExisted: 'Profile of user existed already',
   leaderSchoolExisted: 'Leader school existed already',
   supperAdminExisted: 'Supper admin existed already',
+  passwordIncorect: 'Password incorect',
 };
 
 export const unionMsg = {
