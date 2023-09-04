@@ -59,19 +59,11 @@ export const trainningPointScholarshipLookup = () => {
 };
 
 export const syncUserLookup = () => {
-  return userAndSyncLookup();
-};
-
-export const userLookup = () => {
-  return userAndSyncLookup();
-};
-
-export const profileLookup = () => {
   const lookup = lookupCommon([
     {
       from: collections.profiles,
-      localField: 'user',
-      foreignField: '_id',
+      localField: '_id',
+      foreignField: 'user',
       as: 'profile',
       unwind: true,
     },
@@ -80,12 +72,33 @@ export const profileLookup = () => {
   return lookup;
 };
 
-export const userAndSyncLookup = () => {
+export const userLookup = () => {
   const lookup = lookupCommon([
     {
       from: collections.profiles,
       localField: '_id',
       foreignField: 'user',
+      as: 'profile',
+      unwind: true,
+    },
+    {
+      from: collections.admin_permissions,
+      localField: 'profile._id',
+      foreignField: 'user',
+      as: 'permissions',
+      unwind: false,
+    },
+  ]);
+
+  return lookup;
+};
+
+export const profileLookup = () => {
+  const lookup = lookupCommon([
+    {
+      from: collections.profiles,
+      localField: 'user',
+      foreignField: '_id',
       as: 'profile',
       unwind: true,
     },
