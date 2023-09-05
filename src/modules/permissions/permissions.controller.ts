@@ -77,11 +77,8 @@ export class PermissionsController {
   public async deleteAdminPermission(
     @Param('id') id: string,
     @Res() res: Response,
-    @Req() req: Request,
   ): Promise<ResponseRequest> {
-    const user: UserLoginResponseDto = req?.user;
-    const { profileId } = user;
-    await this.service.deleteAdminPermission(id, profileId);
+    await this.service.deleteAdminPermission(id);
 
     return new ResponseRequest(res, true, permissionMsg.delete);
   }
