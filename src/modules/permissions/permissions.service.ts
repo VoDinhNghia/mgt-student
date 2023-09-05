@@ -37,9 +37,13 @@ export class PermissionsService {
     permissionDto: CreatePermissionDto,
     createdBy: string,
   ): Promise<AdminPermission> {
-    const { user } = permissionDto;
+    const { user, moduleName } = permissionDto;
     const valid = new ValidFields();
     await valid.id(this.profileSchema, user, userMsg.notFoundProfile);
+    const existed = await this.permissionSchema.findOne({ moduleName });
+    if (existed) {
+      new CommonException(HttpStatusCode.CONFLICT, permissionMsg.existed);
+    }
     const dto = {
       ...permissionDto,
       createdBy,

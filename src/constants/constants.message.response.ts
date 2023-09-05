@@ -112,6 +112,7 @@ export const permissionMsg = {
   getById: 'Get permission by id success',
   delete: 'Delete permission success',
   notFound: 'Permission not found',
+  existed: 'Module name existed already',
 };
 
 export const paymentMsg = {
