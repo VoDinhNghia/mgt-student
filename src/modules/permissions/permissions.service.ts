@@ -114,16 +114,8 @@ export class PermissionsService {
     return { results, total };
   }
 
-  public async deleteAdminPermission(
-    id: string,
-    deletedBy: string,
-  ): Promise<void> {
+  public async deleteAdminPermission(id: string): Promise<void> {
     await this.findAdminPermissionById(id);
-    const dto = {
-      isDeleted: true,
-      deletedBy,
-      deletedAt: Date.now(),
-    };
-    await this.permissionSchema.findByIdAndUpdate(id, dto);
+    await this.permissionSchema.findByIdAndDelete(id);
   }
 }
