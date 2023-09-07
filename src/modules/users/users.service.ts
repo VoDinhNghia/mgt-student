@@ -170,7 +170,6 @@ export class UsersService {
     const match: ImatchFindAllUser = {
       $match: {
         _id: { $ne: new Types.ObjectId(userId) },
-        isDeleted: false,
         role: { $ne: ErolesUser.SUPPER_ADMIN },
       },
     };
@@ -523,6 +522,7 @@ export class UsersService {
     const dto = {
       deletedBy,
       isDeleted: true,
+      status: EstatusUser.INACTIVE,
       deletedAt: Date.now(),
     };
     await this.userSchema.findByIdAndUpdate(id, dto);
