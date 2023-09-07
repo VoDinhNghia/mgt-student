@@ -40,7 +40,10 @@ export class PermissionsService {
     const { user, moduleName } = permissionDto;
     const valid = new ValidFields();
     await valid.id(this.profileSchema, user, userMsg.notFoundProfile);
-    const existed = await this.permissionSchema.findOne({ moduleName });
+    const existed = await this.permissionSchema.findOne({
+      moduleName,
+      user: new Types.ObjectId(user),
+    });
     if (existed) {
       new CommonException(HttpStatusCode.CONFLICT, permissionMsg.existed);
     }
