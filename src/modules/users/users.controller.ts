@@ -94,7 +94,6 @@ export class UsersController {
   @Put('/:id')
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
-  @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
   public async updateUser(
     @Param('id') id: string,
     @Body() updateDto: UsersUpdateDto,
