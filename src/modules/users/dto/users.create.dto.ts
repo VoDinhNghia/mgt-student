@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
 import { EuserGender } from 'src/constants/constant';
 import { UsersDto } from './users.dto';
 
@@ -15,6 +15,7 @@ export class CreateUserDto extends UsersDto {
   lastName: string;
 
   @IsString()
+  @IsOptional()
   @ApiProperty()
   middleName: string;
 
