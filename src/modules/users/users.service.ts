@@ -223,7 +223,11 @@ export class UsersService {
     updatedBy: string,
   ): Promise<Users> {
     const { passWord, email, newPassword } = payload;
-    if (email) {
+    const user = await this.findUserById(id);
+    if (!user) {
+      new CommonException(HttpStatusCode.NOT_FOUND, userMsg.notFoundUser);
+    }
+    if (email && email !== user.email) {
       await this.validateEmail(email);
     }
     if (passWord && newPassword) {
