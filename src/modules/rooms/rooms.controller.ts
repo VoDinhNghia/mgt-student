@@ -61,7 +61,7 @@ export class RoomsController {
   @Put('/:id')
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
-  @UseGuards(RoleGuard([ErolesUser.ADMIN]))
+  @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
   public async updateRoom(
     @Param('id') id: string,
     @Body() updateRoomDto: UpdateRoomDto,
