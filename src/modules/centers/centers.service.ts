@@ -25,6 +25,7 @@ import {
 import { QueryCenterDto } from './dtos/centers.query.dto';
 import { IqueryCenter } from './interfaces/centers.interface';
 import { HttpStatusCode } from 'src/constants/constants.http-status';
+import { deleteBody } from 'src/utils/utils.delete-body';
 
 @Injectable()
 export class CenterService {
@@ -145,11 +146,7 @@ export class CenterService {
 
   public async deleteCenter(id: string, deletedBy: string): Promise<void> {
     await this.findCenterById(id);
-    const dto = {
-      isDeleted: true,
-      deletedBy,
-      deletedAt: Date.now(),
-    };
-    await this.centerSchema.findByIdAndUpdate(id, dto);
+    const dto = deleteBody();
+    await this.centerSchema.findByIdAndUpdate(id, { ...dto, deletedBy });
   }
 }

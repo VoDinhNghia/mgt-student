@@ -9,6 +9,7 @@ import { UpdateRoomDto } from './dtos/rooms.update.dto';
 import { ImatchFindRoom } from './interfaces/rooms.find.match.interface';
 import { Rooms, RoomsDocument } from './schemas/rooms.schema';
 import { HttpStatusCode } from 'src/constants/constants.http-status';
+import { deleteBody } from 'src/utils/utils.delete-body';
 
 @Injectable()
 export class RoomsService {
@@ -91,11 +92,7 @@ export class RoomsService {
 
   public async deleteRoom(id: string, deletedBy: string): Promise<void> {
     await this.findRoomById(id);
-    const dto = {
-      isDeleted: true,
-      deletedBy,
-      deletedAt: Date.now(),
-    };
-    await this.roomSchema.findByIdAndUpdate(id, dto);
+    const dto = deleteBody();
+    await this.roomSchema.findByIdAndUpdate(id, { ...dto, deletedBy });
   }
 }

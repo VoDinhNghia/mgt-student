@@ -60,6 +60,7 @@ import {
 } from '../trainning-point/schemas/trainning-point.schema';
 import { trainningPointScholarshipLookup } from 'src/utils/utils.lookup.query.service';
 import { HttpStatusCode } from 'src/constants/constants.http-status';
+import { deleteBody } from 'src/utils/utils.delete-body';
 
 @Injectable()
 export class ScholarshipService {
@@ -337,12 +338,11 @@ export class ScholarshipService {
 
   public async deleteScholarship(id: string, deletedBy: string): Promise<void> {
     await this.findScholarshipById(id);
-    const deleteDto = {
+    const deleteDto = deleteBody();
+    await this.scholarshipSchema.findByIdAndUpdate(id, {
+      ...deleteDto,
       deletedBy,
-      isDeleted: true,
-      deletedAt: Date.now(),
-    };
-    await this.scholarshipSchema.findByIdAndUpdate(id, deleteDto);
+    });
   }
 
   public async deleteUserScholarship(
@@ -350,12 +350,11 @@ export class ScholarshipService {
     deletedBy: string,
   ): Promise<void> {
     await this.findScholarshipById(id);
-    const deleteDto = {
+    const deleteDto = deleteBody();
+    await this.scholarshipUserSchema.findByIdAndUpdate(id, {
+      ...deleteDto,
       deletedBy,
-      isDeleted: true,
-      deletedAt: Date.now(),
-    };
-    await this.scholarshipUserSchema.findByIdAndUpdate(id, deleteDto);
+    });
   }
 
   private async considerConditions(

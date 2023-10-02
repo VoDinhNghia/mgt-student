@@ -27,6 +27,7 @@ import { UpdateInstituteDto } from './dtos/institute.update.dto';
 import { IqueryInstitute } from './interfaces/institute.find.match.interface';
 import { InstitudeDocument, Institudes } from './schemas/institute.schema';
 import { HttpStatusCode } from 'src/constants/constants.http-status';
+import { deleteBody } from 'src/utils/utils.delete-body';
 
 @Injectable()
 export class InstituteService {
@@ -179,11 +180,7 @@ export class InstituteService {
 
   public async deleteInstitude(id: string, deletedBy: string): Promise<void> {
     await this.findInstituteById(id);
-    const dto = {
-      isDeleted: true,
-      deletedBy,
-      deletedAt: Date.now(),
-    };
-    await this.institutiSchema.findByIdAndUpdate(id, dto);
+    const dto = deleteBody();
+    await this.institutiSchema.findByIdAndUpdate(id, { ...dto, deletedBy });
   }
 }

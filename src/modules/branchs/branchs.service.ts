@@ -36,6 +36,7 @@ import { BranchUpdateDto } from './dtos/branchs.update.dto';
 import { IqueryBranchs } from './interfaces/branchs.interface';
 import { Branch, BranchDocument } from './schemas/branchs.schema';
 import { HttpStatusCode } from 'src/constants/constants.http-status';
+import { deleteBody } from 'src/utils/utils.delete-body';
 
 @Injectable()
 export class BranchService {
@@ -209,12 +210,8 @@ export class BranchService {
   }
 
   public async deleteBranch(id: string, deletedBy: string): Promise<void> {
-    const deleteDto = {
-      isDeleted: true,
-      deletedBy,
-      deletedAt: Date.now(),
-    };
-    await this.branchSchema.findByIdAndUpdate(id, deleteDto);
+    const deleteDto = deleteBody();
+    await this.branchSchema.findByIdAndUpdate(id, { ...deleteDto, deletedBy });
   }
 
   private async validateName(name: string): Promise<void> {
