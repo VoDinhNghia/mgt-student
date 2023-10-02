@@ -52,6 +52,7 @@ import {
 import { QueryTrainningPointDto } from './dtos/trainning-point.query.dto';
 import { QueryVolunteeDto } from './dtos/trainning-point.query-voluntee.dto';
 import { HttpStatusCode } from 'src/constants/constants.http-status';
+import { deleteBody } from 'src/utils/utils.delete-body';
 
 @Injectable()
 export class TrainningPointService {
@@ -448,20 +449,18 @@ export class TrainningPointService {
     id: string,
     deletedBy: string,
   ): Promise<void> {
-    const deleteDto = {
-      isDeleted: false,
+    const deleteDto = deleteBody();
+    await this.trainningPointSchema.findByIdAndUpdate(id, {
+      ...deleteDto,
       deletedBy,
-      deletedAt: Date.now(),
-    };
-    await this.trainningPointSchema.findByIdAndUpdate(id, deleteDto);
+    });
   }
 
   public async deleteVoluntee(id: string, deletedBy: string): Promise<void> {
-    const deleteDto = {
-      isDeleted: false,
+    const deleteDto = deleteBody();
+    await this.volunteeProgramSchema.findByIdAndUpdate(id, {
+      ...deleteDto,
       deletedBy,
-      deletedAt: Date.now(),
-    };
-    await this.volunteeProgramSchema.findByIdAndUpdate(id, deleteDto);
+    });
   }
 }

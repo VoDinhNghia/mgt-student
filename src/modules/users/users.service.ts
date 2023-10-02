@@ -65,6 +65,7 @@ import {
 } from '../class-subject/schemas/class-subject.class.schema';
 import { Course, CourseDocument } from '../courses/schemas/courses.schema';
 import { HttpStatusCode } from 'src/constants/constants.http-status';
+import { deleteBody } from 'src/utils/utils.delete-body';
 
 @Injectable()
 export class UsersService {
@@ -513,23 +514,18 @@ export class UsersService {
     deletedBy: string,
   ): Promise<void> {
     await this.findLeaderSchoolById(id);
-    const dto = {
-      deletedBy,
-      isDeleted: true,
-      deletedAt: Date.now(),
-    };
-    await this.leaderSchoolSchema.findByIdAndUpdate(id, dto);
+    const dto = deleteBody();
+    await this.leaderSchoolSchema.findByIdAndUpdate(id, { ...dto, deletedBy });
   }
 
   public async deleteUser(id: string, deletedBy: string): Promise<void> {
     await this.findUserById(id);
-    const dto = {
+    const dto = deleteBody();
+    await this.userSchema.findByIdAndUpdate(id, {
+      ...dto,
       deletedBy,
-      isDeleted: true,
       status: EstatusUser.INACTIVE,
-      deletedAt: Date.now(),
-    };
-    await this.userSchema.findByIdAndUpdate(id, dto);
+    });
     const profile = await this.profileSchema.findOneAndUpdate(
       { user: new Types.ObjectId(id) },
       dto,

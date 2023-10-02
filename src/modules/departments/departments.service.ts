@@ -42,6 +42,7 @@ import {
 } from 'src/utils/utils.populate';
 import { QueryDepartmentDto } from './dtos/department.query.dto';
 import { HttpStatusCode } from 'src/constants/constants.http-status';
+import { deleteBody } from 'src/utils/utils.delete-body';
 
 @Injectable()
 export class DepartmentsService {
@@ -273,12 +274,8 @@ export class DepartmentsService {
       id,
       departmentMsg.notFoundStaff,
     );
-    const dto = {
-      isDeleted: true,
-      deletedBy,
-      deletedAt: Date.now(),
-    };
-    await this.staffSchema.findByIdAndUpdate(id, dto);
+    const dto = deleteBody();
+    await this.staffSchema.findByIdAndUpdate(id, { ...dto, deletedBy });
   }
 
   private async findUserProfile(

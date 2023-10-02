@@ -59,6 +59,7 @@ import { QueryClassDto } from './dtos/class-subject.query-class.dto';
 import { QuerySubjectDto } from './dtos/class-subject.query-subject.dto';
 import { skipLimitAndSortPagination } from 'src/utils/utils.page.pagination';
 import { HttpStatusCode } from 'src/constants/constants.http-status';
+import { deleteBody } from 'src/utils/utils.delete-body';
 
 @Injectable()
 export class ClassSubjectService {
@@ -382,12 +383,8 @@ export class ClassSubjectService {
   }
 
   public async deleteSubject(id: string, deletedBy: string): Promise<void> {
-    const deleteDto = {
-      isDeleted: true,
-      deletedBy,
-      deletedAt: Date.now(),
-    };
-    await this.subjectSchema.findByIdAndUpdate(id, deleteDto);
+    const deleteDto = deleteBody();
+    await this.subjectSchema.findByIdAndUpdate(id, { ...deleteDto, deletedBy });
     await this.subjectProcessSchema.findOneAndUpdate(
       { subject: new Types.ObjectId(id) },
       deleteDto,

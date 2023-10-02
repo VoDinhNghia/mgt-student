@@ -107,7 +107,6 @@ export class AttachmentsService {
     try {
       await this.attachmentSchema.findByIdAndDelete(id);
     } catch (error) {
-      console.log(error);
       new CommonException(HttpStatusCode.SERVER_INTERVAL, msgServerError);
     }
     unlinkSync(result.path);

@@ -175,6 +175,7 @@ export const facultiesMsg = {
   update: 'Update faculty success',
   getById: 'Get faculty by id success',
   delete: 'Delete faculty success',
+  deleteMajor: 'Delete major success',
   createMajor: 'Create major success',
   getAllMajor: 'Get all majors success',
   updateMajor: 'Update major success',

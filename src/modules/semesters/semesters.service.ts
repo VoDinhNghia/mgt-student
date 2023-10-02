@@ -10,6 +10,7 @@ import { IsemesterQuery } from './interfaces/semesters.find.interface';
 import { Semester, SemesterDocument } from './schemas/semesters.schema';
 import { GenerateCode } from 'src/utils/utils.generate.code';
 import { HttpStatusCode } from 'src/constants/constants.http-status';
+import { deleteBody } from 'src/utils/utils.delete-body';
 
 @Injectable()
 export class SemestersService {
@@ -82,11 +83,7 @@ export class SemestersService {
 
   public async deleteSemester(id: string, deletedBy: string): Promise<void> {
     await this.findSemesterById(id);
-    const dto = {
-      deletedBy,
-      isDeleted: true,
-      deletedAt: Date.now(),
-    };
-    await this.semesterSchema.findByIdAndUpdate(id, dto);
+    const dto = deleteBody();
+    await this.semesterSchema.findByIdAndUpdate(id, { ...dto, deletedBy });
   }
 }

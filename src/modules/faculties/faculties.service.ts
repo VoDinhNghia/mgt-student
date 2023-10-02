@@ -30,6 +30,7 @@ import {
   selectProfile,
 } from 'src/utils/utils.populate';
 import { HttpStatusCode } from 'src/constants/constants.http-status';
+import { deleteBody } from 'src/utils/utils.delete-body';
 
 @Injectable()
 export class FacultiesService {
@@ -237,6 +238,18 @@ export class FacultiesService {
     const total = await this.majorSchema.find(query).count();
 
     return { results, total };
+  }
+
+  public async deleteFaculty(id: string, deletedBy: string): Promise<void> {
+    await this.findFacultyById(id);
+    const body = deleteBody();
+    await this.facultySchema.findByIdAndUpdate(id, { ...body, deletedBy });
+  }
+
+  public async deleteMajor(id: string, deletedBy: string): Promise<void> {
+    await this.findMajorById(id);
+    const body = deleteBody();
+    await this.majorSchema.findByIdAndUpdate(id, { ...body, deletedBy });
   }
 
   private async validateDto(facultyDto: CreateFacultyDto): Promise<void> {

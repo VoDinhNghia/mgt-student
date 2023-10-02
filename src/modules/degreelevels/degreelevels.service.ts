@@ -12,6 +12,7 @@ import {
   DegreeLevelDocument,
 } from './schemas/degreelevels.schema';
 import { HttpStatusCode } from 'src/constants/constants.http-status';
+import { deleteBody } from 'src/utils/utils.delete-body';
 
 @Injectable()
 export class DegreelevelService {
@@ -85,12 +86,11 @@ export class DegreelevelService {
 
   public async deleteDegreelevel(id: string, deletedBy: string): Promise<void> {
     await this.findDegreeLevelById(id);
-    const deleteDto = {
+    const deleteDto = deleteBody();
+    await this.degreeLevelSchema.findByIdAndUpdate(id, {
+      ...deleteDto,
       deletedBy,
-      isDeleted: true,
-      deletedAt: Date.now(),
-    };
-    await this.degreeLevelSchema.findByIdAndUpdate(id, deleteDto);
+    });
   }
 
   private async validateName(name: string): Promise<void> {

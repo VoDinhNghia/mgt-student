@@ -15,6 +15,7 @@ import { UpdateNewDto } from './dtos/news.update.dto';
 import { IqueryNews } from './interfaces/news.find.match.interface';
 import { News, NewsDocument } from './schemas/news.schema';
 import { HttpStatusCode } from 'src/constants/constants.http-status';
+import { deleteBody } from 'src/utils/utils.delete-body';
 
 @Injectable()
 export class NewsService {
@@ -124,11 +125,7 @@ export class NewsService {
 
   public async deleteNews(id: string, deletedBy: string): Promise<void> {
     await this.findNewsById(id);
-    const dto = {
-      isDeleted: true,
-      deletedBy,
-      deletedAt: Date.now(),
-    };
-    await this.newsSchema.findByIdAndUpdate(id, dto);
+    const dto = deleteBody();
+    await this.newsSchema.findByIdAndUpdate(id, { ...dto, deletedBy });
   }
 }

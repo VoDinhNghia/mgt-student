@@ -9,6 +9,7 @@ import { UpdateCourseDto } from './dtos/courses.update.dto';
 import { IqueryCourse } from './interfaces/courses.interface';
 import { Course, CourseDocument } from './schemas/courses.schema';
 import { HttpStatusCode } from 'src/constants/constants.http-status';
+import { deleteBody } from 'src/utils/utils.delete-body';
 
 @Injectable()
 export class CoursesService {
@@ -82,12 +83,8 @@ export class CoursesService {
 
   public async deleteCourse(id: string, deletedBy: string): Promise<void> {
     await this.findCourseById(id);
-    const deleteDto = {
-      deletedBy,
-      isDeleted: true,
-      deletedAt: Date.now(),
-    };
-    await this.courseSchema.findByIdAndUpdate(id, deleteDto);
+    const deleteDto = deleteBody();
+    await this.courseSchema.findByIdAndUpdate(id, { ...deleteDto, deletedBy });
   }
 
   private async validateName(name: string): Promise<void> {

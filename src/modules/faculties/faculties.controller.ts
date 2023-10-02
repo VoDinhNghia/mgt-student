@@ -9,6 +9,7 @@ import {
   Res,
   Req,
   UseGuards,
+  Delete,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { ErolesUser } from 'src/constants/constant';
@@ -149,6 +150,38 @@ export class FacultiesController {
     const result = await this.facultyService.findAllMajors(queryDto);
 
     return new ResponseRequest(res, result, facultiesMsg.getAllMajor);
+  }
+
+  @Delete('/:id')
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
+  public async deleteFaculty(
+    @Param('id') id: string,
+    @Req() req: Request,
+    @Res() res: Response,
+  ): Promise<ResponseRequest> {
+    const user: UserLoginResponseDto = req?.user;
+    const { profileId } = user;
+    await this.facultyService.deleteFaculty(id, profileId);
+
+    return new ResponseRequest(res, true, facultiesMsg.delete);
+  }
+
+  @Delete('/major/:id')
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @UseGuards(RoleGuard([ErolesUser.SUPPER_ADMIN, ErolesUser.ADMIN]))
+  public async deleteMajor(
+    @Param('id') id: string,
+    @Req() req: Request,
+    @Res() res: Response,
+  ): Promise<ResponseRequest> {
+    const user: UserLoginResponseDto = req?.user;
+    const { profileId } = user;
+    await this.facultyService.deleteMajor(id, profileId);
+
+    return new ResponseRequest(res, true, facultiesMsg.deleteMajor);
   }
 
   @Get('/:id')

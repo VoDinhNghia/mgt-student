@@ -15,6 +15,7 @@ import { UpdateAwardDto } from './dtos/awards.update.dto';
 import { IqueryAwards } from './interfaces/awards.find.match.interface';
 import { Award, AwardDocument } from './schemas/awards.schema';
 import { HttpStatusCode } from 'src/constants/constants.http-status';
+import { deleteBody } from 'src/utils/utils.delete-body';
 
 @Injectable()
 export class AwardsService {
@@ -92,12 +93,8 @@ export class AwardsService {
   }
 
   public async deleteAward(id: string, deletedBy: string): Promise<void> {
-    const deleteDto = {
-      isDeleted: true,
-      deletedBy,
-      deletedAt: Date.now(),
-    };
-    await this.awardSchema.findByIdAndUpdate(id, deleteDto);
+    const deleteDto = deleteBody();
+    await this.awardSchema.findByIdAndUpdate(id, { ...deleteDto, deletedBy });
   }
 
   public async findAllAward(

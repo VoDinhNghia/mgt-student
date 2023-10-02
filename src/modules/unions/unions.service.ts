@@ -37,6 +37,7 @@ import { UnionImages } from './schemas/unions.images.schema';
 import { UnionMembers } from './schemas/unions.members.schema';
 import { Union, UnionDocument } from './schemas/unions.schema';
 import { HttpStatusCode } from 'src/constants/constants.http-status';
+import { deleteBody } from 'src/utils/utils.delete-body';
 
 @Injectable()
 export class UnionsService {
@@ -328,32 +329,26 @@ export class UnionsService {
 
   public async deleteUnion(id: string, deletedBy: string): Promise<void> {
     await this.findUnionById(id);
-    const deleteDto = {
-      deletedBy,
-      isDeleted: true,
-      deletedAt: Date.now(),
-    };
-    await this.unionSchema.findByIdAndUpdate(id, deleteDto);
+    const deleteDto = deleteBody();
+    await this.unionSchema.findByIdAndUpdate(id, { ...deleteDto, deletedBy });
   }
 
   public async deleteUnionImage(id: string, deletedBy: string): Promise<void> {
     await this.findUnionById(id);
-    const deleteDto = {
+    const deleteDto = deleteBody();
+    await this.unionImageSchema.findByIdAndUpdate(id, {
+      ...deleteDto,
       deletedBy,
-      isDeleted: true,
-      deletedAt: Date.now(),
-    };
-    await this.unionImageSchema.findByIdAndUpdate(id, deleteDto);
+    });
   }
 
   public async deleteUnionMember(id: string, deletedBy: string): Promise<void> {
     await this.findUnionById(id);
-    const deleteDto = {
+    const deleteDto = deleteBody();
+    await this.unionMemberSchema.findByIdAndUpdate(id, {
+      ...deleteDto,
       deletedBy,
-      isDeleted: true,
-      deletedAt: Date.now(),
-    };
-    await this.unionMemberSchema.findByIdAndUpdate(id, deleteDto);
+    });
   }
 
   private async groupMember(unionId: Types.ObjectId): Promise<Igroup[]> {
