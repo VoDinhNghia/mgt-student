@@ -65,7 +65,10 @@ export class SemestersService {
     const { limit, page, searchKey } = queryDto;
     const query: IsemesterQuery = { isDeleted: false };
     if (searchKey) {
-      query.name = new RegExp(searchKey, 'i');
+      query.$or = [
+        { name: new RegExp(searchKey, 'i') },
+        { year: new RegExp(searchKey, 'i') },
+      ];
     }
     const results = await this.semesterSchema
       .find(query)
