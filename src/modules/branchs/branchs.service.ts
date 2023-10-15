@@ -171,11 +171,7 @@ export class BranchService {
   ): Promise<Branch> {
     const {
       location: { country, province, district, ward },
-      name,
     } = updateDto;
-    if (name) {
-      await this.validateName(name);
-    }
     const valid = new ValidFields();
     if (country) {
       await valid.id(this.countrySchema, country, countriesMsg.notfound);

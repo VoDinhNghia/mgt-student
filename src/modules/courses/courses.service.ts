@@ -46,10 +46,6 @@ export class CoursesService {
     courseDto: UpdateCourseDto,
     updatedBy: string,
   ): Promise<Course> {
-    const { name } = courseDto;
-    if (name) {
-      await this.validateName(name);
-    }
     const updateDto = {
       ...courseDto,
       updatedBy,
