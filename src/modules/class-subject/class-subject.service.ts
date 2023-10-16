@@ -216,7 +216,7 @@ export class ClassSubjectService {
     classDto: UpdateClassDto,
     updatedBy: string,
   ): Promise<ClassInfos> {
-    const { name, course, degreeLevel, major, homeroomteacher } = classDto;
+    const { course, degreeLevel, major, homeroomteacher } = classDto;
     const valid = new ValidFields();
     if (course) {
       await valid.id(this.courseSchema, course, courseMsg.notFound);
@@ -230,9 +230,6 @@ export class ClassSubjectService {
     }
     if (major) {
       await valid.id(this.majorSchema, major, facultiesMsg.notFound);
-    }
-    if (name) {
-      await this.validateClassName(name);
     }
     if (homeroomteacher) {
       await valid.id(
